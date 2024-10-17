@@ -1,0 +1,13 @@
+<ion-list>
+  <ion-list-header>
+    <ion-label>Usuarios Guardados</ion-label>
+  </ion-list-header>
+
+  <ion-item *ngFor="let user of users">
+    <ion-label>
+      <h2>{{ user.name }}</h2>
+      <p>{{ user.email }}</p>
+      <p class="ion-text-wrap">{{ user.timestamp | date:'medium' }}</p>
+    </ion-label>
+  </ion-item>
+</ion-list>
