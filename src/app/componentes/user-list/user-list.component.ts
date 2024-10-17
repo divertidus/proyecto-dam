@@ -3,6 +3,7 @@ import { UserDocument } from 'src/app/interfaces/interfaces';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-user-list',
@@ -14,7 +15,24 @@ import { CommonModule } from '@angular/common';
 export class UserListComponent implements OnInit {
   @Input() users: UserDocument[] = [];
 
+  selectedUser: UserDocument | null = null; // Agregar una propiedad para el usuario seleccionado
+
+  constructor(private authService: AuthService) { }
+
   ngOnInit() {
     // Se puede realizar alguna acción cuando el componente se inicializa
+  }
+
+  selectUser(user: UserDocument): void {
+    this.authService.selectUser(user); // Establece el usuario seleccionado
+    this.selectedUser = user; // Guarda el usuario seleccionado en el componente
+  }
+
+  async login(): Promise<void> {
+    if (this.selectedUser) {
+      await this.authService.loginWithSelectedUser(); // Inicia sesión con el usuario seleccionado
+    } else {
+      console.error('No hay usuario seleccionado para iniciar sesión'); // Manejo de error si no hay usuario
+    }
   }
 }

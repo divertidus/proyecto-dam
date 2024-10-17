@@ -3,7 +3,8 @@
     <ion-label>Usuarios Guardados</ion-label>
   </ion-list-header>
 
-  <ion-item *ngFor="let user of users">
+  <!-- Se agrega un evento click para seleccionar al usuario -->
+  <ion-item *ngFor="let user of users" (click)="selectUser(user)">
     <ion-label>
       <h2>{{ user.name }}</h2>
       <p>{{ user.email }}</p>

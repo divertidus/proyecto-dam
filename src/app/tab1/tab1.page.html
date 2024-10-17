@@ -1,4 +1,3 @@
-<!-- src/app/tab1/tab1.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
@@ -13,6 +12,13 @@
       <ion-title size="large">Formulario Usuario</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <!-- Muestra el usuario logueado -->
+  <!-- Llama a la función que muestra el usuario logueado -->
+  <div>{{ showLoggedInUser() }}</div>
+
+  <ion-button (click)="logout()">Desloguear</ion-button> <!-- Botón para desloguear -->
+
 
   <!--  Llamada al componente para nuevo usuario -->
   <!--  Ese (userAdded)="handleUserAdded() se corresponde con el 
