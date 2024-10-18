@@ -1,3 +1,4 @@
+// service/database.service.ts
 // Importar decorador Injectable desde Angular, que permite que esta clase se use como servicio inyectable
 import { Injectable } from '@angular/core';
 // Importar PouchDB de esta manera, asegurando que se incluya la versión correcta
