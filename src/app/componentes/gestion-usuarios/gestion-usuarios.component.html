@@ -4,6 +4,9 @@
   </ion-list-header>
 
   <ion-item *ngFor="let usuario of usuarios" (click)="elegirUsuarioDeLista(usuario)">
+    <ion-avatar>
+      <img [src]="usuario.imagenPerfil" />
+    </ion-avatar>
     <ion-card class="usuario-card">
       <ion-card-header>
         <ion-card-title>{{ usuario.nombre }}</ion-card-title>

@@ -1,11 +1,11 @@
 // componentes/user-list/user-list.component.html
 import { Component, Input, OnInit } from '@angular/core';
-import { UserDocument } from 'src/app/interfaces/interfaces';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
+import { Usuario } from 'src/app/models/usuario.model';
 
 
 @Component({
@@ -16,9 +16,9 @@ import { Router } from '@angular/router';
   imports: [IonicModule, FormsModule, CommonModule]
 })
 export class UserListComponent implements OnInit {
-  @Input() usuarios: UserDocument[] = [];
+  @Input() usuarios: Usuario[] = [];
 
-  usuarioSeleccionado: UserDocument | null = null; // Agregar una propiedad para el usuario seleccionado
+  usuarioSeleccionado: Usuario | null = null; // Agregar una propiedad para el usuario seleccionado
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -26,7 +26,7 @@ export class UserListComponent implements OnInit {
     // Se puede realizar alguna acción cuando el componente se inicializa
   }
 
-  elegirUsuarioDeLista(user: UserDocument): void {
+  elegirUsuarioDeLista(user: Usuario): void {
     this.authService.elegirUsuario(user); // Establece el usuario seleccionado
     this.usuarioSeleccionado = user; // Guarda el usuario seleccionado en el componente
     this.login();

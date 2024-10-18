@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonFooter, IonButton } from '@ionic/angular/standalone';
 import { UserListComponent } from "../../componentes/user-list/user-list.component";
-import { UserDocument } from 'src/app/interfaces/interfaces';
 import { DatabaseService } from '../../services/database.service';
 import { Router } from '@angular/router';
 import { GestionUsuariosComponent } from "../../componentes/gestion-usuarios/gestion-usuarios.component";
+import { Usuario } from 'src/app/models/usuario.model';
 
 @Component({
   selector: 'app-seleccionar-usuario',
@@ -19,8 +19,8 @@ import { GestionUsuariosComponent } from "../../componentes/gestion-usuarios/ges
 export class SeleccionarUsuarioPage implements OnInit {
 
 
-  usuarios: UserDocument[] = []; // Variable que almacena la lista de usuarios obtenida de la base de datos.
-  usuarioLogeado: UserDocument | null = null; // Almacena el usuario que está actualmente logueado.
+  usuarios: Usuario[] = []; // Variable que almacena la lista de usuarios obtenida de la base de datos.
+  usuarioLogeado: Usuario | null = null; // Almacena el usuario que está actualmente logueado.
 
   constructor(
     private dbService: DatabaseService,

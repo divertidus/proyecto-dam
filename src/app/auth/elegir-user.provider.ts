@@ -1,19 +1,20 @@
 // user-selection-auth.provider.ts
 
-import { UserDocument } from '../interfaces/interfaces'; // Importa la interfaz del documento de usuario
+ // Importa la interfaz del documento de usuario
+import { Usuario } from '../models/usuario.model';
 import { AuthProvider } from './authProvider';
 
 
 export class ProveedorSeleccionUsuario implements AuthProvider {
-  private usuarioSeleccionado: UserDocument | null = null;
+  private usuarioSeleccionado: Usuario | null = null;
 
   // Método para seleccionar un usuario
-  elegirUsuario(user: UserDocument): void {
+  elegirUsuario(user: Usuario): void {
     this.usuarioSeleccionado = user; // Almacena el usuario seleccionado
   }
 
   // Método para iniciar sesión
-  async login(): Promise<UserDocument> {
+  async login(): Promise<Usuario> {
     if (!this.usuarioSeleccionado) {
       throw new Error('No hay usuario seleccionado'); // Lanza un error si no hay usuario
     }
@@ -24,7 +25,7 @@ export class ProveedorSeleccionUsuario implements AuthProvider {
     this.usuarioSeleccionado = null; // Limpia el usuario seleccionado
   }
 
-  getUsuarioLogeado(): UserDocument | null {
+  getUsuarioLogeado(): Usuario | null {
     return this.usuarioSeleccionado; // Retorna el usuario seleccionado
   }
 }

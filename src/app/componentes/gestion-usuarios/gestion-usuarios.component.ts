@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from 'src/app/services/usuario.service';
-import { UserDocument } from 'src/app/interfaces/interfaces';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { NgFor, NgIf } from '@angular/common';
+import { Usuario } from 'src/app/models/usuario.model';
 
 
 @Component({
@@ -17,8 +17,8 @@ import { NgFor, NgIf } from '@angular/common';
 })
 export class GestionUsuariosComponent implements OnInit {
 
-  usuarios: UserDocument[] = [];
-  usuarioSeleccionado: UserDocument | null = null;
+  usuarios: Usuario[] = [];
+  usuarioSeleccionado: Usuario | null = null;
 
   constructor(private usuarioService: UsuarioService, private authService: AuthService, private router: Router) { }
 
@@ -34,7 +34,7 @@ export class GestionUsuariosComponent implements OnInit {
     this.cargarUsuarios(); // Recarga la lista de usuarios cuando la vista está activa
   }
 
-  elegirUsuarioDeLista(usuario: UserDocument): void {
+  elegirUsuarioDeLista(usuario: Usuario): void {
     this.usuarioSeleccionado = usuario;
     this.login();
   }

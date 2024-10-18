@@ -2,11 +2,11 @@
 
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UserDocument } from '../interfaces/interfaces';
 import { AuthProvider } from './authProvider';
 import { ProveedorSeleccionUsuario } from './elegir-user.provider';
 import { EmailPasswordAuthProvider } from './email-password.provider';
 import { GoogleAuthProvider } from './google-auth.provider';
+import { Usuario } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class AuthService {
 
   // 1. Variable que representa el estado del usuario logueado, utilizando un BehaviorSubject.
   // BehaviorSubject permite tener un valor por defecto y notificar cambios a cualquier componente que se suscriba a él.
-  private estadoUsuarioLogeado = new BehaviorSubject<UserDocument | null>(null); // Estado del usuario logueado
+  private estadoUsuarioLogeado = new BehaviorSubject<Usuario | null>(null); // Estado del usuario logueado
   // 2. Observable que expone el estado del usuario logueado. Cualquier componente puede suscribirse a este observable para recibir notificaciones de cambios.
   usuarioLogeado$ = this.estadoUsuarioLogeado.asObservable(); // Observable para suscribirse a cambios
 
@@ -36,7 +36,7 @@ export class AuthService {
   // Método para seleccionar un usuario de la base de datos
   // 3. Método para seleccionar un usuario. 
   // Este método actualiza el valor de 'estadoUsuarioLogeado', lo cual notifica a todos los componentes suscritos.
-  elegirUsuario(usuario: UserDocument): void {
+  elegirUsuario(usuario: Usuario): void {
     const proveedorSeleccionUsuario = this.authProvider as ProveedorSeleccionUsuario; // Asegúrate de que el proveedor es del tipo correcto
     proveedorSeleccionUsuario.elegirUsuario(usuario); // Selecciona el usuario
     this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
@@ -70,7 +70,7 @@ export class AuthService {
 
   // Obtiene el usuario logueado
   // 5. Método para obtener el usuario logueado actual.
-  getUsuarioLogeado(): UserDocument | null {
+  getUsuarioLogeado(): Usuario | null {
     return this.estadoUsuarioLogeado.value; // Retorna el usuario logueado actual
   }
 }

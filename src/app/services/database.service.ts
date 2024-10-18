@@ -40,6 +40,9 @@ export class DatabaseService {
 
   // Método para agregar un nuevo usuario a la base de datos
   async addUsuario(nombre: string, email: string, imagenPerfil?: string) {
+    if(!imagenPerfil){
+      imagenPerfil = '/assets/imagenes/avatar-default.png'
+    }
     try {
       // Guardar un nuevo documento en la base de datos con el nombre, correo y timestamp actual
       const response = await this.db.post({

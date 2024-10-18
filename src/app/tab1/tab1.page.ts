@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
-import { UserDocument } from '../interfaces/interfaces';
 import { UserFormComponent } from "../componentes/user-form/user-form.component";
 import { UserListComponent } from "../componentes/user-list/user-list.component";
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { Usuario } from '../models/usuario.model';
 
 
 @Component({
@@ -20,8 +20,8 @@ import { Router } from '@angular/router';
 })
 export class Tab1Page {
 
-  usuarios: UserDocument[] = []; // Variable que almacena la lista de usuarios obtenida de la base de datos.
-  usuarioLogeado: UserDocument | null = null; // Almacena el usuario que está actualmente logueado.
+  usuarios: Usuario[] = []; // Variable que almacena la lista de usuarios obtenida de la base de datos.
+  usuarioLogeado: Usuario | null = null; // Almacena el usuario que está actualmente logueado.
 
   // Constructor del componente, que inyecta el servicio de base de datos (dbService) y el de autenticación (authService).
   constructor(
