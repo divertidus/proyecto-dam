@@ -7,13 +7,14 @@ import { UserListComponent } from "../../componentes/user-list/user-list.compone
 import { UserDocument } from 'src/app/interfaces/interfaces';
 import { DatabaseService } from '../../services/database.service';
 import { Router } from '@angular/router';
+import { GestionUsuariosComponent } from "../../componentes/gestion-usuarios/gestion-usuarios.component";
 
 @Component({
   selector: 'app-seleccionar-usuario',
   templateUrl: './seleccionar-usuario.page.html',
   styleUrls: ['./seleccionar-usuario.page.scss'],
   standalone: true,
-  imports: [IonButton, IonFooter, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent]
+  imports: [IonButton, IonFooter, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent, GestionUsuariosComponent]
 })
 export class SeleccionarUsuarioPage implements OnInit {
 

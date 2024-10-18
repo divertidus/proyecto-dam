@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 // Importar PouchDB de esta manera, asegurando que se incluya la versión correcta
 import PouchDB from 'pouchdb/dist/pouchdb.js';
 
-
 // Decorador Injectable que indica que este servicio puede ser inyectado en otros componentes
 @Injectable({
   providedIn: 'root'      // Hace que el servicio esté disponible en toda la aplicación
@@ -16,9 +15,6 @@ export class DatabaseService {
   constructor() {
     // Inicializar PouchDB creando o abriendo la base de datos llamada 'myusersdb1'
     this.db = new PouchDB('myusersdb1');
-
-
-
 
     // Recuperar todos los documentos de la base de datos, incluyendo su contenido
     this.db.allDocs({ include_docs: true }).then(result => {
@@ -38,13 +34,18 @@ export class DatabaseService {
     });
   }
 
+
+  /* --------------------------------- PARTE DE USUARIOS ------------------------------------*/
+
+
   // Método para agregar un nuevo usuario a la base de datos
-  async addUsuario(nombre: string, email: string) {
+  async addUsuario(nombre: string, email: string, imagenPerfil?: string) {
     try {
       // Guardar un nuevo documento en la base de datos con el nombre, correo y timestamp actual
       const response = await this.db.post({
         nombre,
         email,
+        imagenPerfil,  // Incluir imagen de perfil si se proporciona
         timestamp: new Date().toISOString() // Obtener la fecha y hora actual en formato ISO
       });
       console.log('Usuario añadido con éxito', response); // Imprimir el resultado de la operación en consola
@@ -56,9 +57,8 @@ export class DatabaseService {
     }
   }
 
-
-
   // Método para obtener todos los usuarios de la base de datos
+
   async getAllUsers() {
     try {
       // Recuperar todos los documentos de la base de datos
@@ -75,37 +75,39 @@ export class DatabaseService {
     }
   }
 
+  // Método para obtener un usuario específico
+  async getUsuario(query: any) {
+    try {
+      const response = await this.db.find(query);
+      console.log('Usuario localizado', response);
+      return response.docs; // Devolver solo los documentos encontrados
+    } catch (err) {
+      console.error('Error al obtener usuario:', err);
+      throw err;
+    }
+  }
 
+  // Método para actualizar un usuario
+  async updateUsuario(usuario: any) {
+    try {
+      const response = await this.db.put(usuario);
+      console.log('Usuario actualizado con éxito', response);
+      return response;
+    } catch (err) {
+      console.error('Error al actualizar usuario:', err);
+      throw err;
+    }
+  }
+
+  // Método para eliminar un usuario
+  async deleteUsuario(usuario: any) {
+    try {
+      const response = await this.db.remove(usuario);
+      console.log('Usuario eliminado con éxito', response);
+      return response;
+    } catch (err) {
+      console.error('Error al eliminar usuario:', err);
+      throw err;
+    }
+  }
 }
-
-
-
-
-
-
-/* PARA CAMBIAR NOMBRES DE CAMPOS... IRIA EN EL CONSTRUCTOS
-
- // Migrar documentos para renombrar el campo 'name' a 'nombre'
-     this.db.allDocs({ include_docs: true }).then(result => {
-      result.rows.forEach(async row => {
-        const doc = row.doc;
-        // Verificar si el documento tiene el campo 'name'
-        if (doc.name) {
-          // Renombrar el campo 'name' a 'nombre'
-          doc.nombre = doc.name;
-          delete doc.name; // Eliminar el campo 'name'
-          // Guardar el documento actualizado
-          await this.db.put(doc);
-          console.log(`Documento migrado: ${doc._id}`);
-        }
-      });
-    }).catch(err => {
-      console.error('Error migrando los documentos:', err);
-    });
-
-    this.db.info().then((info: any) => {
-      console.log('Database created successfully', info);
-    }).catch((err: any) => {
-      console.error('Error creating database', err);
-    });
-*/

@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 export class UserListComponent implements OnInit {
   @Input() usuarios: UserDocument[] = [];
 
-  selectedUser: UserDocument | null = null; // Agregar una propiedad para el usuario seleccionado
+  usuarioSeleccionado: UserDocument | null = null; // Agregar una propiedad para el usuario seleccionado
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -28,13 +28,13 @@ export class UserListComponent implements OnInit {
 
   elegirUsuarioDeLista(user: UserDocument): void {
     this.authService.elegirUsuario(user); // Establece el usuario seleccionado
-    this.selectedUser = user; // Guarda el usuario seleccionado en el componente
+    this.usuarioSeleccionado = user; // Guarda el usuario seleccionado en el componente
     this.login();
   }
 
   async login(): Promise<void> {
     console.log('soy el login en list')
-    if (this.selectedUser) {
+    if (this.usuarioSeleccionado) {
       await this.authService.loginConUsuarioSeleccionado(); // Inicia sesión con el usuario seleccionado
       this.router.navigate(['']);
     } else {
