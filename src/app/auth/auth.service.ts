@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UserDocument } from '../interfaces/interfaces';
 import { AuthProvider } from './authProvider';
-import { ElegirUserAuthProvider } from './elegir-user.provider';
+import { ProveedorSeleccionUsuario } from './elegir-user.provider';
 import { EmailPasswordAuthProvider } from './email-password.provider';
 import { GoogleAuthProvider } from './google-auth.provider';
 
@@ -12,43 +12,50 @@ import { GoogleAuthProvider } from './google-auth.provider';
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedInUserSubject = new BehaviorSubject<UserDocument | null>(null); // Estado del usuario logueado
-  loggedInUser$ = this.loggedInUserSubject.asObservable(); // Observable para suscribirse a cambios
+
+  // 1. Variable que representa el estado del usuario logueado, utilizando un BehaviorSubject.
+  // BehaviorSubject permite tener un valor por defecto y notificar cambios a cualquier componente que se suscriba a él.
+  private estadoUsuarioLogeado = new BehaviorSubject<UserDocument | null>(null); // Estado del usuario logueado
+  // 2. Observable que expone el estado del usuario logueado. Cualquier componente puede suscribirse a este observable para recibir notificaciones de cambios.
+  usuarioLogeado$ = this.estadoUsuarioLogeado.asObservable(); // Observable para suscribirse a cambios
 
   private authProvider: AuthProvider; // Proveedor de autenticación
 
   constructor() {
-    this.authProvider = new ElegirUserAuthProvider(); // Inicializa con el proveedor por defecto
+    this.authProvider = new ProveedorSeleccionUsuario(); // Inicializa con el proveedor por defecto
     // this.authProvider = new EmailPasswordAuthProvider(); // para iniciar sesion con email y contraseña si lo pongo
     // this.authProvider = new GoogleAuthProvider(); // par ainiciar sesion con google si lo pongo
   }
 
   // Cambia el proveedor de autenticación
-  setAuthProvider(provider: AuthProvider): void {
-    this.authProvider = provider; // Actualiza el proveedor de autenticación
+  setAuthProvider(proveedorAutenticacion: AuthProvider): void {
+    this.authProvider = proveedorAutenticacion; // Actualiza el proveedor de autenticación
   }
 
 
   // Método para seleccionar un usuario de la base de datos
-  selectUser(user: UserDocument): void {
-    const userSelectionProvider = this.authProvider as ElegirUserAuthProvider; // Asegúrate de que el proveedor es del tipo correcto
-    userSelectionProvider.selectUser(user); // Selecciona el usuario
-    this.loggedInUserSubject.next(user); // Actualiza el estado del usuario logueado
+  // 3. Método para seleccionar un usuario. 
+  // Este método actualiza el valor de 'estadoUsuarioLogeado', lo cual notifica a todos los componentes suscritos.
+  elegirUsuario(usuario: UserDocument): void {
+    const proveedorSeleccionUsuario = this.authProvider as ProveedorSeleccionUsuario; // Asegúrate de que el proveedor es del tipo correcto
+    proveedorSeleccionUsuario.elegirUsuario(usuario); // Selecciona el usuario
+    this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
   }
 
   // Método para iniciar sesión
+  // 4. Método para iniciar sesión. Una vez se inicia sesión, se actualiza 'estadoUsuarioLogeado', notificando a los suscriptores.
   async login(credentials: any): Promise<void> {
-    const user = await this.authProvider.login(credentials); // Llama al método login del proveedor
-    this.loggedInUserSubject.next(user); // Actualiza el estado del usuario logueado
-    console.log(`Usuario logueado: ${user.name}`); // Muestra en consola el usuario logueado
+    const usuario = await this.authProvider.login(credentials); // Llama al método login del proveedor
+    this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
+    console.log(`Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
   }
 
   // Método para iniciar sesión directamente con el usuario seleccionado
-  async loginWithSelectedUser(): Promise<void> {
+  async loginConUsuarioSeleccionado(): Promise<void> {
     try {
-      const user = await this.authProvider.login(); // Llama al método login del proveedor
-      this.loggedInUserSubject.next(user); // Actualiza el estado del usuario logueado
-      console.log(`Usuario logueado: ${user.name}`); // Muestra en consola el usuario logueado
+      const usuario = await this.authProvider.login(); // Llama al método login del proveedor
+      this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
+      console.log(`Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
     } catch (error) {
       console.error(error.message); // Manejo de errores
     }
@@ -57,12 +64,69 @@ export class AuthService {
   // Método para cerrar sesión
   async logout(): Promise<void> {
     await this.authProvider.logout(); // Llama al método logout del proveedor
-    this.loggedInUserSubject.next(null); // Limpia el estado del usuario logueado
+    this.estadoUsuarioLogeado.next(null); // Limpia el estado del usuario logueado
     console.log('Usuario deslogueado'); // Muestra en consola que el usuario ha cerrado sesión
   }
 
   // Obtiene el usuario logueado
-  getLoggedInUser(): UserDocument | null {
-    return this.loggedInUserSubject.value; // Retorna el usuario logueado actual
+  // 5. Método para obtener el usuario logueado actual.
+  getUsuarioLogeado(): UserDocument | null {
+    return this.estadoUsuarioLogeado.value; // Retorna el usuario logueado actual
   }
 }
+
+
+
+
+
+
+/* EXPLICACION DEL NEXT DEL BEHAVIOR
+
+La función next() en un BehaviorSubject es crucial para actualizar el valor 
+almacenado y notificar a todos los suscriptores de los cambios.
+
+¿Por qué se usa next()?
+Actualización del valor: El BehaviorSubject siempre mantiene un valor actual,
+ y para cambiar ese valor (como cuando el usuario se loguea o desloguea), debes usar next().
+  Este método toma un nuevo valor y lo asigna como el valor actual del BehaviorSubject.
+
+Notificación a los suscriptores: Cada vez que llamas a next(),
+ todos los componentes o servicios que estén "escuchando" o
+  suscritos al BehaviorSubject recibirán automáticamente el nuevo valor.
+   Esto permite que tu aplicación responda de inmediato a los cambios,
+    como mostrar en la interfaz qué usuario está logueado, 
+    sin tener que hacer actualizaciones manuales en cada parte del código.
+
+Ejemplo simple:
+Supongamos que tienes dos componentes que dependen del estado del usuario:
+
+Componente A muestra el nombre del usuario logueado.
+Componente B maneja la interfaz de usuario de login/logout.
+Ambos componentes están suscritos al mismo BehaviorSubject. 
+Cuando se llama a next() en el servicio de autenticación para actualizar el estado del usuario,
+ tanto el componente A como el B reciben la actualización simultáneamente.
+
+typescript
+Copiar código
+// Al iniciar sesión
+authService.loggedInUserSubject.next(newUser); // Actualiza el valor del usuario logueado
+
+// Componente A
+authService.loggedInUser$.subscribe(user => {
+  console.log("Usuario logueado:", user?.name);
+});
+
+// Componente B
+authService.loggedInUser$.subscribe(user => {
+  if (!user) {
+    console.log("No hay usuario logueado.");
+  } else {
+    console.log("Mostrar botón de logout");
+  }
+});
+Resumen:
+next() es necesario porque es la forma de cambiar el valor que contiene el BehaviorSubject,
+ y ese cambio se propaga de inmediato a todos los lugares que dependan de ese valor.
+
+
+*/

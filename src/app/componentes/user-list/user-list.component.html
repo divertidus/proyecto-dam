@@ -4,11 +4,11 @@
   </ion-list-header>
 
   <!-- Se agrega un evento click para seleccionar al usuario -->
-  <ion-item *ngFor="let user of users" (click)="selectUser(user)">
+  <ion-item *ngFor="let usuario of usuarios" (click)="elegirUsuarioDeLista(usuario)">
     <ion-label>
-      <h2>{{ user.name }}</h2>
-      <p>{{ user.email }}</p>
-      <p class="ion-text-wrap">{{ user.timestamp | date:'medium' }}</p>
+      <h2>{{ usuario.nombre }}</h2>
+      <p>{{ usuario.email }}</p>
+      <p class="ion-text-wrap">{{ usuario.timestamp | date:'medium' }}</p>
     </ion-label>
   </ion-item>
 </ion-list>

@@ -16,6 +16,9 @@ export class DatabaseService {
     // Inicializar PouchDB creando o abriendo la base de datos llamada 'myusersdb1'
     this.db = new PouchDB('myusersdb1');
 
+
+
+
     // Recuperar todos los documentos de la base de datos, incluyendo su contenido
     this.db.allDocs({ include_docs: true }).then(result => {
       // Iterar sobre cada fila de resultado para imprimir los documentos
@@ -35,15 +38,15 @@ export class DatabaseService {
   }
 
   // Método para agregar un nuevo usuario a la base de datos
-  async addUser(name: string, email: string) {
+  async addUsuario(nombre: string, email: string) {
     try {
       // Guardar un nuevo documento en la base de datos con el nombre, correo y timestamp actual
       const response = await this.db.post({
-        name,
+        nombre,
         email,
         timestamp: new Date().toISOString() // Obtener la fecha y hora actual en formato ISO
       });
-      console.log('User added successfully', response); // Imprimir el resultado de la operación en consola
+      console.log('Usuario añadido con éxito', response); // Imprimir el resultado de la operación en consola
       return response;  // Retornar la respuesta (detalles del documento agregado)
     } catch (err) {
       // Manejar errores durante el intento de agregar el usuario
@@ -51,6 +54,8 @@ export class DatabaseService {
       throw err;  // Lanzar el error para manejarlo más arriba si es necesario
     }
   }
+
+
 
   // Método para obtener todos los usuarios de la base de datos
   async getAllUsers() {
@@ -68,4 +73,38 @@ export class DatabaseService {
       throw err;  // Lanzar el error para manejarlo más arriba si es necesario
     }
   }
+
+
 }
+
+
+
+
+
+
+/* PARA CAMBIAR NOMBRES DE CAMPOS... IRIA EN EL CONSTRUCTOS
+
+ // Migrar documentos para renombrar el campo 'name' a 'nombre'
+     this.db.allDocs({ include_docs: true }).then(result => {
+      result.rows.forEach(async row => {
+        const doc = row.doc;
+        // Verificar si el documento tiene el campo 'name'
+        if (doc.name) {
+          // Renombrar el campo 'name' a 'nombre'
+          doc.nombre = doc.name;
+          delete doc.name; // Eliminar el campo 'name'
+          // Guardar el documento actualizado
+          await this.db.put(doc);
+          console.log(`Documento migrado: ${doc._id}`);
+        }
+      });
+    }).catch(err => {
+      console.error('Error migrando los documentos:', err);
+    });
+
+    this.db.info().then((info: any) => {
+      console.log('Database created successfully', info);
+    }).catch((err: any) => {
+      console.error('Error creating database', err);
+    });
+*/

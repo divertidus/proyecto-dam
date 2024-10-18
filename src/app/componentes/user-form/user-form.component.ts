@@ -16,17 +16,17 @@ export class UserFormComponent {
   email: string = '';
 
   // por esto se puede usar luego el emit y emite al padre, hacia tab1
-  @Output() userAdded = new EventEmitter<void>();
+  @Output() eventoUsuarioAñadido = new EventEmitter<void>();
 
   constructor(private dbService: DatabaseService) { }
 
-  async saveUser(): Promise<void> {
+  async guardarUsuario(): Promise<void> {
     if (this.name && this.email) {
       try {
-        await this.dbService.addUser(this.name, this.email);
+        await this.dbService.addUsuario(this.name, this.email);
         this.name = '';
         this.email = '';
-        this.userAdded.emit(); // Emitir un evento cuando el usuario es agregado
+        this.eventoUsuarioAñadido.emit(); // Emitir un evento cuando el usuario es agregado
       } catch (err) {
         console.error('Error guardando usuario:', err);
       }
