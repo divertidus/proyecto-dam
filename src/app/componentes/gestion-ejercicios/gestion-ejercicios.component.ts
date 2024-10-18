@@ -25,6 +25,7 @@ export class GestionEjerciciosComponent implements OnInit {
   }
 
   
+
   async cargarEjercicios() {
     this.ejercicios = await this.ejercicioService.obtenerEjercicios();
   }

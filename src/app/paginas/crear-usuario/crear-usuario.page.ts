@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton } from '@ionic/angular/standalone';
@@ -16,6 +16,8 @@ import { SeleccionarUsuarioPage } from '../seleccionar-usuario/seleccionar-usuar
 })
 export class CrearUsuarioPage implements OnInit {
 
+  @Output() usuarioAgregado = new EventEmitter<void>(); // Emitir un evento
+
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -23,6 +25,7 @@ export class CrearUsuarioPage implements OnInit {
 
   // Método que se ejecuta cuando un nuevo usuario es añadido, recargando la lista de usuarios.
   manejadorUsuarioAdded(): void {
+    this.usuarioAgregado.emit();
     // this.cargarUsuarios(); // Se vuelve a cargar la lista de usuarios después de añadir uno nuevo.
     this.router.navigate(['/seleccionar-usuario'])
   }

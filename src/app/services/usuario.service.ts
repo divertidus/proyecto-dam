@@ -1,11 +1,17 @@
 // service/usuario.service.ts
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service';
+import { Usuario } from '../models/usuario.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
+
+  private usuariosSubject = new BehaviorSubject<Usuario[]>([]);
+  usuarios$ = this.usuariosSubject.asObservable();
+
   constructor(private databaseService: DatabaseService) { }
 
   // Agregar un nuevo usuario
@@ -28,11 +34,17 @@ export class UsuarioService {
 
   // Actualizar un usuario
   async actualizarUsuario(usuario: any) {
+
     return this.databaseService.updateUsuario(usuario);
   }
 
   // Eliminar un usuario
   async eliminarUsuario(usuario: any) {
     return this.databaseService.deleteUsuario(usuario);
+  }
+
+  async cargarUsuarios() {
+    const usuarios = await this.databaseService.getAllUsers();
+    this.usuariosSubject.next(usuarios);
   }
 }

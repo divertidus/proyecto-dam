@@ -8,8 +8,8 @@ import { CommonModule } from '@angular/common';
 export class GoogleAuthProvider implements AuthProvider {
 
     async login(): Promise<Usuario> {
-           // Genera un id temporal o de prueba para el usuario
-           const idGenerado = this.generarId();
+        // Genera un id temporal o de prueba para el usuario
+        const idGenerado = this.generarId();
         // Implementar la lógica para autenticar con Google
         // Retorna un usuario simulado
         return {

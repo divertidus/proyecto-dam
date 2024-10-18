@@ -30,16 +30,23 @@ export class SeleccionarUsuarioPage implements OnInit {
   }
 
   ngOnInit() {
-    // this.cargarUsuarios();  // No es necesario cargar usuarios aquí
+    this.cargarUsuarios();  // No es necesario cargar usuarios aquí
   }
 
-  /*   async cargarUsuarios(): Promise<void> {
-      try {
-        this.usuarios = await this.dbService.getAllUsers(); // Llama al servicio de base de datos para obtener todos los usuarios.
-      } catch (err) {
-        console.error('Error cargando usuarios:', err); // Manejo de errores.
-      }
-    } */
+
+  ionViewWillEnter() {
+    this.cargarUsuarios(); // Recarga la lista de usuarios cuando la vista está activa
+  }
+
+
+
+  async cargarUsuarios(): Promise<void> {
+    try {
+      this.usuarios = await this.dbService.getAllUsers(); // Llama al servicio de base de datos para obtener todos los usuarios.
+    } catch (err) {
+      console.error('Error cargando usuarios:', err); // Manejo de errores.
+    }
+  }
 
   irCrearUsuario() {
     this.router.navigate(['/crear-usuario']); // Redirigir a la página de creación de usuario
