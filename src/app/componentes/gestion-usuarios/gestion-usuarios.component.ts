@@ -30,6 +30,10 @@ export class GestionUsuariosComponent implements OnInit {
     this.usuarios = await this.usuarioService.obtenerUsuarios();
   }
 
+  ionViewWillEnter() {
+    this.cargarUsuarios(); // Recarga la lista de usuarios cuando la vista está activa
+  }
+
   elegirUsuarioDeLista(usuario: UserDocument): void {
     this.usuarioSeleccionado = usuario;
     this.login();
