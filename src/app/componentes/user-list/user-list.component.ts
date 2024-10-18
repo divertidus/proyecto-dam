@@ -1,9 +1,11 @@
+// componentes/user-list/user-list.component.html
 import { Component, Input, OnInit } from '@angular/core';
 import { UserDocument } from 'src/app/interfaces/interfaces';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,7 +20,7 @@ export class UserListComponent implements OnInit {
 
   selectedUser: UserDocument | null = null; // Agregar una propiedad para el usuario seleccionado
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     // Se puede realizar alguna acción cuando el componente se inicializa
@@ -34,6 +36,7 @@ export class UserListComponent implements OnInit {
     console.log('soy el login en list')
     if (this.selectedUser) {
       await this.authService.loginConUsuarioSeleccionado(); // Inicia sesión con el usuario seleccionado
+      this.router.navigate(['']);
     } else {
       console.error('No hay usuario seleccionado para iniciar sesión'); // Manejo de error si no hay usuario
     }

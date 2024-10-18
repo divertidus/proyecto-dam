@@ -1,3 +1,4 @@
+// componentes/user-form/user-form.component.ts 
 import { Component, EventEmitter, Output } from '@angular/core';
 import { DatabaseService } from 'src/app/services/database.service';
 import { IonicModule } from '@ionic/angular';
@@ -30,6 +31,8 @@ export class UserFormComponent {
       } catch (err) {
         console.error('Error guardando usuario:', err);
       }
+    } else {
+      console.log('DATOS INCOMPLETOS - TODO TOAST')
     }
   }
 }

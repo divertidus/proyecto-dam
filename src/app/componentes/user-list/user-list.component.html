@@ -1,3 +1,5 @@
+<!-- user-list.component.html -->
+
 <ion-list>
   <ion-list-header>
     <ion-label>Usuarios Guardados</ion-label>
@@ -5,10 +7,19 @@
 
   <!-- Se agrega un evento click para seleccionar al usuario -->
   <ion-item *ngFor="let usuario of usuarios" (click)="elegirUsuarioDeLista(usuario)">
-    <ion-label>
-      <h2>{{ usuario.nombre }}</h2>
+
+    <ion-card class="usuario-card">
+      <ion-card-header>
+        <ion-card-title>{{usuario.nombre}}</ion-card-title>
+        <ion-card-subtitle>{{usuario.email}}</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <!--  <ion-label>
+      <h2></h2>
       <p>{{ usuario.email }}</p>
       <p class="ion-text-wrap">{{ usuario.timestamp | date:'medium' }}</p>
-    </ion-label>
+    </ion-label> -->
+
   </ion-item>
 </ion-list>

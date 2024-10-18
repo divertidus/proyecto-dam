@@ -1,31 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Formulario Usuario
+    <ion-title slot="start">
+      TAB 1
+    </ion-title>
+    <ion-title slot="end">
+      {{ mostrarUsuarioLogeado() }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Formulario Usuario</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <!-- Muestra el usuario logueado -->
-  <!-- Llama a la función que muestra el usuario logueado -->
-  <div>{{ mostrarUsuarioLogeado() }}</div>
+<!-- Muestra el usuario logueado -->
+<!-- Llama a la función que muestra el usuario logueado -->
+<div>{{ mostrarUsuarioLogeado() }}</div>
 
-  <ion-button (click)="logout()">Desloguear</ion-button> <!-- Botón para desloguear -->
-
-
-  <!--  Llamada al componente para nuevo usuario -->
-  <!--  Ese (eventoUsuarioAñadido)="handleUserAdded() se corresponde con el 
-      @Output() eventoUsuarioAñadido = new EventEmitter<void>(); del app-user-form
-      que se activa cuando en ese componente se llama al emit del userAdded
-      En este caso cuando se guarda un nuevo elemento. -->
-  <app-user-form (eventoUsuarioAñadido)="manejadorUsuarioAdded()"></app-user-form>
-
-  <!-- Llamada al componente que muestra los usuarios existentes -->
-  <app-user-list [usuarios]="usuarios"></app-user-list>
+<ion-button (click)="logout()">Desloguear</ion-button> <!-- Botón para desloguear -->
