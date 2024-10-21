@@ -7,5 +7,5 @@ export interface Usuario {
     email: string;              // Correo electrónico del usuario
     rutinas?: string[];         // IDs de las rutinas asociadas al usuario
     imagenPerfil?: string;      // URL de la imagen de perfil del usuario (opcional)
-    timestamp: string;      // Marca de tiempo de cuándo se creó el documento (requerido)
+    timestamp: string;          // Marca de tiempo de cuándo se creó el documento (requerido)
 }

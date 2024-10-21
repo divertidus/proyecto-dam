@@ -3,15 +3,26 @@
     <ion-title slot="start">
       TAB 1
     </ion-title>
-    <ion-title slot="end">
-      {{ mostrarUsuarioLogeado() }}
-    </ion-title>
+    <ion-buttons slot="end">
+      <ion-title>
+        {{ mostrarUsuarioLogeado() }}
+      </ion-title>
+      <ion-button (click)="logout()">
+        Desloguear
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 
-<!-- Muestra el usuario logueado -->
-<!-- Llama a la función que muestra el usuario logueado -->
-<div>{{ mostrarUsuarioLogeado() }}</div>
+<ion-content class="ion-padding">
 
-<ion-button (click)="logout()">Desloguear</ion-button> <!-- Botón para desloguear -->
+  <h2>Mis rutinas:</h2>
+  <h3>Mi rutina consta de X dias</h3>
+  <h3>Modificar Rutina</h3>
+  <h3>Ultima rutina</h3>
+  <h3>La actual sería: laquesea</h3>
+  <h3>No existen rutinas</h3>
+  <h3>Crear nueva rutina</h3>
+
+</ion-content>

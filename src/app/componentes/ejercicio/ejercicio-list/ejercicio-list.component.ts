@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { Ejercicio } from '../../models/ejercicio.model';
+import { Ejercicio } from '../../../models/ejercicio.model';
 import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons'
 

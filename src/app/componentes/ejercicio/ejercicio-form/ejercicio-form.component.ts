@@ -32,7 +32,6 @@ export class EjercicioFormComponent implements OnInit {
   async agregarEjercicio() {
     if (await this.validarFormulario()) {
       this.ejercicioAgregado.emit(this.nuevoEjercicio);
-
       // Reiniciar el formulario
       this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculo: '', equipamiento: 'barra', descripcion: '' };
     }

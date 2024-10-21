@@ -7,6 +7,7 @@ import { ProveedorSeleccionUsuario } from './elegir-user.provider';
 import { EmailPasswordAuthProvider } from './email-password.provider';
 import { GoogleAuthProvider } from './google-auth.provider';
 import { Usuario } from '../models/usuario.model';
+import { UsuarioService } from '../services/usuario.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class AuthService {
 
   private authProvider: AuthProvider; // Proveedor de autenticación
 
-  constructor() {
+  constructor(private usuarioService: UsuarioService) {
     this.authProvider = new ProveedorSeleccionUsuario(); // Inicializa con el proveedor por defecto
     // this.authProvider = new EmailPasswordAuthProvider(); // para iniciar sesion con email y contraseña si lo pongo
     // this.authProvider = new GoogleAuthProvider(); // par ainiciar sesion con google si lo pongo
@@ -73,7 +74,35 @@ export class AuthService {
   getUsuarioLogeado(): Usuario | null {
     return this.estadoUsuarioLogeado.value; // Retorna el usuario logueado actual
   }
+
+  // Método para iniciar sesión automáticamente con el primer usuario
+  async autoLoginPrimerUsuario() {
+    try {
+      // Obtén todos los usuarios de la base de datos
+      const usuarios: Usuario[] = await this.usuarioService.obtenerUsuarios();
+
+      if (usuarios.length > 0) {
+        // Si hay al menos un usuario, selecciona el primero y haz login
+        const primerUsuario = usuarios[0];
+        this.loginAuto(primerUsuario);
+      }
+    } catch (error) {
+      console.error('Error al hacer login automático:', error);
+    }
+  }
+
+  // Método simulado para hacer login con un usuario específico
+  loginAuto(usuario: Usuario) {
+    console.log('Usuario logeado automáticamente:', usuario.nombre);
+    this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
+    console.log(`Usuario logueado automaticamente: ${usuario.nombre}`); // Muestra en consola el usuario logueado
+  } catch(error) {
+    console.error(error.message); // Manejo de errores
+  }
+  // Aquí guardarías la información del usuario logueado en algún lugar (local storage o variable de estado)
+  // Ejemplo: this.usuarioActual = usuario;
 }
+
 
 
 

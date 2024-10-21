@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
   {
     path: 'tabs', // Asegúrate de que este sea el path correcto para las tabs
-    canActivate: [AuthGuard], // Aplica el guard a las rutas de tabs
+   // canActivate: [AuthGuard], // Aplica el guard a las rutas de tabs
     loadChildren: () => import('./tabs/tabs.routes').then(m => m.routes)
   },
   {

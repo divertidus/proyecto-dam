@@ -1,10 +1,11 @@
+// Modelo de Registro de Actividad
 export interface registroActividad {
-    id: string;                     // Identificador único del registro
+    _id?: string;                   // Identificador único del registro
     entidad: 'registroActividad';   // tipo de entidad
-    usuarioId: string;          // ID del usuario al que pertenece el registro
-    rutinaId: string;           // ID de la rutina realizada
-    fecha: string;              // Fecha de la sesión de entrenamiento
-    detalles: DetalleSerie[];   // Detalles de las series realizadas en la sesión
+    usuarioId: string;              // ID del usuario al que pertenece el registro
+    rutinaId: string;               // ID de la rutina realizada
+    fecha: string;                  // Fecha de la sesión de entrenamiento
+    detalles: DetalleSerie[];       // Detalles de las series realizadas en la sesión
 }
 
 export interface DetalleSerie {

@@ -1,11 +1,20 @@
+// Modelo de Rutina
 export interface Rutina {
-    id: string;     // Identificador único de la rutina
-    entidad:'rutina';           // tipo de entidad
-    nombre: string;             // Nombre de la rutina
-    dias: DiaRutina[];          // Arreglo de días que contiene ejercicios
-  }
-  
-  export interface DiaRutina {
-    dia: string;                // Día de la semana (ej. "Lunes", "Martes", etc.)
-    ejercicios: string[];       // IDs de los ejercicios en ese día
-  }
+  _id?: string;                // Identificador único de la rutina
+  entidad: 'rutina';           // tipo de entidad
+  nombre: string;              // Nombre de la rutina
+  dias: DiaRutina[];           // Arreglo de días que contiene ejercicios
+}
+
+export interface DiaRutina {
+  diaNombre: string;                // Día de la semana (ej. "Lunes", "Martes", etc.)
+  ejercicios: EjercicioPlan[];      // Arreglo de ejercicios y sus detalles para el día
+  descripcion: string;
+}
+
+export interface EjercicioPlan {
+  ejercicioId: string;        // ID del ejercicio en la rutina
+  series: number;             // Número de series planificadas para el ejercicio
+  repeticiones: number;       // Número de repeticiones planificadas para el ejercicio
+  notas?: string;             // Notas adicionales sobre el ejercicio (opcional)
+}

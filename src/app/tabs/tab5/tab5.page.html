@@ -1,13 +1,39 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>tab5</ion-title>
+    <ion-title>Seleccionar Ejercicio para la Rutina</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tab5</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Barra de búsqueda -->
+  <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+
+  <app-ejercicio-form (ejercicioAgregado)="onEjercicioAgregado($event)"></app-ejercicio-form>
+
+  <!-- Lista de ejercicios filtrados -->
+  <ion-grid>
+    <ion-row class="ion-align-items-stretch">
+      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
+        <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
+          <ion-card-header>
+            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+            <ion-card-subtitle>{{ ejercicio.equipamiento }}</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <!-- Imagen del ejercicio -->
+            <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+              alt="Imagen del ejercicio" class="imagen-ejercicio" />
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Botón flotante para agregar nuevo ejercicio -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarFormularioAgregar()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

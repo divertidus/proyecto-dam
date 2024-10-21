@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
-import { EjercicioListComponent } from 'src/app/componentes/ejercicio-list/ejercicio-list.component';
-import { EjercicioFormComponent } from 'src/app/componentes/ejercicio-form/ejercicio-form.component';
+import { EjercicioListComponent } from 'src/app/componentes/ejercicio/ejercicio-list/ejercicio-list.component';
 import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons'
+import { EjercicioFormComponent } from 'src/app/componentes/ejercicio/ejercicio-form/ejercicio-form.component';
 
 @Component({
   selector: 'app-tab4',

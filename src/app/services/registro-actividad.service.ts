@@ -25,7 +25,13 @@ export class RegistroActividadService {
         usuarioId: nuevoRegistro.usuarioId,
         rutinaId: nuevoRegistro.rutinaId,
         fecha: nuevoRegistro.fecha,
-        detalles: nuevoRegistro.detalles,
+        detalles: nuevoRegistro.detalles.map(detalle => ({
+          ejercicioId: detalle.ejercicioId,
+          series: detalle.series,
+          repeticiones: detalle.repeticiones,
+          peso: detalle.peso,
+          notas: detalle.notas // Añadimos el campo 'notas' si está presente
+        })),
         timestamp: new Date().toISOString() // Agregamos la fecha de creación
       });
       console.log('Registro de actividad añadido con éxito', response);
@@ -68,7 +74,16 @@ export class RegistroActividadService {
   // Actualizar un registro de actividad
   async actualizarRegistro(registro: registroActividad) {
     try {
-      const response = await this.db.put(registro); // Usamos `put` para actualizar un documento existente
+      const response = await this.db.put({
+        ...registro,
+        detalles: registro.detalles.map(detalle => ({
+          ejercicioId: detalle.ejercicioId,
+          series: detalle.series,
+          repeticiones: detalle.repeticiones,
+          peso: detalle.peso,
+          notas: detalle.notas // Añadimos el campo 'notas' si está presente
+        }))
+      });
       console.log('Registro de actividad actualizado con éxito', response);
       return response; // Devolvemos la respuesta de la actualización
     } catch (err) {

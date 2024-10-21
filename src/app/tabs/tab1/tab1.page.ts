@@ -3,9 +3,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { DatabaseService } from '../../services/database.service';
-import { UserFormComponent } from "../../componentes/user-form/user-form.component";
-import { UserListComponent } from "../../componentes/user-list/user-list.component";
+import { UserFormComponent } from "../../componentes/usuario/user-form/user-form.component";
+import { UserListComponent } from "../../componentes/usuario/user-list/user-list.component";
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { Usuario } from '../../models/usuario.model';
@@ -29,25 +28,12 @@ export class Tab1Page {
     private usuarioService: UsuarioService,
     private authService: AuthService,
     private router: Router) {
-    this.cargarUsuarios(); // Al inicializar el componente, se cargan los usuarios desde la base de datos.
+
 
     // Obtiene el usuario actualmente logueado desde el servicio de autenticación y lo guarda en la variable 'loggedInUser'.
     this.usuarioLogeado = this.authService.getUsuarioLogeado();
   }
 
-  // Método que carga todos los usuarios desde la base de datos.
-  async cargarUsuarios(): Promise<void> {
-    try {
-      this.usuarios = await this.usuarioService.obtenerUsuarios(); // Llama al servicio de base de datos para obtener todos los usuarios.
-    } catch (err) {
-      console.error('Error cargando usuarios:', err); // Manejo de errores.
-    }
-  }
-
-  // Método que se ejecuta cuando un nuevo usuario es añadido, recargando la lista de usuarios.
-  manejadorUsuarioAdded(): void {
-    this.cargarUsuarios(); // Se vuelve a cargar la lista de usuarios después de añadir uno nuevo.
-  }
 
   // Método para mostrar el usuario logueado. 
   // Este método actualiza la variable 'loggedInUser' cada vez que se llama, obteniendo el valor actual del servicio de autenticación.

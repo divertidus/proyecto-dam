@@ -1,0 +1,20 @@
+ion-content {
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+  }
+  
+  .imagen-ejercicio {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  ion-item {
+    margin-bottom: 16px;
+  }
+  
+  ion-button {
+    margin-top: 20px;
+  }

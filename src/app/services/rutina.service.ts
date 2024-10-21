@@ -23,7 +23,15 @@ export class RutinaService {
       const response = await this.db.post({
         entidad: 'rutina', // Aseguramos que el campo 'entidad' esté presente
         nombre: nuevaRutina.nombre,
-        dias: nuevaRutina.dias,
+        dias: nuevaRutina.dias.map(dia => ({
+          ...dia,
+          ejercicios: dia.ejercicios.map(ejercicio => ({
+            ejercicioId: ejercicio.ejercicioId,
+            series: ejercicio.series,
+            repeticiones: ejercicio.repeticiones,
+            notas: ejercicio.notas // Añadimos el campo 'notas' si está presente
+          }))
+        })),
         timestamp: new Date().toISOString() // Agregamos la fecha de creación
       });
       console.log('Rutina añadida con éxito', response);
@@ -66,7 +74,18 @@ export class RutinaService {
   // Actualizar una rutina
   async actualizarRutina(rutina: Rutina) {
     try {
-      const response = await this.db.put(rutina); // Usamos `put` para actualizar un documento existente
+      const response = await this.db.put({
+        ...rutina,
+        dias: rutina.dias.map(dia => ({
+          ...dia,
+          ejercicios: dia.ejercicios.map(ejercicio => ({
+            ejercicioId: ejercicio.ejercicioId,
+            series: ejercicio.series,
+            repeticiones: ejercicio.repeticiones,
+            notas: ejercicio.notas // Añadimos el campo 'notas' si está presente
+          }))
+        }))
+      });
       console.log('Rutina actualizada con éxito', response);
       return response; // Devolvemos la respuesta de la actualización
     } catch (err) {
