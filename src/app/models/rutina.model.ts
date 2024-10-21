@@ -2,6 +2,7 @@
 export interface Rutina {
   _id?: string;                // Identificador único de la rutina
   entidad: 'rutina';           // tipo de entidad
+  usuarioId: string;           // ID del usuario al que pertenece la rutina
   nombre: string;              // Nombre de la rutina
   dias: DiaRutina[];           // Arreglo de días que contiene ejercicios
 }
@@ -9,7 +10,7 @@ export interface Rutina {
 export interface DiaRutina {
   diaNombre: string;                // Día de la semana (ej. "Lunes", "Martes", etc.)
   ejercicios: EjercicioPlan[];      // Arreglo de ejercicios y sus detalles para el día
-  descripcion: string;
+  descripcion: string;              // Descripción opcional para el día (detalles adicionales)
 }
 
 export interface EjercicioPlan {

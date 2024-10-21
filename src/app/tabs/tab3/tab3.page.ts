@@ -4,18 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Usuario } from '../../models/usuario.model';
 import { UsuarioService } from '../../services/usuario.service';
+import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
+
 
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule]  // Importamos los módulos necesarios
+  imports: [CommonModule, FormsModule, IonicModule,ToolbarLoggedComponent]  // Importamos los módulos necesarios
 })
 export class Tab3Page implements OnInit {
 
   usuarios: Usuario[] = [];
-  usuario: Usuario = { id: '', entidad: 'usuario', nombre: '', email: '', timestamp: '' };
+  usuario: Usuario = { _id: '', entidad: 'usuario', nombre: '', email: '', timestamp: '' };
   usuarioEnEdicion = false;
 
   constructor(private usuarioService: UsuarioService) { }
@@ -60,7 +62,7 @@ export class Tab3Page implements OnInit {
     }
 
     // Limpiamos el formulario y recargamos la lista de usuarios
-    this.usuario = { id: '', entidad: 'usuario', nombre: '', email: '', timestamp: '' };
+    this.usuario = { _id: '', entidad: 'usuario', nombre: '', email: '', timestamp: '' };
     this.cargarUsuarios();
   }
 

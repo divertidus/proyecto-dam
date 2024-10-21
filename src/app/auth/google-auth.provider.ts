@@ -13,7 +13,7 @@ export class GoogleAuthProvider implements AuthProvider {
         // Implementar la lógica para autenticar con Google
         // Retorna un usuario simulado
         return {
-            id: idGenerado,  // Asigna el id generado
+            _id: idGenerado,  // Asigna el id generado
             entidad:'usuario',
             nombre: 'Usuario Google',
             email: 'user@google.com',

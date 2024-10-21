@@ -19,7 +19,8 @@
             <ion-card-subtitle>{{ ejercicioSeleccionado.equipamiento }}</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <img [src]="ejercicioSeleccionado.imagen ? ejercicioSeleccionado.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+            <img
+              [src]="ejercicioSeleccionado.imagen ? ejercicioSeleccionado.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
               alt="Imagen del ejercicio" class="imagen-ejercicio" />
           </ion-card-content>
         </ion-card>

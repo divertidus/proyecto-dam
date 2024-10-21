@@ -13,7 +13,7 @@ export class EmailPasswordAuthProvider implements AuthProvider {
         // Retorna un usuario simulado
           // Retorna un usuario simulado con todos los campos requeridos
         return {
-            id: idGenerado,  // Asigna el id generado
+            _id: idGenerado,  // Asigna el id generado
             entidad:'usuario',
             nombre: 'Usuario Email',
             email: credentials.email,

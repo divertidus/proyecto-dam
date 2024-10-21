@@ -1,14 +1,18 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Seleccionar Ejercicio para la Rutina</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-toolbar-logged [titulo]="'Crear Rutina'"></app-toolbar-logged> <!-- Nuevo componente -->
+
+<ion-item>
+  <ion-label>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-label>
+  <ion-button (click)="guardarRutina()" color="success" slot="end">Guardar Rutina</ion-button>
+</ion-item>
+
+
 
 <ion-content [fullscreen]="true">
   <!-- Barra de búsqueda -->
   <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
 
-  <app-ejercicio-form (ejercicioAgregado)="onEjercicioAgregado($event)"></app-ejercicio-form>
+  <!-- Mostrar número de ejercicios seleccionados y botón Guardar Rutina -->
+
 
   <!-- Lista de ejercicios filtrados -->
   <ion-grid>

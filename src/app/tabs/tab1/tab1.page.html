@@ -1,28 +1,27 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title slot="start">
-      TAB 1
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-title>
-        {{ mostrarUsuarioLogeado() }}
-      </ion-title>
-      <ion-button (click)="logout()">
-        Desloguear
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
+<!-- tab1.page.html -->
+<app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged> <!-- Nuevo componente -->
 
 <ion-content class="ion-padding">
+  <h2>Mis Rutinas:</h2>
 
-  <h2>Mis rutinas:</h2>
-  <h3>Mi rutina consta de X dias</h3>
-  <h3>Modificar Rutina</h3>
-  <h3>Ultima rutina</h3>
-  <h3>La actual sería: laquesea</h3>
-  <h3>No existen rutinas</h3>
-  <h3>Crear nueva rutina</h3>
+  <!-- Si no existen rutinas, mostrar un mensaje -->
+  <div *ngIf="rutinas.length === 0">
+    <h3>No existen rutinas.</h3>
+    <ion-button expand="block" color="primary" (click)="crearNuevaRutina()">Crear nueva rutina</ion-button>
+  </div>
 
+  <!-- Si existen rutinas, listarlas -->
+  <div *ngIf="rutinas.length > 0">
+    <ion-list>
+      <ion-item *ngFor="let rutina of rutinas">
+        <ion-label>
+          <h2>{{ rutina.nombre }}</h2>
+          <p>{{ rutina.dias.length }} días en esta rutina</p>
+        </ion-label>
+        <ion-button fill="outline" slot="end" (click)="modificarRutina(rutina)">
+          Modificar
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>

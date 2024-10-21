@@ -1,7 +1,7 @@
 // models/usuarios.model.ts
 
 export interface Usuario {
-    id?: string;                // Identificador único del usuario OPCIONAL PORQUE LO ASIGNARÁ LA BD
+    _id?: string;                // Identificador único del usuario OPCIONAL PORQUE LO ASIGNARÁ LA BD
     entidad: 'usuario';         // tipo de entidad
     nombre: string;             // Nombre del usuario
     email: string;              // Correo electrónico del usuario
