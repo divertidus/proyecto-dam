@@ -13,15 +13,40 @@
   <!-- Si existen rutinas, listarlas -->
   <div *ngIf="rutinas.length > 0">
     <ion-list>
-      <ion-item *ngFor="let rutina of rutinas">
-        <ion-label>
-          <h2>{{ rutina.nombre }}</h2>
-          <p>{{ rutina.dias.length }} días en esta rutina</p>
-        </ion-label>
-        <ion-button fill="outline" slot="end" (click)="modificarRutina(rutina)">
-          Modificar
-        </ion-button>
-      </ion-item>
+      <ng-container *ngFor="let rutina of rutinas">
+        <ion-item (click)="toggleExpandirRutina(rutina)">
+          <ion-label>
+            <h2>{{ rutina.nombre }}</h2>
+            <p>{{ rutina.dias.length }} días en esta rutina</p>
+          </ion-label>
+          <ion-button fill="outline" slot="end" (click)="modificarRutina(rutina, $event)">
+            Modificar
+          </ion-button>
+        </ion-item>
+
+        <!-- Detalles de los días y ejercicios para la rutina seleccionada -->
+        <div *ngIf="rutinaExpandida === rutina._id">
+          <ion-list>
+            <ng-container *ngFor="let dia of rutina.dias">
+              <ion-item>
+                <ion-label>
+                  <h3>{{ dia.diaNombre }}</h3>
+                  <p>{{ dia.descripcion }}</p>
+                </ion-label>
+              </ion-item>
+              <ng-container *ngFor="let ejercicio of dia.ejercicios">
+                <ion-item>
+                  <ion-label>
+                    <h4>Ejercicio: {{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h4>
+                    <p>Series: {{ ejercicio.series }} - Repeticiones: {{ ejercicio.repeticiones }}</p>
+                    <p *ngIf="ejercicio.notas">Notas: {{ ejercicio.notas }}</p>
+                  </ion-label>
+                </ion-item>
+              </ng-container>
+            </ng-container>
+          </ion-list>
+        </div>
+      </ng-container>
     </ion-list>
   </div>
 </ion-content>

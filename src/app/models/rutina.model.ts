@@ -1,10 +1,12 @@
 // Modelo de Rutina
 export interface Rutina {
   _id?: string;                // Identificador único de la rutina
-  entidad: 'rutina';           // tipo de entidad
+  _rev?: string;               // Versión del documento para PouchDB
+  entidad: 'rutina';           // Tipo de entidad
   usuarioId: string;           // ID del usuario al que pertenece la rutina
   nombre: string;              // Nombre de la rutina
   dias: DiaRutina[];           // Arreglo de días que contiene ejercicios
+  timestamp?: string;          // Marca de tiempo de creación
 }
 
 export interface DiaRutina {
