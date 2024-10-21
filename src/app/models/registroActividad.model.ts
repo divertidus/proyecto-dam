@@ -1,5 +1,6 @@
-export interface Registro {
-    id: string;                 // Identificador único del registro
+export interface registroActividad {
+    id: string;                     // Identificador único del registro
+    entidad: 'registroActividad';   // tipo de entidad
     usuarioId: string;          // ID del usuario al que pertenece el registro
     rutinaId: string;           // ID de la rutina realizada
     fecha: string;              // Fecha de la sesión de entrenamiento

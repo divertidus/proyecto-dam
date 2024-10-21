@@ -1,6 +1,6 @@
 // user-selection-auth.provider.ts
 
- // Importa la interfaz del documento de usuario
+// Importa la interfaz del documento de usuario
 import { Usuario } from '../models/usuario.model';
 import { AuthProvider } from './authProvider';
 

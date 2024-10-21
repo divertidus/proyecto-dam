@@ -9,6 +9,7 @@ import { UserListComponent } from "../componentes/user-list/user-list.component"
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario.model';
+import { UsuarioService } from '../services/usuario.service';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class Tab1Page {
 
   // Constructor del componente, que inyecta el servicio de base de datos (dbService) y el de autenticación (authService).
   constructor(
-    private dbService: DatabaseService,
+    private usuarioService: UsuarioService,
     private authService: AuthService,
     private router: Router) {
     this.cargarUsuarios(); // Al inicializar el componente, se cargan los usuarios desde la base de datos.
@@ -37,7 +38,7 @@ export class Tab1Page {
   // Método que carga todos los usuarios desde la base de datos.
   async cargarUsuarios(): Promise<void> {
     try {
-      this.usuarios = await this.dbService.getAllUsers(); // Llama al servicio de base de datos para obtener todos los usuarios.
+      this.usuarios = await this.usuarioService.obtenerUsuarios(); // Llama al servicio de base de datos para obtener todos los usuarios.
     } catch (err) {
       console.error('Error cargando usuarios:', err); // Manejo de errores.
     }

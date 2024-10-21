@@ -1,43 +1,26 @@
+<!-- gestion-ejercicios.component.html -->
 <ion-header>
   <ion-toolbar>
     <ion-title>Gestión de Ejercicios</ion-title>
   </ion-toolbar>
 </ion-header>
 
+<!-- Incluimos el componente de formulario de ejercicios -->
+<app-ejercicio-form (ejercicioAgregado)="onEjercicioAgregado($event)"></app-ejercicio-form>
+
 <ion-content>
+  <h2>Ejercicios Existentes</h2>
   <ion-list>
     <ion-item *ngFor="let ejercicio of ejercicios">
       <ion-label>
         <h2>{{ ejercicio.nombre }}</h2>
-        <p>{{ ejercicio.tipo }} - {{ ejercicio.cantidadSeries }} series x {{ ejercicio.repeticiones }} repeticiones</p>
+        <p>{{ ejercicio.equipamiento }} - {{ ejercicio.cantidadSeries }} series x {{ ejercicio.repeticiones }}
+          repeticiones</p>
       </ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-item>
-    <ion-label position="floating">Nombre</ion-label>
-    <ion-input [(ngModel)]="nuevoEjercicio.nombre"></ion-input>
-  </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Tipo</ion-label>
-    <ion-select [(ngModel)]="nuevoEjercicio.tipo">
-      <ion-select-option value="barra">Barra</ion-select-option>
-      <ion-select-option value="mancuerna">Mancuerna</ion-select-option>
-      <ion-select-option value="máquina">Máquina</ion-select-option>
-      <ion-select-option value="peso corporal">Peso Corporal</ion-select-option>
-    </ion-select>
-  </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Cantidad de Series</ion-label>
-    <ion-input type="number" [(ngModel)]="nuevoEjercicio.cantidadSeries"></ion-input>
-  </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Repeticiones</ion-label>
-    <ion-input type="number" [(ngModel)]="nuevoEjercicio.repeticiones"></ion-input>
-  </ion-item>
-
-  <ion-button expand="full" (click)="agregarEjercicio()">Agregar Ejercicio</ion-button>
 </ion-content>

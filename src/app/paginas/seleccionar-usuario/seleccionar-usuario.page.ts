@@ -8,6 +8,7 @@ import { DatabaseService } from '../../services/database.service';
 import { Router } from '@angular/router';
 import { GestionUsuariosComponent } from "../../componentes/gestion-usuarios/gestion-usuarios.component";
 import { Usuario } from 'src/app/models/usuario.model';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-seleccionar-usuario',
@@ -23,7 +24,7 @@ export class SeleccionarUsuarioPage implements OnInit {
   usuarioLogeado: Usuario | null = null; // Almacena el usuario que está actualmente logueado.
 
   constructor(
-    private dbService: DatabaseService,
+    private usuarioService: UsuarioService,
     private router: Router,
   ) {
     //this.cargarUsuarios();
@@ -42,7 +43,7 @@ export class SeleccionarUsuarioPage implements OnInit {
 
   async cargarUsuarios(): Promise<void> {
     try {
-      this.usuarios = await this.dbService.getAllUsers(); // Llama al servicio de base de datos para obtener todos los usuarios.
+      this.usuarios = await this.usuarioService.obtenerUsuarios(); // Llama al servicio de base de datos para obtener todos los usuarios.
     } catch (err) {
       console.error('Error cargando usuarios:', err); // Manejo de errores.
     }

@@ -21,7 +21,10 @@ export class GestionUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuarioSeleccionado: Usuario | null = null;
 
-  constructor(private usuarioService: UsuarioService, private authService: AuthService, private router: Router) { }
+  constructor(
+    private usuarioService: UsuarioService,
+    private authService: AuthService,
+    private router: Router) { }
 
   ngOnInit() {
     this.cargarUsuarios();

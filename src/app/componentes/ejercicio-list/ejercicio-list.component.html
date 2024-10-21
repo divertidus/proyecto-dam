@@ -1,0 +1,10 @@
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let ejercicio of ejercicios">
+      <ion-label>
+        <h2>{{ ejercicio.nombre }}</h2>
+        <p>{{ ejercicio.equipamiento }} - {{ ejercicio.cantidadSeries }} series x {{ ejercicio.repeticiones }}
+          repeticiones</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>

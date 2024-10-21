@@ -14,6 +14,7 @@ export class GoogleAuthProvider implements AuthProvider {
         // Retorna un usuario simulado
         return {
             id: idGenerado,  // Asigna el id generado
+            entidad:'usuario',
             nombre: 'Usuario Google',
             email: 'user@google.com',
             timestamp: new Date().toISOString() // Este timestamp refleja el momento del inicio de sesión

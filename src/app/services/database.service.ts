@@ -1,4 +1,58 @@
 // service/database.service.ts
+import { Injectable } from '@angular/core';
+import PouchDB from 'pouchdb/dist/pouchdb.js';
+import PouchDBFind from 'pouchdb-find';
+
+
+// Habilitar el plugin de búsqueda
+PouchDB.plugin(PouchDBFind);
+
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class DatabaseService {
+  private db: any;
+
+  constructor() {
+    // Inicializar la base de datos, puedes hacer esto dinámico según la entidad
+    this.db = new PouchDB('myappdb');
+
+    // Opcional: Verificar la base de datos
+    this.db.info().then((info: any) => {
+      console.log('BASE DE DATOS INICIALIZADA', info);
+    }).catch((err: any) => {
+      console.error('ERROR AL INICIAR LA BASE DE DATOS', err);
+    });
+  }
+
+  // Método para obtener la instancia de la base de datos (compartida entre otros servicios)
+  obtenerBaseDatos() {
+    return this.db;
+  }
+
+  /*
+  // Sincronización con base de datos remota (opcional)
+  sync(remoteDbUrl: string) {
+    const remoteDb = new PouchDB(remoteDbUrl);
+    this.db.sync(remoteDb, {
+      live: true,
+      retry: true
+    }).on('change', (info: any) => {
+      console.log('Sync change', info);
+    }).on('error', (err: any) => {
+      console.error('Sync error', err);
+    });
+  }
+    */
+
+  // Otros métodos relacionados a la configuración general de la base de datos podrían ir aquí
+}
+
+/* 
+ 
+// service/database.service.ts
 // Importar decorador Injectable desde Angular, que permite que esta clase se use como servicio inyectable
 import { Injectable } from '@angular/core';
 // Importar PouchDB de esta manera, asegurando que se incluya la versión correcta
@@ -35,7 +89,7 @@ export class DatabaseService {
   }
 
 
-  /* --------------------------------- PARTE DE USUARIOS ------------------------------------*/
+  // --------------------------------- PARTE DE USUARIOS ------------------------------------
 
 
   // Método para agregar un nuevo usuario a la base de datos
@@ -114,3 +168,5 @@ export class DatabaseService {
     }
   }
 }
+
+*/
