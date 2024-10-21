@@ -29,14 +29,17 @@ export class UserListComponent implements OnInit {
   elegirUsuarioDeLista(user: Usuario): void {
     this.authService.elegirUsuario(user); // Establece el usuario seleccionado
     this.usuarioSeleccionado = user; // Guarda el usuario seleccionado en el componente
-    this.login();
+    console.log('Usuario seleccionado:', this.usuarioSeleccionado); // Verificar que el usuario se seleccione
+    this.login(); // Iniciar sesión después de seleccionar
   }
 
   async login(): Promise<void> {
     console.log('soy el login en list')
     if (this.usuarioSeleccionado) {
       await this.authService.loginConUsuarioSeleccionado(); // Inicia sesión con el usuario seleccionado
-      this.router.navigate(['']);
+      console.log('justo antes del navigate');
+      this.router.navigate(['/tabs']); // Redirige a la tab1 después de iniciar sesión
+      console.log('justo después del navigate');
     } else {
       console.error('No hay usuario seleccionado para iniciar sesión'); // Manejo de error si no hay usuario
     }

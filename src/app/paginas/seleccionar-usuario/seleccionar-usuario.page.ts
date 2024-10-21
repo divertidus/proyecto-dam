@@ -27,19 +27,16 @@ export class SeleccionarUsuarioPage implements OnInit {
     private usuarioService: UsuarioService,
     private router: Router,
   ) {
-    //this.cargarUsuarios();
+
   }
 
   ngOnInit() {
     this.cargarUsuarios();  // No es necesario cargar usuarios aquí
   }
 
-
   ionViewWillEnter() {
     this.cargarUsuarios(); // Recarga la lista de usuarios cuando la vista está activa
   }
-
-
 
   async cargarUsuarios(): Promise<void> {
     try {
@@ -50,6 +47,7 @@ export class SeleccionarUsuarioPage implements OnInit {
   }
 
   irCrearUsuario() {
+    console.log('click')
     this.router.navigate(['/crear-usuario']); // Redirigir a la página de creación de usuario
   }
 

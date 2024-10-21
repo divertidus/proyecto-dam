@@ -11,7 +11,7 @@
 
   <!-- Ahora desde otro componente  gestion-usuarios al que no tengo que pasarle la lista porque 
    lo hace elmediante usuarios service -->
-  <app-gestion-usuarios></app-gestion-usuarios>
+  <app-user-list [usuarios]="usuarios"></app-user-list>
 
   <ion-footer>
     <ion-button expand="full" (click)="irCrearUsuario()">Crear Nuevo Usuario</ion-button>

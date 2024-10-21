@@ -25,12 +25,20 @@
 
             <!-- Checkbox para marcar el ejercicio -->
             <ion-item lines="none">
-              <ion-label>Marcar</ion-label>
-              <!-- Vinculamos el estado del checkbox al ID del ejercicio -->
               <ion-checkbox slot="end" (ionChange)="toggleMarcarEjercicio(ejercicio)"
                 [checked]="ejerciciosMarcados.includes(ejercicio._id)">
               </ion-checkbox>
             </ion-item>
+
+            <!-- Botones para eliminar y editar -->
+            <div class="icon-buttons">
+              <ion-button (click)="editarEjercicio(ejercicio)" fill="clear" color="primary">
+                <ion-icon name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button (click)="eliminarEjercicio(ejercicio)" fill="clear" color="danger">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
           </ion-card-content>
         </ion-card>
       </ion-col>
