@@ -1,8 +1,8 @@
 //tab2.page.ts
 import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
-import { GestionEjerciciosComponent } from "../componentes/gestion-ejercicios/gestion-ejercicios.component";
+import { ExploreContainerComponent } from '../../explore-container/explore-container.component';
+import { GestionEjerciciosComponent } from "../../componentes/gestion-ejercicios/gestion-ejercicios.component";
 
 @Component({
   selector: 'app-tab2',

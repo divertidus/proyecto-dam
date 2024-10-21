@@ -1,3 +1,5 @@
+<!-- ejercicio-form.component.html -->
+
 <ion-item>
   <ion-label position="floating">Nombre</ion-label>
   <ion-input [(ngModel)]="nuevoEjercicio.nombre"></ion-input>
@@ -14,13 +16,8 @@
 </ion-item>
 
 <ion-item>
-  <ion-label position="floating">Cantidad de Series</ion-label>
-  <ion-input type="number" [(ngModel)]="nuevoEjercicio.cantidadSeries"></ion-input>
-</ion-item>
-
-<ion-item>
-  <ion-label position="floating">Repeticiones</ion-label>
-  <ion-input type="number" [(ngModel)]="nuevoEjercicio.repeticiones"></ion-input>
+  <ion-label position="floating">Descripción</ion-label>
+  <ion-input [(ngModel)]="nuevoEjercicio.descripcion"></ion-input>
 </ion-item>
 
 <ion-button expand="full" (click)="agregarEjercicio()">Agregar Ejercicio</ion-button>

@@ -6,21 +6,10 @@
 </ion-header>
 
 <!-- Incluimos el componente de formulario de ejercicios -->
-<app-ejercicio-form (ejercicioAgregado)="onEjercicioAgregado($event)"></app-ejercicio-form>
 
 <ion-content>
-  <h2>Ejercicios Existentes</h2>
-  <ion-list>
-    <ion-item *ngFor="let ejercicio of ejercicios">
-      <ion-label>
-        <h2>{{ ejercicio.nombre }}</h2>
-        <p>{{ ejercicio.equipamiento }} - {{ ejercicio.cantidadSeries }} series x {{ ejercicio.repeticiones }}
-          repeticiones</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <app-ejercicio-form (ejercicioAgregado)="onEjercicioAgregado($event)"></app-ejercicio-form>
 
-
-
-
+  <!-- Incluimos el componente de listar ejercicios -->
+  <app-ejercicio-list [ejercicios]="ejercicios"></app-ejercicio-list>
 </ion-content>

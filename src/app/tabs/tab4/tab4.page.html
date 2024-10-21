@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Gestión de Ejercicios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Barra de búsqueda -->
+  <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+
+  <!-- Lista de ejercicios filtrados -->
+  <ion-grid>
+    <ion-row class="ion-align-items-stretch">
+      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
+        <ion-card class="ejercicio-card">
+          <ion-card-header>
+            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+            <ion-card-subtitle>{{ ejercicio.equipamiento }}</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <!-- Imagen del ejercicio -->
+            <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+              alt="Imagen del ejercicio" class="imagen-ejercicio" />
+
+            <!-- Checkbox para marcar el ejercicio -->
+            <ion-item lines="none">
+              <ion-label>Marcar</ion-label>
+              <!-- Vinculamos el estado del checkbox al ID del ejercicio -->
+              <ion-checkbox slot="end" (ionChange)="toggleMarcarEjercicio(ejercicio)"
+                [checked]="ejerciciosMarcados.includes(ejercicio._id)">
+              </ion-checkbox>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Botón flotante para agregar nuevo ejercicio -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarFormularioAgregar()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Botón flotante para procesar ejercicios marcados -->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button (click)="procesarEjerciciosMarcados()">
+      <ion-icon name="checkmark"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

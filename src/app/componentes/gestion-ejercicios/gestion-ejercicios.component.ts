@@ -6,13 +6,14 @@ import { IonicModule } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
+import { EjercicioListComponent } from "../ejercicio-list/ejercicio-list.component";
 
 @Component({
   selector: 'app-gestion-ejercicios',
   templateUrl: './gestion-ejercicios.component.html',
   styleUrls: ['./gestion-ejercicios.component.scss'],
   standalone: true,
-  imports: [IonicModule, NgFor, NgIf, FormsModule, EjercicioFormComponent],
+  imports: [IonicModule, NgFor, NgIf, FormsModule, EjercicioFormComponent, EjercicioListComponent],
   providers: []
 })
 export class GestionEjerciciosComponent implements OnInit {

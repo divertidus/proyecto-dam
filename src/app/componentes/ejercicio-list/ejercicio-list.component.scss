@@ -1,0 +1,16 @@
+.ejercicio-card {
+    width: 100%;
+    height: auto;
+    min-height: 250px; /* Asegura que la tarjeta tenga suficiente altura */
+  }
+  
+  .imagen-ejercicio {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    margin: 10px; /* Añade un pequeño margen para separar la imagen del contenido */
+  }
+  
+  ion-row {
+    margin: 20px; /* Espacio adicional entre las filas del grid */
+  }

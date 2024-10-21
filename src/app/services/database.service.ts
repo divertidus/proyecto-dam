@@ -13,14 +13,14 @@ PouchDB.plugin(PouchDBFind);
 })
 
 export class DatabaseService {
-  private db: any;
+  private baseDatos: any;
 
   constructor() {
     // Inicializar la base de datos, puedes hacer esto dinámico según la entidad
-    this.db = new PouchDB('myappdb');
+    this.baseDatos = new PouchDB('myappdb');
 
     // Opcional: Verificar la base de datos
-    this.db.info().then((info: any) => {
+    this.baseDatos.info().then((info: any) => {
       console.log('BASE DE DATOS INICIALIZADA', info);
     }).catch((err: any) => {
       console.error('ERROR AL INICIAR LA BASE DE DATOS', err);
@@ -29,8 +29,12 @@ export class DatabaseService {
 
   // Método para obtener la instancia de la base de datos (compartida entre otros servicios)
   obtenerBaseDatos() {
-    return this.db;
+    return this.baseDatos;
   }
+
+
+
+
 
   /*
   // Sincronización con base de datos remota (opcional)

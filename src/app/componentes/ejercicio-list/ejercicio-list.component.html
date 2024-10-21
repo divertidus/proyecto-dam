@@ -1,10 +1,29 @@
-<ion-content>
-  <ion-list>
-    <ion-item *ngFor="let ejercicio of ejercicios">
-      <ion-label>
-        <h2>{{ ejercicio.nombre }}</h2>
-        <p>{{ ejercicio.equipamiento }} - {{ ejercicio.cantidadSeries }} series x {{ ejercicio.repeticiones }}
-          repeticiones</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+<ion-grid>
+  <ion-row class="ion-align-items-stretch">
+    <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejercicios">
+      <ion-card class="ejercicio-card">
+        <ion-card-header>
+          <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+          <ion-card-subtitle>{{ ejercicio.equipamiento }}</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <!-- Imagen del ejercicio -->
+          <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+            alt="Imagen del ejercicio" class="imagen-ejercicio" />
+
+          <!-- Botones de acciones -->
+          <ion-button fill="clear" color="primary" (click)="editarEjercicio.emit(ejercicio)">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="danger" (click)="eliminarEjercicio.emit(ejercicio)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="secondary" (click)="marcarEjercicio.emit(ejercicio)">
+            <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>

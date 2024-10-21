@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { DatabaseService } from '../services/database.service';
-import { UserFormComponent } from "../componentes/user-form/user-form.component";
-import { UserListComponent } from "../componentes/user-list/user-list.component";
-import { AuthService } from '../auth/auth.service';
+import { DatabaseService } from '../../services/database.service';
+import { UserFormComponent } from "../../componentes/user-form/user-form.component";
+import { UserListComponent } from "../../componentes/user-list/user-list.component";
+import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
-import { Usuario } from '../models/usuario.model';
-import { UsuarioService } from '../services/usuario.service';
+import { Usuario } from '../../models/usuario.model';
+import { UsuarioService } from '../../services/usuario.service';
 
 
 @Component({

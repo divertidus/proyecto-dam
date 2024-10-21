@@ -33,8 +33,6 @@ export class EjercicioService {
         nombre: nuevoEjercicio.nombre, // Nombre del ejercicio
         equipamiento: nuevoEjercicio.equipamiento, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
         descripcion: nuevoEjercicio.descripcion, // Descripción opcional del ejercicio
-        cantidadSeries: nuevoEjercicio.cantidadSeries, // Cantidad de series
-        repeticiones: nuevoEjercicio.repeticiones, // Cantidad de repeticiones
         imagen: nuevoEjercicio.imagen || '', // Imagen opcional del ejercicio, vacía si no se proporciona
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
@@ -76,7 +74,7 @@ export class EjercicioService {
         nombre: { $eq: nombre } // Buscamos ejercicios cuyo nombre coincida exactamente
       }
     };
-  
+
     try {
       // Ejecutamos la consulta en la base de datos
       const resultado = await this.baseDatos.find(consulta);
@@ -96,6 +94,23 @@ export class EjercicioService {
     } catch (error) {
       console.error('Error al obtener ejercicio por ID:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera
+    }
+  }
+
+  // Método para obtener ejercicios por músculo
+  async obtenerEjerciciosPorMusculo(musculo: string) {
+    try {
+      const result = await this.baseDatos.find({
+        selector: {
+          entidad: 'ejercicio',
+          musculo: { $eq: musculo } // Filtramos por el campo musculo
+        }
+      });
+      const ejercicios = result.docs;
+      return ejercicios;
+    } catch (err) {
+      console.error('Error al obtener ejercicios por músculo:', err);
+      throw err;
     }
   }
 
@@ -137,4 +152,78 @@ export class EjercicioService {
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
+
+
+
+  async inicializarEjercicios() {
+    const ejerciciosExistentes = await this.baseDatos.find({ selector: { entidad: 'ejercicio' } });
+
+    if (ejerciciosExistentes.docs.length === 0) {
+      const ejerciciosIniciales = [
+        {
+          nombre: 'Press de Banca',
+          descripcion: 'Ejercicio para fortalecer el pecho',
+          equipamiento: 'barra',
+          entidad: 'ejercicio',
+          musculo: 'Pectorales'
+        },
+        {
+          nombre: 'Sentadillas',
+          descripcion: 'Ejercicio para trabajar las piernas y glúteos',
+          equipamiento: 'barra',
+          entidad: 'ejercicio',
+          musculo: 'Cuádriceps'
+        },
+        {
+          nombre: 'Curl de Bíceps',
+          descripcion: 'Ejercicio para fortalecer los bíceps',
+          equipamiento: 'mancuerna',
+          entidad: 'ejercicio',
+          musculo: 'Bíceps'
+        },
+        {
+          nombre: 'Peso Muerto',
+          descripcion: 'Ejercicio para trabajar la espalda baja y glúteos',
+          equipamiento: 'barra',
+          entidad: 'ejercicio',
+          musculo: 'Espalda baja'
+        },
+        {
+          nombre: 'Elevación de Talones',
+          descripcion: 'Ejercicio para fortalecer las pantorrillas',
+          equipamiento: 'peso corporal',
+          entidad: 'ejercicio',
+          musculo: 'Pantorrillas'
+        },
+        {
+          nombre: 'Press Militar',
+          descripcion: 'Ejercicio para trabajar los hombros',
+          equipamiento: 'barra',
+          entidad: 'ejercicio',
+          musculo: 'Hombros'
+        },
+        {
+          nombre: 'Remo con Mancuernas',
+          descripcion: 'Ejercicio para fortalecer la espalda media',
+          equipamiento: 'mancuerna',
+          entidad: 'ejercicio',
+          musculo: 'Espalda'
+        },
+        {
+          nombre: 'Dominadas',
+          descripcion: 'Ejercicio para trabajar la espalda y bíceps',
+          equipamiento: 'peso corporal',
+          entidad: 'ejercicio',
+          musculo: 'Espalda y Bíceps'
+        }
+      ];
+
+      // Agregar los ejercicios iniciales
+      const resultados = await this.baseDatos.bulkDocs(ejerciciosIniciales);
+      console.log('Ejercicios iniciales agregados:', resultados);
+    }
+  }
+
+
+
 }

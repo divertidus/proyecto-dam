@@ -12,5 +12,5 @@ export const routes: Routes = [
   {
     path: 'seleccionar-usuario',
     loadComponent: () => import('./paginas/seleccionar-usuario/seleccionar-usuario.page').then(m => m.SeleccionarUsuarioPage)
-  },
+  }
 ];
