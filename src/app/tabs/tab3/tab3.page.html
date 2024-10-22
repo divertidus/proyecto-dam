@@ -1,4 +1,13 @@
-<app-toolbar-logged [titulo]="'VACIO'"></app-toolbar-logged> <!-- Nuevo componente -->
-<ion-content>
+<div *ngIf="ultimoEntreno">
+    <div class="entreno-card">
+        <h2>Último Entrenamiento</h2>
+        <p><strong>Rutina:</strong> {{ ultimoEntreno.rutina.nombre }}</p>
+        <p><strong>Día:</strong> {{ ultimoEntreno.dia.diaNombre }}</p>
+        <p><strong>Fecha:</strong> {{ ultimoEntreno.fecha }}</p>
 
-</ion-content>
+        <div *ngFor="let ejercicio of ultimoEntreno.dia.ejercicios">
+            <h3>{{ ejercicio.nombreEjercicio || ejercicio.ejercicioId }}</h3>
+            <p><strong>Fecha de Entrenamiento:</strong> {{ ejercicio.notas }}</p>
+        </div>
+    </div>
+</div>

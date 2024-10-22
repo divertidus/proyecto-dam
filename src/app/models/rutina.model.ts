@@ -1,39 +1,31 @@
 // Modelo de Rutina
 export interface Rutina {
   _id?: string;                // Identificador único de la rutina
-  _rev?: string;
   entidad: 'rutina';           // Tipo de entidad para distinguir en la base de datos
   usuarioId: string;           // ID del usuario al que pertenece la rutina
   nombre: string;              // Nombre de la rutina (p. ej., "Rutina de Fuerza 5 Días")
-  dias: DiaRutina[];           // Lista de días en la rutina
-  timestamp: string;           // Fecha de creación de la rutina (requerido)
+  dias: DiaRutina[];           // Lista de días en la rutina (sin fechas ni pesos específicos)
+  timestamp: string;           // Fecha de creación de la rutina
 }
 
-// Modelo de Día de Rutina
+// Modelo de Día de Rutina (Plantilla)
 export interface DiaRutina {
-  diaNombre: string;                // Nombre del día (ej. "Día 1: Espalda")
+  diaNombre: string;                // Nombre del día (ej. "Día 1: Espalda y Bíceps")
   descripcion?: string;             // Descripción opcional para el día, p. ej., objetivos o comentarios generales
-  ejercicios: EjercicioPlan[];      // Lista de ejercicios a realizar ese día
-  fechaEntrenamiento?: string;      // Fecha en la que se realizó el día de entrenamiento (opcional)
+  ejercicios: EjercicioPlan[];      // Lista de ejercicios a realizar ese día (sin pesos específicos)
 }
 
-// Modelo de EjercicioPlan
+// Modelo de EjercicioPlan (Plantilla)
 export interface EjercicioPlan {
-  ejercicioId: string;        // ID del ejercicio en la rutina
-  nombreEjercicio?: string;   // Nombre del ejercicio (para facilitar acceso directo)
-  tipoPeso?: string;
-  series: Serie[];            // Lista de series para el ejercicio
-  notas?: string;             // Notas adicionales sobre el ejercicio (opcional, p. ej., "con ayuda", "doler muñeca")
+  ejercicioId: string;              // ID del ejercicio en la rutina
+  nombreEjercicio?: string;         // Nombre del ejercicio (para facilitar acceso directo)
+  tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal';
+  series: Serie[];
+  notas: string               // Lista de series para el ejercicio (sin peso específico)
 }
 
-// Modelo de Serie
+// Modelo de Serie (Plantilla)
 export interface Serie {
-  numeroSerie: number;        // Número de la serie (para identificar si es la primera, segunda, etc.)
-  repeticiones: number;       // Número de repeticiones
-  peso?: number;              // Peso utilizado (opcional, ya que puede ser peso corporal)
-  tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal'; // Tipo de peso (opcional)
-  alFallo?: boolean;          // Indica si la serie se llevó al fallo (opcional)
-  conAyuda?: boolean;         // Indica si se recibió ayuda durante la serie (opcional)
-  dolor?: boolean;            // Indica si hubo dolor durante la serie (opcional)
-  notas?: string;             // Notas adicionales, como "con ayuda", "hasta el fallo" (opcional)
+  numeroSerie: number;              // Número de la serie (para identificar si es la primera, segunda, etc.)
+  repeticiones: number;             // Número de repeticiones para la serie
 }

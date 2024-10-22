@@ -106,6 +106,11 @@ export class AuthService {
   }
   // Aquí guardarías la información del usuario logueado en algún lugar (local storage o variable de estado)
   // Ejemplo: this.usuarioActual = usuario;
+
+
+
+
+  
 }
 
 

@@ -159,69 +159,40 @@ export class EjercicioService {
     }
   }
 
+  async autoEjercicios() {
 
+    const ejercicios = [
+      { nombre: 'Jalón de Espalda', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { nombre: 'Remo Agarre Cerrado (Cuernos)', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { nombre: 'Jalón Cerrado', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { nombre: 'Remo Agarre Ancho - Menos Peso', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { nombre: 'Curl Martillo', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
+      { nombre: 'Máquina Bíceps Sentado', tipoPeso: 'máquina', musculoPrincipal: 'Bíceps' },
+      { nombre: 'Press de Banca Tumbado (Mancuernas)', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
+      { nombre: 'Aperturas Máquina', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
+      { nombre: 'Elevaciones Laterales', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
+      { nombre: 'Sentadillas Multipower', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
+      // Añadir más según los ejercicios necesarios...
+    ];
+
+  }
 
   async inicializarEjercicios() {
     const ejerciciosExistentes = await this.baseDatos.find({ selector: { entidad: 'ejercicio' } });
 
     if (ejerciciosExistentes.docs.length === 0) {
       const ejerciciosIniciales = [
-        {
-          nombre: 'Press de Banca',
-          descripcion: 'Ejercicio para fortalecer el pecho',
-          tipoPeso: 'barra',
-          entidad: 'ejercicio',
-          musculo: 'Pectorales'
-        },
-        {
-          nombre: 'Sentadillas',
-          descripcion: 'Ejercicio para trabajar las piernas y glúteos',
-          tipoPeso: 'barra',
-          entidad: 'ejercicio',
-          musculo: 'Cuádriceps'
-        },
-        {
-          nombre: 'Curl de Bíceps',
-          descripcion: 'Ejercicio para fortalecer los bíceps',
-          tipoPeso: 'mancuerna',
-          entidad: 'ejercicio',
-          musculo: 'Bíceps'
-        },
-        {
-          nombre: 'Peso Muerto',
-          descripcion: 'Ejercicio para trabajar la espalda baja y glúteos',
-          tipoPeso: 'barra',
-          entidad: 'ejercicio',
-          musculo: 'Espalda baja'
-        },
-        {
-          nombre: 'Elevación de Talones',
-          descripcion: 'Ejercicio para fortalecer las pantorrillas',
-          tipoPeso: 'peso corporal',
-          entidad: 'ejercicio',
-          musculo: 'Pantorrillas'
-        },
-        {
-          nombre: 'Press Militar',
-          descripcion: 'Ejercicio para trabajar los hombros',
-          tipoPeso: 'barra',
-          entidad: 'ejercicio',
-          musculo: 'Hombros'
-        },
-        {
-          nombre: 'Remo con Mancuernas',
-          descripcion: 'Ejercicio para fortalecer la espalda media',
-          tipoPeso: 'mancuerna',
-          entidad: 'ejercicio',
-          musculo: 'Espalda'
-        },
-        {
-          nombre: 'Dominadas',
-          descripcion: 'Ejercicio para trabajar la espalda y bíceps',
-          tipoPeso: 'peso corporal',
-          entidad: 'ejercicio',
-          musculo: 'Espalda y Bíceps'
-        }
+        { nombre: 'Jalón de Espalda', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+        { nombre: 'Remo Agarre Cerrado (Cuernos)', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+        { nombre: 'Jalón Cerrado', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+        { nombre: 'Remo Agarre Ancho - Menos Peso', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+        { nombre: 'Curl Martillo', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
+        { nombre: 'Máquina Bíceps Sentado', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Bíceps' },
+        { nombre: 'Press de Banca Tumbado (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
+        { nombre: 'Aperturas Máquina', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
+        { nombre: 'Elevaciones Laterales', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
+        { nombre: 'Sentadillas Multipower', entidad: 'ejercicio', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
+
       ];
 
       // Agregar los ejercicios iniciales

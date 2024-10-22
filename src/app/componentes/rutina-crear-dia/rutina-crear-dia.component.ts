@@ -102,7 +102,8 @@ export class RutinaCrearDiaComponent implements OnInit {
     const ejercicioPlan: EjercicioPlan = {
       ejercicioId: ejercicio._id!,
       series: Array(series).fill({ repeticiones }), // Crea las series con el número de repeticiones
-      notas: notas || ''
+      notas: notas || '',
+     
     };
 
     this.ejerciciosEnRutina.push(ejercicioPlan); // Añadir el ejercicio a la rutina
