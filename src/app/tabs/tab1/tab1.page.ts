@@ -48,7 +48,8 @@ export class Tab1Page implements OnInit, OnDestroy {
     private authService: AuthService,
     private rutinaService: RutinaService,
     private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios   
-    private modalController: ModalController
+    private modalController: ModalController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -71,9 +72,17 @@ export class Tab1Page implements OnInit, OnDestroy {
       // Filtrar solo las rutinas del usuario logueado
       if (this.usuarioLogeado) {
         this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
+        this.ordenarRutinas(); // Ordenar las rutinas después de filtrarlas
       } else {
         this.rutinas = [];
       }
+    });
+  }
+
+  // Función para ordenar las rutinas por timestamp (las más recientes primero)
+  ordenarRutinas() {
+    this.rutinas.sort((b, a) => {
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(); // Ordena de más antigua a más reciente
     });
   }
 
@@ -227,8 +236,62 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
 
-  modificarRutina(_t19: Rutina, $event: MouseEvent) {
-    throw new Error('Method not implemented.');
+  // Eliminar una rutina con confirmación
+  async eliminarRutina(rutina: Rutina, event: Event) {
+    event.stopPropagation(); // Evitar la propagación del clic
+    const alert = await this.alertController.create({
+      header: 'Eliminar Rutina',
+      message: `¿Estás seguro de que deseas eliminar la rutina "${rutina.nombre}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          handler: async () => {
+            await this.rutinaService.eliminarRutina(rutina._id);
+            console.log('Rutina eliminada con éxito');
+            this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de eliminar
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  // Cambiar el nombre de la rutina
+  async cambiarNombreRutina(rutina: Rutina, event: Event) {
+    event.stopPropagation(); // Evitar la propagación del clic
+    const alert = await this.alertController.create({
+      header: 'Cambiar Nombre de Rutina',
+      inputs: [
+        {
+          name: 'nombre',
+          type: 'text',
+          placeholder: 'Nuevo nombre de la rutina',
+          value: rutina.nombre
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Guardar',
+          handler: async (data) => {
+            if (data.nombre && data.nombre.trim() !== '') {
+              rutina.nombre = data.nombre.trim();
+              await this.rutinaService.actualizarRutina(rutina);
+              console.log('Nombre de rutina actualizado con éxito');
+              this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar el nombre
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
 

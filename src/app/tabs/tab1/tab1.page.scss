@@ -1,6 +1,45 @@
-.dia-rutina {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 8px;
-  }
+ion-card {
+  margin-bottom: 15px;
+}
+
+ion-card-header {
+  cursor: pointer;
+  background-color: #f8f9fa;
+  position: relative;
+}
+
+.header-rutina {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.iconos-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.icono-cambiar-nombre {
+  font-size: 1.6em;
+  cursor: pointer;
+  color: #4a4a4a;
+}
+
+.icono-eliminar-rutina {
+  font-size: 2em;
+  cursor: pointer;
+  color: red;
+  margin-top: 5px;
+  /* Espacio entre el lápiz y la X */
+}
+
+.dias-container {
+  margin-top: 10px;
+}
+
+.anadir-dia-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
