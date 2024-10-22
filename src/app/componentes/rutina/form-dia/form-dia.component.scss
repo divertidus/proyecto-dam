@@ -1,0 +1,19 @@
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px; /* Añadir un poco de padding horizontal */
+  }
+  
+  .footer-text {
+    font-size: 0.9em; /* Tamaño más pequeño para evitar el corte de texto */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Agregar "..." si el texto es demasiado largo */
+    flex-grow: 1; /* Permite que el texto use todo el espacio disponible */
+  }
+  
+  .guardar-btn {
+    margin-left: 10px;
+    flex-shrink: 0; /* Evita que el botón se encoja si el espacio es limitado */
+  }

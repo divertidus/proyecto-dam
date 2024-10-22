@@ -86,10 +86,8 @@ export class Tab1Page implements OnInit, OnDestroy {
     });
   }
 
-
+  // Método para abrir el formulario de creación de día
   async abrirFormularioDia(rutina?: Rutina, event?: Event) {
-    console.log('Intentando abrir el formulario de día para añadir'); // Depuración
-
     if (event) {
       event.stopPropagation(); // Evitar la propagación del clic si es necesario
     }
@@ -105,81 +103,58 @@ export class Tab1Page implements OnInit, OnDestroy {
         }
       });
 
-      console.log('Modal creado con éxito'); // Depuración
       await modal.present();
-      console.log('Modal presentado con éxito'); // Depuración
 
       const { data } = await modal.onDidDismiss();
-      console.log('Datos recibidos al cerrar el modal:', data); // Depuración
 
-      if (data) {
-        this.guardarNuevoDiaEnRutina(rutina, data);
+      if (data && data.ejercicios.length > 0) {
+        if (rutina) {
+          // Añadir el día a la rutina existente
+          this.guardarNuevoDiaEnRutina(rutina, data);
+        } else {
+          // Si no hay rutina, creamos una nueva y añadimos el día
+          this.crearRutinaConDia(data);
+        }
+      } else {
+        console.log('No se añadió ningún día con ejercicios. No se creará la rutina.');
       }
-
     } catch (error) {
       console.error('Error al intentar abrir el modal:', error);
     }
   }
 
-  guardarNuevoDiaEnRutina(rutina: Rutina | undefined, dia: DiaRutina) {
-    if (rutina) {
-      // Si la rutina existe, añadir el día a la rutina existente
-      rutina.dias.push(dia);
-      this.rutinaService.actualizarRutina(rutina).then(() => {
-        console.log('Nuevo día añadido y rutina actualizada');
-        this.rutinaService.cargarRutinas(); // Refrescar la lista de rutinas después de añadir el nuevo día
-      });
-    } else {
-      // Si no hay rutina, crear una nueva con el día
-      const nuevaRutina: Rutina = {
-        nombre: 'Mi Primera Rutina',
-        dias: [dia], // Añadir el día creado a la nueva rutina
-        usuarioId: this.usuarioLogeado?._id || '',
-        entidad: 'rutina',
-        timestamp: new Date().toISOString()
-      };
-      this.rutinaService.agregarRutina(nuevaRutina).then(response => {
-        nuevaRutina._id = response.id; // Guardar el ID generado
-        console.log('Nueva rutina creada con éxito');
-        this.rutinaService.cargarRutinas(); // Refrescar las rutinas
-      });
-    }
+  // Método para crear una nueva rutina con un día
+  crearRutinaConDia(dia: DiaRutina) {
+    const numeroRutina = this.rutinas.length + 1; // Definir el número de la nueva rutina
+    const nuevaRutina: Rutina = {
+      nombre: `Rutina ${numeroRutina}`,
+      dias: [dia], // Añadir el día creado a la nueva rutina
+      usuarioId: this.usuarioLogeado?._id || '',
+      entidad: 'rutina',
+      timestamp: new Date().toISOString()
+    };
+
+    this.rutinaService.agregarRutina(nuevaRutina).then(response => {
+      nuevaRutina._id = response.id; // Guardar el ID generado
+      this.rutinas.push(nuevaRutina); // Añadir la rutina a la lista local
+      console.log('Nueva rutina creada con éxito');
+      this.rutinaService.cargarRutinas(); // Refrescar las rutinas
+    });
   }
 
-  guardarNuevoDia(dia: DiaRutina) {
-    if (this.rutinas.length === 0) {
-      // Si no hay rutinas, crear una nueva con el primer día
-      const nuevaRutina: Rutina = {
-        nombre: 'Mi Primera Rutina',
-        dias: [dia], // Añadir el día creado a la nueva rutina
-        usuarioId: this.usuarioLogeado?._id || '',
-        entidad: 'rutina',
-        timestamp: new Date().toISOString()
-      };
-      this.rutinaService.agregarRutina(nuevaRutina).then(response => {
-        nuevaRutina._id = response.id; // Guardar el ID generado
-        this.rutinas.push(nuevaRutina); // Añadir la rutina a la lista local
-        this.rutinaService.cargarRutinas(); // Refrescar las rutinas
-      });
-    } else {
-      // Añadir el día a una rutina existente (en este caso la primera)
-      this.rutinas[0].dias.push(dia);
-      this.rutinaService.actualizarRutina(this.rutinas[0]).then(() => {
-        console.log('Rutina actualizada');
-        this.rutinaService.cargarRutinas(); // Refrescar las rutinas
-      });
-    }
+  // Método para guardar un nuevo día en una rutina existente
+  guardarNuevoDiaEnRutina(rutina: Rutina, dia: DiaRutina) {
+    rutina.dias.push(dia);
+    this.rutinaService.actualizarRutina(rutina).then(() => {
+      console.log('Nuevo día añadido y rutina actualizada');
+      this.rutinaService.cargarRutinas(); // Refrescar la lista de rutinas después de añadir el nuevo día
+    });
   }
 
-
-
-
-
-
-
-
-
-
+  // Método para crear una nueva rutina (sin crearla directamente en la lista)
+  crearNuevaRutina() {
+    this.abrirFormularioDia(); // Abre directamente el modal para crear un nuevo día
+  }
 
   ngOnDestroy() {
     // Desuscribimos para evitar fugas de memoria
@@ -207,38 +182,9 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.rutinaExpandida = this.rutinaExpandida === rutina._id ? null : rutina._id;
   }
 
-
-  async crearNuevaRutina() {
-    const numeroRutinas = this.rutinas.length + 1; // Número de rutinas existentes más 1 para la nueva
-    const nuevaRutina: Rutina = {
-      nombre: `Rutina ${numeroRutinas}`,
-      dias: [],
-      entidad: 'rutina', // Asignamos el valor literal exacto
-      usuarioId: this.usuarioLogeado._id,
-      timestamp: new Date().toISOString()
-    };
-
-    try {
-      // Guardar la nueva rutina en la base de datos
-      const response = await this.rutinaService.agregarRutina(nuevaRutina);
-      nuevaRutina._id = response.id; // Asignar el ID generado por la base de datos
-      nuevaRutina._rev = response.rev; // Si también se genera una revisión inicial
-
-      // Añadir la rutina a la lista local con el ID correcto
-      this.rutinas.push(nuevaRutina);
-      console.log('Nueva rutina creada con éxito:', nuevaRutina);
-
-      // Abre el formulario para añadir el primer día a la rutina
-      this.abrirFormularioDia(nuevaRutina);
-    } catch (error) {
-      console.error('Error al crear nueva rutina:', error);
-    }
-  }
-
-
-  // Eliminar una rutina con confirmación
+  // Eliminar rutina con confirmación
   async eliminarRutina(rutina: Rutina, event: Event) {
-    event.stopPropagation(); // Evitar la propagación del clic
+    event.stopPropagation(); // Evitar que el clic se propague y active otros elementos
     const alert = await this.alertController.create({
       header: 'Eliminar Rutina',
       message: `¿Estás seguro de que deseas eliminar la rutina "${rutina.nombre}"?`,

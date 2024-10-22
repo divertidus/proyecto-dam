@@ -48,7 +48,9 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-title>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-title>
-    <ion-button (click)="guardar()" color="success" slot="end">Guardar</ion-button>
+    <div class="footer-content">
+      <span class="footer-text">Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</span>
+      <ion-button (click)="guardar()" color="success" class="guardar-btn">Guardar</ion-button>
+    </div>
   </ion-toolbar>
 </ion-footer>
