@@ -27,6 +27,7 @@ export class FormDiaComponent implements OnInit {
   @Input() numeroDiasExistentes: number = 0; // Número de días ya existentes en la rutina
 
   nombreDia: string = '';
+  descripcionDia: string = '';
   ejerciciosEnRutina: EjercicioPlan[] = []; // Ejercicios añadidos al día
   ejerciciosFiltrados: Ejercicio[] = []; // Para no modificar la lista original
 
@@ -43,6 +44,7 @@ export class FormDiaComponent implements OnInit {
       this.ejerciciosEnRutina = [];
     }
     // Inicializamos los ejercicios filtrados como la lista completa de ejercicios disponibles
+    this.descripcionDia = '';
     this.ejerciciosFiltrados = [...this.ejercicios];
   }
 
@@ -141,7 +143,7 @@ export class FormDiaComponent implements OnInit {
     const nuevoDia: DiaRutina = {
       diaNombre: this.nombreDia,
       ejercicios: this.ejerciciosEnRutina,
-      descripcion: '' // Se puede añadir una descripción adicional si se desea
+      descripcion: this.descripcionDia // Guarda la descripción proporcionada por el usuario
     };
 
     this.modalController.dismiss(nuevoDia); // Enviar los datos de vuelta al componente padre

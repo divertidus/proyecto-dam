@@ -39,15 +39,15 @@ export class Tab1Page implements OnInit, OnDestroy {
   rutinas: Rutina[] = [];
   ejercicios: Ejercicio[] = []; // Lista de todos los ejercicios
   rutinaExpandida: string | null = null; // Propiedad para controlar cuál rutina está expandida
+
   private rutinaSubscription: Subscription;
   private usuarioSubscription: Subscription;
+
 
   constructor(
     private authService: AuthService,
     private rutinaService: RutinaService,
-    private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios
-    private router: Router,
-    private alertController: AlertController,
+    private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios   
     private modalController: ModalController
   ) { }
 
@@ -197,6 +197,35 @@ export class Tab1Page implements OnInit, OnDestroy {
   toggleExpandirRutina(rutina: Rutina) {
     this.rutinaExpandida = this.rutinaExpandida === rutina._id ? null : rutina._id;
   }
+
+
+  async crearNuevaRutina() {
+    const numeroRutinas = this.rutinas.length + 1; // Número de rutinas existentes más 1 para la nueva
+    const nuevaRutina: Rutina = {
+      nombre: `Rutina ${numeroRutinas}`,
+      dias: [],
+      entidad: 'rutina', // Asignamos el valor literal exacto
+      usuarioId: this.usuarioLogeado._id,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      // Guardar la nueva rutina en la base de datos
+      const response = await this.rutinaService.agregarRutina(nuevaRutina);
+      nuevaRutina._id = response.id; // Asignar el ID generado por la base de datos
+      nuevaRutina._rev = response.rev; // Si también se genera una revisión inicial
+
+      // Añadir la rutina a la lista local con el ID correcto
+      this.rutinas.push(nuevaRutina);
+      console.log('Nueva rutina creada con éxito:', nuevaRutina);
+
+      // Abre el formulario para añadir el primer día a la rutina
+      this.abrirFormularioDia(nuevaRutina);
+    } catch (error) {
+      console.error('Error al crear nueva rutina:', error);
+    }
+  }
+
 
   modificarRutina(_t19: Rutina, $event: MouseEvent) {
     throw new Error('Method not implemented.');

@@ -4,8 +4,13 @@
 
 
 <ion-item>
-  <ion-label position="floating">Nombre del Día</ion-label>
-  <ion-input [(ngModel)]="nombreDia"></ion-input>
+  <ion-label position="stacked">Nombre del Día</ion-label>
+  <ion-text>{{ nombreDia }}</ion-text>
+</ion-item>
+
+<ion-item>
+  <ion-label position="stacked">Descripción breve</ion-label>
+  <ion-input [(ngModel)]="descripcionDia"></ion-input>
 </ion-item>
 
 <ion-item>
