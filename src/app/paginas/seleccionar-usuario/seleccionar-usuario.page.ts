@@ -51,4 +51,9 @@ export class SeleccionarUsuarioPage implements OnInit {
     this.router.navigate(['/crear-usuario']); // Redirigir a la página de creación de usuario
   }
 
+  irAdministrarUsuarios() {
+    console.log('click')
+    this.router.navigate(['/administrar-usuarios']); // Redirigir a la página de creación de usuario
+  }
+
 }

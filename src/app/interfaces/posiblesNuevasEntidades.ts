@@ -1,16 +1,32 @@
 // Modelo de Usuario
 export interface Usuario {
     _id?: string;           // Identificador único del usuario
+    entidad: 'usuario';     // Tipo de entidad para distinguir en la base de datos
     nombre: string;         // Nombre del usuario
     email?: string;         // Email del usuario (opcional, para futuras ampliaciones)
+    imagenPerfil?: string;  // URL de la imagen de perfil del usuario (opcional)
+    rutinas?: string[];     // IDs de las rutinas asociadas al usuario (opcional)
+    timestamp: string;  // Fecha de creación del usuario (requerido)
+}
+
+export interface Ejercicio {
+    _id?: string;               // Identificador único del ejercicio
+    entidad: 'ejercicio';       // Tipo de entidad para distinguir en la base de datos
+    nombre: string;             // Nombre del ejercicio (p. ej., "Press de Banca")
+    descripcion?: string;       // Descripción breve del ejercicio, p. ej., cómo realizarlo correctamente
+    tipo?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal'; // Tipo de ejercicio
+    musculoPrincipal: string;   // Grupo muscular principal trabajado
+    imagen?: string;            // Imagen del ejercicio (opcional, para futuras versiones)
 }
 
 // Modelo de Rutina
 export interface Rutina {
     _id?: string;                // Identificador único de la rutina
+    entidad: 'rutina';           // Tipo de entidad para distinguir en la base de datos
     usuarioId: string;           // ID del usuario al que pertenece la rutina
     nombre: string;              // Nombre de la rutina (p. ej., "Rutina de Fuerza 5 Días")
     dias: DiaRutina[];           // Lista de días en la rutina
+    timestamp: string;           // Fecha de creación de la rutina (requerido)
 }
 
 // Modelo de Día de Rutina
@@ -18,6 +34,7 @@ export interface DiaRutina {
     diaNombre: string;                // Nombre del día (ej. "Día 1: Espalda")
     descripcion?: string;             // Descripción opcional para el día, p. ej., objetivos o comentarios generales
     ejercicios: EjercicioPlan[];      // Lista de ejercicios a realizar ese día
+    fechaEntrenamiento?: string;      // Fecha en la que se realizó el día de entrenamiento (opcional)
 }
 
 // Modelo de EjercicioPlan
@@ -30,6 +47,7 @@ export interface EjercicioPlan {
 
 // Modelo de Serie
 export interface Serie {
+    numeroSerie: number;        // Número de la serie (para identificar si es la primera, segunda, etc.)
     repeticiones: number;       // Número de repeticiones
     peso?: number;              // Peso utilizado (opcional, ya que puede ser peso corporal)
     tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal'; // Tipo de peso (opcional)
@@ -39,20 +57,22 @@ export interface Serie {
     notas?: string;             // Notas adicionales, como "con ayuda", "hasta el fallo" (opcional)
 }
 
-// Modelo de Ejercicio
-export interface Ejercicio {
-    _id?: string;               // Identificador único del ejercicio
-    nombre: string;             // Nombre del ejercicio (p. ej., "Press de Banca")
-    descripcion?: string;       // Descripción breve del ejercicio, p. ej., cómo realizarlo correctamente
-    tipo?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal'; // Tipo de ejercicio
-    musculoPrincipal: string;   // Grupo muscular principal trabajado
-    imagen?: string;            // Imagen del ejercicio (opcional, para futuras versiones)
-}
+// Relaciones entre entidades:
+// 1. Un `Usuario` puede tener varias `Rutinas` asociadas a él,
+//  referenciadas por los IDs de las rutinas en el campo `rutinas` del modelo `Usuario`.
+// 2. Una `Rutina` pertenece a un `Usuario` a través del campo `usuarioId`.
+// 3. Una `Rutina` tiene varios `DiaRutina` que describen cada día de la rutina,
+//  con una lista de ejercicios a realizar en cada día.
+// 4. Cada `DiaRutina` contiene una lista de `EjercicioPlan` que indica los ejercicios a realizar ese día,
+//  con detalles específicos como series y repeticiones.
+// 5. Cada `EjercicioPlan` hace referencia a un `Ejercicio` por medio de su `ejercicioId` y
+//   detalla las `Series` que se deben realizar.
 
-// Justificación de los cambios:
-// 1. Se simplificaron los modelos para enfocarse en los aspectos más esenciales y facilitar la flexibilidad en las rutinas y ejercicios.
-// 2. El modelo `Serie` se creó para capturar información detallada sobre cada serie de un ejercicio, permitiendo registrar variabilidad en peso y repeticiones.
-// 3. `EjercicioPlan` incluye una lista de `Series` para detallar cada ejecución del ejercicio durante una sesión, mejorando la precisión del registro.
-// 4. Se añadió `nombreEjercicio` en `EjercicioPlan` como campo opcional para facilitar el acceso directo, aunque la referencia principal sigue siendo `ejercicioId`.
-// 5. `Serie` se actualizó para incluir `alFallo`, `conAyuda`, y `dolor` como campos opcionales, permitiendo registrar más detalles sobre la ejecución de cada serie y mejorando la capacidad de seguimiento del rendimiento y las dificultades.
-// 6. `Rutina` y `DiaRutina` fueron diseñados para ofrecer flexibilidad en la planificación y registro de rutinas, alineándose con los ejemplos dados previamente.
+
+/*Relaciones:
+
+El Usuario tiene una relación uno a muchos con Rutina (un usuario puede tener múltiples rutinas).
+Rutina tiene una relación uno a muchos con DiaRutina (una rutina tiene varios días).
+DiaRutina tiene una relación uno a muchos con EjercicioPlan (un día tiene varios ejercicios).
+EjercicioPlan tiene una relación uno a muchos con Serie (un ejercicio tiene varias series).
+*/ 

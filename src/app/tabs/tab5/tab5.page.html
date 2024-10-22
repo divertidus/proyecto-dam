@@ -5,14 +5,9 @@
   <ion-button (click)="guardarRutina()" color="success" slot="end">Guardar Rutina</ion-button>
 </ion-item>
 
-
-
 <ion-content [fullscreen]="true">
   <!-- Barra de búsqueda -->
   <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
-
-  <!-- Mostrar número de ejercicios seleccionados y botón Guardar Rutina -->
-
 
   <!-- Lista de ejercicios filtrados -->
   <ion-grid>
@@ -21,7 +16,7 @@
         <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
           <ion-card-header>
             <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
-            <ion-card-subtitle>{{ ejercicio.equipamiento }}</ion-card-subtitle>
+            <!--  <ion-card-subtitle>{{ ejercicio.tipo }}</ion-card-subtitle> -->
           </ion-card-header>
 
           <ion-card-content>

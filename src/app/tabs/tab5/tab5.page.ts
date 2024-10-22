@@ -20,13 +20,68 @@ import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolb
   templateUrl: './tab5.page.html',
   styleUrls: ['./tab5.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, EjercicioListComponent, EjercicioFormComponent,ToolbarLoggedComponent]
+  imports: [CommonModule, FormsModule, IonicModule, EjercicioListComponent, EjercicioFormComponent, ToolbarLoggedComponent]
 })
 export class Tab5Page implements OnInit {
 
   ejercicios: Ejercicio[] = []; // Almacena todos los ejercicios
   ejerciciosFiltrados: Ejercicio[] = []; // Ejercicios filtrados por la barra de búsqueda
   ejerciciosEnRutina: EjercicioPlan[] = []; // Lista tipada para almacenar los ejercicios añadidos a la rutina
+
+  public alertButtons = ['Cancelar', 'Agregar'];
+
+  public alertInputs = [
+    {
+      name: 'series',
+      type: 'number',
+      placeholder: 'Número de Series (Ej. 3)',
+      min: 1,
+      attributes: {
+        required: true
+      }
+    },
+    {
+      name: 'repeticiones',
+      type: 'number',
+      placeholder: 'Repeticiones por Serie (Ej. 10)',
+      min: 1,
+      attributes: {
+        required: true
+      }
+    },
+    {
+      label: 'Máquina',
+      type: 'radio',
+      name: 'tipoPeso',
+      value: 'máquina',
+      checked: true
+    },
+    {
+      label: 'Pesas',
+      type: 'radio',
+      name: 'tipoPeso',
+      value: 'pesas'
+    },
+    {
+      label: 'Barra',
+      type: 'radio',
+      name: 'tipoPeso',
+      value: 'barra'
+    },
+    {
+      label: 'Peso Corporal',
+      type: 'radio',
+      name: 'tipoPeso',
+      value: 'peso corporal'
+    },
+    {
+      name: 'notas',
+      type: 'textarea',
+      placeholder: 'Notas adicionales (opcional)'
+    }
+  ];
+
+
 
   constructor(
     private ejercicioService: EjercicioService,
@@ -46,7 +101,7 @@ export class Tab5Page implements OnInit {
   // Cargar los ejercicios desde el servicio
   async cargarEjercicios() {
     this.ejercicios = await this.ejercicioService.obtenerEjercicios();
-    console.log(this.ejercicios); // Verifica que los ejercicios se carguen correctamente
+    // console.log(this.ejercicios); // Verifica que los ejercicios se carguen correctamente
     this.ejerciciosFiltrados = this.ejercicios; // Inicialmente mostrar todos
   }
 
@@ -56,11 +111,10 @@ export class Tab5Page implements OnInit {
     this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
       ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
       (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-      (ejercicio.musculo && ejercicio.musculo.toLowerCase().includes(valorBusqueda))
+      (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
     );
   }
 
-  // Seleccionar un ejercicio y abrir un alert para especificar series y repeticiones
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({
       header: `Detalles de: ${ejercicio.nombre}`,
@@ -86,18 +140,19 @@ export class Tab5Page implements OnInit {
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {
-            console.log('Operación cancelada');
-          }
+          role: 'cancel'
         },
         {
-          text: 'Añadir Ejercicio',
+          text: 'Agregar',
           handler: (data) => {
             if (data.series && data.repeticiones) {
-              this.onEjercicioAgregado(ejercicio, data.series, data.repeticiones, data.notas);
-            } else {
-              console.log('Series y repeticiones son requeridas para añadir el ejercicio');
+              this.onEjercicioAgregado(
+                ejercicio,
+                parseInt(data.series),
+                parseInt(data.repeticiones),
+                data.tipoPeso,
+                data.notas
+              );
             }
           }
         }
@@ -108,11 +163,16 @@ export class Tab5Page implements OnInit {
   }
 
   // Agregar el ejercicio con los detalles ingresados
-  onEjercicioAgregado(ejercicio: Ejercicio, series: number, repeticiones: number, notas?: string) {
+  onEjercicioAgregado(ejercicio: Ejercicio, series: number, repeticiones: number, tipoPeso: string, notas?: string) {
+    const seriesDetalles = Array(series).fill(null).map((_, index) => ({
+      numeroSerie: index + 1,
+      repeticiones: repeticiones,
+    }));
+
     const ejercicioConDetalles: EjercicioPlan = {
       ejercicioId: ejercicio._id!,
-      series: series,
-      repeticiones: repeticiones,
+      tipoPeso: tipoPeso,
+      series: seriesDetalles,
       notas: notas || ''
     };
 
@@ -161,7 +221,8 @@ export class Tab5Page implements OnInit {
           ejercicios: this.ejerciciosEnRutina,
           descripcion: 'Rutina creada automáticamente'
         }
-      ]
+      ],
+      timestamp: new Date().toISOString()
     };
 
     try {

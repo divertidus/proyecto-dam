@@ -1,4 +1,3 @@
-<!-- tab1.page.html -->
 <app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged> <!-- Nuevo componente -->
 
 <ion-content class="ion-padding">
@@ -19,6 +18,11 @@
             <h2>{{ rutina.nombre }}</h2>
             <p>{{ rutina.dias.length }} días en esta rutina</p>
           </ion-label>
+
+          <!-- Añadir Día y Modificar -->
+          <ion-button fill="outline" slot="end" (click)="abrirModalAgregarDia(rutina, $event)">
+            Añadir Día
+          </ion-button>
           <ion-button fill="outline" slot="end" (click)="modificarRutina(rutina, $event)">
             Modificar
           </ion-button>
@@ -31,15 +35,25 @@
               <ion-item>
                 <ion-label>
                   <h3>{{ dia.diaNombre }}</h3>
-                  <p>{{ dia.descripcion }}</p>
+                  <p>{{ dia.descripcion ? dia.descripcion : 'Sin descripción' }}</p>
+                  <p *ngIf="dia.fechaEntrenamiento">Fecha de entrenamiento: {{ dia.fechaEntrenamiento }}</p>
                 </ion-label>
               </ion-item>
+
+              <!-- Ejercicios dentro de cada día de la rutina -->
               <ng-container *ngFor="let ejercicio of dia.ejercicios">
                 <ion-item>
                   <ion-label>
                     <h4>Ejercicio: {{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h4>
-                    <p>Series: {{ ejercicio.series }} - Repeticiones: {{ ejercicio.repeticiones }}</p>
-                    <p *ngIf="ejercicio.notas">Notas: {{ ejercicio.notas }}</p>
+                    <ng-container *ngFor="let serie of ejercicio.series; let i = index">
+                      <p>Serie {{ i + 1 }}: {{ serie.repeticiones }} repeticiones, {{ serie.peso ? serie.peso + ' kg' :
+                        'peso corporal' }}</p>
+                      <p *ngIf="serie.alFallo">Al fallo</p>
+                      <p *ngIf="serie.conAyuda">Con ayuda</p>
+                      <p *ngIf="serie.dolor">Dolor</p>
+                      <p *ngIf="serie.notas">Notas: {{ serie.notas }}</p>
+                    </ng-container>
+                    <p *ngIf="ejercicio.notas">Notas adicionales: {{ ejercicio.notas }}</p>
                   </ion-label>
                 </ion-item>
               </ng-container>

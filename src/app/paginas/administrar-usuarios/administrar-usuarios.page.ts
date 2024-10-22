@@ -1,28 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { Usuario } from '../../models/usuario.model';
 import { UsuarioService } from '../../services/usuario.service';
 import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
 import { Router } from '@angular/router';
 
-
 @Component({
-  selector: 'app-tab3',
-  templateUrl: './tab3.page.html',
-  styleUrls: ['./tab3.page.scss'],
+  selector: 'app-administrar-usuarios',
+  templateUrl: './administrar-usuarios.page.html',
+  styleUrls: ['./administrar-usuarios.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, ToolbarLoggedComponent]  // Importamos los módulos necesarios
+  imports: [IonicModule, CommonModule, FormsModule]
 })
-export class Tab3Page implements OnInit {
-
+export class AdministrarUsuariosPage implements OnInit {
 
   usuarios: Usuario[] = [];
   usuario: Usuario = { _id: '', entidad: 'usuario', nombre: '', email: '', timestamp: '' };
   usuarioEnEdicion = false;
 
-  constructor(private usuarioService: UsuarioService, private router: Router) { }
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router,
+    private alertController: AlertController // Inyectamos AlertController
+  ) { }
 
   ngOnInit() {
     this.cargarUsuarios();  // Cargar los usuarios al iniciar la página
@@ -79,11 +81,57 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  // Método para editar un usuario
-  editarUsuario(usuario: Usuario) {
-    this.usuario = { ...usuario };  // Copiamos los datos del usuario al formulario
-    this.usuarioEnEdicion = true;  // Activamos el modo edición
+  // Método para editar un usuario usando un alert
+  async editarUsuario(usuario: Usuario) {
+    const alert = await this.alertController.create({
+      header: 'Editar Usuario',
+      inputs: [
+        {
+          name: 'nombre',
+          type: 'text',
+          value: usuario.nombre,
+          placeholder: 'Nombre'
+        },
+        {
+          name: 'email',
+          type: 'email',
+          value: usuario.email,
+          placeholder: 'Email'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Edición cancelada');
+          }
+        },
+        {
+          text: 'Guardar',
+          handler: async (data) => {
+            if (data.nombre && data.email) {
+              usuario.nombre = data.nombre;
+              usuario.email = data.email;
+              try {
+                await this.usuarioService.actualizarUsuario(usuario);
+                console.log('Usuario actualizado con éxito');
+                this.cargarUsuarios();  // Recargamos la lista después de actualizar
+              } catch (error) {
+                console.error('Error actualizando usuario:', error);
+              }
+            } else {
+              console.error('Faltan datos para actualizar el usuario.');
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
-
+  salir() {
+    this.router.navigate(['..']); // Navega a la página anterior
+  }
 }

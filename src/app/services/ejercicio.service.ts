@@ -19,6 +19,7 @@ export class EjercicioService {
   }
 
   // Método para agregar un nuevo ejercicio
+
   //async agregarEjercicio(nombre: string, tipo: string, descripcion?: string) {
   async agregarEjercicio(nuevoEjercicio: Ejercicio) {
     // Si no se proporciona una descripción, se asigna una vacía por defecto
@@ -32,16 +33,16 @@ export class EjercicioService {
 
         nombre: nuevoEjercicio.nombre, // Nombre del ejercicio
         descripcion: nuevoEjercicio.descripcion,// Descripción opcional del ejercicio
-        equipamiento: nuevoEjercicio.equipamiento, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
+        equipamiento: nuevoEjercicio.tipoPeso, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
         entidad: 'ejercicio',
         imagen: nuevoEjercicio.imagen || '', // Imagen opcional del ejercicio, vacía si no se proporciona
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
 
-      console.log('Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
+      console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
+      console.error('Ejercicio.Service -> Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -55,13 +56,13 @@ export class EjercicioService {
       });
 
       // Verificamos que se están obteniendo los ejercicios
-      console.log('Ejercicios obtenidos:', resultado.docs);
+      console.log('Ejercicio.Service -> Ejercicios obtenidos:', resultado.docs);
 
       // Extraemos los ejercicios de los documentos
       const ejercicios = resultado.docs;
       return ejercicios; // Devolvemos la lista de ejercicios
     } catch (error) {
-      console.error('Error al obtener ejercicios:', error); // Mostramos en consola si ocurre un error
+      console.error('Ejercicio.Service -> Error al obtener ejercicios:', error); // Mostramos en consola si ocurre un error
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
@@ -79,9 +80,10 @@ export class EjercicioService {
     try {
       // Ejecutamos la consulta en la base de datos
       const resultado = await this.baseDatos.find(consulta);
+      console.log('Ejercicio.Service -> Obtenido ejercicio por nombre')
       return resultado.docs; // Devolvemos los documentos que coinciden con la consulta
     } catch (error) {
-      console.error('Error al obtener ejercicio por nombre:', error); // Mostramos el error si ocurre
+      console.error('Ejercicio.Service -> Error al obtener ejercicio por nombre:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -91,9 +93,10 @@ export class EjercicioService {
     try {
       // Utilizamos el método `get` para obtener el documento por ID
       const resultado = await this.baseDatos.get(id);
+      console.log('Ejercicio.Service -> Obtenido ejercicio por id')
       return resultado; // Devolvemos el ejercicio encontrado
     } catch (error) {
-      console.error('Error al obtener ejercicio por ID:', error); // Mostramos el error si ocurre
+      console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera
     }
   }
@@ -108,9 +111,10 @@ export class EjercicioService {
         }
       });
       const ejercicios = result.docs;
+      console.log('Ejercicio.Service -> Obtenidos ejercicios por musculo')
       return ejercicios;
     } catch (err) {
-      console.error('Error al obtener ejercicios por músculo:', err);
+      console.error('Ejercicio.Service -> Error al obtener ejercicios por músculo:', err);
       throw err;
     }
   }
@@ -120,10 +124,10 @@ export class EjercicioService {
     try {
       // Actualizamos el ejercicio en la base de datos usando `put`
       const respuesta = await this.baseDatos.put(ejercicio);
-      console.log('Ejercicio actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
+      console.log('Ejercicio.Service -> Ejercicio actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Error al actualizar ejercicio:', error); // Mostramos el error si ocurre uno
+      console.error('Ejercicio.Service -> Error al actualizar ejercicio:', error); // Mostramos el error si ocurre uno
       throw error; // Lanzamos el error para manejarlo fuera de la función
     }
   }
@@ -133,10 +137,10 @@ export class EjercicioService {
     try {
       // Eliminamos el ejercicio usando `remove`
       const respuesta = await this.baseDatos.remove(ejercicio);
-      console.log('Ejercicio eliminado con éxito', respuesta); // Mensaje si se eliminó correctamente
+      console.log('Ejercicio.Service -> Ejercicio eliminado con éxito', respuesta); // Mensaje si se eliminó correctamente
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Error al eliminar ejercicio:', error); // Mostramos el error si ocurre
+      console.error('Ejercicio.Service -> Error al eliminar ejercicio:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -148,8 +152,9 @@ export class EjercicioService {
       const ejercicios = await this.obtenerEjercicios();
       // Actualizamos el BehaviorSubject con la lista de ejercicios
       this.ejerciciosSubject.next(ejercicios);
+      console.log('Ejercicio.Service -> Cargados ejercicios en Behaviour');
     } catch (error) {
-      console.error('Error al cargar ejercicios:', error); // Mostramos el error si ocurre
+      console.error('Ejercicio.Service -> Error al cargar ejercicios:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
@@ -164,56 +169,56 @@ export class EjercicioService {
         {
           nombre: 'Press de Banca',
           descripcion: 'Ejercicio para fortalecer el pecho',
-          equipamiento: 'barra',
+          tipoPeso: 'barra',
           entidad: 'ejercicio',
           musculo: 'Pectorales'
         },
         {
           nombre: 'Sentadillas',
           descripcion: 'Ejercicio para trabajar las piernas y glúteos',
-          equipamiento: 'barra',
+          tipoPeso: 'barra',
           entidad: 'ejercicio',
           musculo: 'Cuádriceps'
         },
         {
           nombre: 'Curl de Bíceps',
           descripcion: 'Ejercicio para fortalecer los bíceps',
-          equipamiento: 'mancuerna',
+          tipoPeso: 'mancuerna',
           entidad: 'ejercicio',
           musculo: 'Bíceps'
         },
         {
           nombre: 'Peso Muerto',
           descripcion: 'Ejercicio para trabajar la espalda baja y glúteos',
-          equipamiento: 'barra',
+          tipoPeso: 'barra',
           entidad: 'ejercicio',
           musculo: 'Espalda baja'
         },
         {
           nombre: 'Elevación de Talones',
           descripcion: 'Ejercicio para fortalecer las pantorrillas',
-          equipamiento: 'peso corporal',
+          tipoPeso: 'peso corporal',
           entidad: 'ejercicio',
           musculo: 'Pantorrillas'
         },
         {
           nombre: 'Press Militar',
           descripcion: 'Ejercicio para trabajar los hombros',
-          equipamiento: 'barra',
+          tipoPeso: 'barra',
           entidad: 'ejercicio',
           musculo: 'Hombros'
         },
         {
           nombre: 'Remo con Mancuernas',
           descripcion: 'Ejercicio para fortalecer la espalda media',
-          equipamiento: 'mancuerna',
+          tipoPeso: 'mancuerna',
           entidad: 'ejercicio',
           musculo: 'Espalda'
         },
         {
           nombre: 'Dominadas',
           descripcion: 'Ejercicio para trabajar la espalda y bíceps',
-          equipamiento: 'peso corporal',
+          tipoPeso: 'peso corporal',
           entidad: 'ejercicio',
           musculo: 'Espalda y Bíceps'
         }
@@ -221,7 +226,7 @@ export class EjercicioService {
 
       // Agregar los ejercicios iniciales
       const resultados = await this.baseDatos.bulkDocs(ejerciciosIniciales);
-      console.log('Ejercicios iniciales agregados:', resultados);
+      console.log('Ejercicio.Service -> Ejercicios iniciales agregados:', resultados);
     }
   }
 

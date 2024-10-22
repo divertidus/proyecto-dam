@@ -36,10 +36,10 @@ export class UsuarioService {
         timestamp: new Date().toISOString() // Fecha y hora en que se agrega el usuario
       });
 
-      console.log('Usuario añadido con éxito', respuesta); // Mostramos en consola si todo salió bien
+      console.log('USUARIO.SERVICE -> Usuario añadido con éxito', respuesta); // Mostramos en consola si todo salió bien
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Error al agregar usuario:', error); // Si algo falla, mostramos el error en consola
+      console.error('USUARIO.SERVICE -> Error al agregar usuario:', error); // Si algo falla, mostramos el error en consola
       throw error; // Lanzamos el error para que pueda ser manejado por quien llame al método
     }
   }
@@ -55,9 +55,10 @@ export class UsuarioService {
       // Extraemos los usuarios de los documentos
       const usuarios = resultado.docs;
       console.log(resultado.docs)
+      console.log('USUARIO.SERVICE -> obtenidos usuarios')
       return usuarios; // Devolvemos la lista de usuarios
     } catch (error) {
-      console.error('Error al obtener usuarios:', error); // Mostramos en consola si ocurre un error
+      console.error('USUARIO.SERVICE -> Error al obtener usuarios:', error); // Mostramos en consola si ocurre un error
       throw error; // Lanzamos el error para que pueda ser manejado externamente
     }
   }
@@ -75,9 +76,10 @@ export class UsuarioService {
     try {
       // Ejecutamos la consulta en la base de datos
       const resultado = await this.baseDatos.find(consulta);
+      console.log('USUARIO.SERVICE -> obtenido usuario por nombre')
       return resultado.docs; // Devolvemos los documentos que coinciden con la consulta
     } catch (error) {
-      console.error('Error al obtener usuario por nombre:', error); // Mostramos el error si algo sale mal
+      console.error('USUARIO.SERVICE -> Error al obtener usuario por nombre:', error); // Mostramos el error si algo sale mal
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -87,9 +89,10 @@ export class UsuarioService {
     try {
       // Utilizamos el método `get` para obtener el documento por su ID único
       const resultado = await this.baseDatos.get(id);
+      console.log('USUARIO.SERVICE -> obtenido usuario por ID')
       return resultado; // Devolvemos el documento encontrado, ya que los IDs son únicos
     } catch (error) {
-      console.error('Error al obtener usuario por ID:', error); // Mostramos el error si ocurre
+      console.error('USUARIO.SERVICE -> Error al obtener usuario por ID:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera
     }
   }
@@ -120,10 +123,10 @@ async obtenerUsuarioPorId(id: string) {
     try {
       // Actualizamos el usuario en la base de datos usando la función `put` que reemplaza el documento existente
       const respuesta = await this.baseDatos.put(usuario);
-      console.log('Usuario actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
+      console.log('USUARIO.SERVICE -> Usuario actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Error al actualizar usuario:', error); // Mostramos el error si ocurre uno
+      console.error('USUARIO.SERVICE -> Error al actualizar usuario:', error); // Mostramos el error si ocurre uno
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
@@ -133,10 +136,10 @@ async obtenerUsuarioPorId(id: string) {
     try {
       // Eliminamos el usuario usando la función `remove` que borra el documento de la base de datos
       const respuesta = await this.baseDatos.remove(usuario);
-      console.log('Usuario eliminado con éxito', respuesta); // Mostramos un mensaje si se elimina correctamente
+      console.log('USUARIO.SERVICE -> Usuario eliminado con éxito', respuesta); // Mostramos un mensaje si se elimina correctamente
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Error al eliminar usuario:', error); // Mostramos el error si ocurre uno
+      console.error('USUARIO.SERVICE -> Error al eliminar usuario:', error); // Mostramos el error si ocurre uno
       throw error; // Lanzamos el error para manejarlo fuera del método
     }
   }
@@ -148,8 +151,9 @@ async obtenerUsuarioPorId(id: string) {
       const usuarios = await this.obtenerUsuarios();
       // Actualizamos el BehaviorSubject con la lista de usuarios
       this.usuariosSubject.next(usuarios);
+      console.log('USUARIO.SERVICE -> Cargados usuarios en Behaviour')
     } catch (error) {
-      console.error('Error al cargar usuarios:', error); // Mostramos un error si no podemos cargar los usuarios
+      console.error('USUARIO.SERVICE -> Error al cargar usuarios:', error); // Mostramos un error si no podemos cargar los usuarios
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }

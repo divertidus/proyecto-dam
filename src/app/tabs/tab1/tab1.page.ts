@@ -26,6 +26,9 @@ import { EjercicioService } from 'src/app/services/ejercicio.service';
   imports: [IonicModule, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, UserListComponent, ToolbarLoggedComponent]
 })
 export class Tab1Page implements OnInit, OnDestroy {
+abrirModalAgregarDia(_t19: Rutina,$event: MouseEvent) {
+throw new Error('Method not implemented.');
+}
 
   usuarioLogeado: Usuario | null = null;
   rutinas: Rutina[] = [];

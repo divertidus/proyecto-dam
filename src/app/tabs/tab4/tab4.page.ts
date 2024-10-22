@@ -44,7 +44,7 @@ export class Tab4Page implements OnInit {
     this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
       ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
       (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-      (ejercicio.musculo && ejercicio.musculo.toLowerCase().includes(valorBusqueda))
+      (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
     );
   }
 

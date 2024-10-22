@@ -32,7 +32,7 @@ export class ElegirEjercicioComponent implements OnInit {
     const ejercicioConDetalles = {
       ejercicioId: this.ejercicioSeleccionado._id,
       nombre: this.ejercicioSeleccionado.nombre,
-      equipamiento: this.ejercicioSeleccionado.equipamiento,
+      equipamiento: this.ejercicioSeleccionado.tipoPeso,
       series: this.series,
       repeticiones: this.repeticiones,
       notas: this.notas

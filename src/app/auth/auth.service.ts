@@ -48,7 +48,7 @@ export class AuthService {
   async login(credentials: any): Promise<void> {
     const usuario = await this.authProvider.login(credentials); // Llama al método login del proveedor
     this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
-    console.log(`Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
+    console.log(`AUTH.SERVICE -> Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
   }
 
   // Método para iniciar sesión directamente con el usuario seleccionado
@@ -56,7 +56,7 @@ export class AuthService {
     try {
       const usuario = await this.authProvider.login(); // Llama al método login del proveedor
       this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
-      console.log(`Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
+      console.log(`AUTH.SERVICE -> Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
     } catch (error) {
       console.error(error.message); // Manejo de errores
     }
@@ -66,7 +66,7 @@ export class AuthService {
   async logout(): Promise<void> {
     await this.authProvider.logout(); // Llama al método logout del proveedor
     this.estadoUsuarioLogeado.next(null); // Limpia el estado del usuario logueado
-    console.log('Usuario deslogueado'); // Muestra en consola que el usuario ha cerrado sesión
+    console.log('AUTH.SERVICE -> Usuario deslogueado'); // Muestra en consola que el usuario ha cerrado sesión
   }
 
   // Obtiene el usuario logueado
@@ -79,23 +79,28 @@ export class AuthService {
   async autoLoginPrimerUsuario() {
     try {
       // Obtén todos los usuarios de la base de datos
+      console.log('AUTH.SERVICE -> Intentando autologin')
       const usuarios: Usuario[] = await this.usuarioService.obtenerUsuarios();
 
       if (usuarios.length > 0) {
         // Si hay al menos un usuario, selecciona el primero y haz login
+        console.log('AUTH.SERVICE -> Sesion automatica en proceso')
         const primerUsuario = usuarios[0];
         this.loginAuto(primerUsuario);
+
+      } else {
+        console.log('AUTH.SERVICE -> No hay usuarios creados para sesion automatica')
       }
     } catch (error) {
-      console.error('Error al hacer login automático:', error);
+      console.error('AUTH.SERVICE -> Error al hacer login automático:', error);
     }
   }
 
   // Método simulado para hacer login con un usuario específico
   loginAuto(usuario: Usuario) {
-    console.log('Usuario logeado automáticamente:', usuario.nombre);
+    console.log('AUTH.SERVICE -> Usuario logeado automáticamente:', usuario.nombre);
     this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
-    console.log(`Usuario logueado automaticamente: ${usuario.nombre}`); // Muestra en consola el usuario logueado
+    console.log(`AUTH.SERVICE -> Usuario logueado automaticamente: ${usuario.nombre}`); // Muestra en consola el usuario logueado
   } catch(error) {
     console.error(error.message); // Manejo de errores
   }

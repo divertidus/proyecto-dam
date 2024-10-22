@@ -19,12 +19,19 @@ export const routes: Routes = [
   },
   {
     path: 'tabs', // Asegúrate de que este sea el path correcto para las tabs
-   // canActivate: [AuthGuard], // Aplica el guard a las rutas de tabs
+    // canActivate: [AuthGuard], // Aplica el guard a las rutas de tabs
     loadChildren: () => import('./tabs/tabs.routes').then(m => m.routes)
   },
+  {
+    path: 'administrar-usuarios',
+    loadComponent: () => import('./paginas/administrar-usuarios/administrar-usuarios.page').then(m => m.AdministrarUsuariosPage)
+  },
+
+
+
   {
     path: '**',
     redirectTo: 'seleccionar-usuario', // Redirigir a seleccionar usuario si la ruta no coincide
     pathMatch: 'full'
-  }
+  },
 ];

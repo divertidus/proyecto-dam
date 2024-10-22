@@ -16,10 +16,10 @@ import { Ejercicio } from 'src/app/models/ejercicio.model';
 export class EjercicioFormComponent implements OnInit {
   // Recibe el nuevo ejercicio
   @Input() nuevoEjercicio: Ejercicio = {
-    musculo: '',
+    musculoPrincipal: '',
     entidad: 'ejercicio',
     nombre: '',
-    equipamiento: 'barra',
+   // tipo: 'barra',
     descripcion: ''
   };
 
@@ -33,7 +33,7 @@ export class EjercicioFormComponent implements OnInit {
     if (await this.validarFormulario()) {
       this.ejercicioAgregado.emit(this.nuevoEjercicio);
       // Reiniciar el formulario
-      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculo: '', equipamiento: 'barra', descripcion: '' };
+      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculoPrincipal: ''/* , tipo: 'barra' */, descripcion: '' };
     }
   }
 
