@@ -1,4 +1,4 @@
-<app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged> <!-- Nuevo componente -->
+<app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged>
 
 <ion-content class="ion-padding">
   <h2>Mis Rutinas:</h2>
@@ -6,10 +6,10 @@
   <!-- Si no existen rutinas, mostrar un mensaje -->
   <div *ngIf="rutinas.length === 0">
     <h3>No existen rutinas.</h3>
-    <ion-button expand="block" color="primary" (click)="crearNuevaRutina()">Crear nueva rutina</ion-button>
+    <ion-button expand="block" color="primary" (click)="abrirFormularioDia()">Crear nueva rutina</ion-button>
   </div>
 
-  <!-- Si existen rutinas, listarlas -->
+  <!-- Mostrar la lista de rutinas si existen -->
   <div *ngIf="rutinas.length > 0">
     <ion-list>
       <ng-container *ngFor="let rutina of rutinas">
@@ -20,15 +20,15 @@
           </ion-label>
 
           <!-- Añadir Día y Modificar -->
-          <ion-button fill="outline" slot="end" (click)="abrirModalAgregarDia(rutina, $event)">
+          <ion-button fill="outline" slot="end" (click)="abrirFormularioDia(rutina)">
             Añadir Día
           </ion-button>
-          <ion-button fill="outline" slot="end" (click)="modificarRutina(rutina, $event)">
+          <ion-button fill="outline" slot="end" (click)="modificarRutina(rutina,$event)">
             Modificar
           </ion-button>
         </ion-item>
 
-        <!-- Detalles de los días y ejercicios para la rutina seleccionada -->
+        <!-- Mostrar los días de la rutina -->
         <div *ngIf="rutinaExpandida === rutina._id">
           <ion-list>
             <ng-container *ngFor="let dia of rutina.dias">
@@ -36,24 +36,17 @@
                 <ion-label>
                   <h3>{{ dia.diaNombre }}</h3>
                   <p>{{ dia.descripcion ? dia.descripcion : 'Sin descripción' }}</p>
-                  <p *ngIf="dia.fechaEntrenamiento">Fecha de entrenamiento: {{ dia.fechaEntrenamiento }}</p>
                 </ion-label>
               </ion-item>
 
-              <!-- Ejercicios dentro de cada día de la rutina -->
-              <ng-container *ngFor="let ejercicio of dia.ejercicios">
+              <!-- Mostrar los ejercicios dentro del día -->
+              <ng-container *ngFor="let ejercicioPlan of dia.ejercicios">
                 <ion-item>
                   <ion-label>
-                    <h4>Ejercicio: {{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h4>
-                    <ng-container *ngFor="let serie of ejercicio.series; let i = index">
-                      <p>Serie {{ i + 1 }}: {{ serie.repeticiones }} repeticiones, {{ serie.peso ? serie.peso + ' kg' :
-                        'peso corporal' }}</p>
-                      <p *ngIf="serie.alFallo">Al fallo</p>
-                      <p *ngIf="serie.conAyuda">Con ayuda</p>
-                      <p *ngIf="serie.dolor">Dolor</p>
-                      <p *ngIf="serie.notas">Notas: {{ serie.notas }}</p>
-                    </ng-container>
-                    <p *ngIf="ejercicio.notas">Notas adicionales: {{ ejercicio.notas }}</p>
+                    <h4>Ejercicio: {{ obtenerNombreEjercicio(ejercicioPlan.ejercicioId) }}</h4>
+                    <p>Número de Series: {{ ejercicioPlan.series.length }}</p>
+                    <p>Repeticiones por Serie: {{ ejercicioPlan.series[0]?.repeticiones }}</p>
+                    <p *ngIf="ejercicioPlan.notas">Notas adicionales: {{ ejercicioPlan.notas }}</p>
                   </ion-label>
                 </ion-item>
               </ng-container>

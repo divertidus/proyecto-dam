@@ -1,0 +1,49 @@
+<!-- form-dia.component.html -->
+
+<app-toolbar-modales-cancelar [titulo]="modo === 'crear' ? 'Crear Día' : 'Editar Día'"></app-toolbar-modales-cancelar>
+
+
+<ion-item>
+  <ion-label position="floating">Nombre del Día</ion-label>
+  <ion-input [(ngModel)]="nombreDia"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-label>
+  <ion-button (click)="guardar()" color="success" slot="end">Guardar Día</ion-button>
+</ion-item>
+
+<ion-content [fullscreen]="true">
+  <!-- Barra de búsqueda -->
+  <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+
+  <!-- Lista de ejercicios filtrados -->
+  <ion-grid>
+    <ion-row class="ion-align-items-stretch">
+      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejercicios">
+        <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
+          <ion-card-header>
+            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <!-- Imagen del ejercicio -->
+            <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+              alt="Imagen del ejercicio" class="imagen-ejercicio" />
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <!-- Botón de cancelar -->
+  <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-title>
+    <ion-button (click)="guardar()" color="success" slot="end">Guardar</ion-button>
+  </ion-toolbar>
+</ion-footer>

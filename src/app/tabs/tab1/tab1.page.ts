@@ -8,13 +8,16 @@ import { UserListComponent } from "../../componentes/usuario/user-list/user-list
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { Usuario } from '../../models/usuario.model';
-import { UsuarioService } from '../../services/usuario.service';
-import { Rutina } from 'src/app/models/rutina.model';
+import { ModalController } from '@ionic/angular';
+import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
 import { RutinaService } from 'src/app/services/rutina.service';
 import { Subscription } from 'rxjs';
-import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
+import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
+import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
+
+
 
 
 
@@ -23,12 +26,14 @@ import { EjercicioService } from 'src/app/services/ejercicio.service';
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, UserListComponent, ToolbarLoggedComponent]
+  imports: [IonicModule, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
+    UserListComponent, ToolbarLoggedComponent]
 })
 export class Tab1Page implements OnInit, OnDestroy {
-abrirModalAgregarDia(_t19: Rutina,$event: MouseEvent) {
-throw new Error('Method not implemented.');
-}
+
+  abrirModalAgregarDia(_t19: Rutina, $event: MouseEvent) {
+    throw new Error('Method not implemented.');
+  }
 
   usuarioLogeado: Usuario | null = null;
   rutinas: Rutina[] = [];
@@ -42,7 +47,8 @@ throw new Error('Method not implemented.');
     private rutinaService: RutinaService,
     private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -71,6 +77,101 @@ throw new Error('Method not implemented.');
     });
   }
 
+
+  async abrirFormularioDia(rutina?: Rutina, event?: Event) {
+    console.log('Intentando abrir el formulario de día para añadir'); // Depuración
+
+    if (event) {
+      event.stopPropagation(); // Evitar la propagación del clic si es necesario
+    }
+
+    try {
+      const modal = await this.modalController.create({
+        component: FormDiaComponent,
+        componentProps: {
+          ejercicios: this.ejercicios, // Pasar la lista de ejercicios
+          diaExistente: null, // No pasamos día existente porque es para añadir un nuevo día
+          modo: 'crear', // Siempre será modo "crear" cuando estamos añadiendo un nuevo día
+          numeroDiasExistentes: rutina ? rutina.dias.length : 0 // Número de días existentes en la rutina
+        }
+      });
+
+      console.log('Modal creado con éxito'); // Depuración
+      await modal.present();
+      console.log('Modal presentado con éxito'); // Depuración
+
+      const { data } = await modal.onDidDismiss();
+      console.log('Datos recibidos al cerrar el modal:', data); // Depuración
+
+      if (data) {
+        this.guardarNuevoDiaEnRutina(rutina, data);
+      }
+
+    } catch (error) {
+      console.error('Error al intentar abrir el modal:', error);
+    }
+  }
+
+  guardarNuevoDiaEnRutina(rutina: Rutina | undefined, dia: DiaRutina) {
+    if (rutina) {
+      // Si la rutina existe, añadir el día a la rutina existente
+      rutina.dias.push(dia);
+      this.rutinaService.actualizarRutina(rutina).then(() => {
+        console.log('Nuevo día añadido y rutina actualizada');
+        this.rutinaService.cargarRutinas(); // Refrescar la lista de rutinas después de añadir el nuevo día
+      });
+    } else {
+      // Si no hay rutina, crear una nueva con el día
+      const nuevaRutina: Rutina = {
+        nombre: 'Mi Primera Rutina',
+        dias: [dia], // Añadir el día creado a la nueva rutina
+        usuarioId: this.usuarioLogeado?._id || '',
+        entidad: 'rutina',
+        timestamp: new Date().toISOString()
+      };
+      this.rutinaService.agregarRutina(nuevaRutina).then(response => {
+        nuevaRutina._id = response.id; // Guardar el ID generado
+        console.log('Nueva rutina creada con éxito');
+        this.rutinaService.cargarRutinas(); // Refrescar las rutinas
+      });
+    }
+  }
+
+  guardarNuevoDia(dia: DiaRutina) {
+    if (this.rutinas.length === 0) {
+      // Si no hay rutinas, crear una nueva con el primer día
+      const nuevaRutina: Rutina = {
+        nombre: 'Mi Primera Rutina',
+        dias: [dia], // Añadir el día creado a la nueva rutina
+        usuarioId: this.usuarioLogeado?._id || '',
+        entidad: 'rutina',
+        timestamp: new Date().toISOString()
+      };
+      this.rutinaService.agregarRutina(nuevaRutina).then(response => {
+        nuevaRutina._id = response.id; // Guardar el ID generado
+        this.rutinas.push(nuevaRutina); // Añadir la rutina a la lista local
+        this.rutinaService.cargarRutinas(); // Refrescar las rutinas
+      });
+    } else {
+      // Añadir el día a una rutina existente (en este caso la primera)
+      this.rutinas[0].dias.push(dia);
+      this.rutinaService.actualizarRutina(this.rutinas[0]).then(() => {
+        console.log('Rutina actualizada');
+        this.rutinaService.cargarRutinas(); // Refrescar las rutinas
+      });
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
   ngOnDestroy() {
     // Desuscribimos para evitar fugas de memoria
     if (this.rutinaSubscription) {
@@ -97,66 +198,9 @@ throw new Error('Method not implemented.');
     this.rutinaExpandida = this.rutinaExpandida === rutina._id ? null : rutina._id;
   }
 
-  // Crear una nueva rutina
-  crearNuevaRutina() {
-    this.router.navigate(['/tabs/tab5']);
+  modificarRutina(_t19: Rutina, $event: MouseEvent) {
+    throw new Error('Method not implemented.');
   }
 
-  // Modificar una rutina existente para añadir más EjercicioPlan[]
-  async modificarRutina(rutina: Rutina, event: Event) {
-    event.stopPropagation(); // Evitar que se active el evento de expandir rutina cuando se hace clic en "Modificar"
 
-    const alert = await this.alertController.create({
-      header: 'Agregar Ejercicio',
-      inputs: [
-        {
-          name: 'ejercicioId',
-          type: 'text',
-          placeholder: 'ID del Ejercicio'
-        },
-        {
-          name: 'series',
-          type: 'number',
-          placeholder: 'Número de Series'
-        },
-        {
-          name: 'repeticiones',
-          type: 'number',
-          placeholder: 'Número de Repeticiones'
-        },
-        {
-          name: 'notas',
-          type: 'text',
-          placeholder: 'Notas (opcional)'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Añadir',
-          handler: (data) => {
-            if (data.ejercicioId && data.series && data.repeticiones) {
-              const nuevoEjercicio = {
-                ejercicioId: data.ejercicioId,
-                series: data.series,
-                repeticiones: data.repeticiones,
-                notas: data.notas
-              };
-              rutina.dias[0].ejercicios.push(nuevoEjercicio); // Añadir el nuevo ejercicio al primer día
-              this.rutinaService.actualizarRutina(rutina).then(() => {
-                console.log('Rutina actualizada');
-              });
-            } else {
-              console.error('Faltan datos para añadir el ejercicio.');
-            }
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
 }

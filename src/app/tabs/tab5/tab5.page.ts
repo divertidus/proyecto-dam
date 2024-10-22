@@ -10,84 +10,32 @@ import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons';
 import { EjercicioFormComponent } from 'src/app/componentes/ejercicio/ejercicio-form/ejercicio-form.component';
 import { EjercicioListComponent } from "../../componentes/ejercicio/ejercicio-list/ejercicio-list.component";
-import { EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
-import { Router } from '@angular/router';
+import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service'; // Importamos AuthService
 import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
+import { RutinaCrearDiaComponent } from 'src/app/componentes/rutina-crear-dia/rutina-crear-dia.component';
+
 
 @Component({
   selector: 'app-tab5',
   templateUrl: './tab5.page.html',
   styleUrls: ['./tab5.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, EjercicioListComponent, EjercicioFormComponent, ToolbarLoggedComponent]
+  imports: [CommonModule, FormsModule, IonicModule, EjercicioListComponent, EjercicioFormComponent, RutinaCrearDiaComponent, ToolbarLoggedComponent]
 })
 export class Tab5Page implements OnInit {
 
-  ejercicios: Ejercicio[] = []; // Almacena todos los ejercicios
-  ejerciciosFiltrados: Ejercicio[] = []; // Ejercicios filtrados por la barra de búsqueda
-  ejerciciosEnRutina: EjercicioPlan[] = []; // Lista tipada para almacenar los ejercicios añadidos a la rutina
-
-  public alertButtons = ['Cancelar', 'Agregar'];
-
-  public alertInputs = [
-    {
-      name: 'series',
-      type: 'number',
-      placeholder: 'Número de Series (Ej. 3)',
-      min: 1,
-      attributes: {
-        required: true
-      }
-    },
-    {
-      name: 'repeticiones',
-      type: 'number',
-      placeholder: 'Repeticiones por Serie (Ej. 10)',
-      min: 1,
-      attributes: {
-        required: true
-      }
-    },
-    {
-      label: 'Máquina',
-      type: 'radio',
-      name: 'tipoPeso',
-      value: 'máquina',
-      checked: true
-    },
-    {
-      label: 'Pesas',
-      type: 'radio',
-      name: 'tipoPeso',
-      value: 'pesas'
-    },
-    {
-      label: 'Barra',
-      type: 'radio',
-      name: 'tipoPeso',
-      value: 'barra'
-    },
-    {
-      label: 'Peso Corporal',
-      type: 'radio',
-      name: 'tipoPeso',
-      value: 'peso corporal'
-    },
-    {
-      name: 'notas',
-      type: 'textarea',
-      placeholder: 'Notas adicionales (opcional)'
-    }
-  ];
-
+  listaDeEjercicios: Ejercicio[] = []; // Todos los ejercicios disponibles
+  rutinaActual: Rutina; // Rutina actual seleccionada
+  diaSeleccionado: DiaRutina | null = null; // Día actual que se va a editar
+  modoActual: 'crear' | 'editar' = 'crear'; // Modo actual: crear o editar un día
 
 
   constructor(
     private ejercicioService: EjercicioService,
     private rutinaService: RutinaService, // Añadimos RutinaService aquí
-    private modalController: ModalController,
-    private alertController: AlertController,
+    private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService // Añadimos AuthService aquí
   ) {
@@ -96,152 +44,81 @@ export class Tab5Page implements OnInit {
 
   ngOnInit() {
     this.cargarEjercicios();
+    const rutinaId = this.route.snapshot.paramMap.get('id');
+    this.cargarRutina(rutinaId);
   }
 
-  // Cargar los ejercicios desde el servicio
+
+  // Cargar los ejercicios disponibles para añadir al día de la rutina
   async cargarEjercicios() {
-    this.ejercicios = await this.ejercicioService.obtenerEjercicios();
-    // console.log(this.ejercicios); // Verifica que los ejercicios se carguen correctamente
-    this.ejerciciosFiltrados = this.ejercicios; // Inicialmente mostrar todos
-  }
-
-  // Actualizar la lista filtrada cuando el usuario escribe en la barra de búsqueda
-  buscarEjercicios(event: any) {
-    const valorBusqueda = event.target.value.toLowerCase();
-    this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
-      ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
-      (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-      (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
-    );
-  }
-
-  async seleccionarEjercicio(ejercicio: Ejercicio) {
-    const alert = await this.alertController.create({
-      header: `Detalles de: ${ejercicio.nombre}`,
-      inputs: [
-        {
-          name: 'series',
-          type: 'number',
-          placeholder: 'Número de Series (Ej. 3)',
-          min: 1
-        },
-        {
-          name: 'repeticiones',
-          type: 'number',
-          placeholder: 'Repeticiones por Serie (Ej. 10)',
-          min: 1
-        },
-        {
-          name: 'notas',
-          type: 'text',
-          placeholder: 'Notas adicionales (opcional)'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Agregar',
-          handler: (data) => {
-            if (data.series && data.repeticiones) {
-              this.onEjercicioAgregado(
-                ejercicio,
-                parseInt(data.series),
-                parseInt(data.repeticiones),
-                data.tipoPeso,
-                data.notas
-              );
-            }
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  // Agregar el ejercicio con los detalles ingresados
-  onEjercicioAgregado(ejercicio: Ejercicio, series: number, repeticiones: number, tipoPeso: string, notas?: string) {
-    const seriesDetalles = Array(series).fill(null).map((_, index) => ({
-      numeroSerie: index + 1,
-      repeticiones: repeticiones,
-    }));
-
-    const ejercicioConDetalles: EjercicioPlan = {
-      ejercicioId: ejercicio._id!,
-      tipoPeso: tipoPeso,
-      series: seriesDetalles,
-      notas: notas || ''
-    };
-
-    this.ejerciciosEnRutina.push(ejercicioConDetalles);
-
-    console.log('Ejercicio añadido a la rutina:', ejercicioConDetalles);
-    console.log('Ejercicios en esta rutina: ', this.ejerciciosEnRutina.length);
-  }
-
-  // Mostrar el formulario emergente para agregar un nuevo ejercicio
-  async mostrarFormularioAgregar() {
-    const modal = await this.modalController.create({
-      component: EjercicioFormComponent
-    });
-
-    modal.onDidDismiss().then((result) => {
-      if (result.data) {
-        this.cargarEjercicios(); // Actualizar la lista de ejercicios
-      }
-    });
-
-    await modal.present();
-  }
-
-  // Guardar la rutina con los ejercicios seleccionados
-  async guardarRutina() {
-    if (this.ejerciciosEnRutina.length === 0) {
-      console.log('No hay ejercicios para guardar.');
-      return;
-    }
-
-    const usuarioActual = this.authService.getUsuarioLogeado();
-    if (!usuarioActual) {
-      console.error('No se puede guardar la rutina porque no hay un usuario logueado.');
-      return;
-    }
-
-    const nuevaRutina: Rutina = {
-      _id: undefined,
-      entidad: 'rutina',
-      usuarioId: usuarioActual._id, // Asociar la rutina con el usuario logueado
-      nombre: 'Rutina Personalizada',
-      dias: [
-        {
-          diaNombre: 'Día 1',
-          ejercicios: this.ejerciciosEnRutina,
-          descripcion: 'Rutina creada automáticamente'
-        }
-      ],
-      timestamp: new Date().toISOString()
-    };
-
     try {
-      await this.rutinaService.agregarRutina(nuevaRutina); // Usar RutinaService para agregar la rutina
-      this.ejerciciosEnRutina = []; // Reiniciar la lista de ejercicios
-      await this.mostrarMensajeRutinaGuardada(); // Mostrar feedback al usuario
-      this.router.navigate(['/tabs/tab1']); // Redirigir a Tab 1 usando la ruta completa
+      this.listaDeEjercicios = await this.ejercicioService.obtenerEjercicios();
     } catch (error) {
-      console.error('Error al guardar la rutina:', error);
+      console.error('Error al cargar los ejercicios:', error);
     }
   }
 
-  // Mostrar mensaje de confirmación de que la rutina ha sido guardada
-  async mostrarMensajeRutinaGuardada() {
-    const alert = await this.alertController.create({
-      header: 'Rutina Guardada',
-      message: 'Tu rutina ha sido guardada con éxito.',
-      buttons: ['OK']
-    });
-    await alert.present();
+  // Cargar la rutina actual desde el servicio
+  async cargarRutina(rutinaId: string) {
+    try {
+      this.rutinaActual = await this.rutinaService.obtenerRutinaPorId(rutinaId);
+    } catch (error) {
+      console.error('Error al cargar la rutina:', error);
+    }
+  }
+
+  // Manejar la creación de un nuevo día
+  crearDia() {
+    this.diaSeleccionado = null; // No hay día seleccionado, estamos creando uno nuevo
+    this.modoActual = 'crear'; // Cambiar a modo crear
+  }
+
+  // Manejar la edición de un día existente
+  editarDia(dia: DiaRutina) {
+    this.diaSeleccionado = dia; // El día seleccionado se pasa al componente
+    this.modoActual = 'editar'; // Cambiar a modo editar
+  }
+
+  guardarDia(dia: DiaRutina) {
+    // Asegurarse de que la rutina actual está definida antes de acceder a sus propiedades
+    if (!this.rutinaActual) {
+      console.error('La rutina no está definida.');
+      return;
+    }
+
+    // Validar si estamos creando un nuevo día o editando uno existente
+    if (this.modoActual === 'crear') {
+      if (!this.rutinaActual.dias) {
+        // Si 'dias' no está inicializado, inicializarlo como un array vacío
+        this.rutinaActual.dias = [];
+      }
+      // Agregar el nuevo día
+      this.rutinaActual.dias.push(dia);
+    } else {
+      // Si estamos en modo edición, encontrar el día que estamos editando
+      const index = this.rutinaActual.dias.findIndex(d => d.diaNombre === this.diaSeleccionado?.diaNombre);
+      if (index > -1) {
+        // Reemplazar el día existente con los nuevos datos
+        this.rutinaActual.dias[index] = dia;
+      } else {
+        console.error('El día que intentas editar no se encuentra en la rutina.');
+      }
+    }
+
+    // Guardar la rutina actualizada en el servicio
+    this.rutinaService.actualizarRutina(this.rutinaActual)
+      .then(() => {
+        console.log('Rutina actualizada correctamente');
+        this.volverAtras(); // Regresar o cerrar el formulario
+      })
+      .catch(error => {
+        console.error('Error al actualizar la rutina:', error);
+      });
+  }
+
+  // Cancelar la creación o edición del día
+  volverAtras() {
+    this.diaSeleccionado = null; // Limpiar la selección
+    this.router.navigate(['/rutinas']); // Redirigir a la lista de rutinas (ajusta esta ruta según tu aplicación)
   }
 }

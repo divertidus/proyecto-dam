@@ -1,38 +1,6 @@
-<app-toolbar-logged [titulo]="'Crear Rutina'"></app-toolbar-logged> <!-- Nuevo componente -->
-
-<ion-item>
-  <ion-label>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-label>
-  <ion-button (click)="guardarRutina()" color="success" slot="end">Guardar Rutina</ion-button>
-</ion-item>
-
-<ion-content [fullscreen]="true">
-  <!-- Barra de búsqueda -->
-  <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
-
-  <!-- Lista de ejercicios filtrados -->
-  <ion-grid>
-    <ion-row class="ion-align-items-stretch">
-      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
-        <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
-          <ion-card-header>
-            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
-            <!--  <ion-card-subtitle>{{ ejercicio.tipo }}</ion-card-subtitle> -->
-          </ion-card-header>
-
-          <ion-card-content>
-            <!-- Imagen del ejercicio -->
-            <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
-              alt="Imagen del ejercicio" class="imagen-ejercicio" />
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <!-- Botón flotante para agregar nuevo ejercicio -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="mostrarFormularioAgregar()">
-      <ion-icon name="add-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-</ion-content>
+<app-rutina-crear-dia 
+  [ejercicios]="listaDeEjercicios" 
+  [diaExistente]="diaSeleccionado" 
+  [modo]="modoActual"
+  (guardarDia)="guardarDia($event)" 
+  (cancelar)="volverAtras()">
