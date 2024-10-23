@@ -1,0 +1,22 @@
+<ion-item *ngFor="let serie of ejercicio.series; let k = index">
+  <ion-label>
+    Serie {{ serie.numeroSerie }}:
+    {{ serie.repeticiones }} reps
+    {{ serie.peso ? ('- ' + serie.peso + ' kg') : '' }}
+
+    <!-- Checkbox para marcar la serie como completada si tiene repeticiones y peso -->
+    <ion-checkbox slot="start" [checked]="serie.repeticiones > 0 && serie.peso !== undefined"></ion-checkbox>
+
+    <!-- Mostrar si hubo dolor, ayuda o se llegó al fallo -->
+    <small *ngIf="serie.dolor || serie.conAyuda || serie.alFallo">
+      {{ serie.dolor ? 'Dolor' : '' }}
+      {{ serie.conAyuda ? '- Con Ayuda' : '' }}
+      {{ serie.alFallo ? '- Al Fallo' : '' }}
+    </small>
+
+    <!-- Mostrar las notas de la serie si existen -->
+    <p *ngIf="serie.notas">
+      <strong>Notas:</strong> {{ serie.notas }}
+    </p>
+  </ion-label>
+</ion-item>

@@ -1,22 +1,7 @@
 <app-toolbar-logged [titulo]="'Ultimo entrenamiento'"></app-toolbar-logged>
 
 <ion-content>
-    <!-- Usamos el componente DiaEntrenamientoCard con comparacion -->
-    <app-dia-entrenamiento-card 
-        *ngIf="ultimoEntrenamiento"
-        [entrenamientoActual]="ultimoEntrenamiento"
-        [comparacion]="comparacion"
-        [expandido]="true"
-        [index]="0"
-    >
-    </app-dia-entrenamiento-card>
-
-    <ion-card *ngIf="!ultimoEntrenamiento">
-        <ion-card-header>
-            <ion-card-title>No hay entrenamientos registrados</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-            Registra un entrenamiento para verlo aquí. 
-        </ion-card-content>
-    </ion-card>
+    <ion-content>
+        <app-ultimo-entreno></app-ultimo-entreno>
+    </ion-content>
 </ion-content>
