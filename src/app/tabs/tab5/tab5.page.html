@@ -1,1 +1,38 @@
-<app-toolbar-logged [titulo]="'TAB 5'"></app-toolbar-logged>
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Historial de Entrenamientos</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
+        <ion-card>
+            <ion-card-header (click)="toggleEntrenamiento(i)">
+                <ion-card-title>{{ entrenamiento.fechaEntrenamiento | date }}</ion-card-title>
+                <ion-card-subtitle>{{ entrenamiento.diaRutinaId }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content *ngIf="isExpandido(i)">
+                <ion-list>
+                    <ion-item *ngFor="let ejercicio of entrenamiento.ejercicios">
+                        <ion-label>
+                            <h2>{{ ejercicio.ejercicioId }}</h2>
+                            <p *ngFor="let serie of ejercicio.series">
+                                Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' +
+                                serie.peso + ' kg') : '' }}
+                            </p>
+                        </ion-label>
+                    </ion-item>
+                </ion-list>
+            </ion-card-content>
+        </ion-card>
+    </ion-list>
+
+    <ion-card *ngIf="entrenamientos.length === 0">
+        <ion-card-header>
+            <ion-card-title>No hay entrenamientos registrados</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            Registra un entrenamiento para verlo aquí.
+        </ion-card-content>
+    </ion-card>
+</ion-content>

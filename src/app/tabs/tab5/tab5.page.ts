@@ -1,20 +1,11 @@
+// tab5.page.ts
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AlertController, ModalController } from '@ionic/angular';
-import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { EjercicioService } from 'src/app/services/ejercicio.service';
-import { RutinaService } from 'src/app/services/rutina.service';
+import { AuthService } from 'src/app/auth/auth.service';
+import { DiaEntrenamiento, Usuario } from 'src/app/interfaces/posiblesNuevasEntidades';
+import { HistorialService } from 'src/app/services/historial-entreno.service';
 import { IonicModule } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import * as todosLosIconos from 'ionicons/icons';
-import { EjercicioFormComponent } from 'src/app/componentes/ejercicio/ejercicio-form/ejercicio-form.component';
-import { EjercicioListComponent } from "../../componentes/ejercicio/ejercicio-list/ejercicio-list.component";
-import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service'; // Importamos AuthService
 import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
-import { RutinaCrearDiaComponent } from 'src/app/componentes/rutina-crear-dia/rutina-crear-dia.component';
 
 
 @Component({
@@ -22,23 +13,57 @@ import { RutinaCrearDiaComponent } from 'src/app/componentes/rutina-crear-dia/ru
   templateUrl: './tab5.page.html',
   styleUrls: ['./tab5.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, EjercicioListComponent, EjercicioFormComponent, RutinaCrearDiaComponent, ToolbarLoggedComponent]
+  imports: [NgIf, NgFor, IonicModule, CommonModule, ToolbarLoggedComponent],
 })
 export class Tab5Page implements OnInit {
-
+  entrenamientos: DiaEntrenamiento[] = []; // Almacena todos los entrenamientos
+  usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado
+  entrenamientosExpandido: Set<number> = new Set<number>(); // Set para manejar entrenamientos expandidos
 
   constructor(
-    private ejercicioService: EjercicioService,
-    private rutinaService: RutinaService, // Añadimos RutinaService aquí
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService // Añadimos AuthService aquí
-  ) {
-    addIcons(todosLosIconos);
+    private authService: AuthService,
+    private historialService: HistorialService
+  ) { }
+
+  async ngOnInit() {
+    this.authService.usuarioLogeado$.subscribe(async (usuario) => {
+      if (usuario) {
+        this.usuarioLogeado = usuario;
+        await this.cargarEntrenamientos();
+      }
+    });
   }
 
-  ngOnInit() {
-  
+  // Método para cargar todos los entrenamientos del usuario logeado
+  async cargarEntrenamientos() {
+    try {
+      if (!this.usuarioLogeado) return;
+
+      // Obtenemos el historial del usuario
+      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      if (historiales.length === 0) {
+        console.log('No hay entrenamientos registrados');
+        return;
+      }
+
+      // Aplanamos los entrenamientos
+      this.entrenamientos = historiales.flatMap(h => h.entrenamientos);
+    } catch (error) {
+      console.error('Error al cargar los entrenamientos:', error);
+    }
   }
 
+  // Método para expandir o contraer el entrenamiento
+  toggleEntrenamiento(index: number) {
+    if (this.entrenamientosExpandido.has(index)) {
+      this.entrenamientosExpandido.delete(index); // Contraer
+    } else {
+      this.entrenamientosExpandido.add(index); // Expandir
+    }
+  }
+
+  // Método para verificar si el entrenamiento está expandido
+  isExpandido(index: number): boolean {
+    return this.entrenamientosExpandido.has(index);
+  }
 }
