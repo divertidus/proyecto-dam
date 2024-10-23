@@ -3,9 +3,10 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { DiaEntrenamiento, Usuario } from 'src/app/interfaces/posiblesNuevasEntidades';
 import { HistorialService } from 'src/app/services/historial-entreno.service';
 import { IonicModule } from '@ionic/angular';
+import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
+import { Usuario } from 'src/app/models/usuario.model';
 
 @Component({
   selector: 'app-tab3',

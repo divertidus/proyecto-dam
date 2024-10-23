@@ -1,4 +1,4 @@
-// Modelo de Usuario
+/* // Modelo de Usuario
 export interface Usuario {
     _id?: string;                // Identificador único del usuario
     entidad: 'usuario';          // Tipo de entidad para distinguir en la base de datos
@@ -82,4 +82,4 @@ export interface Usuario {
     dolor?: boolean;                  // Indica si hubo dolor durante la serie (opcional)
     notas?: string;                   // Notas adicionales, como "con ayuda", "hasta el fallo" (opcional)
   }
-  
+   */

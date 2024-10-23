@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Para manejar la lista de historiales de manera reactiva
-import { HistorialEntrenamiento } from '../interfaces/posiblesNuevasEntidades';
+import { HistorialEntrenamiento } from '../models/historial-entreno';
 
 @Injectable({
   providedIn: 'root' // Servicio disponible en toda la aplicación

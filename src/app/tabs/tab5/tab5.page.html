@@ -12,13 +12,42 @@
                 <ion-card-subtitle>{{ entrenamiento.diaRutinaId }}</ion-card-subtitle>
             </ion-card-header>
             <ion-card-content *ngIf="isExpandido(i)">
+
+                <!-- Notas del día de entrenamiento -->
+                <p *ngIf="entrenamiento.notas">
+                    <strong>Notas del día:</strong> {{ entrenamiento.notas }}
+                </p>
+
                 <ion-list>
-                    <ion-item *ngFor="let ejercicio of entrenamiento.ejercicios">
+                    <ion-item *ngFor="let ejercicio of entrenamiento.ejercicios; let j = index">
                         <ion-label>
                             <h2>{{ ejercicio.ejercicioId }}</h2>
-                            <p *ngFor="let serie of ejercicio.series">
+
+                            <!-- Notas del ejercicio -->
+                            <p *ngIf="ejercicio.notas">
+                                <strong>Notas del ejercicio:</strong> {{ ejercicio.notas }}
+                            </p>
+
+                            <p *ngFor="let serie of ejercicio.series; let k = index">
                                 Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' +
                                 serie.peso + ' kg') : '' }}
+
+                                <!-- Mostrar si hubo dolor, ayuda o se llegó al fallo -->
+                                <small *ngIf="serie.dolor || serie.conAyuda || serie.alFallo">
+                                    {{ serie.dolor ? 'Dolor' : '' }} {{ serie.conAyuda ? '- Con Ayuda' : '' }} {{
+                                    serie.alFallo ? '- Al Fallo' : '' }}
+                                </small>
+
+                                <!-- Mostrar serie anterior si existe -->
+                                <span *ngIf="comparaciones[i]?.ejercicios[j]?.seriesAnterior[k]">
+                                    <br>
+                                    <small class="anterior-serie">
+                                        Anterior: {{ comparaciones[i]?.ejercicios[j]?.seriesAnterior[k]?.repeticiones }}
+                                        reps
+                                        {{ comparaciones[i]?.ejercicios[j]?.seriesAnterior[k]?.peso ? ('- ' +
+                                        comparaciones[i]?.ejercicios[j]?.seriesAnterior[k]?.peso + ' kg') : '' }}
+                                    </small>
+                                </span>
                             </p>
                         </ion-label>
                     </ion-item>
