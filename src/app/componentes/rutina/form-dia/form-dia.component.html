@@ -13,15 +13,16 @@
   <ion-input [(ngModel)]="descripcionDia"></ion-input>
 </ion-item>
 
-<ion-item>
+<!-- <ion-item>
   <ion-label>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-label>
   <ion-button (click)="guardar()" color="success" slot="end">Guardar Día</ion-button>
+</ion-item> -->
+<!-- Barra de búsqueda -->
+<ion-item>
+  <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
 </ion-item>
 
-<ion-content [fullscreen]="true">
-  <!-- Barra de búsqueda -->
-  <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
-
+<ion-content>
   <!-- Lista de ejercicios filtrados -->
   <ion-grid>
     <ion-row class="ion-align-items-stretch">
@@ -41,10 +42,14 @@
     </ion-row>
   </ion-grid>
 
-
-  <!-- Botón de cancelar -->
-  <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
 </ion-content>
+
+<!-- Botón de cancelar -->
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
+  </ion-toolbar>
+</ion-footer>
 
 <ion-footer>
   <ion-toolbar>

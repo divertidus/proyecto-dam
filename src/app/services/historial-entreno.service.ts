@@ -97,4 +97,28 @@ export class HistorialService {
       throw error;
     }
   }
+
+  async obtenerUltimoEntrenamientoPorUsuario(usuarioId: string): Promise<HistorialEntrenamiento | null> {
+    try {
+      // Obtenemos el historial del usuario
+      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
+      if (historiales.length === 0) {
+        console.log('No hay entrenamientos registrados');
+        return null;
+      }
+
+      // Ordenamos los historiales por fecha descendente
+      historiales.sort(
+        (a, b) =>
+          new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
+          new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
+      );
+
+      // Devolvemos el último entrenamiento
+      return historiales[0].entrenamientos[0];
+    } catch (error) {
+      console.error('Error al obtener el último entrenamiento:', error);
+      return null;
+    }
+  }
 }

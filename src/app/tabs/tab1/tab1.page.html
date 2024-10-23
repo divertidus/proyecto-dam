@@ -17,13 +17,18 @@
           <div class="header-rutina">
             <ion-card-title>{{ rutina.nombre }}</ion-card-title>
             <div class="iconos-header">
-              <ion-icon name="pencil-outline" (click)="cambiarNombreRutina(rutina, $event)"
+              <ion-icon name="pencil-outline" (click)="editarRutina(rutina, $event)"
                 class="icono-cambiar-nombre"></ion-icon>
               <ion-icon name="close-outline" (click)="eliminarRutina(rutina, $event)"
                 class="icono-eliminar-rutina"></ion-icon>
             </div>
           </div>
           <ion-card-subtitle>{{ rutina.dias.length }} días en esta rutina</ion-card-subtitle>
+          <!-- Mostrar la descripción si existe -->
+          <ion-card-subtitle *ngIf="rutina.descripcion">{{ rutina.descripcion }}</ion-card-subtitle>
+          <ion-card-subtitle *ngIf="!rutina.descripcion">Sin descripción</ion-card-subtitle>
+
+
         </ion-card-header>
 
         <!-- Mostrar el contenido de la rutina de manera compacta -->

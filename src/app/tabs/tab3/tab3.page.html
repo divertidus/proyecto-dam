@@ -1,7 +1,10 @@
 <app-toolbar-logged [titulo]="'Ultimo entrenamiento'"></app-toolbar-logged>
 
 <ion-content>
-    <ion-content>
-        <app-ultimo-entreno></app-ultimo-entreno>
-    </ion-content>
+    <app-ultimo-entreno></app-ultimo-entreno>
+
+    <!-- Botón Comenzar -->
+    <ion-button (click)="onComenzarButtonClick()" expand="block">
+        Comenzar a entrenar
+    </ion-button>
 </ion-content>

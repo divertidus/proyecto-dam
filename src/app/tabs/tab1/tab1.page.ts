@@ -206,17 +206,23 @@ export class Tab1Page implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  // Cambiar el nombre de la rutina
-  async cambiarNombreRutina(rutina: Rutina, event: Event) {
+  // Cambiar el nombre y la descripción de la rutina
+  async editarRutina(rutina: Rutina, event: Event) {
     event.stopPropagation(); // Evitar la propagación del clic
     const alert = await this.alertController.create({
-      header: 'Cambiar Nombre de Rutina',
+      header: 'Editar Rutina',
       inputs: [
         {
           name: 'nombre',
           type: 'text',
           placeholder: 'Nuevo nombre de la rutina',
           value: rutina.nombre
+        },
+        {
+          name: 'descripcion',
+          type: 'textarea',
+          placeholder: 'Descripción de la rutina',
+          value: rutina.descripcion || '' // Mostrar la descripción existente o una cadena vacía
         }
       ],
       buttons: [
@@ -229,9 +235,10 @@ export class Tab1Page implements OnInit, OnDestroy {
           handler: async (data) => {
             if (data.nombre && data.nombre.trim() !== '') {
               rutina.nombre = data.nombre.trim();
+              rutina.descripcion = data.descripcion.trim(); // Actualizar la descripción también
               await this.rutinaService.actualizarRutina(rutina);
-              console.log('Nombre de rutina actualizado con éxito');
-              this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar el nombre
+              console.log('Rutina actualizada con éxito');
+              this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar
             }
           }
         }
@@ -239,6 +246,4 @@ export class Tab1Page implements OnInit, OnDestroy {
     });
     await alert.present();
   }
-
-
 }

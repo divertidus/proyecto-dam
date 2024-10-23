@@ -9,6 +9,8 @@ import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { IonicModule } from '@ionic/angular';
 import { ToolbarLoggedComponent } from '../../shared/toolbar-logged/toolbar-logged.component';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
+import { Subscription } from 'rxjs';
+import { EjercicioService } from 'src/app/services/ejercicio.service';
 
 
 @Component({
@@ -21,7 +23,7 @@ import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-ca
 })
 export class FormDiaComponent implements OnInit {
 
-  @Input() ejercicios: Ejercicio[] = []; // Lista de ejercicios disponibles
+  //@Input() ejercicios: Ejercicio[] = []; // Lista de ejercicios disponibles
   @Input() diaExistente: DiaRutina | null = null; // Día ya existente, si estamos editando
   @Input() modo: 'crear' | 'editar' = 'crear'; // Modo de operación (crear o editar)
   @Input() numeroDiasExistentes: number = 0; // Número de días ya existentes en la rutina
@@ -30,10 +32,23 @@ export class FormDiaComponent implements OnInit {
   descripcionDia: string = '';
   ejerciciosEnRutina: EjercicioPlan[] = []; // Ejercicios añadidos al día
   ejerciciosFiltrados: Ejercicio[] = []; // Para no modificar la lista original
+  ejercicios: Ejercicio[] = []; // Lista de ejercicios obtenidos del servicio
+  private ejerciciosSub: Subscription; // Para manejar la suscripción
 
-  constructor(private alertController: AlertController, private modalController: ModalController) { }
+  constructor(
+    private ejercicioService: EjercicioService,
+    private alertController: AlertController,
+    private modalController: ModalController
+  ) { }
 
   ngOnInit() {
+    //this.ejercicioService.cargarEjercicios() // O los cargo en el controlador del Ejercicios-service o aqui.
+    // Nos suscribimos al observable ejercicios$ que expone los ejercicios cargados
+    this.ejerciciosSub = this.ejercicioService.ejercicios$.subscribe(data => {
+      this.ejercicios = data;
+      this.ejerciciosFiltrados = [...this.ejercicios]; // Inicializa los ejercicios filtrados
+    });
+
     if (this.modo === 'editar') {
       // Si estamos en modo edición, cargamos los datos del día existente
       this.nombreDia = this.diaExistente ? this.diaExistente.diaNombre : '';
@@ -43,9 +58,8 @@ export class FormDiaComponent implements OnInit {
       this.nombreDia = `Día ${this.numeroDiasExistentes + 1}`;
       this.ejerciciosEnRutina = [];
     }
-    // Inicializamos los ejercicios filtrados como la lista completa de ejercicios disponibles
+
     this.descripcionDia = '';
-    this.ejerciciosFiltrados = [...this.ejercicios];
   }
 
   // Filtrar los ejercicios cuando el usuario realiza una búsqueda
@@ -128,18 +142,42 @@ export class FormDiaComponent implements OnInit {
       ejercicioId: ejercicio._id!,
       series: Array(series).fill({ repeticiones }), // Crea las series con el número de repeticiones
       notas: notas || '',
-      
+
     };
 
     this.ejerciciosEnRutina.push(ejercicioPlan); // Añadir el ejercicio a la rutina
   }
 
   guardar() {
-    // Si el nombre del día no se especifica, asignamos un nombre automático basado en el número de días existentes en la rutina
-    if (!this.nombreDia || this.nombreDia.trim() === '') {
-      const diaIndex = this.diaExistente ? this.diaExistente.ejercicios.length : 0; // Obtiene el número de días ya existentes
-      this.nombreDia = `Día ${diaIndex + 1}`; // Asigna el nombre como "Día X", donde X es el siguiente número disponible
+    // Verificar si se ingresó una descripción
+    if (!this.descripcionDia || this.descripcionDia.trim() === '') {
+      // Mostrar una alerta si la descripción está vacía
+      this.alertController.create({
+        header: 'Error',
+        message: 'Por favor, ingrese una descripción para el día.',
+        buttons: ['Aceptar']
+      }).then(alert => alert.present());
+
+      return; // Detener el guardado hasta que se ingrese la descripción
     }
+
+    // Verificar si se seleccionó al menos un ejercicio
+    if (this.ejerciciosEnRutina.length === 0) {
+      // Mostrar una alerta si no hay ejercicios seleccionados
+      this.alertController.create({
+        header: 'Error',
+        message: 'Por favor, seleccione al menos un ejercicio para el día.',
+        buttons: ['Aceptar']
+      }).then(alert => alert.present());
+
+      return; // Detener el guardado hasta que se seleccione un ejercicio
+    }
+
+    /*   // Si el nombre del día no se especifica, asignamos un nombre automático basado en el número de días existentes en la rutina
+      if (!this.nombreDia || this.nombreDia.trim() === '') {
+        const diaIndex = this.diaExistente ? this.diaExistente.ejercicios.length : 0; // Obtiene el número de días ya existentes
+        this.nombreDia = `Día ${diaIndex + 1}`; // Asigna el nombre como "Día X", donde X es el siguiente número disponible
+      } */
 
     const nuevoDia: DiaRutina = {
       diaNombre: this.nombreDia,

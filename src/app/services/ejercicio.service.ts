@@ -16,7 +16,9 @@ export class EjercicioService {
   constructor(private servicioBaseDatos: DatabaseService) {
     // Obtenemos la base de datos usando el servicio general de base de datos
     this.baseDatos = this.servicioBaseDatos.obtenerBaseDatos();
+    this.cargarEjercicios()
   }
+
 
   // Método para agregar un nuevo ejercicio
 
@@ -89,7 +91,7 @@ export class EjercicioService {
   }
 
   // Método para obtener un ejercicio específico por su ID
-  async obtenerEjercicioPorId(id: string) {
+  /*async obtenerEjercicioPorId(id: string) {
     try {
       // Utilizamos el método `get` para obtener el documento por ID
       const resultado = await this.baseDatos.get(id);
@@ -117,7 +119,7 @@ export class EjercicioService {
       console.error('Ejercicio.Service -> Error al obtener ejercicios por músculo:', err);
       throw err;
     }
-  }
+  }*/
 
   // Método para actualizar un ejercicio
   async actualizarEjercicio(ejercicio: Ejercicio) {
@@ -145,20 +147,25 @@ export class EjercicioService {
     }
   }
 
-  // Método para cargar todos los ejercicios en el BehaviorSubject
+  // Método para cargar todos los ejercicios y emitirlos en el BehaviorSubject
   async cargarEjercicios() {
     try {
-      // Obtenemos todos los ejercicios
-      const ejercicios = await this.obtenerEjercicios();
-      // Actualizamos el BehaviorSubject con la lista de ejercicios
-      this.ejerciciosSubject.next(ejercicios);
-      console.log('Ejercicio.Service -> Cargados ejercicios en Behaviour');
+      const result = await this.baseDatos.find({
+        selector: { entidad: 'ejercicio' } // Filtramos por el campo 'entidad' que debe ser 'ejercicio'
+      });
+      const ejercicios = result.docs;
+      console.log('Ejercicio.Service -> Cargados ejercicios en BehaviorSubject');
+      this.ejerciciosSubject.next(ejercicios); // Emitimos los ejercicios para que todos los suscriptores los reciban
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al cargar ejercicios:', error); // Mostramos el error si ocurre
+      console.error('Ejercicio.Service -> Error al cargar ejercicios:', error);
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
 
+
+
+
+  /*          */
   async autoEjercicios() {
 
     const ejercicios = [
