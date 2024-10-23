@@ -4,16 +4,17 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { HistorialService } from 'src/app/services/historial-entreno.service';
 import { IonicModule } from '@ionic/angular';
-import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
+import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
 import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
 import { Usuario } from 'src/app/models/usuario.model';
+import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 
 @Component({
   selector: 'app-tab5',
   templateUrl: './tab5.page.html',
   styleUrls: ['./tab5.page.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, IonicModule, CommonModule, ToolbarLoggedComponent],
+  imports: [NgIf, NgFor, IonicModule, CommonModule, ToolbarLoggedComponent, DiaEntrenamientoCardComponent],
 })
 export class Tab5Page implements OnInit {
   entrenamientos: DiaEntrenamiento[] = []; // Almacena todos los entrenamientos

@@ -1,30 +1,15 @@
-<!-- tab3.page.html -->
-<ion-header>
-    <ion-toolbar>
-        <ion-title>Último Entrenamiento</ion-title>
-    </ion-toolbar>
-</ion-header>
+<app-toolbar-logged [titulo]="'Ultimo entrenamiento'"></app-toolbar-logged>
 
 <ion-content>
-    <ion-card *ngIf="ultimoEntrenamiento">
-        <ion-card-header>
-            <ion-card-title>{{ ultimoEntrenamiento.fechaEntrenamiento | date }}</ion-card-title>
-            <ion-card-subtitle>{{ ultimoEntrenamiento.diaRutinaId }}</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-            <ion-list>
-                <ion-item *ngFor="let ejercicio of ultimoEntrenamiento.ejercicios">
-                    <ion-label>
-                        <h2>{{ ejercicio.ejercicioId }}</h2>
-                        <p *ngFor="let serie of ejercicio.series">
-                            Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' +
-                            serie.peso + ' kg') : '' }}
-                        </p>
-                    </ion-label>
-                </ion-item>
-            </ion-list>
-        </ion-card-content>
-    </ion-card>
+    <!-- Usamos el componente DiaEntrenamientoCard con comparacion -->
+    <app-dia-entrenamiento-card 
+        *ngIf="ultimoEntrenamiento"
+        [entrenamientoActual]="ultimoEntrenamiento"
+        [comparacion]="comparacion"
+        [expandido]="true"
+        [index]="0"
+    >
+    </app-dia-entrenamiento-card>
 
     <ion-card *ngIf="!ultimoEntrenamiento">
         <ion-card-header>

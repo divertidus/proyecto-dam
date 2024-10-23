@@ -1,0 +1,47 @@
+<ion-card>
+  <ion-card-header (click)="toggleExpand.emit(index)">
+    <ion-card-title>{{ entrenamientoActual.fechaEntrenamiento | date }}</ion-card-title>
+    <ion-card-subtitle>{{ entrenamientoActual.diaRutinaId }}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content *ngIf="expandido">
+
+    <!-- Notas del día de entrenamiento -->
+    <p *ngIf="entrenamientoActual.notas">
+      <strong>Notas del día:</strong> {{ entrenamientoActual.notas }}
+    </p>
+
+    <ion-list>
+      <ion-item *ngFor="let ejercicio of entrenamientoActual.ejercicios; let j = index">
+        <ion-label>
+          <h2>{{ ejercicio.ejercicioId }}</h2>
+
+          <!-- Notas del ejercicio -->
+          <p *ngIf="ejercicio.notas">
+            <strong>Notas del ejercicio:</strong> {{ ejercicio.notas }}
+          </p>
+
+          <p *ngFor="let serie of ejercicio.series; let k = index">
+            Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' +
+            serie.peso + ' kg') : '' }}
+
+            <!-- Mostrar si hubo dolor, ayuda o se llegó al fallo -->
+            <small *ngIf="serie.dolor || serie.conAyuda || serie.alFallo">
+              {{ serie.dolor ? 'Dolor' : '' }} {{ serie.conAyuda ? '- Con Ayuda' : '' }} {{
+              serie.alFallo ? '- Al Fallo' : '' }}
+            </small>
+
+            <!-- Mostrar serie anterior si existe -->
+            <span *ngIf="comparacion?.ejercicios[j]?.seriesAnterior[k]">
+              <br>
+              <small class="anterior-serie">
+                Anterior: {{ comparacion?.ejercicios[j]?.seriesAnterior[k]?.repeticiones }} reps
+                {{ comparacion?.ejercicios[j]?.seriesAnterior[k]?.peso ? ('- ' +
+                comparacion?.ejercicios[j]?.seriesAnterior[k]?.peso + ' kg') : '' }}
+              </small>
+            </span>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

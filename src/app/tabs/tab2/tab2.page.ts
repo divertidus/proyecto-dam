@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { GestionEjerciciosComponent } from "../../componentes/ejercicio/gestion-ejercicios/gestion-ejercicios.component";
-import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
+import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
 
 @Component({
   selector: 'app-tab2',

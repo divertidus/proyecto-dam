@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
-import { ToolbarLoggedComponent } from 'src/app/componentes/toolbar-logged/toolbar-logged.component';
+import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
 
 
 

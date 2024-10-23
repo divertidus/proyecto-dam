@@ -5,7 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { IonicModule } from '@ionic/angular';
-import { ToolbarLoggedComponent } from '../toolbar-logged/toolbar-logged.component';
+import { ToolbarLoggedComponent } from '../shared/toolbar-logged/toolbar-logged.component';
 
 @Component({
   selector: 'app-rutina-crear-dia',

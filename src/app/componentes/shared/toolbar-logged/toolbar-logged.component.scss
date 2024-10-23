@@ -1,0 +1,6 @@
+.title-limited {
+    max-width: 50vw; // Ajusta el espacio del título
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

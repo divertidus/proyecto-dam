@@ -1,13 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, PopoverController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Usuario } from 'src/app/models/usuario.model';
 import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons';
 import { Subscription } from 'rxjs';
-
+import { PopoverUsuarioAvatarComponent } from '../popover-usuario-avatar/popover-usuario-avatar.component';
 
 @Component({
   selector: 'app-toolbar-logged',
@@ -17,12 +17,15 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, IonicModule]
 })
 export class ToolbarLoggedComponent implements OnInit, OnDestroy {
-
-  @Input() titulo: string = ''; // Título de la pantalla (pasado como input desde los tabs)
+  @Input() titulo: string = ''; // Título de la pantalla
   usuarioLogeado: Usuario | null = null;
   private usuarioSubscription: Subscription;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private popoverController: PopoverController // Inyectamos el PopoverController
+  ) {
     addIcons(todosLosIconos);
   }
 
@@ -38,12 +41,14 @@ export class ToolbarLoggedComponent implements OnInit, OnDestroy {
     }
   }
 
-  mostrarUsuarioLogeado(): string {
-    return this.usuarioLogeado ? this.usuarioLogeado.nombre : 'Sin Usuario';
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/seleccionar-usuario']);
+  // Método para mostrar el popover con los datos del usuario
+  async presentPopover(event: Event) {
+    const popover = await this.popoverController.create({
+      component: PopoverUsuarioAvatarComponent,
+      event: event,
+      translucent: true,
+      componentProps: { usuario: this.usuarioLogeado } // Pasamos el usuario al popover
+    });
+    return await popover.present();
   }
 }

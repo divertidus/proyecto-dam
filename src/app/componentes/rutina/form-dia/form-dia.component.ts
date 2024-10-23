@@ -7,8 +7,8 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { IonicModule } from '@ionic/angular';
-import { ToolbarLoggedComponent } from '../../toolbar-logged/toolbar-logged.component';
-import { ToolbarModalesCancelarComponent } from "../../toolbar-modales-cancelar/toolbar-modales-cancelar.component";
+import { ToolbarLoggedComponent } from '../../shared/toolbar-logged/toolbar-logged.component';
+import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
 
 
 @Component({

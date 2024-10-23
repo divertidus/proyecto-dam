@@ -1,0 +1,15 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <!-- Título de la pantalla -->
+    <ion-title color="primary" slot="start">
+      {{ titulo }}
+    </ion-title>
+
+    <!-- Avatar del usuario logeado -->
+    <ion-buttons slot="end">
+      <ion-avatar (click)="presentPopover($event)">
+        <img [src]="usuarioLogeado?.imagenPerfil || 'assets/default-avatar.png'" />
+      </ion-avatar>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
