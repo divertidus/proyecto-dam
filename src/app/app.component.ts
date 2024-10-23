@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
     this.authService.autoLoginPrimerUsuario(); // Intentamos iniciar sesión automáticamente
 
 
-    /* CONSULTAS DOCUMENTOS Y DESCARGA JSON BBDD CON INFORMACION
+    /*   // CONSULTAS DOCUMENTOS Y DESCARGA JSON BBDD CON INFORMACION
         // Listar todos los documentos al iniciar el componente
         this.databaseService.listarTodosLosDocumentos().then((docs) => {
           console.log('Documentos encontrados:', docs);
@@ -79,20 +79,29 @@ export class AppComponent implements OnInit {
       { nombre: 'Remo Agarre Cerrado (Cuernos)', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
       { nombre: 'Jalón Cerrado', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
       { nombre: 'Martillo (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
+      { nombre: 'Press Banco Tumbado (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
+      { nombre: 'Máquina Aperturas', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
+      { nombre: 'Fondos en Paralelas', entidad: 'ejercicio', tipoPeso: 'peso corporal', musculoPrincipal: 'Tríceps' },
+      { nombre: 'Sentadillas Multipower', entidad: 'ejercicio', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
+      { nombre: 'Elevaciones Laterales', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
+      { nombre: 'Prensa de Piernas', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
     ];
 
     const ejerciciosMap: { [key: string]: string } = {};
+
     try {
       const ejerciciosExistentes = await this.ejercicioService.obtenerEjercicios();
       if (ejerciciosExistentes.length === 0) {
         for (const ejercicio of ejercicios) {
           const response = await this.ejercicioService.agregarEjercicio(ejercicio);
           ejerciciosMap[ejercicio.nombre] = response.id;
+          console.log(`Ejercicio ${ejercicio.nombre} añadido correctamente con ID: ${response.id}`);
         }
       } else {
         ejerciciosExistentes.forEach(e => {
           ejerciciosMap[e.nombre] = e._id!;
         });
+        console.log('Ejercicios ya existen en la base de datos.');
       }
     } catch (error) {
       console.error('Error al añadir ejercicios:', error);
@@ -118,7 +127,26 @@ export class AppComponent implements OnInit {
           descripcion: 'Entrenamiento de espalda y bíceps',
           ejercicios: [
             { ejercicioId: ejerciciosMap['Jalón de Espalda'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
+            { ejercicioId: ejerciciosMap['Remo Agarre Cerrado (Cuernos)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
             { ejercicioId: ejerciciosMap['Martillo (Mancuernas)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) }
+          ]
+        },
+        {
+          diaNombre: 'Día 2: Pecho y Tríceps',
+          descripcion: 'Entrenamiento de pecho y tríceps',
+          ejercicios: [
+            { ejercicioId: ejerciciosMap['Press Banco Tumbado (Mancuernas)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
+            { ejercicioId: ejerciciosMap['Máquina Aperturas'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
+            { ejercicioId: ejerciciosMap['Fondos en Paralelas'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) }
+          ]
+        },
+        {
+          diaNombre: 'Día 3: Pierna y Hombro',
+          descripcion: 'Entrenamiento de pierna y hombro',
+          ejercicios: [
+            { ejercicioId: ejerciciosMap['Sentadillas Multipower'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
+            { ejercicioId: ejerciciosMap['Elevaciones Laterales'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 12 }) },
+            { ejercicioId: ejerciciosMap['Prensa de Piernas'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) }
           ]
         }
       ];
@@ -151,40 +179,54 @@ export class AppComponent implements OnInit {
 
       const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(usuarioLogeado._id!);
       if (historialesExistentes.length === 0) {
-        const historial1: HistorialEntrenamiento = {
-          entidad: 'historialEntrenamiento',  // El literal específico
-          usuarioId: usuarioLogeado._id!,
-          entrenamientos: [
-            {
-              fechaEntrenamiento: '2024-10-10',
-              diaRutinaId: 'Día 1: Espalda y Bíceps',
-              ejercicios: [
-                { ejercicioId: 'Jalón de Espalda', series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 80 }] },
-                { ejercicioId: 'Martillo (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 20 }, { numeroSerie: 2, repeticiones: 10, peso: 20 }] }
-              ]
-            }
-          ]
-        };
+        // Día 1: Espalda y Bíceps - Ejercicios
+        const ejerciciosDia1 = [
+          { ejercicioId: 'Jalón de Espalda', series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 85 }] },
+          { ejercicioId: 'Martillo (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 20 }, { numeroSerie: 2, repeticiones: 10, peso: 25 }] },
+          { ejercicioId: 'Remo Agarre Cerrado (Cuernos)', series: [{ numeroSerie: 1, repeticiones: 12, peso: 50 }, { numeroSerie: 2, repeticiones: 12, peso: 55 }] }
+        ];
 
-        const historial2: HistorialEntrenamiento = {
-          entidad: 'historialEntrenamiento',
-          usuarioId: usuarioLogeado._id!,
-          entrenamientos: [
-            {
-              fechaEntrenamiento: '2024-10-12',
-              diaRutinaId: 'Día 1: Espalda y Bíceps',
-              ejercicios: [
-                { ejercicioId: 'Jalón de Espalda', series: [{ numeroSerie: 1, repeticiones: 10, peso: 85 }, { numeroSerie: 2, repeticiones: 10, peso: 85 }] },
-                { ejercicioId: 'Martillo (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 25 }, { numeroSerie: 2, repeticiones: 10, peso: 25 }] }
-              ]
-            }
-          ]
-        };
+        // Día 2: Pecho y Tríceps - Ejercicios
+        const ejerciciosDia2 = [
+          { ejercicioId: 'Press Banco Tumbado (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 60 }, { numeroSerie: 2, repeticiones: 10, peso: 65 }] },
+          { ejercicioId: 'Máquina Aperturas', series: [{ numeroSerie: 1, repeticiones: 12, peso: 40 }, { numeroSerie: 2, repeticiones: 12, peso: 45 }] },
+          { ejercicioId: 'Fondos en Paralelas', series: [{ numeroSerie: 1, repeticiones: 10, peso: 0 }, { numeroSerie: 2, repeticiones: 10, peso: 0 }] }
+        ];
 
-        await this.historialService.agregarHistorial(historial1);
-        await this.historialService.agregarHistorial(historial2);
+        // Día 3: Pierna y Hombro - Ejercicios
+        const ejerciciosDia3 = [
+          { ejercicioId: 'Sentadillas Multipower', series: [{ numeroSerie: 1, repeticiones: 10, peso: 100 }, { numeroSerie: 2, repeticiones: 10, peso: 105 }] },
+          { ejercicioId: 'Elevaciones Laterales', series: [{ numeroSerie: 1, repeticiones: 12, peso: 10 }, { numeroSerie: 2, repeticiones: 12, peso: 12 }] },
+          { ejercicioId: 'Prensa de Piernas', series: [{ numeroSerie: 1, repeticiones: 10, peso: 120 }, { numeroSerie: 2, repeticiones: 10, peso: 125 }] }
+        ];
 
-        console.log('Historial de entrenamientos añadido correctamente.');
+        // Generamos 6 días de entrenamiento
+        const historiales = [
+          { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 },
+          { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: ejerciciosDia2 },
+          { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: ejerciciosDia3 },
+          { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 },
+          { fechaEntrenamiento: '2024-10-09', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: ejerciciosDia2 },
+          { fechaEntrenamiento: '2024-10-11', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: ejerciciosDia3 }
+        ];
+
+        // Agregamos los historiales a la base de datos
+        for (const historial of historiales) {
+          const nuevoHistorial: HistorialEntrenamiento = {
+            entidad: 'historialEntrenamiento',
+            usuarioId: usuarioLogeado._id!,
+            entrenamientos: [
+              {
+                fechaEntrenamiento: historial.fechaEntrenamiento,
+                diaRutinaId: historial.diaRutinaId,
+                ejercicios: historial.ejercicios
+              }
+            ]
+          };
+          await this.historialService.agregarHistorial(nuevoHistorial);
+        }
+
+        console.log('Historial de entrenamientos para 6 días añadido correctamente.');
       } else {
         console.log('Historial ya existe, no se agregará nada.');
       }

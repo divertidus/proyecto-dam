@@ -1,97 +1,53 @@
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { DiaRutina, Rutina, EjercicioPlan } from 'src/app/models/rutina.model';
-import { RutinaService } from 'src/app/services/rutina.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { AuthService } from 'src/app/auth/auth.service';
+import { DiaEntrenamiento, Usuario } from 'src/app/interfaces/posiblesNuevasEntidades';
+import { HistorialService } from 'src/app/services/historial-entreno.service';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, IonicModule, CommonModule],
 })
 export class Tab3Page implements OnInit {
-  ultimoEntreno: { rutina: Rutina; dia: DiaRutina; fecha: string } | null = null;
-  usuarios: any[] = [];
-  usuarioSeleccionado: any = null;
+  ultimoEntrenamiento: DiaEntrenamiento | null = null; // Almacena el último entrenamiento
+  usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado
 
   constructor(
-    private rutinaService: RutinaService,
-    private usuarioService: UsuarioService
+    private authService: AuthService, // Inyectamos el AuthService para obtener el usuario logeado
+    private historialService: HistorialService // Inyectamos el HistorialService para obtener el historial
   ) { }
 
   async ngOnInit() {
-    try {
-      // Obtener la lista de usuarios
-      this.usuarios = await this.usuarioService.obtenerUsuarios();
-      console.log('Usuarios obtenidos:', this.usuarios);
-      if (this.usuarios.length > 0) {
-        this.usuarioSeleccionado = this.usuarios[0];
-        console.log('Usuario seleccionado:', this.usuarioSeleccionado);
-        await this.cargarUltimoEntreno();
+    // Suscribirse al observable del usuario logeado
+    this.authService.usuarioLogeado$.subscribe(async (usuario) => {
+      if (usuario) {
+        this.usuarioLogeado = usuario; // Guardamos el usuario logeado
+        await this.cargarUltimoEntrenamiento(); // Cargamos el último entrenamiento
       }
-    } catch (error) {
-      console.error('Error al cargar los usuarios:', error);
-    }
+    });
   }
 
-  async cargarUltimoEntreno() {
+  // Método para cargar el último entrenamiento del usuario logeado
+  async cargarUltimoEntrenamiento() {
     try {
-      if (this.usuarioSeleccionado) {
-        const rutinas = await this.rutinaService.obtenerRutinasPorUsuario(
-          this.usuarioSeleccionado._id
-        );
-        console.log('Rutinas obtenidas:', rutinas);
-        if (rutinas.length > 0) {
-          const ultimaRutina = rutinas[0]; // Asumimos que la primera rutina es la más reciente
-          console.log('Última rutina encontrada:', ultimaRutina);
-          let ultimoDia: DiaRutina | null = null;
-          let fechaEntrenamiento = 'No especificada';
+      if (!this.usuarioLogeado) return;
 
-          // Buscar el día más reciente que tenga ejercicios con fecha de entrenamiento
-          for (let dia of ultimaRutina.dias) {
-            console.log('Revisando día de la rutina:', dia);
-            if (dia.ejercicios.length === 0) {
-              console.log('El día no tiene ejercicios.');
-              continue;
-            }
-            for (let ejercicio of dia.ejercicios) {
-              console.log('Revisando ejercicio:', ejercicio);
-              if (ejercicio.fechaEntrenamiento && ejercicio.fechaEntrenamiento.trim() !== '') {
-                console.log('Ejercicio con fecha encontrado:', ejercicio);
-                ultimoDia = dia;
-                fechaEntrenamiento = ejercicio.fechaEntrenamiento;
-                break;
-              } else if (!ejercicio.fechaEntrenamiento || ejercicio.fechaEntrenamiento.trim() === '') {
-                console.log('Fecha de entrenamiento vacía, asignando fecha actual por defecto.');
-                ejercicio.fechaEntrenamiento = new Date().toISOString();
-                ultimoDia = dia;
-                fechaEntrenamiento = ejercicio.fechaEntrenamiento;
-                break;
-              }
-            }
-            if (ultimoDia) {
-              break;
-            }
-          }
-
-          if (ultimoDia) {
-            console.log('Último día encontrado con fecha:', ultimoDia);
-            this.ultimoEntreno = {
-              rutina: ultimaRutina,
-              dia: ultimoDia,
-              fecha: fechaEntrenamiento,
-            };
-          } else {
-            console.log('No se encontró un entrenamiento reciente con una fecha especificada.');
-          }
-        } else {
-          console.log('No se encontraron rutinas para el usuario seleccionado.');
-        }
+      // Obtenemos el historial del usuario
+      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      if (historiales.length === 0) {
+        console.log('No hay entrenamientos registrados');
+        return;
       }
+
+      // Encontramos el entrenamiento más reciente (último por fecha)
+      historiales.sort((a, b) => new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() - new Date(a.entrenamientos[0].fechaEntrenamiento).getTime());
+      this.ultimoEntrenamiento = historiales[0].entrenamientos[0]; // Tomamos el entrenamiento más reciente
     } catch (error) {
-      console.error('Error al cargar el último entreno:', error);
+      console.error('Error al cargar el último entrenamiento:', error);
     }
   }
 }
