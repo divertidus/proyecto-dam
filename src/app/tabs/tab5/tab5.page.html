@@ -1,29 +1,6 @@
-<app-toolbar-logged [titulo]="'Historial Entreno'"></app-toolbar-logged>
+<app-toolbar-logged [titulo]="'Mis cosas'"></app-toolbar-logged>
 
 <ion-content>
-    <ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
-        <!-- COMPONENTE PARA LA TARJETA DEL DIA DE ENTRENAMIENTO -->
-        <app-dia-entrenamiento-card [entrenamientoActual]="entrenamiento" [comparacion]="comparaciones[i]"
-            [expandido]="isExpandido(i)" [index]="i" (toggleExpand)="toggleEntrenamiento($event)">
-        </app-dia-entrenamiento-card>
-    </ion-list>
-
-    <ion-card *ngIf="entrenamientos.length === 0">
-        <ion-card-header>
-            <ion-card-title>No hay entrenamientos registrados</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-            Registra un entrenamiento para verlo aquí.
-        </ion-card-content>
-    </ion-card>
+    <h3>Historial de Entreno</h3>
+    <app-historial-entrenamiento></app-historial-entrenamiento>
 </ion-content>
-
-
-<!--  Explicación
-Inputs: Pasamos al componente el entrenamiento actual, 
-la comparación de series anteriores, y si el entrenamiento está expandido o no.
-Outputs: Emitimos el evento toggleExpand para que la página pueda expandir o 
-contraer la tarjeta cuando se hace clic en el encabezado.
-Comparación: Dentro de cada serie, 
-el componente comprueba si hay una comparación disponible (la serie anterior) y la muestra.
- -->

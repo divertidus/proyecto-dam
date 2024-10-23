@@ -1,0 +1,17 @@
+<!-- Lista de entrenamientos -->
+<ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
+  <!-- COMPONENTE PARA LA TARJETA DEL DIA DE ENTRENAMIENTO -->
+  <app-dia-entrenamiento-card [entrenamientoActual]="entrenamiento" [comparacion]="comparaciones[i]"
+    [expandido]="isExpandido(i)" [index]="i" (toggleExpand)="toggleEntrenamiento($event)">
+  </app-dia-entrenamiento-card>
+</ion-list>
+
+<!-- Mensaje cuando no hay entrenamientos -->
+<ion-card *ngIf="entrenamientos.length === 0">
+  <ion-card-header>
+    <ion-card-title>No hay entrenamientos registrados</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    Registra un entrenamiento para verlo aquí.
+  </ion-card-content>
+</ion-card>
