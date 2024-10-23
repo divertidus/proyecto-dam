@@ -1,19 +1,17 @@
-// componentes/user-list/user-list.component.html
 import { Component, Input, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
-
+import { IonList, IonListHeader, IonLabel, IonItem, IonAvatar, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, CommonModule]
+  imports: [IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonAvatar, IonItem, IonLabel, IonListHeader, IonList, FormsModule, CommonModule]
 })
 export class UserListComponent implements OnInit {
   @Input() usuarios: Usuario[] = [];

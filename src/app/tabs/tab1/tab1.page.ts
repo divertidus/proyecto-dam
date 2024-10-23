@@ -1,12 +1,10 @@
-// 1. Componente Tab1 (src/app/tab1/tab1.page.ts)
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
 import { UserFormComponent } from "../../componentes/usuario/user-form/user-form.component";
 import { UserListComponent } from "../../componentes/usuario/user-list/user-list.component";
 import { AuthService } from '../../auth/auth.service';
-import { Router } from '@angular/router';
 import { Usuario } from '../../models/usuario.model';
 import { ModalController } from '@ionic/angular';
 import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
@@ -16,9 +14,7 @@ import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
 import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
-
-
-
+import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent } from "@ionic/angular/standalone";
 
 
 @Component({
@@ -26,8 +22,9 @@ import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logge
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
-    UserListComponent, ToolbarLoggedComponent]
+  imports: [IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
+    UserListComponent, ToolbarLoggedComponent, FormsModule],
+  providers: [ModalController,PopoverController]
 })
 export class Tab1Page implements OnInit, OnDestroy {
 

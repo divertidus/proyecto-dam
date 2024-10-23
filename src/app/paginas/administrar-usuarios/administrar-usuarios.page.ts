@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { Usuario } from '../../models/usuario.model';
 import { UsuarioService } from '../../services/usuario.service';
-import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
 import { Router } from '@angular/router';
+import { IonToolbar, IonTitle, IonContent, IonButton, IonLabel, IonListHeader, IonItem, IonList } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-administrar-usuarios',
   templateUrl: './administrar-usuarios.page.html',
   styleUrls: ['./administrar-usuarios.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonList, IonItem, IonListHeader, IonLabel, IonButton, IonContent, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
 export class AdministrarUsuariosPage implements OnInit {
 

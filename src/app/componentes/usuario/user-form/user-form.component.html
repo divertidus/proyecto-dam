@@ -7,12 +7,12 @@
   <ion-card-content>
     <ion-item>
       <ion-label position="floating">Nombre</ion-label>
-      <ion-input [(ngModel)]="nombre" type="text"></ion-input>
+      <ion-input [(ngModel)]="nombre" type="text" name="nombre"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Email</ion-label>
-      <ion-input [(ngModel)]="email" type="email"></ion-input>
+      <ion-input [(ngModel)]="email" type="email" name="email"></ion-input>
     </ion-item>
 
     <ion-button expand="block" (click)="guardarUsuario()" class="ion-margin-top">

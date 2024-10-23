@@ -35,12 +35,12 @@
         <div *ngFor="let serie of ejercicio.seriesReal; let j = index"
           style="display: flex; align-items: center; margin-bottom: 10px;">
           <span style="margin-right: 10px;">{{ j + 1 }}</span>
-          <ion-input [(ngModel)]="ejercicio.seriesReal[j].repeticiones" type="number" placeholder="Repeticiones"
+          <ion-input [(ngModel)]="ejercicio.seriesReal[j].repeticiones" type="number"  name="repeticiones" placeholder="Repeticiones"
             style="width: 60px; margin-right: 10px;"></ion-input>
           <span style="margin-right: 10px;">{{ ejercicio.seriesReal[j].peso || 0 }} kg</span>
-          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].dolor" style="margin-right: 10px;"></ion-checkbox>
-          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].conAyuda" style="margin-right: 10px;"></ion-checkbox>
-          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].alFallo" style="margin-right: 10px;"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].dolor" style="margin-right: 10px;"  name="dolor"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].conAyuda" style="margin-right: 10px;"  name="conAyuda"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].alFallo" style="margin-right: 10px;" name="alFallo"></ion-checkbox>
           <ion-icon name="create" (click)="abrirNotas(i)" style="margin-left: auto;"></ion-icon>
           <!-- Icono para abrir notas -->
         </div>

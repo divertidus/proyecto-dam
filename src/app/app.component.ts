@@ -11,6 +11,10 @@ import { DatabaseService } from './services/database.service';
 import { HistorialService } from './services/historial-entreno.service';
 import { HistorialEntrenamiento } from './models/historial-entreno';
 
+/* import { defineCustomElement } from '@ionic/core/components/ion-modal.js';
+import { defineCustomElement as defineModal } from '@ionic/core/components/ion-modal.js';
+import { defineCustomElement as defineLoading } from '@ionic/core/components/ion-loading.js'; */
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -25,7 +29,7 @@ export class AppComponent implements OnInit {
     private rutinaService: RutinaService,
     private historialService: HistorialService,  // Importamos el HistorialService
     private databaseService: DatabaseService,
-    private authService: AuthService) { }
+    private authService: AuthService) { /* defineCustomElement(); */ }
 
   private usuarioLogeado: Usuario | null = null; // Variable para almacenar el usuario logeado actual
 

@@ -1,10 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton } from '@ionic/angular/standalone';
 import { UserFormComponent } from "../../componentes/usuario/user-form/user-form.component";
 import { Router } from '@angular/router';
-import { SeleccionarUsuarioPage } from '../seleccionar-usuario/seleccionar-usuario.page';
 
 
 @Component({

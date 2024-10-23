@@ -5,14 +5,17 @@ import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
+import { PopoverController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-historial-entrenamiento',
   templateUrl: './historial-entrenamiento.component.html',
   styleUrls: ['./historial-entrenamiento.component.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, IonicModule, CommonModule, DiaEntrenamientoCardComponent],
+  imports: [IonCardContent,FormsModule, IonCardTitle, IonCardHeader, IonCard, IonList, NgIf, NgFor, CommonModule, DiaEntrenamientoCardComponent],
+  providers: [ModalController,PopoverController]
 })
 export class HistorialEntrenamientoComponent implements OnInit {
   entrenamientos: DiaEntrenamiento[] = []; // Almacena todos los entrenamientos

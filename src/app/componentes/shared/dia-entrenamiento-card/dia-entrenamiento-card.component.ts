@@ -1,14 +1,15 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
-import { IonicModule } from '@ionic/angular';
+import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dia-entrenamiento-card',
   templateUrl: './dia-entrenamiento-card.component.html',
   styleUrls: ['./dia-entrenamiento-card.component.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, IonicModule, CommonModule]
+  imports: [IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
 export class DiaEntrenamientoCardComponent {
   @Input() entrenamientoActual: DiaEntrenamiento; // Entrenamiento actual

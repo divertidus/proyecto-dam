@@ -2,17 +2,20 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { HistorialService } from 'src/app/services/historial-entreno.service';
-import { IonicModule } from '@ionic/angular';
 import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
+import { PopoverController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-ultimo-entreno',
   templateUrl: './ultimo-entreno.component.html',
   styleUrls: ['./ultimo-entreno.component.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, IonicModule, CommonModule, DiaEntrenamientoCardComponent],
+  imports: [IonCardContent, FormsModule,IonCardTitle, IonCardHeader, IonCard, NgIf, NgFor, CommonModule, DiaEntrenamientoCardComponent],
+  providers: [ModalController,PopoverController]
 })
 export class UltimoEntrenoComponent implements OnInit {
   ultimoEntrenamiento: DiaEntrenamiento | null = null; // Almacena el último entrenamiento

@@ -1,24 +1,23 @@
-/* form-dia.component.ts */
-
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
-import { IonicModule } from '@ionic/angular';
-import { ToolbarLoggedComponent } from '../../shared/toolbar-logged/toolbar-logged.component';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
 import { Subscription } from 'rxjs';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
-
+import { IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
+   IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-form-dia',
   templateUrl: './form-dia.component.html',
   styleUrls: ['./form-dia.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, ToolbarModalesCancelarComponent]
+  imports: [IonButton,IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader, 
+    IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText, 
+    IonLabel, IonItem, IonFooter, CommonModule, FormsModule,ToolbarModalesCancelarComponent]
 
 })
 export class FormDiaComponent implements OnInit {

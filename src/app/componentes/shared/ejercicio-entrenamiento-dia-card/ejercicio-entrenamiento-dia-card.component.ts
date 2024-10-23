@@ -1,14 +1,16 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { SerieReal, EjercicioRealizado } from 'src/app/models/historial-entreno';
-
+import { IonItem, IonCheckbox, IonLabel } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
+import { ModalController, PopoverController } from '@ionic/angular';
 @Component({
   selector: 'app-ejercicio-entrenamiento-dia-card',
   templateUrl: './ejercicio-entrenamiento-dia-card.component.html',
   styleUrls: ['./ejercicio-entrenamiento-dia-card.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, IonicModule]
+  imports: [IonLabel, IonCheckbox, IonItem, CommonModule, NgFor, NgIf, FormsModule],
+  providers: [ModalController,PopoverController]
 })
 export class EjercicioEntrenamientoDiaCardComponent {
 

@@ -2,17 +2,25 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { RutinaService } from 'src/app/services/rutina.service';
+import { IonInput, IonCheckbox } from '@ionic/angular/standalone';
+import {
+  IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
+  IonCardContent, IonList, IonItem, IonIcon, IonFooter, IonButton
+} from "@ionic/angular/standalone";
+
 
 @Component({
   selector: 'app-vista-entreno',
   templateUrl: './vista-entreno.component.html',
   styleUrls: ['./vista-entreno.component.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, NgFor, NgIf]
+  imports: [IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
+    IonCardContent, IonCardTitle, IonCardHeader,
+    IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf,IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit {
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
@@ -24,7 +32,7 @@ export class VistaEntrenoComponent implements OnInit {
     private rutinaService: RutinaService,
     private ejercicioService: EjercicioService, // Servicio que te permite cargar los datos de la rutina
     private alertController: AlertController // Para crear alertas
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Capturamos los parámetros 'rutinaId' y 'diaRutinaId' (que es el nombre del día) de la URL

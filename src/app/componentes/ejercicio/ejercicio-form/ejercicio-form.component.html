@@ -2,17 +2,17 @@
 
 <ion-item>
   <ion-label position="floating">Nombre</ion-label>
-  <ion-input [(ngModel)]="nuevoEjercicio.nombre"></ion-input>
+  <ion-input [(ngModel)]="nuevoEjercicio.nombre" name="nombre"></ion-input>
 </ion-item>
 
 <ion-item>
   <ion-label position="floating">Musculo</ion-label>
-  <ion-input [(ngModel)]="nuevoEjercicio.musculoPrincipal"></ion-input>
+  <ion-input [(ngModel)]="nuevoEjercicio.musculoPrincipal" name="musculoPrincipal"></ion-input>
 </ion-item>
 
 <ion-item>
   <ion-label position="floating">Tipo</ion-label>
-  <ion-select [(ngModel)]="nuevoEjercicio.tipoPeso">
+  <ion-select [(ngModel)]="nuevoEjercicio.tipoPeso" name="tipoPeso">
     <ion-select-option value="barra">Barra</ion-select-option>
     <ion-select-option value="mancuerna">Mancuerna</ion-select-option>
     <ion-select-option value="máquina">Máquina</ion-select-option>
@@ -22,7 +22,7 @@
 
 <ion-item>
   <ion-label position="floating">Descripción</ion-label>
-  <ion-input [(ngModel)]="nuevoEjercicio.descripcion"></ion-input>
+  <ion-input [(ngModel)]="nuevoEjercicio.descripcion" name="descripcion"></ion-input>
 </ion-item>
 
 <ion-button expand="full" (click)="agregarEjercicio()">Agregar Ejercicio</ion-button>

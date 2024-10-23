@@ -31,7 +31,7 @@
       <ion-col size="12">
         <ion-item>
           <ion-label position="floating">Series</ion-label>
-          <ion-input type="number" [(ngModel)]="series" min="1" placeholder="Ej. 3"></ion-input>
+          <ion-input type="number" [(ngModel)]="series" name="series" min="1" placeholder="Ej. 3"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -40,7 +40,7 @@
       <ion-col size="12">
         <ion-item>
           <ion-label position="floating">Repeticiones por Serie</ion-label>
-          <ion-input type="number" [(ngModel)]="repeticiones" min="1" placeholder="Ej. 10"></ion-input>
+          <ion-input type="number" [(ngModel)]="repeticiones"  name="repeticiones" min="1" placeholder="Ej. 10"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -49,7 +49,7 @@
       <ion-col size="12">
         <ion-item>
           <ion-label position="floating">Notas (opcional)</ion-label>
-          <ion-textarea [(ngModel)]="notas" placeholder="Añadir notas adicionales sobre el ejercicio"></ion-textarea>
+          <ion-textarea [(ngModel)]="notas"  name="notas" placeholder="Añadir notas adicionales sobre el ejercicio"></ion-textarea>
         </ion-item>
       </ion-col>
     </ion-row>

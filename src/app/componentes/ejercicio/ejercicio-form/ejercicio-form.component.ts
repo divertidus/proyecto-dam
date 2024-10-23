@@ -1,17 +1,18 @@
 /* ejercicio-form.component.ts */
-
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IonicModule, ToastController } from '@ionic/angular';
+import { ToastController, PopoverController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-
+import { IonLabel, IonItem, IonButton } from "@ionic/angular/standalone";
+import { IonInput, IonSelectOption } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-ejercicio-form',
   templateUrl: './ejercicio-form.component.html',
   styleUrls: ['./ejercicio-form.component.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule]
+  imports: [IonButton, IonItem, IonLabel, FormsModule, IonInput, IonSelectOption],
+  providers: [ModalController, PopoverController]
 })
 export class EjercicioFormComponent implements OnInit {
   // Recibe el nuevo ejercicio
@@ -19,7 +20,7 @@ export class EjercicioFormComponent implements OnInit {
     musculoPrincipal: '',
     entidad: 'ejercicio',
     nombre: '',
-   // tipo: 'barra',
+    // tipo: 'barra',
     descripcion: ''
   };
 

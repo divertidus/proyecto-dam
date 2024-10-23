@@ -1,20 +1,20 @@
-// gestion-ejercicios.component.ts
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
 import { EjercicioListComponent } from "../ejercicio-list/ejercicio-list.component";
+import { IonContent } from "@ionic/angular/standalone";
+import { PopoverController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-gestion-ejercicios',
   templateUrl: './gestion-ejercicios.component.html',
   styleUrls: ['./gestion-ejercicios.component.scss'],
   standalone: true,
-  imports: [IonicModule, NgFor, NgIf, FormsModule, EjercicioFormComponent, EjercicioListComponent],
-  providers: []
+  imports: [IonContent, NgFor, NgIf, FormsModule, EjercicioFormComponent, EjercicioListComponent],
+  providers: [ModalController, PopoverController]
 })
 export class GestionEjerciciosComponent implements OnInit {
 

@@ -1,20 +1,23 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { IonicModule, PopoverController } from '@ionic/angular';
+import { PopoverController, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Usuario } from 'src/app/models/usuario.model';
 import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { PopoverUsuarioAvatarComponent } from '../popover-usuario-avatar/popover-usuario-avatar.component';
+import { IonHeader, IonToolbar, IonButtons, IonAvatar, IonTitle } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-toolbar-logged',
   templateUrl: './toolbar-logged.component.html',
   styleUrls: ['./toolbar-logged.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule]
+  imports: [IonTitle, IonAvatar, FormsModule, IonButtons, IonToolbar, IonHeader, CommonModule],
+  providers: [ModalController, PopoverController]
 })
 export class ToolbarLoggedComponent implements OnInit, OnDestroy {
   @Input() titulo: string = ''; // Título de la pantalla

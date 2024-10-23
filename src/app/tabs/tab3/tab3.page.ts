@@ -2,7 +2,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { HistorialService } from 'src/app/services/historial-entreno.service';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController,ModalController, PopoverController } from '@ionic/angular';
 import { ToolbarLoggedComponent } from "../../componentes/shared/toolbar-logged/toolbar-logged.component";
 import { UltimoEntrenoComponent } from 'src/app/componentes/shared/ultimo-entreno/ultimo-entreno.component';
 import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
@@ -10,13 +10,16 @@ import { RutinaService } from 'src/app/services/rutina.service';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
+import { IonContent, IonButton } from "@ionic/angular/standalone";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [NgIf, NgFor, IonicModule, CommonModule, UltimoEntrenoComponent, ToolbarLoggedComponent],
+  imports: [IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule,ToolbarLoggedComponent],
+  providers: [ModalController,PopoverController]
 })
 export class Tab3Page implements OnInit {
   usuarioLogeado: Usuario | null = null;

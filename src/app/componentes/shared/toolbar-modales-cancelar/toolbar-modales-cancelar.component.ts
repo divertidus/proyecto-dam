@@ -1,18 +1,18 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons';
-
+import { IonButton, IonButtons, IonToolbar, IonHeader, IonTitle } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-toolbar-modales-cancelar',
   templateUrl: './toolbar-modales-cancelar.component.html',
   styleUrls: ['./toolbar-modales-cancelar.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule,]
+  imports: [IonTitle, IonHeader, FormsModule,IonToolbar, IonButtons, IonButton, CommonModule],
+  providers: [ModalController,PopoverController]
 })
 export class ToolbarModalesCancelarComponent implements OnInit {
 

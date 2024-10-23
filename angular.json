@@ -20,7 +20,9 @@
           "options": {
             "allowedCommonJsDependencies": [
               "pouchdb",
-              "pouchdb/dist/pouchdb.js"
+              "pouchdb/dist/pouchdb.js",
+              "spark-md5",
+              "events"
             ],
             "outputPath": "www",
             "index": "src/index.html",
@@ -86,9 +88,7 @@
             "development": {
               "buildTarget": "app:build:development"
             },
-            "ci": {
-            
-            }
+            "ci": {}
           },
           "defaultConfiguration": "development"
         },
