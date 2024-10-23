@@ -1,0 +1,37 @@
+<!-- tab-ultimo-entrenamiento.component.html -->
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Último Entrenamiento</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card *ngIf="ultimoEntrenamiento">
+        <ion-card-header>
+            <ion-card-title>{{ ultimoEntrenamiento.fechaEntrenamiento | date }}</ion-card-title>
+            <ion-card-subtitle>{{ ultimoEntrenamiento.diaRutinaId }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+            <ion-list>
+                <ion-item *ngFor="let ejercicio of ultimoEntrenamiento.ejercicios">
+                    <ion-label>
+                        <h2>{{ ejercicio.ejercicioId }}</h2>
+                        <p *ngFor="let serie of ejercicio.series">
+                            Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' +
+                            serie.peso + ' kg') : '' }}
+                        </p>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="!ultimoEntrenamiento">
+        <ion-card-header>
+            <ion-card-title>No hay entrenamientos registrados</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            Registra un entrenamiento para verlo aquí.
+        </ion-card-content>
+    </ion-card>
+</ion-content>

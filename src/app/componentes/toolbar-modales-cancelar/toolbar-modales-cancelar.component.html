@@ -1,0 +1,17 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <!-- Título de la pantalla -->
+    <ion-title color="primary" slot="start">
+      {{ titulo }}
+    </ion-title>
+
+    <!-- Información del usuario y el botón de desloguear -->
+    <ion-buttons slot="end">
+      <ion-buttons slot="start">
+        <ion-button (click)="cancelar()" expand="block" fill="clear" shape="round" color="danger">
+          Cancelar
+        </ion-button>
+      </ion-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

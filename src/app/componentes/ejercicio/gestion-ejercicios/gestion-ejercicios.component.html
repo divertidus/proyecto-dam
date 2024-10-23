@@ -1,0 +1,15 @@
+<!-- gestion-ejercicios.component.html -->
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>Gestión de Ejercicios</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<!-- Incluimos el componente de formulario de ejercicios -->
+
+<ion-content>
+  <app-ejercicio-form (ejercicioAgregado)="onEjercicioAgregado($event)"></app-ejercicio-form>
+
+  <!-- Incluimos el componente de listar ejercicios -->
+  <app-ejercicio-list [ejercicios]="ejercicios"></app-ejercicio-list>
+</ion-content>

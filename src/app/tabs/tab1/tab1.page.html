@@ -1,0 +1,69 @@
+<app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged>
+
+<ion-content class="ion-padding">
+  <h2>Mis Rutinas:</h2>
+
+  <!-- Si no existen rutinas, mostrar un mensaje -->
+  <div *ngIf="rutinas.length === 0" class="no-rutinas-container">
+    <h3>No existen rutinas.</h3>
+    <ion-button expand="block" color="primary" (click)="abrirFormularioDia()">Crear nueva rutina</ion-button>
+  </div>
+
+  <!-- Mostrar la lista de rutinas si existen -->
+  <ion-list *ngIf="rutinas.length > 0">
+    <ng-container *ngFor="let rutina of rutinas">
+      <ion-card class="rutina-card">
+        <ion-card-header (click)="toggleExpandirRutina(rutina)">
+          <div class="header-rutina">
+            <ion-card-title>{{ rutina.nombre }}</ion-card-title>
+            <div class="iconos-header">
+              <ion-icon name="pencil-outline" (click)="cambiarNombreRutina(rutina, $event)"
+                class="icono-cambiar-nombre"></ion-icon>
+              <ion-icon name="close-outline" (click)="eliminarRutina(rutina, $event)"
+                class="icono-eliminar-rutina"></ion-icon>
+            </div>
+          </div>
+          <ion-card-subtitle>{{ rutina.dias.length }} días en esta rutina</ion-card-subtitle>
+        </ion-card-header>
+
+        <!-- Mostrar el contenido de la rutina de manera compacta -->
+        <ion-card-content *ngIf="rutinaExpandida === rutina._id">
+          <div class="dias-container">
+            <ng-container *ngFor="let dia of rutina.dias">
+              <div class="dia-container">
+                <h3>{{ dia.diaNombre }}</h3> <!-- Nombre del Día -->
+
+                <!-- Lista compacta de ejercicios del día -->
+                <ul>
+                  <li *ngFor="let ejercicioPlan of dia.ejercicios">
+                    {{ obtenerNombreEjercicio(ejercicioPlan.ejercicioId) }} - {{ ejercicioPlan.series.length }}x{{
+                    ejercicioPlan.series[0]?.repeticiones }}
+                  </li>
+                </ul>
+              </div>
+            </ng-container>
+
+            <!-- Mostrar el botón para añadir otro día si no hay días -->
+            <div *ngIf="rutina.dias.length === 0" class="anadir-dia-container">
+              <ion-button fill="outline" color="success" (click)="abrirFormularioDia(rutina)">
+                <ion-icon name="add-circle-outline"></ion-icon> Añadir Día
+              </ion-button>
+            </div>
+
+            <!-- Opción para añadir otro día si ya hay días existentes -->
+            <div *ngIf="rutina.dias.length > 0" class="anadir-dia-container">
+              <ion-button fill="outline" color="success" (click)="abrirFormularioDia(rutina)">
+                <ion-icon name="add-circle-outline"></ion-icon> Añadir otro Día
+              </ion-button>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+  </ion-list>
+
+  <!-- Botón grande para crear una nueva rutina al final -->
+  <ion-button expand="block" size="large" color="success" class="boton-crear-nueva" (click)="crearNuevaRutina()">
+    <ion-icon name="add-circle-outline"></ion-icon> Añadir Nueva Rutina
+  </ion-button>
+</ion-content>

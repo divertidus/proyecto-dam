@@ -1,0 +1,32 @@
+<ion-toolbar>
+  <ion-title>Administrar Usuarios</ion-title>
+</ion-toolbar>
+
+<ion-content>
+
+  <!-- Botón "CANCELAR" en rojo -->
+  <ion-button expand="full" color="danger" (click)="salir()">Salir</ion-button>
+
+  <!-- Mensaje para indicar que el usuario está siendo editado -->
+  <ion-label *ngIf="usuarioEnEdicion">Editando usuario: {{usuario.nombre}}</ion-label>
+
+  <ion-list *ngIf="usuarios.length > 0">
+    <ion-list-header>
+      <ion-label>Usuarios Guardados</ion-label>
+    </ion-list-header>
+
+    <!-- Listar todos los usuarios -->
+    <ion-item *ngFor="let usuario of usuarios">
+      <ion-label>
+        <h2>{{ usuario.nombre }}</h2>
+        <p>{{ usuario.email }}</p>
+      </ion-label>
+      <ion-button color="primary" (click)="editarUsuario(usuario)">Editar</ion-button>
+      <ion-button color="danger" (click)="eliminarUsuario(usuario)">Eliminar</ion-button>
+    </ion-item>
+  </ion-list>
+
+  <!-- Mensaje si no hay usuarios guardados -->
+  <ion-label *ngIf="usuarios.length === 0">No hay usuarios guardados.</ion-label>
+
+</ion-content>

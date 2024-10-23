@@ -1,0 +1,24 @@
+<!-- paginas/seleccionar-usuario/seleccionar-usuario.page.html -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>seleccionar-usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Llamada al componente que muestra los usuarios existentes -->
+  <!--  <app-user-list [usuarios]="usuarios"></app-user-list> -->
+
+  <!-- Ahora desde otro componente  gestion-usuarios al que no tengo que pasarle la lista porque 
+   lo hace elmediante usuarios service -->
+  <app-user-list [usuarios]="usuarios"></app-user-list>
+
+  <ion-footer>
+    <ion-button expand="full" (click)="irCrearUsuario()">Crear Nuevo Usuario</ion-button>
+  </ion-footer>
+
+  <ion-footer>
+    <ion-button expand="full" (click)="irAdministrarUsuarios()">Administrar usuarios</ion-button>
+  </ion-footer>
+
+</ion-content>
