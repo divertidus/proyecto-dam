@@ -91,6 +91,18 @@ export class EjercicioService {
   }
 
   // Método para obtener un ejercicio específico por su ID
+  async obtenerEjercicioPorId(id: string): Promise<Ejercicio> {
+    try {
+      const resultado = await this.baseDatos.get(id); // Obtener el documento por ID
+      console.log('Ejercicio.Service -> Obtenido ejercicio por ID:', resultado);
+      return resultado; // Retornar el ejercicio encontrado
+    } catch (error) {
+      console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error);
+      throw error; // Lanzar el error para manejarlo fuera de esta función
+    }
+  }
+
+  // Método para obtener un ejercicio específico por su ID
   /*async obtenerEjercicioPorId(id: string) {
     try {
       // Utilizamos el método `get` para obtener el documento por ID
@@ -161,10 +173,6 @@ export class EjercicioService {
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
-
-
-
-
   /*          */
   async autoEjercicios() {
 

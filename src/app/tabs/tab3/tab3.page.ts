@@ -53,8 +53,6 @@ export class Tab3Page implements OnInit {
     });
   }
 
-
-
   async onComenzarButtonClick() {
     console.log('Botón Comenzar presionado');
 
@@ -102,8 +100,6 @@ export class Tab3Page implements OnInit {
 
     await alert.present();
   }
-
-
 
   async cargarUltimoEntrenamiento() {
     try {
@@ -156,7 +152,9 @@ export class Tab3Page implements OnInit {
           handler: (diaSeleccionado: DiaRutina) => {
             console.log('Día seleccionado:', diaSeleccionado);
             // Aquí puedes redirigir al usuario al día seleccionado
-            // this.router.navigate(['/entrenamiento', { diaRutinaId: diaSeleccionado._id }]);
+            console.log('Navegando a tab4 con:', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre });
+            this.router.navigate(['/tabs/tab4', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre }]);
+
           },
         },
       ],

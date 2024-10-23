@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de la base de datos
 import { BehaviorSubject } from 'rxjs';
-import { Rutina, EjercicioPlan } from '../models/rutina.model';
+import { Rutina, EjercicioPlan, DiaRutina } from '../models/rutina.model';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +72,37 @@ export class RutinaService {
       }
     } catch (err) {
       console.error('RUTINA.SERVICE -> Error al obtener rutina:', err);
+      throw err;
+    }
+  }
+
+  // Método para obtener un día específico de una rutina por su nombre
+  async obtenerDiaRutinaPorNombre(rutinaId: string, diaNombre: string): Promise<DiaRutina> {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
+      const diaRutina = rutina.dias.find((dia: DiaRutina) => dia.diaNombre === diaNombre);
+      if (diaRutina) {
+        return diaRutina; // Retornamos el día de la rutina que coincide con el nombre
+      } else {
+        throw new Error('Día no encontrado en la rutina');
+      }
+    } catch (err) {
+      console.error('Error al obtener el día de la rutina por nombre:', err);
+      throw err;
+    }
+  }
+
+  // Método para obtener un día específico de una rutina por el índice del día
+  async obtenerDiaRutina(rutinaId: string, diaIndex: number): Promise<DiaRutina> {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
+      if (rutina.dias && rutina.dias[diaIndex]) {
+        return rutina.dias[diaIndex]; // Retornamos el día de la rutina correspondiente al índice
+      } else {
+        throw new Error('Día no encontrado en la rutina');
+      }
+    } catch (err) {
+      console.error('Error al obtener el día de la rutina:', err);
       throw err;
     }
   }

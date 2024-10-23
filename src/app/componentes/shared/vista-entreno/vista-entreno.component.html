@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ diaRutinaId }}</ion-title> <!-- Mostrar el nombre del día -->
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-card *ngIf="!ejercicios || ejercicios.length === 0">
+  <ion-card-header>
+    <ion-card-title>No hay ejercicios para este día</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    Asegúrate de seleccionar un día de rutina con ejercicios.
+  </ion-card-content>
+</ion-card>
+
+<!-- Si hay ejercicios, los mostramos -->
+<ion-list *ngIf="ejercicios && ejercicios.length > 0">
+  <ion-item *ngFor="let ejercicio of ejercicios; let i = index">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ ejercicio.nombreEjercicio }}</ion-card-title> <!-- Nombre del ejercicio -->
+      </ion-card-header>
+      <ion-card-content>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="margin-right: 10px; font-weight: bold;">Serie</span>
+          <span style="margin-right: 10px; font-weight: bold;">Repeticiones</span>
+          <span style="margin-right: 10px; font-weight: bold;">Peso (kg anterior)</span>
+          <span style="margin-right: 10px; font-weight: bold;">Dolor</span>
+          <span style="margin-right: 10px; font-weight: bold;">Ayuda</span>
+          <span style="margin-right: 10px; font-weight: bold;">Fallo</span>
+          <span style="margin-right: 10px; font-weight: bold;">Notas</span>
+        </div>
+
+        <div *ngFor="let serie of ejercicio.seriesReal; let j = index"
+          style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="margin-right: 10px;">{{ j + 1 }}</span>
+          <ion-input [(ngModel)]="ejercicio.seriesReal[j].repeticiones" type="number" placeholder="Repeticiones"
+            style="width: 60px; margin-right: 10px;"></ion-input>
+          <span style="margin-right: 10px;">{{ ejercicio.seriesReal[j].peso || 0 }} kg</span>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].dolor" style="margin-right: 10px;"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].conAyuda" style="margin-right: 10px;"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].alFallo" style="margin-right: 10px;"></ion-checkbox>
+          <ion-icon name="create" (click)="abrirNotas(i)" style="margin-left: auto;"></ion-icon>
+          <!-- Icono para abrir notas -->
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-list>
+
+
+<!-- Botón para guardar el entrenamiento en el footer -->
+<ion-footer>
+  <ion-button expand="full" color="success" (click)="guardarEntrenamiento()">Guardar Entrenamiento</ion-button>
+</ion-footer>
