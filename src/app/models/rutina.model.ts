@@ -1,6 +1,7 @@
 // Modelo de Rutina
 export interface Rutina {
-  _id?: string;                // Identificador único de la rutina
+  _id?: string;
+  _rev?: string             // Identificador único de la rutina
   entidad: 'rutina';           // Tipo de entidad para distinguir en la base de datos
   usuarioId: string;           // ID del usuario al que pertenece la rutina
   nombre: string;              // Nombre de la rutina (p. ej., "Rutina de Fuerza 5 Días")
@@ -21,7 +22,7 @@ export interface EjercicioPlan {
   nombreEjercicio?: string;         // Nombre del ejercicio (para facilitar acceso directo)
   tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal';
   series: Serie[];
-  notas: string               // Lista de series para el ejercicio (sin peso específico)
+  notas?: string               // Lista de series para el ejercicio (sin peso específico)
 }
 
 // Modelo de Serie (Plantilla)

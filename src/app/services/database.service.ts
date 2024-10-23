@@ -33,26 +33,58 @@ export class DatabaseService {
   }
 
 
+  /* EXTRAS*/
 
-
-
-  /*
-  // Sincronización con base de datos remota (opcional)
-  sync(remoteDbUrl: string) {
-    const remoteDb = new PouchDB(remoteDbUrl);
-    this.db.sync(remoteDb, {
-      live: true,
-      retry: true
-    }).on('change', (info: any) => {
-      console.log('Sync change', info);
-    }).on('error', (err: any) => {
-      console.error('Sync error', err);
+  // Método para listar todos los documentos en la base de datos
+  listarTodosLosDocumentos(): Promise<any> {
+    return this.baseDatos.allDocs({ include_docs: true }).then((result: any) => {
+      return result.rows.map((row: any) => row.doc);
+    }).catch((err: any) => {
+      console.error('Error al listar documentos:', err);
     });
   }
-    */
 
-  // Otros métodos relacionados a la configuración general de la base de datos podrían ir aquí
+  // Método para exportar los documentos como JSON
+  exportarDocumentosAJson(): Promise<void> {
+    return this.listarTodosLosDocumentos().then((docs: any) => {
+      const jsonData = JSON.stringify(docs, null, 2); // Convierte los documentos a formato JSON
+      console.log(jsonData); // Muestra el JSON en consola
+      this.descargarArchivo('backup.json', jsonData); // Descarga el archivo JSON
+    }).catch((err: any) => {
+      console.error('Error al exportar documentos:', err);
+    });
+  }
+
+  // Método para descargar un archivo JSON
+  private descargarArchivo(nombreArchivo: string, contenido: string) {
+    const blob = new Blob([contenido], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 }
+
+/*
+// Sincronización con base de datos remota (opcional)
+sync(remoteDbUrl: string) {
+  const remoteDb = new PouchDB(remoteDbUrl);
+  this.db.sync(remoteDb, {
+    live: true,
+    retry: true
+  }).on('change', (info: any) => {
+    console.log('Sync change', info);
+  }).on('error', (err: any) => {
+    console.error('Sync error', err);
+  });
+}
+  }
+  */
+
+// Otros métodos relacionados a la configuración general de la base de datos podrían ir aquí
+
 
 /* 
  

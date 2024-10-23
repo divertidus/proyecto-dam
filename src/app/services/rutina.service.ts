@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de la base de datos
 import { BehaviorSubject } from 'rxjs';
-import { Rutina, DiaRutina, EjercicioPlan } from '../models/rutina.model';
+import { Rutina, EjercicioPlan } from '../models/rutina.model';
 
 @Injectable({
   providedIn: 'root'

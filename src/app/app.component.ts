@@ -7,6 +7,9 @@ import { DiaRutina, Rutina, Serie } from './models/rutina.model';
 import { UsuarioService } from './services/usuario.service';
 import { RutinaService } from './services/rutina.service';
 import { Usuario } from './models/usuario.model';
+import { DatabaseService } from './services/database.service';
+import { HistorialService } from './services/historial-entreno.service';
+import { HistorialEntrenamiento } from './interfaces/posiblesNuevasEntidades';
 
 @Component({
   selector: 'app-root',
@@ -16,31 +19,43 @@ import { Usuario } from './models/usuario.model';
 })
 export class AppComponent implements OnInit {
 
-
-
-
   constructor(
     private ejercicioService: EjercicioService,
     private usuarioService: UsuarioService,
     private rutinaService: RutinaService,
+    private historialService: HistorialService,  // Importamos el HistorialService
+    private databaseService: DatabaseService,
     private authService: AuthService) { }
 
   private usuarioLogeado: Usuario | null = null; // Variable para almacenar el usuario logeado actual
 
   async ngOnInit() {
     await this.inicializarUsuario(); // Inicializamos el usuario
-    //   await this.inicializarEjercicios(); // Inicializamos los ejercicios
-    //  await this.inicializarRutina(); // Inicializamos las rutinas con los días y ejercicios
+    await this.inicializarEjercicios(); // Inicializamos los ejercicios
+    await this.inicializarRutina(); // Inicializamos las rutinas con los días y ejercicios
+    await this.inicializarHistorial(); // Inicializamos el historial con dos entrenamientos
 
     this.authService.autoLoginPrimerUsuario(); // Intentamos iniciar sesión automáticamente
+
+
+    /* CONSULTAS DOCUMENTOS Y DESCARGA JSON BBDD CON INFORMACION
+        // Listar todos los documentos al iniciar el componente
+        this.databaseService.listarTodosLosDocumentos().then((docs) => {
+          console.log('Documentos encontrados:', docs);
+        });
+    
+        // Exportar los documentos a un archivo JSON
+        this.databaseService.exportarDocumentosAJson();
+    
+    */
+
   }
 
-  // Método para inicializar un usuario por defecto
+  // Inicializar el usuario si no existe
   async inicializarUsuario() {
     try {
       const usuariosExistentes = await this.usuarioService.obtenerUsuarios();
       if (usuariosExistentes.length === 0) {
-        // Si no hay usuarios existentes, creamos uno nuevo
         const nuevoUsuario: Usuario = {
           nombre: 'AutoUsuario',
           email: 'auto@pruebas.com',
@@ -50,42 +65,31 @@ export class AppComponent implements OnInit {
         await this.usuarioService.agregarUsuario(nuevoUsuario);
         console.log('Usuario inicializado correctamente:', nuevoUsuario.nombre);
       } else {
-        console.log('Usuarios ya existentes, no se añadirá AutoUsuario.');
+        console.log('Usuarios ya existentes.');
       }
     } catch (error) {
       console.error('Error al inicializar el usuario:', error);
     }
   }
 
+  // Inicializar ejercicios si no existen
   async inicializarEjercicios(): Promise<{ [key: string]: string }> {
     const ejercicios: Ejercicio[] = [
       { nombre: 'Jalón de Espalda', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
       { nombre: 'Remo Agarre Cerrado (Cuernos)', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
       { nombre: 'Jalón Cerrado', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { nombre: 'Remo Agarre Ancho - Menos Peso', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
       { nombre: 'Martillo (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
-      { nombre: 'Máquina Bíceps Sentado', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Bíceps' },
-      { nombre: 'Press Banco Tumbado (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
-      { nombre: 'Máquina Aperturas', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
-      { nombre: 'Elevaciones Laterales', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
-      { nombre: 'Sentadillas Multipower', entidad: 'ejercicio', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
-      { nombre: 'Isquiotibiales', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
-      { nombre: 'Cuádriceps', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
-      { nombre: 'Gemelos', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
     ];
 
     const ejerciciosMap: { [key: string]: string } = {};
-
     try {
       const ejerciciosExistentes = await this.ejercicioService.obtenerEjercicios();
       if (ejerciciosExistentes.length === 0) {
         for (const ejercicio of ejercicios) {
           const response = await this.ejercicioService.agregarEjercicio(ejercicio);
           ejerciciosMap[ejercicio.nombre] = response.id;
-          console.log(`Ejercicio ${ejercicio.nombre} añadido correctamente con ID: ${response.id}`);
         }
       } else {
-        console.log('Ejercicios ya existen en la base de datos, no se agregarán duplicados.');
         ejerciciosExistentes.forEach(e => {
           ejerciciosMap[e.nombre] = e._id!;
         });
@@ -97,52 +101,26 @@ export class AppComponent implements OnInit {
     return ejerciciosMap;
   }
 
-  // Método para inicializar la rutina con los días y ejercicios definidos
-  // Método para inicializar la rutina con los días y ejercicios definidos
-  /* async inicializarRutina() {
+  // Inicializar rutina si no existe
+  async inicializarRutina() {
     try {
       const usuarios = await this.usuarioService.obtenerUsuarios();
       if (usuarios.length === 0) {
-        console.log('No hay usuarios para asociar la rutina.');
         return;
       }
-      const usuarioLogeado = usuarios[0]; // Tomamos el primer usuario
+      const usuarioLogeado = usuarios[0];
 
-      const ejerciciosMap = await this.inicializarEjercicios(); // Asegurarse de inicializar y obtener los IDs de ejercicios
+      const ejerciciosMap = await this.inicializarEjercicios();
 
       const diasRutina: DiaRutina[] = [
         {
           diaNombre: 'Día 1: Espalda y Bíceps',
-          descripcion: 'Trabajo de espalda y bíceps',
+          descripcion: 'Entrenamiento de espalda y bíceps',
           ejercicios: [
             { ejercicioId: ejerciciosMap['Jalón de Espalda'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Remo Agarre Cerrado (Cuernos)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Jalón Cerrado'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Remo Agarre Ancho - Menos Peso'], series: Array(3).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Martillo (Mancuernas)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Máquina Bíceps Sentado'], series: Array(6).fill({ numeroSerie: 1, repeticiones: 20 }) },
-          ],
-        },
-        {
-          diaNombre: 'Día 2: Pecho y Tríceps',
-          descripcion: 'Entrenamiento de pecho y tríceps',
-          ejercicios: [
-            { ejercicioId: ejerciciosMap['Press Banco Tumbado (Mancuernas)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Máquina Aperturas'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            // Añadir los ejercicios restantes de acuerdo con tu descripción...
-          ],
-        },
-        {
-          diaNombre: 'Día 3: Hombro y Piernas',
-          descripcion: 'Entrenamiento de hombros y piernas',
-          ejercicios: [
-            { ejercicioId: ejerciciosMap['Elevaciones Laterales'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Sentadillas Multipower'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Isquiotibiales'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Cuádriceps'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-            { ejercicioId: ejerciciosMap['Gemelos'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
-          ],
-        },
+            { ejercicioId: ejerciciosMap['Martillo (Mancuernas)'], series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) }
+          ]
+        }
       ];
 
       const rutinasExistentes = await this.rutinaService.obtenerRutinasPorUsuario(usuarioLogeado._id!);
@@ -157,12 +135,61 @@ export class AppComponent implements OnInit {
         await this.rutinaService.agregarRutina(nuevaRutina);
         console.log('Rutina añadida con éxito');
       } else {
-        console.log('Ya existen rutinas en la base de datos, no se añadirá ninguna nueva.');
+        console.log('Ya existen rutinas en la base de datos.');
       }
     } catch (error) {
       console.error('Error al añadir la rutina:', error);
     }
-  } */
+  }
 
+  // Inicializar historial de entrenamiento con dos sesiones en días diferentes
+  async inicializarHistorial() {
+    try {
+      const usuarios = await this.usuarioService.obtenerUsuarios();
+      if (usuarios.length === 0) return;
+      const usuarioLogeado = usuarios[0];
 
+      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(usuarioLogeado._id!);
+      if (historialesExistentes.length === 0) {
+        const historial1: HistorialEntrenamiento = {
+          entidad: 'historialEntrenamiento',  // El literal específico
+          usuarioId: usuarioLogeado._id!,
+          entrenamientos: [
+            {
+              fechaEntrenamiento: '2024-10-10',
+              diaRutinaId: 'Día 1: Espalda y Bíceps',
+              ejercicios: [
+                { ejercicioId: 'Jalón de Espalda', series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 80 }] },
+                { ejercicioId: 'Martillo (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 20 }, { numeroSerie: 2, repeticiones: 10, peso: 20 }] }
+              ]
+            }
+          ]
+        };
+
+        const historial2: HistorialEntrenamiento = {
+          entidad: 'historialEntrenamiento',
+          usuarioId: usuarioLogeado._id!,
+          entrenamientos: [
+            {
+              fechaEntrenamiento: '2024-10-12',
+              diaRutinaId: 'Día 1: Espalda y Bíceps',
+              ejercicios: [
+                { ejercicioId: 'Jalón de Espalda', series: [{ numeroSerie: 1, repeticiones: 10, peso: 85 }, { numeroSerie: 2, repeticiones: 10, peso: 85 }] },
+                { ejercicioId: 'Martillo (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 25 }, { numeroSerie: 2, repeticiones: 10, peso: 25 }] }
+              ]
+            }
+          ]
+        };
+
+        await this.historialService.agregarHistorial(historial1);
+        await this.historialService.agregarHistorial(historial2);
+
+        console.log('Historial de entrenamientos añadido correctamente.');
+      } else {
+        console.log('Historial ya existe, no se agregará nada.');
+      }
+    } catch (error) {
+      console.error('Error al añadir el historial de entrenamientos:', error);
+    }
+  }
 }
