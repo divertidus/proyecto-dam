@@ -1,40 +1,122 @@
-<ion-list *ngIf="ejercicios && ejercicios.length > 0">
-  <ion-item *ngFor="let ejercicio of ejercicios; let i = index">
-    <ion-card>
+<!-- exercise-list.component.html -->
+<!-- Opción 1: Checkbox de completado a la derecha -->
+<ion-list class="exercise-list-custom">
+  <ion-item *ngFor="let ejercicio of ejercicios; let i = index" lines="none">
+    <ion-card class="exercise-card-custom">
       <ion-card-header>
-        <ion-card-title>{{ ejercicio.nombreEjercicio }}</ion-card-title> <!-- Nombre del ejercicio -->
+        <ion-card-title class="exercise-header">
+          <span class="exercise-title">{{ ejercicio.nombreEjercicio }}</span>
+          <div class="header-actions">
+            <ion-checkbox mode="ios" class="checkbox-blue" 
+              [(ngModel)]="ejercicio.completado"
+              (ionChange)="toggleAllSeries(ejercicio)">
+            </ion-checkbox>
+            <ion-icon name="create-outline" (click)="abrirNotas(i)" class="edit-icon"></ion-icon>
+          </div>
+        </ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
+        <div class="exercise-container" *ngFor="let serie of ejercicio.seriesReal; let j = index">
+          <div class="exercise-row">
+            <span class="series-number">{{ j + 1 }}.</span>
+            
+            <ion-input type="number" [(ngModel)]="serie.repeticiones" 
+              class="reps-input" placeholder="10">
+            </ion-input>
+            
+            <div class="weight-control">
+              <button class="control-button" (click)="decrementarPeso(ejercicio, j)">-</button>
+              <ion-input type="number" [(ngModel)]="serie.peso" 
+                class="weight-input" [placeholder]="serie.pesoAnterior?.toString() || '0'">
+              </ion-input>
+              <button class="control-button" (click)="incrementarPeso(ejercicio, j)">+</button>
+              <span class="weight-label">({{ serie.pesoAnterior || 0 }} kg)</span>
+            </div>
+            
+            <ion-checkbox mode="ios" [(ngModel)]="serie.completado" 
+              class="checkbox-blue completion-check"
+              (ionChange)="checkAllSeriesCompleted(ejercicio)">
+            </ion-checkbox>
+          </div>
+          
+          <div class="checkbox-row">
+            <label class="checkbox-label">
+              <ion-checkbox mode="ios" [(ngModel)]="serie.alFallo" class="checkbox-plain"></ion-checkbox>
+              <span>Fallo</span>
+            </label>
+            <label class="checkbox-label">
+              <ion-checkbox mode="ios" [(ngModel)]="serie.dolor" class="checkbox-plain"></ion-checkbox>
+              <span>Dolor</span>
+            </label>
+            <label class="checkbox-label">
+              <ion-checkbox mode="ios" [(ngModel)]="serie.conAyuda" class="checkbox-plain"></ion-checkbox>
+              <span>Ayuda</span>
+            </label>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-list>
 
-        <!-- Series usando ion-grid -->
-        <ion-grid>
-          <ion-row *ngFor="let serie of ejercicio.seriesReal; let j = index" class="ion-align-items-center">
+<!-- Opción 2: Checkboxes en vertical a la derecha -->
+<ion-list class="exercise-list-custom">
+  <ion-item *ngFor="let ejercicio of ejercicios; let i = index" lines="none">
+    <ion-card class="exercise-card-custom">
+      <ion-card-header>
+        <ion-card-title class="exercise-header">
+          <span class="exercise-title">{{ ejercicio.nombreEjercicio }}</span>
+          <div class="header-actions">
+            <ion-checkbox mode="ios" class="checkbox-blue"
+              [(ngModel)]="ejercicio.completado"
+              (ionChange)="toggleAllSeries(ejercicio)">
+            </ion-checkbox>
+            <ion-icon name="create-outline" (click)="abrirNotas(i)" class="edit-icon"></ion-icon>
+          </div>
+        </ion-card-title>
+      </ion-card-header>
 
-            <!-- Número de serie -->
-            <ion-col size="1">
-              <span>{{ j + 1 }}.</span>
-            </ion-col>
-
-            <!-- Campo de repeticiones editable -->
-            <ion-col size="3">
-              <ion-input [(ngModel)]="ejercicio.seriesReal[j].repeticiones" type="number" name="repeticiones"
-                placeholder="Reps" style="text-align: center;"></ion-input>
-            </ion-col>
-
-            <!-- Campo de peso editable -->
-            <ion-col size="3">
-              <ion-input [(ngModel)]="ejercicio.seriesReal[j].peso" type="number" name="peso"
-                placeholder="{{ ejercicio.seriesReal[j].peso || 0 }} kg" style="text-align: center;"></ion-input>
-            </ion-col>
-
-            <!-- Peso anterior en rojo, no editable -->
-            <ion-col size="5">
-              <span style="color: red;">({{ ejercicio.seriesReal[j].pesoAnterior || 0 }} kg)</span>
-            </ion-col>
-
-          </ion-row>
-        </ion-grid>
-
+      <ion-card-content>
+        <div class="exercise-container" *ngFor="let serie of ejercicio.seriesReal; let j = index">
+          <div class="exercise-row">
+            <div class="exercise-main-content">
+              <span class="series-number">{{ j + 1 }}.</span>
+              
+              <ion-input type="number" [(ngModel)]="serie.repeticiones" 
+                class="reps-input" placeholder="10">
+              </ion-input>
+              
+              <div class="weight-control">
+                <button class="control-button" (click)="decrementarPeso(ejercicio, j)">-</button>
+                <ion-input type="number" [(ngModel)]="serie.peso" 
+                  class="weight-input" [placeholder]="serie.pesoAnterior?.toString() || '0'">
+                </ion-input>
+                <button class="control-button" (click)="incrementarPeso(ejercicio, j)">+</button>
+                <span class="weight-label">({{ serie.pesoAnterior || 0 }} kg)</span>
+              </div>
+            </div>
+            
+            <div class="vertical-checkboxes">
+              <ion-checkbox mode="ios" [(ngModel)]="serie.completado" 
+                class="checkbox-blue"
+                (ionChange)="checkAllSeriesCompleted(ejercicio)">
+              </ion-checkbox>
+              <label class="checkbox-label vertical">
+                <ion-checkbox mode="ios" [(ngModel)]="serie.alFallo" class="checkbox-plain"></ion-checkbox>
+                <span>Fallo</span>
+              </label>
+              <label class="checkbox-label vertical">
+                <ion-checkbox mode="ios" [(ngModel)]="serie.dolor" class="checkbox-plain"></ion-checkbox>
+                <span>Dolor</span>
+              </label>
+              <label class="checkbox-label vertical">
+                <ion-checkbox mode="ios" [(ngModel)]="serie.conAyuda" class="checkbox-plain"></ion-checkbox>
+                <span>Ayuda</span>
+              </label>
+            </div>
+          </div>
+        </div>
       </ion-card-content>
     </ion-card>
   </ion-item>

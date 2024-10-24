@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
-import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert } from '@ionic/angular/standalone';
 import {
   IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonList, IonItem, IonIcon, IonFooter, IonButton
@@ -21,11 +21,17 @@ import { HistorialService } from 'src/app/services/database/historial-entrenamie
   templateUrl: './vista-entreno.component.html',
   styleUrls: ['./vista-entreno.component.scss'],
   standalone: true,
-  imports: [IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
+  imports: [IonAlert, IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
     IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit {
+toggleAllSeries(_t71: any) {
+throw new Error('Method not implemented.');
+}
+checkAllSeriesCompleted(_t71: any) {
+throw new Error('Method not implemented.');
+}
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
   rutinaId: string | null = null; // ID de la rutina
@@ -109,6 +115,7 @@ export class VistaEntrenoComponent implements OnInit {
     }
   }
 
+  // Método para abrir el alert para agregar notas
   async abrirNotas(index: number) {
     const alert = await this.alertController.create({
       header: 'Añadir Nota',
@@ -202,5 +209,15 @@ export class VistaEntrenoComponent implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  decrementarPeso(j: number, i: number) {
+    if (this.ejercicios[i].seriesReal[j].peso > 0) {
+      this.ejercicios[i].seriesReal[j].peso--;
+    }
+  }
+
+  incrementarPeso(j: number, i: number) {
+    this.ejercicios[i].seriesReal[j].peso++;
   }
 }
