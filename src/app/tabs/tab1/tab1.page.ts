@@ -14,7 +14,7 @@ import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
 import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
-import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent } from "@ionic/angular/standalone";
+import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal } from "@ionic/angular/standalone";
 
 
 @Component({
@@ -22,7 +22,7 @@ import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtit
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
+  imports: [IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
     UserListComponent, ToolbarLoggedComponent, FormsModule],
   providers: [ModalController,PopoverController]
 })

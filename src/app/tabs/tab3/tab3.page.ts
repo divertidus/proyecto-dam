@@ -10,7 +10,7 @@ import { RutinaService } from 'src/app/services/rutina.service';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
-import { IonContent, IonButton } from "@ionic/angular/standalone";
+import { IonContent, IonButton, IonModal, IonAlert } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule,ToolbarLoggedComponent],
+  imports: [IonAlert, IonModal, IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule,ToolbarLoggedComponent],
   providers: [ModalController,PopoverController]
 })
 export class Tab3Page implements OnInit {
