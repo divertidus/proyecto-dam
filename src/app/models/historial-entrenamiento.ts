@@ -30,7 +30,8 @@ export interface SerieReal {
   _id?: string; 
   numeroSerie: number;
   repeticiones: number;
-  peso?: number;
+  peso?: number;               // Peso actual utilizado en la serie
+  pesoAnterior?: number;        // Peso utilizado en la serie anterior (si lo hay)
   alFallo?: boolean;
   conAyuda?: boolean;
   dolor?: boolean;

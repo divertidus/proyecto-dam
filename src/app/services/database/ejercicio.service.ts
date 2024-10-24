@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Importamos BehaviorSubject para manejar la lista de ejercicios de manera reactiva
-import { Ejercicio } from '../models/ejercicio.model';
+import { Ejercicio } from 'src/app/models/ejercicio.model';
 
 @Injectable({
   providedIn: 'root' // El servicio está disponible en toda la aplicación

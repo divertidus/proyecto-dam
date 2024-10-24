@@ -1,5 +1,7 @@
+/* dia-entrenamiento-card.component.ts */
+
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
@@ -11,15 +13,31 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
-export class DiaEntrenamientoCardComponent {
+export class DiaEntrenamientoCardComponent implements OnInit {
   @Input() entrenamientoActual: DiaEntrenamiento; // Entrenamiento actual
   @Input() comparacion: any; // Comparación del entrenamiento anterior
   @Input() expandido: boolean = false; // Para saber si debe estar expandido
   @Input() index: number; // Índice del entrenamiento
 
   @Output() toggleExpand = new EventEmitter<number>(); // Evento para expandir/colapsar
-}
 
+  ngOnInit() {
+    console.log('Entrenamiento actual:', this.entrenamientoActual);
+    console.log('Comparación recibida:', this.comparacion);
+
+    // Verificar cada ejercicio
+    if (this.entrenamientoActual?.ejercicios) {
+      this.entrenamientoActual.ejercicios.forEach((ejercicio, index) => {
+        console.log(`Ejercicio ${index}:`, ejercicio);
+        //console.log(`Series de ${ejercicio.ejercicioId} (seriesActual):`, ejercicio.seriesActual);
+      });
+    }
+  }
+
+  onToggleExpand() {
+    this.toggleExpand.emit(this.index);
+  }
+}
 
 /*
 

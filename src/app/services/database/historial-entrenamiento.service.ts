@@ -67,6 +67,11 @@ export class HistorialService {
     try {
       const respuesta = await this.baseDatos.put(historial);
       console.log('Historial actualizado con éxito', respuesta);
+
+      // Recargar los historiales y emitir los cambios
+      const historiales = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
+      this.historialSubject.next(historiales); // Actualizar el BehaviorSubject
+
       return respuesta;
     } catch (error) {
       console.error('Error al actualizar historial:', error);
@@ -79,6 +84,11 @@ export class HistorialService {
     try {
       const respuesta = await this.baseDatos.remove(historial);
       console.log('Historial eliminado con éxito', respuesta);
+
+      // Recargar los historiales y emitir los cambios
+      const historiales = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
+      this.historialSubject.next(historiales); // Actualizar el BehaviorSubject
+
       return respuesta;
     } catch (error) {
       console.error('Error al eliminar historial:', error);

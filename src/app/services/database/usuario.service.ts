@@ -1,8 +1,8 @@
 // servicio/usuario.service.ts
 import { Injectable } from '@angular/core';
-import { DatabaseService } from './database.service';
 import { BehaviorSubject } from 'rxjs'; // Importamos BehaviorSubject para manejar la lista de usuarios de manera reactiva
-import { Usuario } from '../models/usuario.model';
+import { Usuario } from 'src/app/models/usuario.model';
+import { DatabaseService } from './database.service';
 
 @Injectable({
   providedIn: 'root' // Este decorador indica que el servicio está disponible en toda la aplicación

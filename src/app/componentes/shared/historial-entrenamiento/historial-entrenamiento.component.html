@@ -1,17 +1,49 @@
-<!-- Lista de entrenamientos -->
-<ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
-  <!-- COMPONENTE PARA LA TARJETA DEL DIA DE ENTRENAMIENTO -->
-  <app-dia-entrenamiento-card [entrenamientoActual]="entrenamiento" [comparacion]="comparaciones[i]"
-    [expandido]="isExpandido(i)" [index]="i" (toggleExpand)="toggleEntrenamiento($event)">
-  </app-dia-entrenamiento-card>
-</ion-list>
+<ion-list *ngFor="let historial of historialEntrenamientos">
+  <ion-item>
+    <ion-label>
+      <h2>Historial del Usuario: {{ historial.usuarioId }}</h2>
 
-<!-- Mensaje cuando no hay entrenamientos -->
-<ion-card *ngIf="entrenamientos.length === 0">
-  <ion-card-header>
-    <ion-card-title>No hay entrenamientos registrados</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    Registra un entrenamiento para verlo aquí.
-  </ion-card-content>
-</ion-card>
+      <!-- Listado de entrenamientos -->
+      <ng-container *ngIf="historial?.entrenamientos && historial.entrenamientos.length > 0">
+        <ion-list *ngFor="let entrenamiento of historial.entrenamientos">
+          <ion-item>
+            <ion-label>
+              <h3>Entrenamiento: {{ entrenamiento?.fechaEntrenamiento }}</h3>
+
+              <!-- Listado de ejercicios -->
+              <ng-container *ngIf="entrenamiento?.ejercicios && entrenamiento.ejercicios.length > 0">
+                <ion-list *ngFor="let ejercicio of entrenamiento?.ejercicios">
+                  <ion-item>
+                    <ion-label>
+                      <h4>{{ ejercicio?.ejercicioId }}</h4>
+
+                      <!-- Listado de series -->
+                      <ng-container *ngIf="ejercicio?.series && ejercicio?.series.length > 0">
+                        <p *ngFor="let serie of ejercicio?.series; let k = index">
+                          Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps
+                          {{ serie.peso ? ('- ' + serie.peso + ' kg') : '' }}
+
+                          <!-- Indicadores adicionales -->
+                          <small *ngIf="serie.dolor || serie.conAyuda || serie.alFallo">
+                            {{ serie.dolor ? 'Dolor' : '' }}
+                            {{ serie.conAyuda ? '- Con Ayuda' : '' }}
+                            {{ serie.alFallo ? '- Al Fallo' : '' }}
+                          </small>
+                        </p>
+                      </ng-container>
+
+                      <!-- Mostrar mensaje si no hay series -->
+                      <p *ngIf="!ejercicio?.series || ejercicio?.series.length === 0">
+                        No hay series registradas para este ejercicio.
+                      </p>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+              </ng-container>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ng-container>
+    </ion-label>
+  </ion-item>
+</ion-list>

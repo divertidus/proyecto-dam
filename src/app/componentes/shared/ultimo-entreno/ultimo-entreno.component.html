@@ -1,16 +1,19 @@
-<!-- ultimo-entreno.component.html -->
 <h2>Último Entreno</h2>
 
-<!-- Usamos el componente DiaEntrenamientoCard con comparacion -->
-<app-dia-entrenamiento-card *ngIf="ultimoEntrenamiento" [entrenamientoActual]="ultimoEntrenamiento"
-  [comparacion]="comparacion" [expandido]="expandido" (toggleExpand)="toggleEntrenamiento()"
-  [index]="0"></app-dia-entrenamiento-card>
+<!-- Comprobamos si hay datos de entrenamiento -->
+<ng-container *ngIf="ultimoEntrenamientoComparado; else noEntreno">
+  <app-dia-entrenamiento-card [entrenamientoActual]="ultimoEntrenamientoComparado"
+    [comparacion]="ultimoEntrenamientoComparado" [expandido]="true" [index]="0">
+  </app-dia-entrenamiento-card>
+</ng-container>
 
-<ion-card *ngIf="!ultimoEntrenamiento">
-  <ion-card-header>
-    <ion-card-title class="no-entrenamiento">Parece que todavia no has entrenado</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    Registra un entrenamiento para verlo aquí.
-  </ion-card-content>
-</ion-card>
+<ng-template #noEntreno>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="no-entrenamiento">Parece que todavía no has entrenado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Registra un entrenamiento para verlo aquí.
+    </ion-card-content>
+  </ion-card>
+</ng-template>

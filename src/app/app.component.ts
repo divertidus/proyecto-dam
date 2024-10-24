@@ -183,63 +183,63 @@ export class AppComponent implements OnInit {
 
       const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(usuarioLogeado._id!);
       if (historialesExistentes.length === 0) {
-        // Día 1: Espalda y Bíceps - Ejercicios
+        // Día 1: Espalda y Bíceps - Ejercicios con incremento de peso
         const ejerciciosDia1 = [
           { ejercicioId: 'Jalón de Espalda', series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 85, alFallo: true, notas: 'No pude completar las últimas 2 repeticiones' }] },
           { ejercicioId: 'Martillo (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 8, peso: 20, conAyuda: true, notas: 'Me ayudaron a terminar las últimas 2 repeticiones' }, { numeroSerie: 2, repeticiones: 10, peso: 25 }] },
           { ejercicioId: 'Remo Agarre Cerrado (Cuernos)', series: [{ numeroSerie: 1, repeticiones: 12, peso: 50 }, { numeroSerie: 2, repeticiones: 12, peso: 55, alFallo: true, notas: 'Al fallo en la última repetición' }] }
         ];
 
-        // Día 2: Pecho y Tríceps - Ejercicios
+        // Día 2: Pecho y Tríceps - Ejercicios con incremento de peso
         const ejerciciosDia2 = [
           { ejercicioId: 'Press Banco Tumbado (Mancuernas)', series: [{ numeroSerie: 1, repeticiones: 10, peso: 60 }, { numeroSerie: 2, repeticiones: 8, peso: 65, alFallo: true, notas: 'No pude completar las últimas 2 repeticiones' }] },
           { ejercicioId: 'Máquina Aperturas', series: [{ numeroSerie: 1, repeticiones: 12, peso: 40 }, { numeroSerie: 2, repeticiones: 12, peso: 45 }] },
           { ejercicioId: 'Fondos en Paralelas', series: [{ numeroSerie: 1, repeticiones: 10, peso: 0 }, { numeroSerie: 2, repeticiones: 10, peso: 0 }] }
         ];
 
-        // Día 3: Pierna y Hombro - Ejercicios
+        // Día 3: Pierna y Hombro - Ejercicios con incremento de peso
         const ejerciciosDia3 = [
           { ejercicioId: 'Sentadillas Multipower', series: [{ numeroSerie: 1, repeticiones: 10, peso: 100 }, { numeroSerie: 2, repeticiones: 10, peso: 105 }] },
           { ejercicioId: 'Elevaciones Laterales', series: [{ numeroSerie: 1, repeticiones: 12, peso: 10, dolor: true, notas: 'Dolor leve en el hombro izquierdo' }, { numeroSerie: 2, repeticiones: 12, peso: 12 }] },
           { ejercicioId: 'Prensa de Piernas', series: [{ numeroSerie: 1, repeticiones: 10, peso: 120 }, { numeroSerie: 2, repeticiones: 10, peso: 125 }] }
         ];
 
-        // Generamos 9 días de entrenamiento
+        // Generamos 9 días de entrenamiento, aumentando el peso entre sesiones
         const historiales = [
-          { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 },
-          { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: ejerciciosDia2 },
-          { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: ejerciciosDia3 },
-          { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 },
+          { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: this.incrementarPeso(ejerciciosDia1, 0, true) },
+          { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: this.incrementarPeso(ejerciciosDia2, 0, true) },
+          { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: this.incrementarPeso(ejerciciosDia3, 0, true) },
+          { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: this.incrementarPeso(ejerciciosDia1, 5, false) },
           {
             fechaEntrenamiento: '2024-10-09',
             diaRutinaId: 'Día 3: Pierna y Hombro',
             notas: 'Saltamos día 2 por dolor en el brazo',
-            ejercicios: [
+            ejercicios: this.incrementarPeso([
               {
                 ejercicioId: 'Sentadillas Multipower',
                 series: [
-                  { numeroSerie: 1, repeticiones: 10, peso: 100 },
-                  { numeroSerie: 2, repeticiones: 10, peso: 105 }
+                  { numeroSerie: 1, repeticiones: 10, peso: 105 },
+                  { numeroSerie: 2, repeticiones: 10, peso: 110 }
                 ]
               },
               {
                 ejercicioId: 'Prensa de Piernas',
                 series: [
-                  { numeroSerie: 1, repeticiones: 10, peso: 120 },
-                  { numeroSerie: 2, repeticiones: 10, peso: 125 }
+                  { numeroSerie: 1, repeticiones: 10, peso: 125 },
+                  { numeroSerie: 2, repeticiones: 10, peso: 130 }
                 ]
               },
               {
                 ejercicioId: 'Elevaciones Laterales',
-                series: [], // No se realiza el ejercicio
+                series: [],
                 notas: 'Hoy no se realiza por dolor en el brazo'
               }
-            ]
+            ], 0, true)
           },
-          { fechaEntrenamiento: '2024-10-11', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 },
-          { fechaEntrenamiento: '2024-10-13', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: ejerciciosDia2 },
-          { fechaEntrenamiento: '2024-10-15', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: ejerciciosDia3 },
-          { fechaEntrenamiento: '2024-10-17', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 }
+          { fechaEntrenamiento: '2024-10-11', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: this.incrementarPeso(ejerciciosDia1, 10, false) },
+          { fechaEntrenamiento: '2024-10-13', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: this.incrementarPeso(ejerciciosDia2, 10, false) },
+          { fechaEntrenamiento: '2024-10-15', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: this.incrementarPeso(ejerciciosDia3, 10, false) },
+          { fechaEntrenamiento: '2024-10-17', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: this.incrementarPeso(ejerciciosDia1, 15, false) }
         ];
 
         // Agregamos los historiales a la base de datos
@@ -266,5 +266,19 @@ export class AppComponent implements OnInit {
     } catch (error) {
       console.error('Error al añadir el historial de entrenamientos:', error);
     }
+  }
+
+  // Método para incrementar el peso en los ejercicios y establecer pesoAnterior
+  incrementarPeso(ejercicios: any[], incremento: number, esPrimeraSesion: boolean) {
+    return ejercicios.map(ejercicio => {
+      return {
+        ...ejercicio,
+        series: ejercicio.series.map((serie, index) => ({
+          ...serie,
+          peso: serie.peso ? serie.peso + incremento : null,
+          pesoAnterior: esPrimeraSesion ? null : (index > 0 ? ejercicio.series[index - 1].peso : null)
+        }))
+      };
+    });
   }
 }
