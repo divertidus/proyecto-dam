@@ -8,7 +8,7 @@ import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { PopoverUsuarioAvatarComponent } from '../popover-usuario-avatar/popover-usuario-avatar.component';
-import { IonHeader, IonToolbar, IonButtons, IonAvatar, IonTitle } from "@ionic/angular/standalone";
+import { IonHeader, IonToolbar, IonButtons, IonAvatar, IonTitle, IonPopover } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './toolbar-logged.component.html',
   styleUrls: ['./toolbar-logged.component.scss'],
   standalone: true,
-  imports: [IonTitle, IonAvatar, FormsModule, IonButtons, IonToolbar, IonHeader, CommonModule],
+  imports: [IonPopover, IonTitle, IonAvatar, FormsModule, IonButtons, IonToolbar, IonHeader, CommonModule],
   providers: [ModalController, PopoverController]
 })
 export class ToolbarLoggedComponent implements OnInit, OnDestroy {
