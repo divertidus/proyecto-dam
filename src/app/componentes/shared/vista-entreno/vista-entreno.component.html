@@ -1,3 +1,4 @@
+<!-- vista-entreno.component.hmtl -->
 <ion-header>
   <ion-toolbar>
     <ion-title>{{ diaRutinaId }}</ion-title> <!-- Mostrar el nombre del día -->
@@ -35,12 +36,15 @@
         <div *ngFor="let serie of ejercicio.seriesReal; let j = index"
           style="display: flex; align-items: center; margin-bottom: 10px;">
           <span style="margin-right: 10px;">{{ j + 1 }}</span>
-          <ion-input [(ngModel)]="ejercicio.seriesReal[j].repeticiones" type="number"  name="repeticiones" placeholder="Repeticiones"
-            style="width: 60px; margin-right: 10px;"></ion-input>
+          <ion-input [(ngModel)]="ejercicio.seriesReal[j].repeticiones" type="number" name="repeticiones"
+            placeholder="Repeticiones" style="width: 60px; margin-right: 10px;"></ion-input>
           <span style="margin-right: 10px;">{{ ejercicio.seriesReal[j].peso || 0 }} kg</span>
-          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].dolor" style="margin-right: 10px;"  name="dolor"></ion-checkbox>
-          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].conAyuda" style="margin-right: 10px;"  name="conAyuda"></ion-checkbox>
-          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].alFallo" style="margin-right: 10px;" name="alFallo"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].dolor" style="margin-right: 10px;"
+            name="dolor"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].conAyuda" style="margin-right: 10px;"
+            name="conAyuda"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="ejercicio.seriesReal[j].alFallo" style="margin-right: 10px;"
+            name="alFallo"></ion-checkbox>
           <ion-icon name="create" (click)="abrirNotas(i)" style="margin-left: auto;"></ion-icon>
           <!-- Icono para abrir notas -->
         </div>
@@ -49,8 +53,7 @@
   </ion-item>
 </ion-list>
 
-
-<!-- Botón para guardar el entrenamiento en el footer -->
-<ion-footer>
+<!-- Botón para guardar el entrenamiento en el footer, solo si hay ejercicios -->
+<ion-footer *ngIf="ejercicios && ejercicios.length > 0">
   <ion-button expand="full" color="success" (click)="guardarEntrenamiento()">Guardar Entrenamiento</ion-button>
 </ion-footer>

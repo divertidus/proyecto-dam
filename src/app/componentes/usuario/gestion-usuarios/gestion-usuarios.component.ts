@@ -1,11 +1,11 @@
 //gestion-usuarios.component.ts
 import { Component, OnInit } from '@angular/core';
-import { UsuarioService } from 'src/app/services/usuario.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { Usuario } from 'src/app/models/usuario.model';
 import { FormsModule } from '@angular/forms';
+import { UsuarioService } from 'src/app/services/database/usuario.service';
 
 @Component({
   selector: 'app-gestion-usuarios',

@@ -1,6 +1,6 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
+import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 

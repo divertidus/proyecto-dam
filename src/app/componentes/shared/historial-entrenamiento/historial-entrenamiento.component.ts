@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { HistorialService } from 'src/app/services/historial-entreno.service';
-import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
+import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
+import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 
 @Component({
   selector: 'app-historial-entrenamiento',

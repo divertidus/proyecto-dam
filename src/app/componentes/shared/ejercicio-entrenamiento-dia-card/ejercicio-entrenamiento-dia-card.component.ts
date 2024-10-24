@@ -1,6 +1,6 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SerieReal, EjercicioRealizado } from 'src/app/models/historial-entreno';
+import { SerieReal, EjercicioRealizado } from 'src/app/models/historial-entrenamiento';
 import { IonItem, IonCheckbox, IonLabel } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { ModalController, PopoverController } from '@ionic/angular';

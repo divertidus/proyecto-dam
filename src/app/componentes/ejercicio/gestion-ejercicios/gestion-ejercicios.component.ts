@@ -1,12 +1,13 @@
+/* gestion-ejercicios.component.ts */
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
 import { EjercicioListComponent } from "../ejercicio-list/ejercicio-list.component";
 import { IonContent } from "@ionic/angular/standalone";
 import { PopoverController, ModalController } from '@ionic/angular';
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
   selector: 'app-gestion-ejercicios',
