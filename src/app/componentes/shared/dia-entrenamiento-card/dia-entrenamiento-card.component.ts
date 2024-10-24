@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class DiaEntrenamientoCardComponent {
   @Input() entrenamientoActual: DiaEntrenamiento; // Entrenamiento actual
-  @Input() comparacion: any; // Comparación del entrenamiento anterior
   @Input() expandido: boolean = false; // Para saber si debe estar expandido
   @Input() index: number; // Índice del entrenamiento
 
@@ -26,8 +25,7 @@ export class DiaEntrenamientoCardComponent {
 Inputs:
 entrenamientoActual: Objeto del tipo DiaEntrenamiento que representa el 
 entrenamiento que estamos visualizando.
-comparacion: Objeto que contiene la información de comparación del entrenamiento anterior. 
-Esto podría ser opcional y se podría omitir si no hay comparaciones disponibles.
+
 expandido: Un booleano que indica si el entrenamiento debe estar expandido o colapsado.
 index: El índice de la tarjeta en la lista general, 
 útil para la interacción (expansión/contracción).

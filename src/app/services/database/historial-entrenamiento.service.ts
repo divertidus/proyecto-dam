@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Para manejar la lista de historiales de manera reactiva
-import { HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
+import { DiaEntrenamiento, HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
 
 @Injectable({
   providedIn: 'root' // Servicio disponible en toda la aplicación
@@ -121,4 +121,48 @@ export class HistorialService {
       return null;
     }
   }
+
+  // Método para buscar el último peso de un ejercicio específico
+  async obtenerUltimoPesoEjercicio(usuarioId: string, ejercicioId: string): Promise<number | null> {
+    try {
+      // Obtenemos el historial del usuario
+      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
+
+      // Ordenamos los historiales cronológicamente de más reciente a más antiguo
+      historiales.sort((a, b) =>
+        new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
+        new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
+      );
+
+      // Recorremos los entrenamientos de más reciente a más antiguo
+      for (const historial of historiales) {
+        for (const diaEntrenamiento of historial.entrenamientos) {
+          for (const ejercicioRealizado of diaEntrenamiento.ejercicios) {
+            // Aquí se compara el ejercicio actual del entrenamiento con el ejercicioId que estamos buscando
+            console.log(`Buscando coincidencia de ejercicioId: ${ejercicioRealizado.ejercicioId} === ${ejercicioId}`);
+
+            // Si el ID del ejercicio coincide con el que estamos buscando
+            if (ejercicioRealizado.ejercicioId === ejercicioId) {
+              // Buscar la serie con peso registrado
+              const serieConPeso = ejercicioRealizado.series.find(serie => serie.peso !== undefined && serie.peso !== null);
+
+              if (serieConPeso) {
+                console.log(`Peso encontrado para el ejercicio ${ejercicioId}: ${serieConPeso.peso}`);
+                return serieConPeso.peso; // Devolver el último peso encontrado
+              }
+            }
+          }
+        }
+      }
+
+      // Si no se encontró ningún peso anterior, devolvemos null
+      console.log(`No se encontró peso para el ejercicio ${ejercicioId}`);
+      return null;
+    } catch (error) {
+      console.error('Error al obtener el último peso del ejercicio:', error);
+      return null;
+    }
+  }
+
+
 }

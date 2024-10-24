@@ -1,11 +1,10 @@
-/* vista-entreno.component.ts */
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
-import { IonInput, IonCheckbox } from '@ionic/angular/standalone';
+import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import {
   IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonList, IonItem, IonIcon, IonFooter, IonButton
@@ -22,7 +21,7 @@ import { HistorialService } from 'src/app/services/database/historial-entrenamie
   templateUrl: './vista-entreno.component.html',
   styleUrls: ['./vista-entreno.component.scss'],
   standalone: true,
-  imports: [IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
+  imports: [IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
     IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
@@ -70,15 +69,36 @@ export class VistaEntrenoComponent implements OnInit {
         this.ejercicios = await Promise.all(diaRutina.ejercicios.map(async (ej) => {
           // Obtener el nombre del ejercicio mediante el ID
           const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
+
+          // Buscar el último peso registrado para el ejercicio
+          let ultimoPeso = null;
+          if (this.usuarioId) {
+            ultimoPeso = await this.historialService.obtenerUltimoPesoEjercicio(this.usuarioId, ej.ejercicioId);
+          }
+
+          // Imprimir el último peso encontrado y los datos de las series actuales
+          console.log(`Ejercicio: ${ejercicioDetalles.nombre}`);
+          console.log(`Último peso encontrado: ${ultimoPeso}`);
+          console.log(`Series originales: `, ej.series);
+
+          // Convertir las series a SerieReal y precargar las series con el último peso encontrado
+          const seriesReal = ej.series.map((serie: any) => ({
+            numeroSerie: serie.numeroSerie, // Asegúrate de que los campos existen
+            repeticiones: serie.repeticiones, // Campo para las repeticiones
+            peso: serie.peso || 0, // Precargamos el peso actual (o 0 si no hay)
+            pesoAnterior: ultimoPeso || 0, // Precargamos el último peso (o 0 si no se encontró)
+            dolor: false,
+            conAyuda: false,
+            alFallo: false,
+          }));
+
+          // Imprimir las series ya procesadas
+          console.log(`Series procesadas: `, seriesReal);
+
           return {
             ...ej,
-            nombreEjercicio: ejercicioDetalles.nombre, // Asignar el nombre del ejercicio
-            seriesReal: ej.series.map(serie => ({
-              ...serie,
-              dolor: false,
-              conAyuda: false,
-              alFallo: false,
-            })),
+            nombreEjercicio: ejercicioDetalles.nombre,
+            seriesReal: seriesReal,
           };
         }));
       } else {

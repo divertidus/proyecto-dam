@@ -1,4 +1,3 @@
-<!-- gestion-ejercicios.component.html -->
 <ion-card>
   <ion-card-header (click)="toggleExpand.emit(index)">
     <ion-card-title>{{ entrenamientoActual.fechaEntrenamiento | date }}</ion-card-title>
@@ -31,13 +30,11 @@
               serie.alFallo ? '- Al Fallo' : '' }}
             </small>
 
-            <!-- Mostrar serie anterior si existe -->
-            <span *ngIf="comparacion?.ejercicios[j]?.seriesAnterior[k]">
+            <!-- Mostrar el peso anterior guardado -->
+            <span *ngIf="serie.pesoAnterior">
               <br>
               <small class="anterior-serie">
-                Anterior: {{ comparacion?.ejercicios[j]?.seriesAnterior[k]?.repeticiones }} reps
-                {{ comparacion?.ejercicios[j]?.seriesAnterior[k]?.peso ? ('- ' +
-                comparacion?.ejercicios[j]?.seriesAnterior[k]?.peso + ' kg') : '' }}
+                Peso Anterior: {{ serie.pesoAnterior }} kg
               </small>
             </span>
           </p>

@@ -3,8 +3,7 @@
 
 <!-- Usamos el componente DiaEntrenamientoCard con comparacion -->
 <app-dia-entrenamiento-card *ngIf="ultimoEntrenamiento" [entrenamientoActual]="ultimoEntrenamiento"
-  [comparacion]="comparacion" [expandido]="expandido" (toggleExpand)="toggleEntrenamiento()"
-  [index]="0"></app-dia-entrenamiento-card>
+  [expandido]="expandido" (toggleExpand)="toggleEntrenamiento()" [index]="0"></app-dia-entrenamiento-card>
 
 <ion-card *ngIf="!ultimoEntrenamiento">
   <ion-card-header>

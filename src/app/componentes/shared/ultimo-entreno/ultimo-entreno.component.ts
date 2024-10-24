@@ -20,8 +20,7 @@ import { HistorialService } from 'src/app/services/database/historial-entrenamie
 })
 export class UltimoEntrenoComponent implements OnInit {
   ultimoEntrenamiento: DiaEntrenamiento | null = null; // Almacena el último entrenamiento
-  usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado
-  comparacion: any = null; // Almacena la comparación del último entrenamiento con el anterior
+  usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado  
   expandido: boolean = false; // Inicialmente expandido
 
   constructor(
@@ -33,8 +32,7 @@ export class UltimoEntrenoComponent implements OnInit {
     // Suscribirse al observable del usuario logeado
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
       // Reiniciar los datos cuando el usuario cambia
-      this.ultimoEntrenamiento = null;
-      this.comparacion = null;
+      this.ultimoEntrenamiento = null;     
       this.expandido = false;
 
       if (usuario) {
@@ -78,57 +76,8 @@ export class UltimoEntrenoComponent implements OnInit {
       // Cargamos el último entrenamiento
       this.ultimoEntrenamiento = historiales[0].entrenamientos[0];
 
-      // Buscar el entrenamiento anterior con el mismo día de rutina
-      const entrenamientoAnterior = this.buscarEntrenamientoAnterior(this.ultimoEntrenamiento, historiales);
-
-      // Si existe un entrenamiento anterior, hacemos la comparación
-      if (entrenamientoAnterior) {
-        this.comparacion = this.compararDatos(this.ultimoEntrenamiento, entrenamientoAnterior);
-      } else {
-        this.comparacion = null; // No hay entrenamiento anterior
-      }
     } catch (error) {
       console.error('Error al cargar el último entrenamiento:', error);
     }
-  }
-
-  // Método para buscar el entrenamiento anterior con el mismo día de rutina
-  buscarEntrenamientoAnterior(actual: DiaEntrenamiento, historiales: any[]): DiaEntrenamiento | null {
-    for (let i = 1; i < historiales.length; i++) {
-      const entrenamientoAnterior = historiales[i].entrenamientos.find(
-        (e) => e.diaRutinaId === actual.diaRutinaId
-      );
-      if (entrenamientoAnterior) {
-        return entrenamientoAnterior;
-      }
-    }
-    return null;
-  }
-
-  // Método para comparar los datos de dos entrenamientos
-  compararDatos(actual: DiaEntrenamiento, anterior: DiaEntrenamiento) {
-    const comparacion = {
-      ejercicios: [],
-    };
-
-    // Iterar sobre los ejercicios del entrenamiento actual
-    for (let i = 0; i < actual.ejercicios.length; i++) {
-      const ejercicioActual = actual.ejercicios[i];
-      const ejercicioAnterior = anterior.ejercicios.find(
-        (e) => e.ejercicioId === ejercicioActual.ejercicioId
-      );
-
-      const comparacionEjercicio = {
-        ejercicioId: ejercicioActual.ejercicioId,
-        seriesActual: ejercicioActual.series,
-        seriesAnterior: ejercicioAnterior ? ejercicioAnterior.series : [],
-        notasActual: ejercicioActual.notas, // Incluimos las notas del ejercicio actual
-        notasAnterior: ejercicioAnterior ? ejercicioAnterior.notas : null, // Notas del ejercicio anterior
-      };
-
-      comparacion.ejercicios.push(comparacionEjercicio);
-    }
-
-    return comparacion;
   }
 }
