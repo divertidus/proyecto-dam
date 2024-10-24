@@ -7,7 +7,7 @@ import { ProveedorSeleccionUsuario } from './elegir-user.provider';
 import { EmailPasswordAuthProvider } from './email-password.provider';
 import { GoogleAuthProvider } from './google-auth.provider';
 import { Usuario } from '../models/usuario.model';
-import { UsuarioService } from '../services/usuario.service';
+import { UsuarioService } from '../services/database/usuario.service';
 
 @Injectable({
   providedIn: 'root',
@@ -110,7 +110,7 @@ export class AuthService {
 
 
 
-  
+
 }
 
 

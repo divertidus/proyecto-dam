@@ -14,7 +14,7 @@ import { PopoverController, ModalController } from '@ionic/angular';
   imports: [IonContent, NgIf, NgFor, CommonModule,
     HistorialEntrenamientoComponent,
     ToolbarLoggedComponent, FormsModule],
-    providers: [ModalController,PopoverController]
+  providers: [ModalController, PopoverController]
 })
 export class Tab5Page implements OnInit {
 
