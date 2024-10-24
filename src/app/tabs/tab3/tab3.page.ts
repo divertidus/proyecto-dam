@@ -1,25 +1,26 @@
+/* tab3.page.ts */
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { HistorialService } from 'src/app/services/historial-entreno.service';
-import { AlertController,ModalController, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { ToolbarLoggedComponent } from "../../componentes/shared/toolbar-logged/toolbar-logged.component";
 import { UltimoEntrenoComponent } from 'src/app/componentes/shared/ultimo-entreno/ultimo-entreno.component';
 import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
-import { RutinaService } from 'src/app/services/rutina.service';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
-import { DiaEntrenamiento } from 'src/app/models/historial-entreno';
+import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { IonContent, IonButton, IonModal, IonAlert } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
+import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
+import { RutinaService } from 'src/app/services/database/rutina.service';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonModal, IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule,ToolbarLoggedComponent],
-  providers: [ModalController,PopoverController]
+  imports: [IonAlert, IonModal, IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent],
+  providers: [ModalController, PopoverController]
 })
 export class Tab3Page implements OnInit {
   usuarioLogeado: Usuario | null = null;
@@ -45,6 +46,11 @@ export class Tab3Page implements OnInit {
         // Suscribirse a los cambios en las rutinas del usuario
         this.rutinaService.rutinas$.subscribe((rutinas) => {
           this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
+        });
+
+        // Suscribirse a los cambios en el historial
+        this.historialService.historial$.subscribe(() => {
+          this.cargarUltimoEntrenamiento(); // Recargar último entrenamiento cuando el historial cambie
         });
 
       } else {

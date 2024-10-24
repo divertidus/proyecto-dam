@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { Usuario } from '../../models/usuario.model';
-import { UsuarioService } from '../../services/usuario.service';
 import { Router } from '@angular/router';
 import { IonToolbar, IonTitle, IonContent, IonButton, IonLabel, IonListHeader, IonItem, IonList } from "@ionic/angular/standalone";
+import { UsuarioService } from 'src/app/services/database/usuario.service';
 
 @Component({
   selector: 'app-administrar-usuarios',

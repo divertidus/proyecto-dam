@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { EjercicioService } from './services/ejercicio.service';
 import { AuthService } from './auth/auth.service';
 import { Ejercicio } from './models/ejercicio.model';
 import { DiaRutina, Rutina, Serie } from './models/rutina.model';
-import { UsuarioService } from './services/usuario.service';
-import { RutinaService } from './services/rutina.service';
 import { Usuario } from './models/usuario.model';
-import { DatabaseService } from './services/database.service';
-import { HistorialService } from './services/historial-entreno.service';
-import { HistorialEntrenamiento } from './models/historial-entreno';
+import { HistorialEntrenamiento } from './models/historial-entrenamiento';
+import { EjercicioService } from './services/database/ejercicio.service';
+import { UsuarioService } from './services/database/usuario.service';
+import { RutinaService } from './services/database/rutina.service';
+import { DatabaseService } from './services/database/database.service';
+import { HistorialService } from './services/database/historial-entrenamiento.service';
 
 /* import { defineCustomElement } from '@ionic/core/components/ion-modal.js';
 import { defineCustomElement as defineModal } from '@ionic/core/components/ion-modal.js';

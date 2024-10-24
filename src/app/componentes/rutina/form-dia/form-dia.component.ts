@@ -6,9 +6,9 @@ import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
 import { Subscription } from 'rxjs';
-import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
    IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput } from '@ionic/angular/standalone';
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
   selector: 'app-form-dia',

@@ -8,13 +8,13 @@ import { AuthService } from '../../auth/auth.service';
 import { Usuario } from '../../models/usuario.model';
 import { ModalController } from '@ionic/angular';
 import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
-import { RutinaService } from 'src/app/services/rutina.service';
 import { Subscription } from 'rxjs';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { EjercicioService } from 'src/app/services/ejercicio.service';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
 import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
 import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal, IonAlert } from "@ionic/angular/standalone";
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { RutinaService } from 'src/app/services/database/rutina.service';
 
 
 @Component({

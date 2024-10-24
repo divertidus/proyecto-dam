@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Para manejar la lista de historiales de manera reactiva
-import { HistorialEntrenamiento } from '../models/historial-entreno';
+import { HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
 
 @Injectable({
   providedIn: 'root' // Servicio disponible en toda la aplicación
@@ -19,14 +19,14 @@ export class HistorialService {
 
   // Método para agregar un nuevo historial de entrenamiento
   async agregarHistorial(historial: HistorialEntrenamiento) {
-    // Generamos un ID único para el historial si no existe
-    if (!historial._id) {
-      historial._id = `historialEntrenamiento:${new Date().toISOString()}`;
-    }
-
     try {
       const respuesta = await this.baseDatos.post(historial);
       console.log('Historial añadido con éxito', respuesta);
+
+      // Recargar los historiales y emitir los cambios
+      const historiales = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
+      this.historialSubject.next(historiales); // Actualizar el BehaviorSubject
+
       return respuesta;
     } catch (error) {
       console.error('Error al agregar historial:', error);
