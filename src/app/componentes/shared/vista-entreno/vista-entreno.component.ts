@@ -26,12 +26,12 @@ import { HistorialService } from 'src/app/services/database/historial-entrenamie
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit {
-toggleAllSeries(_t71: any) {
-throw new Error('Method not implemented.');
-}
-checkAllSeriesCompleted(_t71: any) {
-throw new Error('Method not implemented.');
-}
+  toggleAllSeries(_t71: any) {
+    throw new Error('Method not implemented.');
+  }
+  checkAllSeriesCompleted(_t71: any) {
+    throw new Error('Method not implemented.');
+  }
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
   rutinaId: string | null = null; // ID de la rutina
@@ -65,41 +65,37 @@ throw new Error('Method not implemented.');
         console.error('No hay usuario logueado.');
       }
     });
+
+    this.ejercicios.forEach(ejercicio => {
+      ejercicio.seriesReal.forEach(serie => {
+        // Si serie.peso está vacío, lo inicializamos con serie.pesoAnterior
+        serie.peso = serie.pesoAnterior;  // Usamos el valor de pesoAnterior solo si peso está vacío
+      });
+    });
+
   }
 
   async cargarDiaRutinaPorNombre(rutinaId: string, diaNombre: string) {
     try {
       const diaRutina: DiaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
       if (diaRutina) {
-        // Asignar los ejercicios del día
         this.ejercicios = await Promise.all(diaRutina.ejercicios.map(async (ej) => {
-          // Obtener el nombre del ejercicio mediante el ID
           const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
-
-          // Buscar el último peso registrado para el ejercicio
           let ultimoPeso = null;
           if (this.usuarioId) {
             ultimoPeso = await this.historialService.obtenerUltimoPesoEjercicio(this.usuarioId, ej.ejercicioId);
           }
 
-          // Imprimir el último peso encontrado y los datos de las series actuales
-          console.log(`Ejercicio: ${ejercicioDetalles.nombre}`);
-          console.log(`Último peso encontrado: ${ultimoPeso}`);
-          console.log(`Series originales: `, ej.series);
-
-          // Convertir las series a SerieReal y precargar las series con el último peso encontrado
-          const seriesReal = ej.series.map((serie: any) => ({
-            numeroSerie: serie.numeroSerie, // Asegúrate de que los campos existen
-            repeticiones: serie.repeticiones, // Campo para las repeticiones
-            peso: serie.peso || 0, // Precargamos el peso actual (o 0 si no hay)
-            pesoAnterior: ultimoPeso || 0, // Precargamos el último peso (o 0 si no se encontró)
+          // Modificamos aquí: establecemos peso igual a ultimoPeso
+          const seriesReal = (ej.series || []).map((serie: any) => ({
+            numeroSerie: serie.numeroSerie,
+            repeticiones: serie.repeticiones,
+            peso: ultimoPeso || 0,  // <-- Para poner por defecto el peso anterior y partir de él.
+            pesoAnterior: ultimoPeso || 0,
             dolor: false,
             conAyuda: false,
             alFallo: false,
           }));
-
-          // Imprimir las series ya procesadas
-          console.log(`Series procesadas: `, seriesReal);
 
           return {
             ...ej,
@@ -107,6 +103,7 @@ throw new Error('Method not implemented.');
             seriesReal: seriesReal,
           };
         }));
+        console.log("Estructura de ejercicios cargados:", this.ejercicios);
       } else {
         console.error(`Día de rutina con nombre ${diaNombre} no encontrado`);
       }
@@ -211,13 +208,25 @@ throw new Error('Method not implemented.');
     await alert.present();
   }
 
-  decrementarPeso(j: number, i: number) {
-    if (this.ejercicios[i].seriesReal[j].peso > 0) {
-      this.ejercicios[i].seriesReal[j].peso--;
+  decrementarPeso(i: number, j: number) {
+    console.log('Índices recibidos - i:', i, 'j:', j); // Registro de índices para depuración
+
+    if (typeof i === 'number' && typeof j === 'number' && this.ejercicios[i]?.seriesReal?.[j]) {
+      if (this.ejercicios[i].seriesReal[j].peso > 0) {
+        this.ejercicios[i].seriesReal[j].peso--;
+      }
+    } else {
+      console.warn(`No se pudo acceder a seriesReal para el ejercicio en índice ${i}, serie ${j}`);
     }
   }
 
-  incrementarPeso(j: number, i: number) {
-    this.ejercicios[i].seriesReal[j].peso++;
+  incrementarPeso(i: number, j: number) {
+    console.log('Índices recibidos - i:', i, 'j:', j); // Registro de índices para depuración
+
+    if (typeof i === 'number' && typeof j === 'number' && this.ejercicios[i]?.seriesReal?.[j]) {
+      this.ejercicios[i].seriesReal[j].peso++;
+    } else {
+      console.warn(`No se pudo acceder a seriesReal para el ejercicio en índice ${i}, serie ${j}`);
+    }
   }
 }
