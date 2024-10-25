@@ -41,6 +41,11 @@ export class HistorialEntrenamientoComponent implements OnInit {
         await this.cargarEntrenamientos();
       }
     });
+
+    // Suscribirse al observable de cambios en el historial
+    this.historialService.historial$.subscribe(async () => {
+      await this.cargarEntrenamientos(); // Recargar los entrenamientos cuando el historial cambie
+    });
   }
 
   // Cargar todos los entrenamientos
@@ -48,17 +53,15 @@ export class HistorialEntrenamientoComponent implements OnInit {
     try {
       if (!this.usuarioLogeado) return;
 
-      // Obtenemos el historial del usuario
+      this.entrenamientos = []; // Limpiar entrenamientos antes de recargar
+
       const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
       if (historiales.length === 0) {
         console.log('No hay entrenamientos registrados');
         return;
       }
 
-      // Aplanamos los entrenamientos
       this.entrenamientos = historiales.flatMap(h => h.entrenamientos);
-
-      // Ordenamos los entrenamientos por fecha (en formato descendente, es decir, más recientes primero)
       this.entrenamientos.sort(
         (a, b) =>
           new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
@@ -66,7 +69,7 @@ export class HistorialEntrenamientoComponent implements OnInit {
     } catch (error) {
       console.error('Error al cargar los entrenamientos:', error);
     }
-  }
+}
 
 
   // Cargar los nombres de los ejercicios en el mapa `nombresEjercicios`

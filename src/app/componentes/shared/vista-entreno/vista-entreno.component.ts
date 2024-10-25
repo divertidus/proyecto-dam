@@ -228,7 +228,7 @@ guardarSesion(mensajeEstado?: string) {
     const seriesCompletadas = ej.seriesReal
       .filter(serie => serie.completado)
       .map((serie, index) => ({
-        numeroSerie: index + 1, // Renumeramos las series para mantener la secuencia
+        numeroSerie: index + 1,
         repeticiones: serie.repeticiones,
         peso: serie.peso,
         alFallo: serie.alFallo,
@@ -238,8 +238,7 @@ guardarSesion(mensajeEstado?: string) {
       }));
 
     return {
-      ejercicioId: ej.nombreEjercicio,
-      // Si el ejercicio no se inició, dejamos el array vacío
+      ejercicioId: ej.ejercicioId,
       series: esEjercicioNoIniciado ? [] : seriesCompletadas,
       notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
         ? 'NO SE HIZO'
@@ -251,6 +250,7 @@ guardarSesion(mensajeEstado?: string) {
     };
   });
 
+  // Crear `DiaEntrenamiento`
   const nuevoDiaEntrenamiento: DiaEntrenamiento = {
     fechaEntrenamiento: new Date().toISOString(),
     diaRutinaId: this.diaRutinaId,
@@ -258,24 +258,24 @@ guardarSesion(mensajeEstado?: string) {
     notas: '',
   };
 
+  // Crear `HistorialEntrenamiento` que contiene a `nuevoDiaEntrenamiento`
   const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
     entidad: 'historialEntrenamiento',
-    usuarioId: this.usuarioId,
-    entrenamientos: [nuevoDiaEntrenamiento],
+    usuarioId: this.usuarioId!,
+    entrenamientos: [nuevoDiaEntrenamiento], // Array que contiene el `DiaEntrenamiento`
   };
 
+  // Guardar el nuevo historial de entrenamiento
   this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
     .then(() => {
       console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
       this.mostrarAlertaExito();
-      this.router.navigate(['/tabs/tab3']);
     })
-    .catch((error) => {
-      console.error('Error al guardar la sesión de entrenamiento:', error);
+    .catch(error => {
+      console.error('Error al guardar el entrenamiento:', error);
       this.mostrarAlertaError();
     });
 }
-
 
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({
