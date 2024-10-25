@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { GestionUsuariosComponent } from "../../componentes/usuario/gestion-usuarios/gestion-usuarios.component";
 import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/database/usuario.service';
+import { DatabaseService } from 'src/app/services/database/database.service';
 
 @Component({
   selector: 'app-seleccionar-usuario',
@@ -23,6 +24,7 @@ export class SeleccionarUsuarioPage implements OnInit {
   isLoading: boolean = false;  // Bandera para indicar si los datos están cargando
 
   constructor(
+    private databaseService: DatabaseService,
     private usuarioService: UsuarioService,
     private router: Router,
   ) {
@@ -30,12 +32,21 @@ export class SeleccionarUsuarioPage implements OnInit {
   }
 
   ngOnInit() {
-   // this.cargarUsuarios();  // No es necesario cargar usuarios aquí
+    // this.cargarUsuarios();  // No es necesario cargar usuarios aquí
     console.log('se muestra pantalla')
   }
 
   ionViewWillEnter() {
     this.cargarUsuarios(); // Recarga la lista de usuarios cuando la vista está activa
+  }
+
+  // Método para reiniciar la base de datos
+  async reiniciarBaseDatos() {
+    const confirmacion = confirm('¿Estás seguro de que quieres eliminar todos los datos? Esta acción no se puede deshacer.');
+    if (confirmacion) {
+      await this.databaseService.eliminarBaseDatos();
+      console.log('Base de datos reiniciada');
+    }
   }
 
   async cargarUsuarios(): Promise<void> {
@@ -49,7 +60,7 @@ export class SeleccionarUsuarioPage implements OnInit {
       this.isLoading = false; // Ocultar el spinner cuando finalice la carga
     }
   }
-  
+
   irCrearUsuario() {
     console.log('click')
     this.router.navigate(['/crear-usuario']); // Redirigir a la página de creación de usuario

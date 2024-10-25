@@ -4,39 +4,25 @@
     <ion-card-subtitle>{{ entrenamientoActual.diaRutinaId }}</ion-card-subtitle>
   </ion-card-header>
   <ion-card-content *ngIf="expandido">
-
-    <!-- Notas del día de entrenamiento -->
-    <p *ngIf="entrenamientoActual.notas">
-      <strong>Notas del día:</strong> {{ entrenamientoActual.notas }}
-    </p>
-
+    <p *ngIf="entrenamientoActual.notas"><strong>Notas del día:</strong> {{ entrenamientoActual.notas }}</p>
     <ion-list>
       <ion-item *ngFor="let ejercicio of entrenamientoActual.ejercicios; let j = index">
         <ion-label>
-          <h2>{{ ejercicio.ejercicioId }}</h2>
+          <!-- Usamos el método para obtener el nombre del ejercicio -->
+          <h2>{{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h2>
 
           <!-- Notas del ejercicio -->
-          <p *ngIf="ejercicio.notas">
-            <strong>Notas del ejercicio:</strong> {{ ejercicio.notas }}
-          </p>
+          <p *ngIf="ejercicio.notas"><strong>Notas del ejercicio:</strong> {{ ejercicio.notas }}</p>
 
           <p *ngFor="let serie of ejercicio.series; let k = index">
-            Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' +
-            serie.peso + ' kg') : '' }}
-
-            <!-- Mostrar si hubo dolor, ayuda o se llegó al fallo -->
+            Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' + serie.peso + ' kg') :
+            '' }}
             <small *ngIf="serie.dolor || serie.conAyuda || serie.alFallo">
-              {{ serie.dolor ? 'Dolor' : '' }} {{ serie.conAyuda ? '- Con Ayuda' : '' }} {{
-              serie.alFallo ? '- Al Fallo' : '' }}
+              {{ serie.dolor ? 'Dolor' : '' }} {{ serie.conAyuda ? '- Con Ayuda' : '' }} {{ serie.alFallo ? '- Al Fallo'
+              : '' }}
             </small>
-
-            <!-- Mostrar el peso anterior guardado -->
-            <span *ngIf="serie.pesoAnterior">
-              <br>
-              <small class="anterior-serie">
-                Peso Anterior: {{ serie.pesoAnterior }} kg
-              </small>
-            </span>
+            <span *ngIf="serie.pesoAnterior"><br><small class="anterior-serie">Peso Anterior: {{ serie.pesoAnterior }}
+                kg</small></span>
           </p>
         </ion-label>
       </ion-item>

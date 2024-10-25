@@ -1,9 +1,8 @@
-/* ejercicio-form.component.ts */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastController, PopoverController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { IonLabel, IonItem, IonButton } from "@ionic/angular/standalone";
+import { IonLabel, IonItem, IonButton, IonAlert } from "@ionic/angular/standalone";
 import { IonInput, IonSelectOption } from '@ionic/angular/standalone';
 
 @Component({
@@ -11,7 +10,7 @@ import { IonInput, IonSelectOption } from '@ionic/angular/standalone';
   templateUrl: './ejercicio-form.component.html',
   styleUrls: ['./ejercicio-form.component.scss'],
   standalone: true,
-  imports: [IonButton, IonItem, IonLabel, FormsModule, IonInput, IonSelectOption],
+  imports: [IonAlert, IonButton, IonItem, IonLabel, FormsModule, IonInput, IonSelectOption],
   providers: [ModalController, PopoverController]
 })
 export class EjercicioFormComponent implements OnInit {

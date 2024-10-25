@@ -9,6 +9,7 @@ import { IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/ang
 import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
   selector: 'app-ultimo-entreno',
@@ -23,20 +24,24 @@ export class UltimoEntrenoComponent implements OnInit {
   usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado  
   expandido: boolean = false; // Inicialmente expandido
 
+  nombresEjercicios: { [id: string]: string } = {};
+
   constructor(
     private authService: AuthService, // Inyectamos el AuthService para obtener el usuario logeado
-    private historialService: HistorialService // Inyectamos el HistorialService para obtener el historial
+    private historialService: HistorialService, // Inyectamos el HistorialService para obtener el historial
+    private ejercicioService: EjercicioService
   ) { }
 
   async ngOnInit() {
     // Suscribirse al observable del usuario logeado
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
       // Reiniciar los datos cuando el usuario cambia
-      this.ultimoEntrenamiento = null;     
+      this.ultimoEntrenamiento = null;
       this.expandido = false;
 
       if (usuario) {
         this.usuarioLogeado = usuario; // Guardamos el usuario logeado
+        await this.cargarNombresEjercicios()
         await this.cargarUltimoEntrenamiento(); // Cargamos el último entrenamiento
       } else {
         this.usuarioLogeado = null;
@@ -48,6 +53,18 @@ export class UltimoEntrenoComponent implements OnInit {
     this.historialService.historial$.subscribe(async () => {
       await this.cargarUltimoEntrenamiento();
     });
+  }
+
+  async cargarNombresEjercicios() {
+    const ejercicios = await this.ejercicioService.obtenerEjercicios();
+    ejercicios.forEach(ejercicio => {
+      this.nombresEjercicios[ejercicio._id] = ejercicio.nombre;
+    });
+  }
+
+  // Método para obtener el nombre del ejercicio usando su ID
+  obtenerNombreEjercicio(ejercicioId: string): string {
+    return this.nombresEjercicios[ejercicioId] || 'Ejercicio desconocido';
   }
 
   toggleEntrenamiento() {

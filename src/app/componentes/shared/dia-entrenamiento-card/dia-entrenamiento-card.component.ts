@@ -15,6 +15,7 @@ export class DiaEntrenamientoCardComponent {
   @Input() entrenamientoActual: DiaEntrenamiento; // Entrenamiento actual
   @Input() expandido: boolean = false; // Para saber si debe estar expandido
   @Input() index: number; // Índice del entrenamiento
+  @Input() obtenerNombreEjercicio: (ejercicioId: string) => string; // Input de la función para obtener el nombre
 
   @Output() toggleExpand = new EventEmitter<number>(); // Evento para expandir/colapsar
 }

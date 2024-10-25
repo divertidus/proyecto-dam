@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Output } from '@angular/core';
+import { Component,EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Usuario } from 'src/app/models/usuario.model';
 import { IonCard, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonButton, IonCardContent } from "@ionic/angular/standalone";
@@ -9,7 +9,7 @@ import { UsuarioService } from 'src/app/services/database/usuario.service';
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
   standalone: true,
-  imports: [IonCardContent, IonButton, IonLabel, IonItem, IonCardTitle, IonCardHeader, IonCard, FormsModule,IonInput]
+  imports: [IonCardContent, IonButton, IonLabel, IonItem, IonCardTitle, IonCardHeader, IonCard, FormsModule, IonInput]
 })
 export class UserFormComponent {
   nombre: string = '';

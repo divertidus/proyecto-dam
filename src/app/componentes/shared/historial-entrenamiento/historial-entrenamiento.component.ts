@@ -8,6 +8,7 @@ import { IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@
 import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
   selector: 'app-historial-entrenamiento',
@@ -23,15 +24,20 @@ export class HistorialEntrenamientoComponent implements OnInit {
   entrenamientosExpandido: Set<number> = new Set<number>(); // Set para manejar entrenamientos expandidos
   comparaciones: { [key: number]: any } = {}; // Almacena las comparaciones de los entrenamientos
 
+  // Añadimos un mapa para almacenar los nombres de los ejercicios
+  nombresEjercicios: { [id: string]: string } = {}
+
   constructor(
     private authService: AuthService,
-    private historialService: HistorialService
+    private historialService: HistorialService,
+    private ejercicioService: EjercicioService
   ) { }
 
   async ngOnInit() {
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
       if (usuario) {
         this.usuarioLogeado = usuario;
+        await this.cargarNombresEjercicios(); // Cargar nombres de ejercicios
         await this.cargarEntrenamientos();
       }
     });
@@ -60,6 +66,20 @@ export class HistorialEntrenamientoComponent implements OnInit {
     } catch (error) {
       console.error('Error al cargar los entrenamientos:', error);
     }
+  }
+
+
+  // Cargar los nombres de los ejercicios en el mapa `nombresEjercicios`
+  async cargarNombresEjercicios() {
+    const ejercicios = await this.ejercicioService.obtenerEjercicios();
+    ejercicios.forEach(ejercicio => {
+      this.nombresEjercicios[ejercicio._id] = ejercicio.nombre;
+    });
+  }
+
+  // Método para obtener el nombre del ejercicio usando su ID
+  obtenerNombreEjercicio(ejercicioId: string): string {
+    return this.nombresEjercicios[ejercicioId] || 'Ejercicio desconocido';
   }
 
   // Método para expandir o contraer el entrenamiento

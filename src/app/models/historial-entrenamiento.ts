@@ -23,6 +23,7 @@ export interface EjercicioRealizado {
   ejercicioId: string;
   series: SerieReal[];
   notas?: string;
+  anteriorVezEjercicioID?:string
 }
 
 // Modelo de SerieReal (Registro Real)

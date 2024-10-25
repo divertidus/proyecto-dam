@@ -34,26 +34,55 @@ export class AppComponent implements OnInit {
   private usuarioLogeado: Usuario | null = null; // Variable para almacenar el usuario logeado actual
 
   async ngOnInit() {
-    await this.inicializarUsuario(); // Inicializamos el usuario
-    await this.inicializarEjercicios(); // Inicializamos los ejercicios
-    await this.inicializarRutina(); // Inicializamos las rutinas con los días y ejercicios
-    await this.inicializarHistorial(); // Inicializamos el historial con dos entrenamientos
+    // Verifica si hay datos en la base de datos antes de inicializar
+    const baseDatosVacia = await this.comprobarBaseDatosVacia();
+
+    if (baseDatosVacia) {
+      console.log('No se encontraron datos en la base de datos. Cargando datos iniciales.');
+      await this.inicializarUsuario(); // Inicializamos el usuario
+      await this.inicializarEjercicios(); // Inicializamos los ejercicios
+      await this.inicializarRutina(); // Inicializamos las rutinas con los días y ejercicios
+      await this.inicializarHistorial(); // Inicializamos el historial con dos entrenamientos
+    } else {
+      console.log('Datos ya existentes en la base de datos. No se cargarán los datos iniciales.');
+    }
 
     this.authService.autoLoginPrimerUsuario(); // Intentamos iniciar sesión automáticamente
 
-
     /*   // CONSULTAS DOCUMENTOS Y DESCARGA JSON BBDD CON INFORMACION
-        // Listar todos los documentos al iniciar el componente
-        this.databaseService.listarTodosLosDocumentos().then((docs) => {
-          console.log('Documentos encontrados:', docs);
-        });
-    
-        // Exportar los documentos a un archivo JSON
-        this.databaseService.exportarDocumentosAJson();
-    
-    */
+      // Listar todos los documentos al iniciar el componente
+      this.databaseService.listarTodosLosDocumentos().then((docs) => {
+        console.log('Documentos encontrados:', docs);
+      });
+  
+      // Exportar los documentos a un archivo JSON
+      this.databaseService.exportarDocumentosAJson();
+  
+  */
 
   }
+
+  // Método para comprobar si la base de datos está completamente vacía
+  private async comprobarBaseDatosVacia(): Promise<boolean> {
+    try {
+      // Consultas a la base de datos para cada colección
+      const usuarios = await this.usuarioService.obtenerUsuarios();
+      const ejercicios = await this.ejercicioService.obtenerEjercicios();
+      const rutinas = await this.rutinaService.obtenerRutinasPorUsuario("usuarioId");
+      const historiales = await this.historialService.obtenerHistorialesPorUsuario("usuarioId");
+
+      // Retorna true si todas las colecciones están vacías
+      return usuarios.length === 0 && ejercicios.length === 0 && rutinas.length === 0 && historiales.length === 0;
+    } catch (error) {
+      console.error('Error al comprobar la base de datos:', error);
+      return false; // En caso de error, asumimos que no hay datos para evitar recargar
+    }
+  }
+
+
+
+
+
 
   // Inicializar el usuario si no existe
   async inicializarUsuario() {
@@ -194,33 +223,67 @@ export class AppComponent implements OnInit {
         return;
       }
 
-      // Día 1: Espalda y Bíceps - Ejercicios (sin peso anterior)
-      const ejerciciosDia1 = [
-        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 85, alFallo: true, notas: 'No pude completar las últimas 2 repeticiones' }] },
-        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 20, conAyuda: true, notas: 'Me ayudaron a terminar las últimas 2 repeticiones' }, { numeroSerie: 2, repeticiones: 10, peso: 25 }] },
-        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 50 }, { numeroSerie: 2, repeticiones: 12, peso: 55, alFallo: true, notas: 'Al fallo en la última repetición' }] }
+      // Días de entrenamientos con información del peso anterior manualmente asignada
+      const dia1Entrenamiento1 = [
+        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }] },
+        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 85 }] },
+        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 20 }] }
       ];
 
-      // Día 2: Pecho y Tríceps - Ejercicios (con peso anterior)
-      const ejerciciosDia2 = [
-        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 60, pesoAnterior: 55 }, { numeroSerie: 2, repeticiones: 8, peso: 65, pesoAnterior: 60, alFallo: true, notas: 'No pude completar las últimas 2 repeticiones' }] },
-        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 40, pesoAnterior: 35 }, { numeroSerie: 2, repeticiones: 12, peso: 45, pesoAnterior: 40 }] },
-        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0, pesoAnterior: 0 }, { numeroSerie: 2, repeticiones: 10, peso: 0, pesoAnterior: 0 }] }
+      const dia2Entrenamiento1 = [
+        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 60 }] },
+        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 40 }] },
+        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0 }] }
       ];
 
-      // Día 3: Pierna y Hombro - Ejercicios (con peso anterior)
-      const ejerciciosDia3 = [
-        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 100, pesoAnterior: 95 }, { numeroSerie: 2, repeticiones: 10, peso: 105, pesoAnterior: 100 }] },
-        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 10, pesoAnterior: 8, dolor: true, notas: 'Dolor leve en el hombro izquierdo' }, { numeroSerie: 2, repeticiones: 12, peso: 12, pesoAnterior: 10 }] },
-        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 120, pesoAnterior: 115 }, { numeroSerie: 2, repeticiones: 10, peso: 125, pesoAnterior: 120 }] }
+      const dia3Entrenamiento1 = [
+        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 100 }] },
+        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 10 }] },
+        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 120 }] }
       ];
 
-      // Generamos los días de entrenamiento con IDs reales
+      // Segunda ronda (usamos el peso anterior donde corresponde)
+      const dia1Entrenamiento2 = [
+        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 82, pesoAnterior: 80 }] },
+        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 87, pesoAnterior: 85 }] },
+        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 22, pesoAnterior: 20 }] }
+      ];
+
+      const dia3Entrenamiento2 = [
+        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 105, pesoAnterior: 100 }] },
+        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [] }, // No se registran series para este ejercicio
+        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 125, pesoAnterior: 120 }] }
+      ];
+
+      const dia1Entrenamiento3 = [
+        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 84, pesoAnterior: 82 }] },
+        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 90, pesoAnterior: 87 }] },
+        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 24, pesoAnterior: 22 }] }
+      ];
+
+      const dia2Entrenamiento2 = [
+        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 65, pesoAnterior: 60 }] },
+        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 45, pesoAnterior: 40 }] },
+        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0, pesoAnterior: 0 }] }
+      ];
+
+      const dia3Entrenamiento3 = [
+        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 110, pesoAnterior: 105 }] },
+        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 12, pesoAnterior: 10 }] },
+        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 130, pesoAnterior: 125 }] }
+      ];
+
+      // Generamos los días de entrenamiento con fechas asignadas
       const historiales = [
-        { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: ejerciciosDia1 },
-        { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: ejerciciosDia2 },
-        { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: ejerciciosDia3 },
-        // Otros días de entrenamiento...
+        { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: dia1Entrenamiento1 },
+        { fechaEntrenamiento: '2024-10-02', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: dia2Entrenamiento1 },
+        { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: dia3Entrenamiento1 },
+        { fechaEntrenamiento: '2024-10-04', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: dia1Entrenamiento2 },
+        { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: dia3Entrenamiento2 }, // Sin series en un ejercicio
+        { fechaEntrenamiento: '2024-10-06', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: dia1Entrenamiento3 },
+        { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 2: Pecho y Tríceps', ejercicios: dia2Entrenamiento2 },
+        { fechaEntrenamiento: '2024-10-08', diaRutinaId: 'Día 3: Pierna y Hombro', ejercicios: dia3Entrenamiento3 },
+        { fechaEntrenamiento: '2024-10-09', diaRutinaId: 'Día 1: Espalda y Bíceps', ejercicios: dia1Entrenamiento3 }
       ];
 
       // Agregamos los historiales a la base de datos
@@ -244,5 +307,4 @@ export class AppComponent implements OnInit {
       console.error('Error al añadir el historial de entrenamientos:', error);
     }
   }
-
 }

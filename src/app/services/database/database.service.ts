@@ -32,7 +32,6 @@ export class DatabaseService {
     return this.baseDatos;
   }
 
-
   /* EXTRAS*/
 
   // Método para listar todos los documentos en la base de datos
@@ -65,6 +64,29 @@ export class DatabaseService {
     a.click();
     window.URL.revokeObjectURL(url);
   }
+
+  // Inicializar la base de datos
+  private inicializarBaseDatos() {
+    this.baseDatos = new PouchDB('myappdb');
+    this.baseDatos.info().then((info: any) => {
+      console.log('BASE DE DATOS INICIALIZADA', info);
+    }).catch((err: any) => {
+      console.error('ERROR AL INICIAR LA BASE DE DATOS', err);
+    });
+  }
+
+  // Método para eliminar la base de datos y recrearla
+  async eliminarBaseDatos() {
+    try {
+      await this.baseDatos.destroy(); // Destruye la base de datos actual
+      console.log('Base de datos eliminada correctamente');
+      this.inicializarBaseDatos(); // Re-inicializa la base de datos
+    } catch (error) {
+      console.error('Error al eliminar la base de datos:', error);
+    }
+  }
+
+
 }
 
 /*

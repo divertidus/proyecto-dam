@@ -7,7 +7,7 @@
 <ion-content [fullscreen]="true">
   <!-- Mostrar el spinner mientras los usuarios están cargando -->
   <ion-spinner *ngIf="isLoading"></ion-spinner>
-  
+
   <!-- Mostrar mensaje si no hay usuarios cuando la carga ha terminado -->
   <div *ngIf="!isLoading && usuarios.length === 0">
     <p>No se encontraron usuarios. Por favor, cree uno nuevo.</p>
@@ -20,5 +20,11 @@
   <ion-footer *ngIf="!isLoading">
     <ion-button expand="full" (click)="irCrearUsuario()">Crear Nuevo Usuario</ion-button>
     <ion-button expand="full" (click)="irAdministrarUsuarios()">Administrar usuarios</ion-button>
+
   </ion-footer>
+
 </ion-content>
+<ion-footer *ngIf="!isLoading">
+  <!-- Añadir un botón para reiniciar la base de datos -->
+  <ion-button expand="full" color="danger" (click)="reiniciarBaseDatos()">Reiniciar Base de Datos</ion-button>
+</ion-footer>

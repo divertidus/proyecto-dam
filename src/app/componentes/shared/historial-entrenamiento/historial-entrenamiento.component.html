@@ -1,7 +1,10 @@
 <!-- Lista de entrenamientos -->
 <ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
-  <!-- COMPONENTE PARA LA TARJETA DEL DIA DE ENTRENAMIENTO -->
-  <app-dia-entrenamiento-card [entrenamientoActual]="entrenamiento" [expandido]="isExpandido(i)" [index]="i"
+  <app-dia-entrenamiento-card 
+    [entrenamientoActual]="entrenamiento" 
+    [expandido]="isExpandido(i)" 
+    [index]="i"
+    [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)"
     (toggleExpand)="toggleEntrenamiento($event)">
   </app-dia-entrenamiento-card>
 </ion-list>

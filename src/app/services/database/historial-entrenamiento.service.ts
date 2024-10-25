@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Para manejar la lista de historiales de manera reactiva
-import { DiaEntrenamiento, HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
+import { EjercicioRealizado, HistorialEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
 
 @Injectable({
   providedIn: 'root' // Servicio disponible en toda la aplicación
@@ -11,6 +11,9 @@ export class HistorialService {
   private baseDatos: any; // Almacenamos la instancia de la base de datos
   private historialSubject = new BehaviorSubject<HistorialEntrenamiento[]>([]); // Sujeto para el historial de entrenamiento
   historial$ = this.historialSubject.asObservable(); // Observable para escuchar cambios en los historiales
+
+  // Añadimos un mapa para almacenar los nombres de los ejercicios
+  nombresEjercicios: { [id: string]: string } = {};
 
   constructor(private servicioBaseDatos: DatabaseService) {
     // Obtenemos la base de datos a través del servicio general de base de datos
@@ -164,5 +167,86 @@ export class HistorialService {
     }
   }
 
+  // Función para obtener el peso anterior de un ejercicio específico para un usuario y rutina dados
+  async obtenerPesoAnterior(ejercicio: EjercicioRealizado, usuarioId: string, rutinaId: string): Promise<number[] | null> {
+    if (ejercicio.anteriorVezEjercicioID) {
+      try {
+        // Busca el ejercicio realizado previamente en base al ID referenciado y el usuario/rutina correspondientes
+        const entrenamientoAnterior = await this.baseDatos.find({
+          selector: {
+            _id: ejercicio.anteriorVezEjercicioID,
+            usuarioId: usuarioId,
+            rutinaId: rutinaId,
+            entidad: 'historialEntrenamiento'
+          }
+        });
+
+        if (entrenamientoAnterior.docs.length > 0 && entrenamientoAnterior.docs[0].series) {
+          return entrenamientoAnterior.docs[0].series.map((serie: any) => serie.peso); // Array de pesos anteriores
+        }
+      } catch (error) {
+        console.error('Error al obtener el peso anterior:', error);
+      }
+    }
+    return null; // Si no hay peso anterior registrado o no se encuentra el documento
+  }
+
+  // Método para actualizar pesos posteriores después de modificar una serie anterior
+  async actualizarPesosPosteriores(ejercicioId: string, usuarioId: string, nuevoPeso: number) {
+    try {
+      // Encuentra todas las sesiones posteriores que dependen del `anteriorVezEjercicioID` actualizado
+      const entrenamientosPosteriores = await this.baseDatos.find({
+        selector: {
+          entidad: 'historialEntrenamiento',
+          usuarioId: usuarioId,
+          'entrenamientos.ejercicios.ejercicioId': ejercicioId
+        }
+      });
+
+      for (const entrenamiento of entrenamientosPosteriores.docs) {
+        for (const diaEntrenamiento of entrenamiento.entrenamientos) {
+          for (const ejercicio of diaEntrenamiento.ejercicios) {
+            if (ejercicio.ejercicioId === ejercicioId && ejercicio.anteriorVezEjercicioID) {
+              // Actualizar el `pesoAnterior` de cada serie en la sesión posterior
+              ejercicio.series.forEach((serie: SerieReal) => {
+                serie.pesoAnterior = nuevoPeso;
+              });
+
+              // Guardar los cambios en la base de datos
+              await this.baseDatos.put(entrenamiento);
+              console.log(`Actualizado el peso anterior en entrenamiento posterior: ${entrenamiento._id}`);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error al actualizar pesos en entrenamientos posteriores:', error);
+    }
+  }
+
 
 }
+
+/* Ejemplo de Uso: Al Modificar un Peso en una Serie
+ 
+Si deseas actualizar el peso anterior en sesiones posteriores cuando cambias el peso de una serie en una sesión específica, puedes llamar al método actualizarPesosPosteriores desde el lugar donde se hace la modificación.
+
+typescript
+Copiar código
+// Ejemplo de actualización en un componente
+async modificarPesoSerie(ejercicio: EjercicioRealizado, nuevoPeso: number, usuarioId: string) {
+// Modificar el peso actual de la serie
+ejercicio.series[0].peso = nuevoPeso;
+
+// Guardar el ejercicio con el peso actualizado
+await this.historialService.guardarEjercicio(ejercicio);
+
+// Llamar a actualizarPesosPosteriores para que el `pesoAnterior` en sesiones futuras refleje el nuevo peso
+await this.historialService.actualizarPesosPosteriores(ejercicio.ejercicioId, usuarioId, nuevoPeso);
+}
+*/
+
+
+
+
+
