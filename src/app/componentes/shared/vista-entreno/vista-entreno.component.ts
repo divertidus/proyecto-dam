@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
-import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert } from '@ionic/angular/standalone';
+import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert, IonContent } from '@ionic/angular/standalone';
 import {
   IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonList, IonItem, IonIcon, IonFooter, IonButton
@@ -22,15 +22,12 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './vista-entreno.component.html',
   styleUrls: ['./vista-entreno.component.scss'],
   standalone: true,
-  imports: [IonAlert, IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
+  imports: [IonContent, IonAlert, IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
     IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit {
 
-  checkAllSeriesCompleted(_t71: any) {
-    throw new Error('Method not implemented.');
-  }
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
   rutinaId: string | null = null; // ID de la rutina
@@ -78,6 +75,7 @@ export class VistaEntrenoComponent implements OnInit {
 
   }
 
+  // Método para cargar y contar ejercicios
   async cargarDiaRutinaPorNombre(rutinaId: string, diaNombre: string) {
     try {
       const diaRutina: DiaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
@@ -89,12 +87,13 @@ export class VistaEntrenoComponent implements OnInit {
             ultimoPeso = await this.historialService.obtenerUltimoPesoEjercicio(this.usuarioId, ej.ejercicioId);
           }
 
-          // Modificamos aquí: establecemos peso igual a ultimoPeso
+          // Configuración de series y atributos del ejercicio
           const seriesReal = (ej.series || []).map((serie: any) => ({
             numeroSerie: serie.numeroSerie,
             repeticiones: serie.repeticiones,
-            peso: ultimoPeso || 0,  // <-- Para poner por defecto el peso anterior y partir de él.
+            peso: ultimoPeso || 0,
             pesoAnterior: ultimoPeso || 0,
+            completado: false,  // Inicialización de la propiedad completado
             dolor: false,
             conAyuda: false,
             alFallo: false,
@@ -104,8 +103,16 @@ export class VistaEntrenoComponent implements OnInit {
             ...ej,
             nombreEjercicio: ejercicioDetalles.nombre,
             seriesReal: seriesReal,
+            seriesCompletadas: 0,
+            seriesTotal: seriesReal.length,
+            abierto: false,
+            completado: false,
           };
         }));
+
+        // Actualizar el contador total de ejercicios y completados
+        this.totalEjercicios = this.ejercicios.length;
+        this.actualizarEjerciciosCompletados();
         console.log("Estructura de ejercicios cargados:", this.ejercicios);
       } else {
         console.error(`Día de rutina con nombre ${diaNombre} no encontrado`);
@@ -114,6 +121,7 @@ export class VistaEntrenoComponent implements OnInit {
       console.error('Error al cargar el día de la rutina:', error);
     }
   }
+
 
   // Método para abrir el alert para agregar notas
   async abrirNotas(index: number) {
@@ -147,50 +155,126 @@ export class VistaEntrenoComponent implements OnInit {
     await alert.present();
   }
 
-  guardarEntrenamiento() {
+  async guardarEntrenamiento() {
     if (this.ejercicios && this.ejercicios.length > 0) {
-      // Creamos un nuevo registro de DiaEntrenamiento
-      const nuevoDiaEntrenamiento: DiaEntrenamiento = {
-        fechaEntrenamiento: new Date().toISOString(), // Fecha actual
-        diaRutinaId: this.diaRutinaId, // ID del día de la rutina realizado
-        ejercicios: this.ejercicios.map(ej => ({
-          ejercicioId: ej.nombreEjercicio, // Usamos el nombre del ejercicio como identificador
-          series: ej.seriesReal.map((serie, index) => ({
-            numeroSerie: index + 1, // Asignamos el número de serie
-            repeticiones: serie.repeticiones, // Corresponde al modelo
-            peso: serie.peso, // Corresponde al modelo (opcional)
-            alFallo: serie.alFallo, // Corresponde al modelo (opcional)
-            conAyuda: serie.conAyuda, // Corresponde al modelo (opcional)
-            dolor: serie.dolor, // Corresponde al modelo (opcional)
-            notas: serie.notas || null, // Notas de la serie (opcional)
-          })),
-          notas: ej.notas || null, // Notas opcionales del ejercicio
-        })),
-        notas: '', // Notas opcionales para el día de entrenamiento
-      };
+      // Clasificamos los ejercicios en completados, incompletos y no iniciados
+      const ejerciciosCompletos = this.ejercicios.filter(ej => ej.seriesCompletadas === ej.seriesTotal);
+      const ejerciciosIncompletos = this.ejercicios.filter(ej => ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal);
+      const ejerciciosNoIniciados = this.ejercicios.filter(ej => ej.seriesCompletadas === 0);
 
-      // Crear un nuevo historial si no existe o añadir este día al historial existente
-      const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
-        entidad: 'historialEntrenamiento',
-        usuarioId: this.usuarioId, // Asignar el usuario actual
-        entrenamientos: [nuevoDiaEntrenamiento], // Añadimos el día de entrenamiento
-      };
+      // Si todos los ejercicios están completos, guardamos directamente
+      if (ejerciciosIncompletos.length === 0 && ejerciciosNoIniciados.length === 0) {
+        this.guardarSesion(); // Método que realiza el guardado
+        return;
+      }
 
-      // Guardamos la nueva sesión de entrenamiento usando el HistorialService
-      this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
-        .then(() => {
-          console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
-          this.mostrarAlertaExito(); // Mostrar alerta de éxito
-          this.router.navigate(['/tabs/tab3']); // Redirigir al usuario a otra página
-        })
-        .catch((error) => {
-          console.error('Error al guardar la sesión de entrenamiento:', error);
-          this.mostrarAlertaError(); // Mostrar alerta de error
+      // Caso 1: Ejercicios no iniciados
+      if (ejerciciosNoIniciados.length > 0 && ejerciciosCompletos.length > 0) {
+        const alert = await this.alertController.create({
+          header: 'Ejercicios no realizados',
+          message: 'Algunos ejercicios no se han iniciado. ¿Desea guardar todos los ejercicios? Aquellos no iniciados tendrán la nota "NO SE HIZO".',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+            },
+            {
+              text: 'Guardar',
+              handler: () => {
+                this.guardarSesion('NO SE HIZO'); // Guardamos incluyendo notas de "NO SE HIZO" para ejercicios no iniciados
+              }
+            }
+          ]
         });
+        await alert.present();
+        return;
+      }
+
+      // Caso 2: Ejercicios incompletos
+      if (ejerciciosIncompletos.length > 0) {
+        const alert = await this.alertController.create({
+          header: 'Ejercicios incompletos',
+          message: 'Hay ejercicios con series incompletas. ¿Desea guardar solo las series completadas y marcar los ejercicios incompletos?',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+            },
+            {
+              text: 'Guardar',
+              handler: () => {
+                this.guardarSesion('Incompleto'); // Guardamos incluyendo "Incompleto" para ejercicios parcialmente realizados
+              }
+            }
+          ]
+        });
+        await alert.present();
+        return;
+      }
     } else {
       console.warn('No hay ejercicios para guardar en esta sesión');
     }
   }
+
+// Método que realiza el guardado según el mensaje de estado
+guardarSesion(mensajeEstado?: string) {
+  const ejerciciosCompletados = this.ejercicios.map(ej => {
+    // Determinar el estado del ejercicio actual
+    const esEjercicioNoIniciado = ej.seriesCompletadas === 0;
+    const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
+    const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
+
+    // Filtrar solo las series completadas
+    const seriesCompletadas = ej.seriesReal
+      .filter(serie => serie.completado)
+      .map((serie, index) => ({
+        numeroSerie: index + 1, // Renumeramos las series para mantener la secuencia
+        repeticiones: serie.repeticiones,
+        peso: serie.peso,
+        alFallo: serie.alFallo,
+        conAyuda: serie.conAyuda,
+        dolor: serie.dolor,
+        notas: serie.notas || null,
+      }));
+
+    return {
+      ejercicioId: ej.nombreEjercicio,
+      // Si el ejercicio no se inició, dejamos el array vacío
+      series: esEjercicioNoIniciado ? [] : seriesCompletadas,
+      notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
+        ? 'NO SE HIZO'
+        : esEjercicioIncompleto
+          ? 'INCOMPLETO'
+          : esEjercicioCompleto
+            ? ej.notas || null
+            : null,
+    };
+  });
+
+  const nuevoDiaEntrenamiento: DiaEntrenamiento = {
+    fechaEntrenamiento: new Date().toISOString(),
+    diaRutinaId: this.diaRutinaId,
+    ejercicios: ejerciciosCompletados,
+    notas: '',
+  };
+
+  const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
+    entidad: 'historialEntrenamiento',
+    usuarioId: this.usuarioId,
+    entrenamientos: [nuevoDiaEntrenamiento],
+  };
+
+  this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
+    .then(() => {
+      console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
+      this.mostrarAlertaExito();
+      this.router.navigate(['/tabs/tab3']);
+    })
+    .catch((error) => {
+      console.error('Error al guardar la sesión de entrenamiento:', error);
+      this.mostrarAlertaError();
+    });
+}
 
 
   async mostrarAlertaExito() {
@@ -233,33 +317,149 @@ export class VistaEntrenoComponent implements OnInit {
     }
   }
 
-  alternarCheckBoxEjercicio(ejercicio) {
-    console.log(ejercicio.completado)
-    // ejercicio.completado = !ejercicio.completado;
-    // En lugar de alternar, solo actualizar el contador con el valor actual del checkbox
-    console.log(ejercicio.completado)
-    this.actualizarEjerciciosCompletados();
-  }  
+  toggleEjercicio(index: number) {
+    this.ejercicios[index].abierto = !this.ejercicios[index].abierto;
+  }
 
   // Actualizar el contador de ejercicios completados
   actualizarEjerciciosCompletados() {
     this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
     this.totalEjercicios = this.ejercicios.length;
-    console.log("Ejercicios completados:", this.ejerciciosCompletados, "de", this.totalEjercicios);
   }
 
-  alternarCheckBoxSerie(serie) {
-    console.log(serie.completado)
-    // ejercicio.completado = !ejercicio.completado;
-    // En lugar de alternar, solo actualizar el contador con el valor actual del checkbox
-    console.log(serie.completado)
-    this.actualizarSerieCompletada();
+  marcarSerieCompletada(ejercicioIndex: number, serieIndex: number) {
+    const ejercicio = this.ejercicios[ejercicioIndex];
+    const serie = ejercicio.seriesReal[serieIndex];
+
+    // Marcar la serie actual como completada
+    serie.completado = true;
+    ejercicio.seriesCompletadas++;
+
+    // Si todas las series del ejercicio están completadas, marcamos el ejercicio como completado
+    if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
+      ejercicio.completado = true;
+      this.actualizarEjerciciosCompletados();
+    }
   }
 
-  // Actualizar serie completada
-  actualizarSerieCompletada() {
-    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
-    this.totalEjercicios = this.ejercicios.length;
-    console.log("Serie completada:", this.ejerciciosCompletados, "de", this.totalEjercicios);
-  }
 }
+
+
+/*  el siguinete guardar siempre tiene el array de series con la cantidad de series que toque incluso is está incompleta o sin hacer, aunque con valores null.
+
+ async guardarEntrenamiento() {
+    if (this.ejercicios && this.ejercicios.length > 0) {
+      // Clasificamos los ejercicios en completados, incompletos y no iniciados
+      const ejerciciosCompletos = this.ejercicios.filter(ej => ej.seriesCompletadas === ej.seriesTotal);
+      const ejerciciosIncompletos = this.ejercicios.filter(ej => ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal);
+      const ejerciciosNoIniciados = this.ejercicios.filter(ej => ej.seriesCompletadas === 0);
+
+      // Si todos los ejercicios están completos, guardamos directamente
+      if (ejerciciosIncompletos.length === 0 && ejerciciosNoIniciados.length === 0) {
+        this.guardarSesion(); // Método que realiza el guardado
+        return;
+      }
+
+      // Caso 1: Ejercicios no iniciados
+      if (ejerciciosNoIniciados.length > 0 && ejerciciosCompletos.length > 0) {
+        const alert = await this.alertController.create({
+          header: 'Ejercicios no realizados',
+          message: 'Algunos ejercicios no se han iniciado. ¿Desea guardar todos los ejercicios? Aquellos no iniciados tendrán la nota "NO SE HIZO".',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+            },
+            {
+              text: 'Guardar',
+              handler: () => {
+                this.guardarSesion('NO SE HIZO'); // Guardamos incluyendo notas de "NO SE HIZO" para ejercicios no iniciados
+              }
+            }
+          ]
+        });
+        await alert.present();
+        return;
+      }
+
+      // Caso 2: Ejercicios incompletos
+      if (ejerciciosIncompletos.length > 0) {
+        const alert = await this.alertController.create({
+          header: 'Ejercicios incompletos',
+          message: 'Hay ejercicios con series incompletas. ¿Desea guardar solo las series completadas y marcar los ejercicios incompletos?',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+            },
+            {
+              text: 'Guardar',
+              handler: () => {
+                this.guardarSesion('Incompleto'); // Guardamos incluyendo "Incompleto" para ejercicios parcialmente realizados
+              }
+            }
+          ]
+        });
+        await alert.present();
+        return;
+      }
+    } else {
+      console.warn('No hay ejercicios para guardar en esta sesión');
+    }
+  }
+
+// Método que realiza el guardado según el mensaje de estado
+guardarSesion(mensajeEstado?: string) {
+  const ejerciciosCompletados = this.ejercicios.map(ej => {
+    // Determinar el estado del ejercicio actual
+    const esEjercicioNoIniciado = ej.seriesCompletadas === 0;
+    const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
+    const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
+
+    return {
+      ejercicioId: ej.nombreEjercicio,
+      series: ej.seriesReal.map((serie, index) => ({
+        numeroSerie: index + 1,
+        repeticiones: serie.completado ? serie.repeticiones : null,
+        peso: serie.completado ? serie.peso : null,
+        alFallo: serie.alFallo,
+        conAyuda: serie.conAyuda,
+        dolor: serie.dolor,
+        notas: serie.notas || null,
+      })),
+      notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
+        ? 'NO SE HIZO'
+        : esEjercicioIncompleto
+          ? 'INCOMPLETO'
+          : esEjercicioCompleto
+            ? ej.notas || null
+            : null,
+    };
+  });
+
+  // Aquí guardamos el entrenamiento con los valores en estado adecuado
+  const nuevoDiaEntrenamiento: DiaEntrenamiento = {
+    fechaEntrenamiento: new Date().toISOString(),
+    diaRutinaId: this.diaRutinaId,
+    ejercicios: ejerciciosCompletados,
+    notas: '',
+  };
+
+  const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
+    entidad: 'historialEntrenamiento',
+    usuarioId: this.usuarioId,
+    entrenamientos: [nuevoDiaEntrenamiento],
+  };
+
+  this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
+    .then(() => {
+      console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
+      this.mostrarAlertaExito();
+      this.router.navigate(['/tabs/tab3']);
+    })
+    .catch((error) => {
+      console.error('Error al guardar la sesión de entrenamiento:', error);
+      this.mostrarAlertaError();
+    });
+}
+*/

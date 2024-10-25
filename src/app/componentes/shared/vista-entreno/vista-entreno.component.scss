@@ -182,3 +182,20 @@
     }
     
   }
+  
+  .content {
+    --padding-bottom: 80px; // Espacio para el footer
+    padding-bottom: 80px; // Asegura margen adicional si es necesario
+  }
+  
+  ion-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+  }
+  
+  .footer-info {
+    text-align: center;
+    font-weight: bold;
+  }
