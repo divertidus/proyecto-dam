@@ -18,6 +18,7 @@ export class HistorialService {
   constructor(private servicioBaseDatos: DatabaseService) {
     // Obtenemos la base de datos a través del servicio general de base de datos
     this.baseDatos = this.servicioBaseDatos.obtenerBaseDatos();
+    
   }
 
   // Método para agregar un nuevo historial de entrenamiento

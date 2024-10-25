@@ -7,19 +7,20 @@ import { Rutina, DiaRutina, EjercicioPlan } from 'src/app/models/rutina.model';
   providedIn: 'root'
 })
 export class RutinaService {
-  private db: any;
+  private baseDatos: any;
   private rutinasSubject = new BehaviorSubject<Rutina[]>([]);
   rutinas$ = this.rutinasSubject.asObservable(); // Observable para suscribirse a los cambios de las rutinas
 
   constructor(private databaseService: DatabaseService) {
-    this.db = this.databaseService.obtenerBaseDatos();
-    this.cargarRutinas(); // Inicializamos las rutinas cargándolas desde la base de datos
-  }
+    this.baseDatos = this.databaseService.obtenerBaseDatos();
+    console.log("RutinaService - baseDatos inicializado:", this.baseDatos);
+    this.cargarRutinas();
+}
 
   // Método para agregar una nueva rutina
   async agregarRutina(nuevaRutina: Rutina) {
     try {
-      const response = await this.db.post({
+      const response = await this.baseDatos.post({
         ...nuevaRutina,
         _id: nuevaRutina._id || undefined, // Asegurarse de que el ID es opcional
         timestamp: new Date().toISOString(), // Añadir timestamp para saber cuándo se creó
@@ -36,7 +37,7 @@ export class RutinaService {
   // Método para obtener todas las rutinas de un usuario específico
   async obtenerRutinasPorUsuario(usuarioId: string) {
     try {
-      const result = await this.db.find({
+      const result = await this.baseDatos.find({
         selector: { entidad: 'rutina', usuarioId }
       });
       console.log('RUTINA.SERVICE -> Obtenidas rutinas')
@@ -50,7 +51,7 @@ export class RutinaService {
   // Método para cargar todas las rutinas en el BehaviorSubject
   async cargarRutinas() {
     try {
-      const result = await this.db.find({ selector: { entidad: 'rutina' } });
+      const result = await this.baseDatos.find({ selector: { entidad: 'rutina' } });
       const rutinas = result.docs;
       console.log('RUTINA.SERVICE -> Cargadas rutinas en Bhaviour')
       this.rutinasSubject.next(rutinas); // Emitimos las rutinas para que todos los suscriptores las reciban
@@ -63,7 +64,7 @@ export class RutinaService {
   // Método para obtener una rutina específica por su ID
   async obtenerRutinaPorId(rutinaId: string) {
     try {
-      const result = await this.db.get(rutinaId);
+      const result = await this.baseDatos.get(rutinaId);
       if (result.entidad === 'rutina') {
         console.log('RUTINA.SERVICE -> Obtenida rutina por ID')
         return result;
@@ -114,7 +115,7 @@ export class RutinaService {
         throw new Error('RUTINA.SERVICE -> Rutina inválida: falta _id o _rev');
       }
 
-      const response = await this.db.put({
+      const response = await this.baseDatos.put({
         ...rutina,
         timestamp: rutina.timestamp || new Date().toISOString() // Mantener el timestamp o agregar uno si no está presente
       });
@@ -131,7 +132,7 @@ export class RutinaService {
   async eliminarRutina(rutinaId: string) {
     try {
       const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina para asegurarnos de que existe y tiene la versión correcta
-      const response = await this.db.remove(rutina);
+      const response = await this.baseDatos.remove(rutina);
       console.log('RUTINA.SERVICE -> Rutina eliminada con éxito', response);
       this.cargarRutinas(); // Recargar las rutinas después de eliminar una
       return response;

@@ -14,6 +14,7 @@ export class EjercicioService {
   ejercicios$ = this.ejerciciosSubject.asObservable(); // Exponemos los ejercicios como un observable para "escuchar" cambios
 
   constructor(private servicioBaseDatos: DatabaseService) {
+    
     // Obtenemos la base de datos usando el servicio general de base de datos
     this.baseDatos = this.servicioBaseDatos.obtenerBaseDatos();
     this.cargarEjercicios()

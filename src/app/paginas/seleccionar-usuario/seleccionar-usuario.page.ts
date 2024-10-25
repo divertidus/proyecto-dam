@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonFooter, IonButton, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonFooter, IonButton, IonSpinner, IonAlert } from '@ionic/angular/standalone';
 import { UserListComponent } from "../../componentes/usuario/user-list/user-list.component";
 import { Router } from '@angular/router';
 import { GestionUsuariosComponent } from "../../componentes/usuario/gestion-usuarios/gestion-usuarios.component";
@@ -9,13 +9,17 @@ import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/database/usuario.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
 import { Subscription } from 'rxjs';
+import { ReiniciarDatosService } from 'src/app/services/reiniciar-datos.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-seleccionar-usuario',
   templateUrl: './seleccionar-usuario.page.html',
   styleUrls: ['./seleccionar-usuario.page.scss'],
   standalone: true,
-  imports: [IonSpinner, IonButton, IonFooter, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent, GestionUsuariosComponent]
+  imports: [IonAlert, IonSpinner, IonButton, IonFooter, IonContent, IonHeader,
+    IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent, GestionUsuariosComponent],
+  providers: [AlertController]
 })
 export class SeleccionarUsuarioPage implements OnInit {
 
@@ -28,8 +32,15 @@ export class SeleccionarUsuarioPage implements OnInit {
     private databaseService: DatabaseService,
     private usuarioService: UsuarioService,
     private router: Router,
+    private reiniciarDatosService: ReiniciarDatosService,
+    private alertController: AlertController
   ) {
-
+    console.log('Instancia de DatabaseService:', this.databaseService);
+    if (typeof this.databaseService.obtenerBaseDatos === 'function') {
+      console.log('Método obtenerBaseDatos existe');
+    } else {
+      console.error('Método obtenerBaseDatos no existe o no es una función');
+    }
   }
 
   ngOnInit() {
@@ -51,13 +62,38 @@ export class SeleccionarUsuarioPage implements OnInit {
     }
   }
 
-  // Método para reiniciar la base de datos
+  // Método para mostrar una alerta de confirmación antes de reiniciar la base de datos
   async reiniciarBaseDatos() {
-    const confirmacion = confirm('¿Estás seguro de que quieres eliminar todos los datos? Esta acción no se puede deshacer.');
-    if (confirmacion) {
-      await this.databaseService.eliminarBaseDatos();
-      console.log('Base de datos reiniciada');
-    }
+    const alert = await this.alertController.create({
+      header: 'Confirmar Reinicio',
+      message: '¿Estás seguro de que quieres reiniciar la base de datos? Esta acción eliminará todos los datos.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Reinicio de base de datos cancelado');
+          },
+        },
+        {
+          text: 'Aceptar',
+          handler: async () => {
+            this.isLoading = true;
+            try {
+              await this.reiniciarDatosService.reiniciarYInicializarDatos(); // Método sin verificación
+              console.log('Base de datos reiniciada y datos inicializados.');
+              this.cargarUsuarios(); // Recargar los usuarios después del reinicio
+            } catch (error) {
+              console.error('Error al reiniciar la base de datos:', error);
+            } finally {
+              this.isLoading = false;
+            }
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   async cargarUsuarios(): Promise<void> {
