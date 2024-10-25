@@ -61,15 +61,20 @@ export class FormDiaComponent implements OnInit {
     this.descripcionDia = '';
   }
 
-  // Filtrar los ejercicios cuando el usuario realiza una búsqueda
-  buscarEjercicios(event: any) {
-    const valorBusqueda = event.target.value.toLowerCase();
-    this.ejercicios = this.ejercicios.filter(ejercicio =>
+// Filtrar los ejercicios cuando el usuario realiza una búsqueda
+buscarEjercicios(event: any) {
+  const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
+
+  if (valorBusqueda === '') {
+    this.ejerciciosFiltrados = [...this.ejercicios]; // Restaura la lista original
+  } else {
+    this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
       ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
       (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
       (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
     );
   }
+}
 
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({

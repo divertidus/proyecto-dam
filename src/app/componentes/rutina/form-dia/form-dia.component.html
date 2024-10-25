@@ -10,7 +10,7 @@
 
 <ion-item>
   <ion-label position="stacked">Descripción breve</ion-label>
-  <ion-input [(ngModel)]="descripcionDia"  name="descripcion"></ion-input>
+  <ion-input [(ngModel)]="descripcionDia" name="descripcion"></ion-input>
 </ion-item>
 
 <!-- <ion-item>
@@ -26,7 +26,7 @@
   <!-- Lista de ejercicios filtrados -->
   <ion-grid>
     <ion-row class="ion-align-items-stretch">
-      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejercicios">
+      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
         <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
           <ion-card-header>
             <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
@@ -41,7 +41,6 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
 </ion-content>
 
 <!-- Botón de cancelar -->
