@@ -1,4 +1,4 @@
-<!-- exercise-list.component.html -->
+<!-- vista-entreno.component.html -->
 <!-- Opción 1: Checkbox de completado a la derecha -->
 <ion-list class="exercise-list-custom">
   <ion-item *ngFor="let ejercicio of ejercicios; let i = index" lines="none">
@@ -8,7 +8,7 @@
           <span class="exercise-title">{{ ejercicio.nombreEjercicio }}</span>
           <div class="header-actions">
             <ion-checkbox mode="ios" class="checkbox-blue" [(ngModel)]="ejercicio.completado"
-              (ionChange)="toggleAllSeries(ejercicio)">
+              (ionChange)="alternarCheckBoxEjercicio(ejercicio)">
             </ion-checkbox>
             <ion-icon name="create-outline" (click)="abrirNotas(i)" class="edit-icon"></ion-icon>
           </div>
@@ -25,18 +25,14 @@
 
             <div class="weight-control">
               <button class="control-button" (click)="decrementarPeso(i, j)">-</button>
-              <ion-input 
-                type="number" 
-                [ngModel]="serie.peso" 
-               
-                class="weight-input">
+              <ion-input type="number" [ngModel]="serie.peso" class="weight-input">
               </ion-input>
               <button class="control-button" (click)="incrementarPeso(i, j)">+</button>
               <span class="weight-label">({{ serie.pesoAnterior || 0 }} kg)</span>
             </div>
 
             <ion-checkbox mode="ios" [(ngModel)]="serie.completado" class="checkbox-blue completion-check"
-              (ionChange)="checkAllSeriesCompleted(ejercicio)">
+              (ionChange)="alternarCheckBoxSerie(serie)">
             </ion-checkbox>
           </div>
 
@@ -58,7 +54,23 @@
       </ion-card-content>
     </ion-card>
   </ion-item>
+
+  <!-- Footer que muestra el progreso y desactiva el botón si no hay ejercicios completados -->
+  <ion-footer class="ion-padding">
+    <div class="footer-info">
+      Ejercicios completados {{ ejerciciosCompletados }} de {{ totalEjercicios }}
+    </div>
+    <ion-button expand="block" [disabled]="ejerciciosCompletados === 0" (click)="guardarEntrenamiento()"
+      color="primary">
+      Guardar Entrenamiento
+    </ion-button>
+  </ion-footer>
+
 </ion-list>
+
+
+
+
 
 <!-- Opción 2: Checkboxes en vertical a la derecha -->
 <!-- <ion-list class="exercise-list-custom">

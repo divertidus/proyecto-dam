@@ -14,6 +14,7 @@ import { AuthService } from 'src/app/auth/auth.service'; // Importamos AuthServi
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -26,9 +27,7 @@ import { HistorialService } from 'src/app/services/database/historial-entrenamie
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit {
-  toggleAllSeries(_t71: any) {
-    throw new Error('Method not implemented.');
-  }
+
   checkAllSeriesCompleted(_t71: any) {
     throw new Error('Method not implemented.');
   }
@@ -36,6 +35,10 @@ export class VistaEntrenoComponent implements OnInit {
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
   rutinaId: string | null = null; // ID de la rutina
   usuarioId: string | null = null; // Añadir esta propiedad
+
+  // Variables de conteo
+  ejerciciosCompletados = 0;
+  totalEjercicios = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -228,5 +231,35 @@ export class VistaEntrenoComponent implements OnInit {
     } else {
       console.warn(`No se pudo acceder a seriesReal para el ejercicio en índice ${i}, serie ${j}`);
     }
+  }
+
+  alternarCheckBoxEjercicio(ejercicio) {
+    console.log(ejercicio.completado)
+    // ejercicio.completado = !ejercicio.completado;
+    // En lugar de alternar, solo actualizar el contador con el valor actual del checkbox
+    console.log(ejercicio.completado)
+    this.actualizarEjerciciosCompletados();
+  }  
+
+  // Actualizar el contador de ejercicios completados
+  actualizarEjerciciosCompletados() {
+    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
+    this.totalEjercicios = this.ejercicios.length;
+    console.log("Ejercicios completados:", this.ejerciciosCompletados, "de", this.totalEjercicios);
+  }
+
+  alternarCheckBoxSerie(serie) {
+    console.log(serie.completado)
+    // ejercicio.completado = !ejercicio.completado;
+    // En lugar de alternar, solo actualizar el contador con el valor actual del checkbox
+    console.log(serie.completado)
+    this.actualizarSerieCompletada();
+  }
+
+  // Actualizar serie completada
+  actualizarSerieCompletada() {
+    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
+    this.totalEjercicios = this.ejercicios.length;
+    console.log("Serie completada:", this.ejerciciosCompletados, "de", this.totalEjercicios);
   }
 }
