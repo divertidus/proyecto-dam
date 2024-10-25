@@ -17,6 +17,7 @@ export class UsuarioService {
   constructor(private servicioBaseDatos: DatabaseService) {
     // En el constructor obtenemos la base de datos usando el servicio general de base de datos
     this.baseDatos = this.servicioBaseDatos.obtenerBaseDatos();
+    this.cargarUsuarios(); // Cargar usuarios al iniciar el servicio
   }
 
   // Método para agregar un nuevo usuario
@@ -37,6 +38,7 @@ export class UsuarioService {
       });
 
       console.log('USUARIO.SERVICE -> Usuario añadido con éxito', respuesta); // Mostramos en consola si todo salió bien
+      await this.cargarUsuarios(); // Recargar usuarios después de agregar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('USUARIO.SERVICE -> Error al agregar usuario:', error); // Si algo falla, mostramos el error en consola
@@ -54,8 +56,7 @@ export class UsuarioService {
 
       // Extraemos los usuarios de los documentos
       const usuarios = resultado.docs;
-      console.log(resultado.docs)
-      console.log('USUARIO.SERVICE -> obtenidos usuarios')
+      console.log('USUARIO.SERVICE -> Usuarios obtenidos:', usuarios);
       return usuarios; // Devolvemos la lista de usuarios
     } catch (error) {
       console.error('USUARIO.SERVICE -> Error al obtener usuarios:', error); // Mostramos en consola si ocurre un error
@@ -76,7 +77,12 @@ export class UsuarioService {
     try {
       // Ejecutamos la consulta en la base de datos
       const resultado = await this.baseDatos.find(consulta);
-      console.log('USUARIO.SERVICE -> obtenido usuario por nombre')
+      /* o tambien 
+       const resultado = await this.baseDatos.find({
+        selector: { entidad: 'usuario', nombre: { $eq: nombre } }
+      });
+      */
+      console.log('USUARIO.SERVICE -> Usuario obtenido por nombre:', resultado.docs);
       return resultado.docs; // Devolvemos los documentos que coinciden con la consulta
     } catch (error) {
       console.error('USUARIO.SERVICE -> Error al obtener usuario por nombre:', error); // Mostramos el error si algo sale mal
@@ -89,7 +95,7 @@ export class UsuarioService {
     try {
       // Utilizamos el método `get` para obtener el documento por su ID único
       const resultado = await this.baseDatos.get(id);
-      console.log('USUARIO.SERVICE -> obtenido usuario por ID')
+      console.log('USUARIO.SERVICE -> Usuario obtenido por ID:', resultado);
       return resultado; // Devolvemos el documento encontrado, ya que los IDs son únicos
     } catch (error) {
       console.error('USUARIO.SERVICE -> Error al obtener usuario por ID:', error); // Mostramos el error si ocurre
@@ -97,7 +103,7 @@ export class UsuarioService {
     }
   }
 
-  /*  IINECESARIO PROQUE LOS ID SERAN UNICOS AL SER UNA UNICA BD PERO BUENO, AQUI LO DEJO, 
+  /*  IINECESARIO PORQUE LOS ID SERAN UNICOS AL SER UNA UNICA BD PERO BUENO, AQUI LO DEJO, 
   // Método para obtener un usuario específico por su ID
 async obtenerUsuarioPorId(id: string) {
   try {
@@ -124,6 +130,7 @@ async obtenerUsuarioPorId(id: string) {
       // Actualizamos el usuario en la base de datos usando la función `put` que reemplaza el documento existente
       const respuesta = await this.baseDatos.put(usuario);
       console.log('USUARIO.SERVICE -> Usuario actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
+      await this.cargarUsuarios(); // Recargar usuarios después de actualizar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('USUARIO.SERVICE -> Error al actualizar usuario:', error); // Mostramos el error si ocurre uno
@@ -137,6 +144,7 @@ async obtenerUsuarioPorId(id: string) {
       // Eliminamos el usuario usando la función `remove` que borra el documento de la base de datos
       const respuesta = await this.baseDatos.remove(usuario);
       console.log('USUARIO.SERVICE -> Usuario eliminado con éxito', respuesta); // Mostramos un mensaje si se elimina correctamente
+      await this.cargarUsuarios(); // Recargar usuarios después de eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('USUARIO.SERVICE -> Error al eliminar usuario:', error); // Mostramos el error si ocurre uno

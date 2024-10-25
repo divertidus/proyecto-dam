@@ -225,52 +225,52 @@ export class AppComponent implements OnInit {
 
       // Días de entrenamientos con información del peso anterior manualmente asignada
       const dia1Entrenamiento1 = [
-        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }] },
-        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 85 }] },
-        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 20 }] }
+        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 82 }, { numeroSerie: 3, repeticiones: 8, peso: 84 }] },
+        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 85 }, { numeroSerie: 2, repeticiones: 10, peso: 87 }, { numeroSerie: 3, repeticiones: 8, peso: 90 }] },
+        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 20 }, { numeroSerie: 2, repeticiones: 8, peso: 22 }, { numeroSerie: 3, repeticiones: 6, peso: 24 }] }
       ];
 
       const dia2Entrenamiento1 = [
-        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 60 }] },
-        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 40 }] },
-        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0 }] }
+        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 60 }, { numeroSerie: 2, repeticiones: 10, peso: 62 }, { numeroSerie: 3, repeticiones: 8, peso: 65 }] },
+        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 40 }, { numeroSerie: 2, repeticiones: 12, peso: 42 }, { numeroSerie: 3, repeticiones: 10, peso: 45 }] },
+        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0 }, { numeroSerie: 2, repeticiones: 10, peso: 0 }] }
       ];
 
       const dia3Entrenamiento1 = [
-        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 100 }] },
-        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 10 }] },
-        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 120 }] }
+        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 100 }, { numeroSerie: 2, repeticiones: 10, peso: 105 }, { numeroSerie: 3, repeticiones: 8, peso: 110 }] },
+        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 10 }, { numeroSerie: 2, repeticiones: 12, peso: 12 }, { numeroSerie: 3, repeticiones: 10, peso: 14 }] },
+        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 120 }, { numeroSerie: 2, repeticiones: 10, peso: 125 }, { numeroSerie: 3, repeticiones: 8, peso: 130 }] }
       ];
 
       // Segunda ronda (usamos el peso anterior donde corresponde)
       const dia1Entrenamiento2 = [
-        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 82, pesoAnterior: 80 }] },
-        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 87, pesoAnterior: 85 }] },
-        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 22, pesoAnterior: 20 }] }
+        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 82, pesoAnterior: 80 }, { numeroSerie: 2, repeticiones: 10, peso: 84, pesoAnterior: 82 }, { numeroSerie: 3, repeticiones: 8, peso: 86, pesoAnterior: 84 }] },
+        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 87, pesoAnterior: 85 }, { numeroSerie: 2, repeticiones: 10, peso: 89, pesoAnterior: 87 }, { numeroSerie: 3, repeticiones: 8, peso: 91, pesoAnterior: 89 }] },
+        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 22, pesoAnterior: 20 }, { numeroSerie: 2, repeticiones: 8, peso: 24, pesoAnterior: 22 }, { numeroSerie: 3, repeticiones: 6, peso: 26, pesoAnterior: 24 }] }
       ];
 
       const dia3Entrenamiento2 = [
-        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 105, pesoAnterior: 100 }] },
+        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 105, pesoAnterior: 100 }, { numeroSerie: 2, repeticiones: 10, peso: 110, pesoAnterior: 105 }, { numeroSerie: 3, repeticiones: 8, peso: 115, pesoAnterior: 110 }] },
         { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [] }, // No se registran series para este ejercicio
-        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 125, pesoAnterior: 120 }] }
+        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 125, pesoAnterior: 120 }, { numeroSerie: 2, repeticiones: 10, peso: 130, pesoAnterior: 125 }, { numeroSerie: 3, repeticiones: 8, peso: 135, pesoAnterior: 130 }] }
       ];
 
       const dia1Entrenamiento3 = [
-        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 84, pesoAnterior: 82 }] },
-        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 90, pesoAnterior: 87 }] },
-        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 24, pesoAnterior: 22 }] }
+        { ejercicioId: ejerciciosPredefinidos['Jalón de Espalda'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 84, pesoAnterior: 82 }, { numeroSerie: 2, repeticiones: 10, peso: 86, pesoAnterior: 84 }, { numeroSerie: 3, repeticiones: 8, peso: 88, pesoAnterior: 86 }] },
+        { ejercicioId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 90, pesoAnterior: 87 }, { numeroSerie: 2, repeticiones: 10, peso: 92, pesoAnterior: 90 }, { numeroSerie: 3, repeticiones: 8, peso: 94, pesoAnterior: 92 }] },
+        { ejercicioId: ejerciciosPredefinidos['Martillo (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 8, peso: 24, pesoAnterior: 22 }, { numeroSerie: 2, repeticiones: 8, peso: 26, pesoAnterior: 24 }, { numeroSerie: 3, repeticiones: 6, peso: 28, pesoAnterior: 26 }] }
       ];
 
       const dia2Entrenamiento2 = [
-        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 65, pesoAnterior: 60 }] },
-        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 45, pesoAnterior: 40 }] },
-        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0, pesoAnterior: 0 }] }
+        { ejercicioId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 65, pesoAnterior: 60 }, { numeroSerie: 2, repeticiones: 10, peso: 67, pesoAnterior: 65 }, { numeroSerie: 3, repeticiones: 8, peso: 70, pesoAnterior: 67 }] },
+        { ejercicioId: ejerciciosPredefinidos['Máquina Aperturas'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 45, pesoAnterior: 40 }, { numeroSerie: 2, repeticiones: 12, peso: 47, pesoAnterior: 45 }, { numeroSerie: 3, repeticiones: 10, peso: 50, pesoAnterior: 47 }] },
+        { ejercicioId: ejerciciosPredefinidos['Fondos en Paralelas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 0, pesoAnterior: 0 }, { numeroSerie: 2, repeticiones: 10, peso: 0, pesoAnterior: 0 }] }
       ];
 
       const dia3Entrenamiento3 = [
-        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 110, pesoAnterior: 105 }] },
-        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 12, pesoAnterior: 10 }] },
-        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 130, pesoAnterior: 125 }] }
+        { ejercicioId: ejerciciosPredefinidos['Sentadillas Multipower'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 110, pesoAnterior: 105 }, { numeroSerie: 2, repeticiones: 10, peso: 115, pesoAnterior: 110 }, { numeroSerie: 3, repeticiones: 8, peso: 120, pesoAnterior: 115 }] },
+        { ejercicioId: ejerciciosPredefinidos['Elevaciones Laterales'], series: [{ numeroSerie: 1, repeticiones: 12, peso: 12, pesoAnterior: 10 }, { numeroSerie: 2, repeticiones: 12, peso: 14, pesoAnterior: 12 }, { numeroSerie: 3, repeticiones: 10, peso: 16, pesoAnterior: 14 }] },
+        { ejercicioId: ejerciciosPredefinidos['Prensa de Piernas'], series: [{ numeroSerie: 1, repeticiones: 10, peso: 130, pesoAnterior: 125 }, { numeroSerie: 2, repeticiones: 10, peso: 135, pesoAnterior: 130 }, { numeroSerie: 3, repeticiones: 8, peso: 140, pesoAnterior: 135 }] }
       ];
 
       // Generamos los días de entrenamiento con fechas asignadas

@@ -8,6 +8,7 @@ import { GestionUsuariosComponent } from "../../componentes/usuario/gestion-usua
 import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/database/usuario.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-seleccionar-usuario',
@@ -18,10 +19,10 @@ import { DatabaseService } from 'src/app/services/database/database.service';
 })
 export class SeleccionarUsuarioPage implements OnInit {
 
-
   usuarios: Usuario[] = []; // Variable que almacena la lista de usuarios obtenida de la base de datos.
   usuarioLogeado: Usuario | null = null; // Almacena el usuario que está actualmente logueado.
   isLoading: boolean = false;  // Bandera para indicar si los datos están cargando
+  private usuariosSubscription: Subscription;
 
   constructor(
     private databaseService: DatabaseService,
@@ -32,12 +33,22 @@ export class SeleccionarUsuarioPage implements OnInit {
   }
 
   ngOnInit() {
-    // this.cargarUsuarios();  // No es necesario cargar usuarios aquí
-    console.log('se muestra pantalla')
+    // Suscribirse al Observable de usuarios
+    this.usuariosSubscription = this.usuarioService.usuarios$.subscribe((usuarios) => {
+      this.usuarios = usuarios;
+      this.isLoading = false;
+    });
+    this.usuarioService.cargarUsuarios(); // Inicializar carga
   }
 
   ionViewWillEnter() {
     this.cargarUsuarios(); // Recarga la lista de usuarios cuando la vista está activa
+  }
+
+  ngOnDestroy() {
+    if (this.usuariosSubscription) {
+      this.usuariosSubscription.unsubscribe();
+    }
   }
 
   // Método para reiniciar la base de datos
