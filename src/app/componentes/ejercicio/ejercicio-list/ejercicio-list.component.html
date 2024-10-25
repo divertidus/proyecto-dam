@@ -1,7 +1,7 @@
-<!--  gestion-list.component.html --> 
+<!--  gestion-list.component.html -->
 <ion-grid>
   <ion-row class="ion-align-items-stretch">
-    <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejercicios">
+    <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejercicios$ | async">
       <ion-card class="ejercicio-card">
         <ion-card-header>
           <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
@@ -9,11 +9,8 @@
         </ion-card-header>
 
         <ion-card-content>
-          <!-- Imagen del ejercicio -->
           <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
             alt="Imagen del ejercicio" class="imagen-ejercicio" />
-
-          <!-- Botones de acciones -->
           <ion-button fill="clear" color="primary" (click)="editarEjercicio.emit(ejercicio)">
             <ion-icon slot="icon-only" name="create"></ion-icon>
           </ion-button>

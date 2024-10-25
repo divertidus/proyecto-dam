@@ -1,8 +1,8 @@
-import { Component,EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Usuario } from 'src/app/models/usuario.model';
 import { IonCard, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonButton, IonCardContent } from "@ionic/angular/standalone";
-import { IonInput } from '@ionic/angular/standalone';
+import { IonInput, ToastController } from '@ionic/angular/standalone';
 import { UsuarioService } from 'src/app/services/database/usuario.service';
 @Component({
   selector: 'app-user-form',
@@ -18,35 +18,50 @@ export class UserFormComponent {
   // por esto se puede usar luego el emit y emite al padre, hacia tab1
   @Output() eventoUsuarioAñadido = new EventEmitter<void>();
 
-  constructor(private usuarioService: UsuarioService) { }
+  constructor(private usuarioService: UsuarioService, private toastController: ToastController) { }
 
   //TODO AGREGAR VALIDACION FORMULARIO
   async guardarUsuario(): Promise<void> {
-    if (this.nombre && this.email) {
+    if (this.validarFormulario()) { // Usamos el método de validación
       try {
-        // Crear un objeto de tipo Usuario con los datos actuales
         const nuevoUsuario: Usuario = {
           entidad: 'usuario',
           nombre: this.nombre,
           email: this.email,
-          imagenPerfil: '', // Si no tienes imagen en este punto, puedes asignar una cadena vacía
-          timestamp: '' // Este valor lo añadirá el método agregarUsuario
+          imagenPerfil: '',
+          timestamp: ''
         };
 
-        // Llamamos al método del servicio pasando el objeto Usuario
         await this.usuarioService.agregarUsuario(nuevoUsuario);
 
-        // Limpiamos los campos después de guardar el usuario
         this.nombre = '';
         this.email = '';
 
-        // Emitimos el evento indicando que el usuario ha sido añadido
         this.eventoUsuarioAñadido.emit();
+        await this.presentToast('Usuario guardado exitosamente', 'success');
       } catch (err) {
         console.error('Error guardando usuario:', err);
+        await this.presentToast('Error guardando usuario', 'danger');
       }
     } else {
-      console.log('DATOS INCOMPLETOS - TODO TOAST');
+      await this.presentToast('Por favor, completa todos los campos correctamente', 'warning');
     }
+  }
+
+  // Método de validación para verificar si los campos son correctos
+  private validarFormulario(): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return this.nombre.trim() !== '' && emailRegex.test(this.email);
+  }
+
+  // Método para mostrar un toast con un mensaje específico y color
+  async presentToast(mensaje: string, color: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2000,
+      color: color,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }

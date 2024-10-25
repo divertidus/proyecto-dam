@@ -42,6 +42,7 @@ export class EjercicioService {
       });
 
       console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
+      await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('Ejercicio.Service -> Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
@@ -139,6 +140,7 @@ export class EjercicioService {
       // Actualizamos el ejercicio en la base de datos usando `put`
       const respuesta = await this.baseDatos.put(ejercicio);
       console.log('Ejercicio.Service -> Ejercicio actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
+      await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('Ejercicio.Service -> Error al actualizar ejercicio:', error); // Mostramos el error si ocurre uno
@@ -152,6 +154,7 @@ export class EjercicioService {
       // Eliminamos el ejercicio usando `remove`
       const respuesta = await this.baseDatos.remove(ejercicio);
       console.log('Ejercicio.Service -> Ejercicio eliminado con éxito', respuesta); // Mensaje si se eliminó correctamente
+      await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('Ejercicio.Service -> Error al eliminar ejercicio:', error); // Mostramos el error si ocurre
@@ -166,6 +169,7 @@ export class EjercicioService {
         selector: { entidad: 'ejercicio' } // Filtramos por el campo 'entidad' que debe ser 'ejercicio'
       });
       const ejercicios = result.docs;
+      this.ejerciciosSubject.next(ejercicios); // Emite la lista actualizada
       console.log('Ejercicio.Service -> Cargados ejercicios en BehaviorSubject');
       this.ejerciciosSubject.next(ejercicios); // Emitimos los ejercicios para que todos los suscriptores los reciban
     } catch (error) {
