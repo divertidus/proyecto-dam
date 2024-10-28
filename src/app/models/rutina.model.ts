@@ -22,7 +22,7 @@ export interface DiaRutina {
 export interface EjercicioPlan {
   _id?: string; 
   ejercicioId: string;              // ID del ejercicio en la rutina
-  nombreEjercicio?: string;         // Nombre del ejercicio (para facilitar acceso directo)
+  nombreEjercicio: string;         // Nombre del ejercicio (para facilitar acceso directo)
   tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal';
   series: Serie[];
   notas?: string               // Lista de series para el ejercicio (sin peso específico)

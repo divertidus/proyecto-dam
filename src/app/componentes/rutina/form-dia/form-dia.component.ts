@@ -6,8 +6,10 @@ import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
 import { Subscription } from 'rxjs';
-import { IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
-   IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput } from '@ionic/angular/standalone';
+import {
+  IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput, IonList, IonIcon
+} from '@ionic/angular/standalone';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
@@ -15,9 +17,9 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   templateUrl: './form-dia.component.html',
   styleUrls: ['./form-dia.component.scss'],
   standalone: true,
-  imports: [IonButton,IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader, 
-    IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText, 
-    IonLabel, IonItem, IonFooter, CommonModule, FormsModule,ToolbarModalesCancelarComponent]
+  imports: [IonIcon, IonList, IonButton, IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
+    IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText,
+    IonLabel, IonItem, IonFooter, CommonModule, FormsModule, ToolbarModalesCancelarComponent]
 
 })
 export class FormDiaComponent implements OnInit {
@@ -61,20 +63,20 @@ export class FormDiaComponent implements OnInit {
     this.descripcionDia = '';
   }
 
-// Filtrar los ejercicios cuando el usuario realiza una búsqueda
-buscarEjercicios(event: any) {
-  const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
+  // Filtrar los ejercicios cuando el usuario realiza una búsqueda
+  buscarEjercicios(event: any) {
+    const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
 
-  if (valorBusqueda === '') {
-    this.ejerciciosFiltrados = [...this.ejercicios]; // Restaura la lista original
-  } else {
-    this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
-      ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
-      (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-      (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
-    );
+    if (valorBusqueda === '') {
+      this.ejerciciosFiltrados = [...this.ejercicios]; // Restaura la lista original
+    } else {
+      this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
+        ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
+        (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
+        (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
+      );
+    }
   }
-}
 
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({
@@ -144,6 +146,7 @@ buscarEjercicios(event: any) {
   agregarEjercicio(ejercicio: Ejercicio, series: number, repeticiones: number, notas: string) {
     const ejercicioPlan: EjercicioPlan = {
       ejercicioId: ejercicio._id!,
+      nombreEjercicio: ejercicio.nombre,
       series: Array(series).fill({ repeticiones }), // Crea las series con el número de repeticiones
       notas: notas || '',
 
@@ -195,5 +198,69 @@ buscarEjercicios(event: any) {
   // Cancelar la operación de creación o edición
   cancelarOperacion() {
     this.modalController.dismiss(); // Simplemente cierra el modal sin enviar datos
+  }
+
+  // Método para eliminar un ejercicio de la lista
+  eliminarEjercicio(index: number) {
+    this.ejerciciosEnRutina.splice(index, 1); // Elimina el ejercicio por índice
+  }
+
+  // Método para editar un ejercicio de la lista
+  async editarEjercicio(index: number) {
+    const ejercicio = this.ejerciciosEnRutina[index];
+
+    const alert = await this.alertController.create({
+      header: `Editar: ${ejercicio.nombreEjercicio}`,
+      inputs: [
+        {
+          name: 'series',
+          type: 'number',
+          value: ejercicio.series.length,
+          placeholder: 'Número de Series',
+          min: 1
+        },
+        {
+          name: 'repeticiones',
+          type: 'number',
+          value: ejercicio.series[0]?.repeticiones,
+          placeholder: 'Repeticiones por Serie',
+          min: 1
+        },
+        {
+          name: 'notas',
+          type: 'textarea',
+          placeholder: 'Notas adicionales (opcional)',
+          value: ejercicio.notas || ''
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            // Validamos y actualizamos el ejercicio
+            if (!data.series || !data.repeticiones || data.series <= 0 || data.repeticiones <= 0) {
+              this.alertController.create({
+                header: 'Error',
+                message: 'Por favor, asegúrate de ingresar un número válido de series y repeticiones.',
+                buttons: ['Aceptar']
+              }).then(alert => alert.present());
+
+              return false;
+            }
+
+            this.ejerciciosEnRutina[index].series = Array(data.series).fill({ repeticiones: data.repeticiones });
+            this.ejerciciosEnRutina[index].notas = data.notas;
+
+            return true;
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 }

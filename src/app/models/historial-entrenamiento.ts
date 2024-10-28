@@ -13,17 +13,18 @@ export interface DiaEntrenamiento {
   _id?: string;
   fechaEntrenamiento: string;
   diaRutinaId: string;
-  ejercicios: EjercicioRealizado[];
+  ejerciciosRealizados: EjercicioRealizado[];
   notas?: string;
 }
 
 // Modelo de EjercicioRealizado (Registro Real)
 export interface EjercicioRealizado {
   _id?: string;
-  ejercicioId: string;
+  ejercicioPlanId: string;
+  nombreEjercicioRealizado: string;
   series: SerieReal[];
   notas?: string;
-  anteriorVezEjercicioID?:string
+  anteriorVezEjercicioID?: string
 }
 
 // Modelo de SerieReal (Registro Real)

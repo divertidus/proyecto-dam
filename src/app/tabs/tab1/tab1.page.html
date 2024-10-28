@@ -42,7 +42,7 @@
                 <!-- Lista compacta de ejercicios del día -->
                 <ul>
                   <li *ngFor="let ejercicioPlan of dia.ejercicios">
-                    {{ obtenerNombreEjercicio(ejercicioPlan.ejercicioId) }} - {{ ejercicioPlan.series.length }}x{{
+                    {{ ejercicioPlan.nombreEjercicio }} - {{ ejercicioPlan.series.length }}x{{
                     ejercicioPlan.series[0]?.repeticiones }}
                   </li>
                 </ul>

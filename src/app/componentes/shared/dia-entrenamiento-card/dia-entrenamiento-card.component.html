@@ -6,9 +6,9 @@
   <ion-card-content *ngIf="expandido">
     <p *ngIf="entrenamientoActual.notas"><strong>Notas del día:</strong> {{ entrenamientoActual.notas }}</p>
     <ion-list>
-      <ion-item *ngFor="let ejercicio of entrenamientoActual.ejercicios; let j = index">
+      <ion-item *ngFor="let ejercicio of entrenamientoActual.ejerciciosRealizados; let j = index">
         <ion-label>
-          <h2>{{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h2>
+          <h2>{{ ejercicio.nombreEjercicioRealizado }}</h2> <!-- //obtenerNombre -->
           <!-- Mostrar notas del ejercicio si existen -->
           <p *ngIf="ejercicio.notas"><strong>Notas del ejercicio:</strong> <i>{{ ejercicio.notas }}</i></p>
 
@@ -18,13 +18,13 @@
               <!-- Encabezado reducido a "S X" -->
               S{{ serie.numeroSerie }}: {{ serie.repeticiones }} reps
               {{ serie.peso ? ('- ' + serie.peso + ' kg') : '' }}
-              
+
               <!-- Peso y repeticiones anteriores entre paréntesis, si existen -->
               <span *ngIf="serie.pesoAnterior || serie.repeticionesAnterior">
                 (<i>{{ serie.pesoAnterior ? serie.pesoAnterior + ' kg' : '' }} {{ serie.repeticionesAnterior ? ', ' +
                   serie.repeticionesAnterior + ' reps' : '' }}</i>)
               </span>
-              
+
               <!-- Mostrar checks y notas en la misma línea -->
               <small *ngIf="getSerieDetails(serie) || serie.notas">
                 - {{ getSerieDetails(serie) }}

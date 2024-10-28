@@ -1,7 +1,4 @@
-<!-- form-dia.component.html -->
-
 <app-toolbar-modales-cancelar [titulo]="modo === 'crear' ? 'Crear Día' : 'Editar Día'"></app-toolbar-modales-cancelar>
-
 
 <ion-item>
   <ion-label position="stacked">Nombre del Día</ion-label>
@@ -13,16 +10,36 @@
   <ion-input [(ngModel)]="descripcionDia" name="descripcion"></ion-input>
 </ion-item>
 
-<!-- <ion-item>
-  <ion-label>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-label>
-  <ion-button (click)="guardar()" color="success" slot="end">Guardar Día</ion-button>
-</ion-item> -->
 <!-- Barra de búsqueda -->
 <ion-item>
   <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
 </ion-item>
 
 <ion-content>
+  <!-- Lista de ejercicios añadidos con detalles -->
+  <ion-card *ngIf="ejerciciosEnRutina.length > 0">
+    <ion-card-header>
+      <ion-card-title>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let ejercicio of ejerciciosEnRutina; let i = index">
+          <ion-label>
+            <h3>{{ i + 1 }}. {{ ejercicio.nombreEjercicio }}</h3>
+            <p>Series {{ ejercicio.series.length }} x {{ ejercicio.series[0]?.repeticiones }} repeticiones</p>
+            <p *ngIf="ejercicio.notas">Notas: {{ ejercicio.notas }}</p>
+          </ion-label>
+          <ion-button fill="clear" color="medium" (click)="editarEjercicio(i)">
+            <ion-icon name="create"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="danger" (click)="eliminarEjercicio(i)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Lista de ejercicios filtrados -->
   <ion-grid>
     <ion-row class="ion-align-items-stretch">
@@ -43,18 +60,10 @@
   </ion-grid>
 </ion-content>
 
-<!-- Botón de cancelar -->
+<!-- Botón de cancelar y guardar -->
 <ion-footer>
   <ion-toolbar>
     <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
-  </ion-toolbar>
-</ion-footer>
-
-<ion-footer>
-  <ion-toolbar>
-    <div class="footer-content">
-      <span class="footer-text">Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</span>
-      <ion-button (click)="guardar()" color="success" class="guardar-btn">Guardar</ion-button>
-    </div>
+    <ion-button expand="full" color="success" (click)="guardar()">Guardar</ion-button>
   </ion-toolbar>
 </ion-footer>
