@@ -1,6 +1,6 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
+import { DiaEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
 import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 
@@ -18,7 +18,29 @@ export class DiaEntrenamientoCardComponent {
   @Input() obtenerNombreEjercicio: (ejercicioId: string) => string; // Input de la función para obtener el nombre
 
   @Output() toggleExpand = new EventEmitter<number>(); // Evento para expandir/colapsar
+
+  // Método para manejar el click y emitir el índice para cambiar el estado de expansión
+  onToggleExpand() {
+    this.toggleExpand.emit(this.index);
+  }
+
+  // Método para formatear los detalles de los checks de una serie y retornarlos como una cadena
+  getSerieDetails(serie: SerieReal): string {
+    const checks: string[] = [];
+
+    // Revisamos cada check y lo añadimos al array si está marcado
+
+    if (serie.conAyuda) checks.push('Con Ayuda');
+    if (serie.alFallo) checks.push('Al Fallo');
+    if (serie.dolor) checks.push('Dolor');
+
+    // Devolvemos una cadena con todos los checks separados por guiones
+    return checks.length > 0 ? checks.join(' - ') : '';
+  }
 }
+
+
+
 
 
 /*

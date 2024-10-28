@@ -62,6 +62,7 @@ export class HistorialEntrenamientoComponent implements OnInit {
       }
 
       this.entrenamientos = historiales.flatMap(h => h.entrenamientos);
+      console.log("Estructura de entrenamientos cargados:", this.entrenamientos);
       this.entrenamientos.sort(
         (a, b) =>
           new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()

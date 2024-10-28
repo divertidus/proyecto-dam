@@ -27,6 +27,7 @@ import { ChangeDetectorRef } from '@angular/core';
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit {
+  [x: string]: any;
 
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
@@ -97,6 +98,8 @@ export class VistaEntrenoComponent implements OnInit {
             dolor: false,
             conAyuda: false,
             alFallo: false,
+            enEdicion: true,
+            notas: '' // Inicialmente no hay notas
           }));
 
           return {
@@ -122,6 +125,37 @@ export class VistaEntrenoComponent implements OnInit {
     }
   }
 
+  // Método para abrir el alert para agregar notas a una serie específica
+  async abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
+    const alert = await this.alertController.create({
+      header: 'Añadir Nota',
+      inputs: [
+        {
+          name: 'nota',
+          type: 'text',
+          placeholder: 'Escribe tu nota aquí',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Nota cancelada');
+          },
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            this.ejercicios[ejercicioIndex].seriesReal[serieIndex].notas = data.nota;
+            console.log('Nota guardada para la serie:', data.nota);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
 
   // Método para abrir el alert para agregar notas
   async abrirNotas(index: number) {
@@ -216,66 +250,72 @@ export class VistaEntrenoComponent implements OnInit {
     }
   }
 
-// Método que realiza el guardado según el mensaje de estado
-guardarSesion(mensajeEstado?: string) {
-  const ejerciciosCompletados = this.ejercicios.map(ej => {
-    // Determinar el estado del ejercicio actual
-    const esEjercicioNoIniciado = ej.seriesCompletadas === 0;
-    const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
-    const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
-
-    // Filtrar solo las series completadas
-    const seriesCompletadas = ej.seriesReal
-      .filter(serie => serie.completado)
-      .map((serie, index) => ({
-        numeroSerie: index + 1,
-        repeticiones: serie.repeticiones,
-        peso: serie.peso,
-        alFallo: serie.alFallo,
-        conAyuda: serie.conAyuda,
-        dolor: serie.dolor,
-        notas: serie.notas || null,
-      }));
-
-    return {
-      ejercicioId: ej.ejercicioId,
-      series: esEjercicioNoIniciado ? [] : seriesCompletadas,
-      notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
-        ? 'NO SE HIZO'
-        : esEjercicioIncompleto
-          ? 'INCOMPLETO'
-          : esEjercicioCompleto
-            ? ej.notas || null
-            : null,
-    };
-  });
-
-  // Crear `DiaEntrenamiento`
-  const nuevoDiaEntrenamiento: DiaEntrenamiento = {
-    fechaEntrenamiento: new Date().toISOString(),
-    diaRutinaId: this.diaRutinaId,
-    ejercicios: ejerciciosCompletados,
-    notas: '',
-  };
-
-  // Crear `HistorialEntrenamiento` que contiene a `nuevoDiaEntrenamiento`
-  const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
-    entidad: 'historialEntrenamiento',
-    usuarioId: this.usuarioId!,
-    entrenamientos: [nuevoDiaEntrenamiento], // Array que contiene el `DiaEntrenamiento`
-  };
-
-  // Guardar el nuevo historial de entrenamiento
-  this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
-    .then(() => {
-      console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
-      this.mostrarAlertaExito();
-    })
-    .catch(error => {
-      console.error('Error al guardar el entrenamiento:', error);
-      this.mostrarAlertaError();
+  guardarSesion(mensajeEstado?: string) {
+    const ejerciciosCompletados = this.ejercicios.map(ej => {
+      const esEjercicioNoIniciado = ej.seriesCompletadas === 0;
+      const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
+      const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
+  
+      // Añadimos el log para verificar cada serie antes de guardarla
+      const seriesCompletadas = ej.seriesReal
+        .filter(serie => serie.completado)
+        .map((serie, index) => {
+          console.log(`Serie ${index + 1}:`, {
+            alFallo: serie.alFallo,
+            conAyuda: serie.conAyuda,
+            dolor: serie.dolor
+          });
+          
+          return {
+            numeroSerie: index + 1,
+            repeticiones: serie.repeticiones,
+            peso: serie.peso,
+            alFallo: serie.alFallo,
+            conAyuda: serie.conAyuda,
+            dolor: serie.dolor,
+            notas: serie.notas || null,
+          };
+        });
+  
+      return {
+        ejercicioId: ej.ejercicioId,
+        series: esEjercicioNoIniciado ? [] : seriesCompletadas,
+        notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
+          ? 'NO SE HIZO'
+          : esEjercicioIncompleto
+            ? 'INCOMPLETO'
+            : esEjercicioCompleto
+              ? ej.notas || null
+              : null,
+      };
     });
-}
+  
+    // Crear `DiaEntrenamiento`
+    const nuevoDiaEntrenamiento: DiaEntrenamiento = {
+      fechaEntrenamiento: new Date().toISOString(),
+      diaRutinaId: this.diaRutinaId,
+      ejercicios: ejerciciosCompletados,
+      notas: '',
+    };
+  
+    const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
+      entidad: 'historialEntrenamiento',
+      usuarioId: this.usuarioId!,
+      entrenamientos: [nuevoDiaEntrenamiento],
+    };
+  
+    // Guardar el nuevo historial de entrenamiento
+    this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
+      .then(() => {
+        console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
+        this.mostrarAlertaExito();
+        this.router.navigate(['/tabs/tab3']);
+      })
+      .catch(error => {
+        console.error('Error al guardar el entrenamiento:', error);
+        this.mostrarAlertaError();
+      });
+  }
 
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({
@@ -295,51 +335,97 @@ guardarSesion(mensajeEstado?: string) {
     await alert.present();
   }
 
-  decrementarPeso(i: number, j: number) {
-    console.log('Índices recibidos - i:', i, 'j:', j); // Registro de índices para depuración
-
-    if (typeof i === 'number' && typeof j === 'number' && this.ejercicios[i]?.seriesReal?.[j]) {
-      if (this.ejercicios[i].seriesReal[j].peso > 0) {
-        this.ejercicios[i].seriesReal[j].peso--;
-      }
+  toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
+    const serie = this.ejercicios[ejercicioIndex].seriesReal[serieIndex];
+    if (serie.enEdicion) {
+      // Guardar cambios y bloquear edición
+      serie.enEdicion = false;
+      this.marcarSerieCompletada(ejercicioIndex, serieIndex);
     } else {
-      console.warn(`No se pudo acceder a seriesReal para el ejercicio en índice ${i}, serie ${j}`);
+      // Permitir edición
+      serie.enEdicion = true;
     }
   }
 
-  incrementarPeso(i: number, j: number) {
-    console.log('Índices recibidos - i:', i, 'j:', j); // Registro de índices para depuración
+  decrementarPeso(ejercicio: any, serieIndex: number) {
+    const serie = ejercicio.seriesReal[serieIndex];
+    if (!serie.peso) serie.peso = 0;
+    serie.peso = Math.max(0, serie.peso - 1.25);
+  }
 
-    if (typeof i === 'number' && typeof j === 'number' && this.ejercicios[i]?.seriesReal?.[j]) {
-      this.ejercicios[i].seriesReal[j].peso++;
+  incrementarPeso(ejercicio: any, serieIndex: number) {
+    const serie = ejercicio.seriesReal[serieIndex];
+    if (!serie.peso) serie.peso = 0;
+    serie.peso += 1.25;
+  }
+
+  // Método para toggle edición
+  toggleEdicion(ejercicioIndex: number, serieIndex: number) {
+    const serie = this.ejercicios[ejercicioIndex].seriesReal[serieIndex];
+    if (serie.enEdicion) {
+      // Guardar cambios
+      serie.enEdicion = false;
     } else {
-      console.warn(`No se pudo acceder a seriesReal para el ejercicio en índice ${i}, serie ${j}`);
+      // Entrar en modo edición
+      serie.enEdicion = true;
     }
   }
 
-  toggleEjercicio(index: number) {
-    this.ejercicios[index].abierto = !this.ejercicios[index].abierto;
-  }
-
-  // Actualizar el contador de ejercicios completados
-  actualizarEjerciciosCompletados() {
-    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
-    this.totalEjercicios = this.ejercicios.length;
-  }
+  // Método para marcar serie completada
 
   marcarSerieCompletada(ejercicioIndex: number, serieIndex: number) {
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
 
-    // Marcar la serie actual como completada
-    serie.completado = true;
-    ejercicio.seriesCompletadas++;
+    // Validar que los campos necesarios estén completos
+    if (!serie.repeticiones || !serie.peso) {
+      // Mostrar mensaje de error o alerta
+      return;
+    }
 
-    // Si todas las series del ejercicio están completadas, marcamos el ejercicio como completado
+    // Marcar la serie como completada
+    serie.completado = true;
+    serie.enEdicion = false;
+
+    // Incrementar el contador de series completadas si es la siguiente en la secuencia
+    if (serieIndex === ejercicio.seriesCompletadas) {
+      ejercicio.seriesCompletadas++;
+    }
+
+    // Marcar el ejercicio como completado si todas las series lo están
     if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
       ejercicio.completado = true;
-      this.actualizarEjerciciosCompletados();
+      this.actualizarEjerciciosCompletados(); // Llamar para actualizar el estado global
     }
+  }
+
+  editarSerie(ejercicioIndex: number, serieIndex: number) {
+    const serie = this.ejercicios[ejercicioIndex].seriesReal[serieIndex];
+
+    if (serie.completado) {
+      // Habilitar la edición
+      serie.enEdicion = true;
+      // Guardar valores anteriores por si necesitamos revertir
+      serie.valoresAnteriores = {
+        repeticiones: serie.repeticiones,
+        peso: serie.peso,
+        fallo: serie.fallo,
+        dolor: serie.dolor,
+        ayuda: serie.ayuda
+      };
+    }
+    serie.completado = false;
+  }
+
+
+  toggleEjercicio(index: number) {
+    this.ejercicios[index].abierto = !this.ejercicios[index].abierto;
+  }
+
+  // Función para actualizar el conteo de ejercicios completados
+  actualizarEjerciciosCompletados() {
+    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
+    this.totalEjercicios = this.ejercicios.length;
   }
 
 }

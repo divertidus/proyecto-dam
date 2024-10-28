@@ -30,7 +30,8 @@ export interface EjercicioRealizado {
 export interface SerieReal {
   _id?: string;
   numeroSerie: number;
-  repeticiones: number;
+  repeticiones?: number;
+  repeticionesAnterior?: number;
   peso?: number;
   pesoAnterior?: number;
   alFallo?: boolean;

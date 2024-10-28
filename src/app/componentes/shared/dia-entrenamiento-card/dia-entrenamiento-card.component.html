@@ -1,6 +1,5 @@
 <ion-card>
-  <ion-card-header (click)="toggleExpand.emit(index)">
-    <!-- Añadimos el formato de fecha con hora -->
+  <ion-card-header (click)="onToggleExpand()">
     <ion-card-title>{{ entrenamientoActual.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
     <ion-card-subtitle>{{ entrenamientoActual.diaRutinaId }}</ion-card-subtitle>
   </ion-card-header>
@@ -9,22 +8,30 @@
     <ion-list>
       <ion-item *ngFor="let ejercicio of entrenamientoActual.ejercicios; let j = index">
         <ion-label>
-          <!-- Usamos el método para obtener el nombre del ejercicio -->
           <h2>{{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h2>
+          <!-- Mostrar notas del ejercicio si existen -->
+          <p *ngIf="ejercicio.notas"><strong>Notas del ejercicio:</strong> <i>{{ ejercicio.notas }}</i></p>
 
-          <!-- Notas del ejercicio -->
-          <p *ngIf="ejercicio.notas"><strong>Notas del ejercicio:</strong> {{ ejercicio.notas }}</p>
-
-          <p *ngFor="let serie of ejercicio.series; let k = index">
-            Serie {{ serie.numeroSerie }}: {{ serie.repeticiones }} reps 
-            {{ serie.peso ? ('- ' + serie.peso + ' kg') : '' }}
-            <span *ngIf="serie.pesoAnterior">
-              <i>({{ serie.pesoAnterior }} kg)</i>
-            </span>
-            <small *ngIf="serie.dolor || serie.conAyuda || serie.alFallo">
-              {{ serie.dolor ? 'Dolor' : '' }} {{ serie.conAyuda ? '- Con Ayuda' : '' }} {{ serie.alFallo ? '- Al Fallo' : '' }}
-            </small>
-          </p>
+          <!-- Lista de series del ejercicio -->
+          <ng-container *ngFor="let serie of ejercicio.series; let k = index">
+            <p>
+              <!-- Encabezado reducido a "S X" -->
+              S{{ serie.numeroSerie }}: {{ serie.repeticiones }} reps
+              {{ serie.peso ? ('- ' + serie.peso + ' kg') : '' }}
+              
+              <!-- Peso y repeticiones anteriores entre paréntesis, si existen -->
+              <span *ngIf="serie.pesoAnterior || serie.repeticionesAnterior">
+                (<i>{{ serie.pesoAnterior ? serie.pesoAnterior + ' kg' : '' }} {{ serie.repeticionesAnterior ? ', ' +
+                  serie.repeticionesAnterior + ' reps' : '' }}</i>)
+              </span>
+              
+              <!-- Mostrar checks y notas en la misma línea -->
+              <small *ngIf="getSerieDetails(serie) || serie.notas">
+                - {{ getSerieDetails(serie) }}
+                <span *ngIf="serie.notas">, <i>{{ serie.notas }}</i></span>
+              </small>
+            </p>
+          </ng-container>
         </ion-label>
       </ion-item>
     </ion-list>

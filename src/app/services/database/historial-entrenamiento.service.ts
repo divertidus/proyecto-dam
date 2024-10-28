@@ -24,13 +24,14 @@ export class HistorialService {
   // Método para agregar un nuevo historial de entrenamiento
   async agregarHistorial(historial: HistorialEntrenamiento) {
     try {
+      // Mostrar el objeto completo en consola antes de guardarlo
+      console.log('Historial que se guarda:', historial);
       const respuesta = await this.baseDatos.post(historial);
       console.log('Historial añadido con éxito', respuesta);
-
-      // Recargar los historiales y emitir los cambios
+  
       const historiales = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
-      this.historialSubject.next(historiales); // Actualizar el BehaviorSubject
-
+      this.historialSubject.next(historiales);
+  
       return respuesta;
     } catch (error) {
       console.error('Error al agregar historial:', error);
@@ -143,7 +144,7 @@ export class HistorialService {
         for (const diaEntrenamiento of historial.entrenamientos) {
           for (const ejercicioRealizado of diaEntrenamiento.ejercicios) {
             // Aquí se compara el ejercicio actual del entrenamiento con el ejercicioId que estamos buscando
-            console.log(`Buscando coincidencia de ejercicioId: ${ejercicioRealizado.ejercicioId} === ${ejercicioId}`);
+       //     console.log(`Buscando coincidencia de ejercicioId: ${ejercicioRealizado.ejercicioId} === ${ejercicioId}`);
 
             // Si el ID del ejercicio coincide con el que estamos buscando
             if (ejercicioRealizado.ejercicioId === ejercicioId) {
