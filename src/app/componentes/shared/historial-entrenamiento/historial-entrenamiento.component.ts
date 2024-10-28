@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
@@ -9,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { HistorialEntrenamiento, SesionEntrenamiento } from 'src/app/models/historial-entrenamiento';
 
 @Component({
   selector: 'app-historial-entrenamiento',
@@ -19,7 +19,7 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   providers: [ModalController, PopoverController]
 })
 export class HistorialEntrenamientoComponent implements OnInit {
-  entrenamientos: DiaEntrenamiento[] = []; // Almacena todos los entrenamientos
+  entrenamientos: SesionEntrenamiento[] = []; // Almacena todos los entrenamientos
   usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado
   entrenamientosExpandido: Set<number> = new Set<number>(); // Set para manejar entrenamientos expandidos
   comparaciones: { [key: number]: any } = {}; // Almacena las comparaciones de los entrenamientos
@@ -55,22 +55,24 @@ export class HistorialEntrenamientoComponent implements OnInit {
 
       this.entrenamientos = []; // Limpiar entrenamientos antes de recargar
 
-      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      const historiales: HistorialEntrenamiento[] = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
       if (historiales.length === 0) {
         console.log('No hay entrenamientos registrados');
         return;
       }
 
-      this.entrenamientos = historiales.flatMap(h => h.entrenamientos);
+      this.entrenamientos = historiales
+        .map(h => h.sesionesRealizadas)
+        .reduce((acc, sesiones) => acc.concat(sesiones), []);
       console.log("Estructura de entrenamientos cargados:", this.entrenamientos);
       this.entrenamientos.sort(
         (a, b) =>
-          new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
+          new Date(b.fechaSesion).getTime() - new Date(a.fechaSesion).getTime()
       );
     } catch (error) {
       console.error('Error al cargar los entrenamientos:', error);
     }
-}
+  }
 
 
   // Cargar los nombres de los ejercicios en el mapa `nombresEjercicios`

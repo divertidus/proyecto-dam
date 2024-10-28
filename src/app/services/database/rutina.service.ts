@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de la base de datos
 import { BehaviorSubject } from 'rxjs';
-import { Rutina, DiaRutina, EjercicioPlan } from 'src/app/models/rutina.model';
+import { EjercicioPlanificado, Rutina, SesionPlanificada } from 'src/app/models/rutina.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +16,23 @@ export class RutinaService {
     this.baseDatos = this.databaseService.obtenerBaseDatos();
     console.log("RutinaService - baseDatos inicializado:", this.baseDatos);
     this.cargarRutinas();
-}
+  }
 
   // Método para agregar una nueva rutina
   async agregarRutina(nuevaRutina: Rutina) {
     try {
+      // Validar si `sesionesPlanificadas` contiene datos
+      if (!nuevaRutina.sesionesPlanificadas || nuevaRutina.sesionesPlanificadas.length === 0) {
+        console.error('Error: La rutina no contiene sesiones planificadas');
+        return;
+      }
+
       const response = await this.baseDatos.post({
         ...nuevaRutina,
-        _id: nuevaRutina._id || undefined, // Asegurarse de que el ID es opcional
-        timestamp: new Date().toISOString(), // Añadir timestamp para saber cuándo se creó
+        _id: nuevaRutina._id || undefined,
+        timestamp: new Date().toISOString(),
       });
+
       console.log('RUTINA.SERVICE -> Rutina añadida con éxito', response);
       this.cargarRutinas(); // Cargar de nuevo todas las rutinas después de añadir una nueva
       return response;
@@ -51,15 +59,15 @@ export class RutinaService {
   // Método para cargar todas las rutinas en el BehaviorSubject
   async cargarRutinas() {
     try {
-      const result = await this.baseDatos.find({ selector: { entidad: 'rutina' } });
-      const rutinas = result.docs;
-      console.log('RUTINA.SERVICE -> Cargadas rutinas en Bhaviour')
-      this.rutinasSubject.next(rutinas); // Emitimos las rutinas para que todos los suscriptores las reciban
+        const result = await this.baseDatos.find({ selector: { entidad: 'rutina' } });
+        const rutinas = result.docs;
+        console.log('RUTINA.SERVICE -> Rutinas cargadas en Behavior:', rutinas); // Log para ver todas las rutinas y sus datos
+        this.rutinasSubject.next(rutinas);
     } catch (err) {
-      console.error('RUTINA.SERVICE -> Error al cargar rutinas:', err);
-      throw err;
+        console.error('RUTINA.SERVICE -> Error al cargar rutinas:', err);
+        throw err;
     }
-  }
+}
 
   // Método para obtener una rutina específica por su ID
   async obtenerRutinaPorId(rutinaId: string) {
@@ -78,12 +86,12 @@ export class RutinaService {
   }
 
   // Método para obtener un día específico de una rutina por su nombre
-  async obtenerDiaRutinaPorNombre(rutinaId: string, diaNombre: string): Promise<DiaRutina> {
+  async obtenerSesionPlanificadaPorNombre(rutinaId: string, nombreSesion: string): Promise<SesionPlanificada> {
     try {
-      const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
-      const diaRutina = rutina.dias.find((dia: DiaRutina) => dia.diaNombre === diaNombre);
-      if (diaRutina) {
-        return diaRutina; // Retornamos el día de la rutina que coincide con el nombre
+      const rutina: Rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
+      const sesionPlanificada = rutina.sesionesPlanificadas.find((sesionPlanificada: SesionPlanificada) => sesionPlanificada.nombreSesion === nombreSesion);
+      if (sesionPlanificada) {
+        return sesionPlanificada; // Retornamos el día de la rutina que coincide con el nombre
       } else {
         throw new Error('Día no encontrado en la rutina');
       }
@@ -94,16 +102,16 @@ export class RutinaService {
   }
 
   // Método para obtener un día específico de una rutina por el índice del día
-  async obtenerDiaRutina(rutinaId: string, diaIndex: number): Promise<DiaRutina> {
+  async obtenerSesionDiaRutina(rutinaId: string, sesionDiaIndex: number): Promise<SesionPlanificada> {
     try {
-      const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
-      if (rutina.dias && rutina.dias[diaIndex]) {
-        return rutina.dias[diaIndex]; // Retornamos el día de la rutina correspondiente al índice
+      const rutina: Rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
+      if (rutina.sesionesPlanificadas && rutina.sesionesPlanificadas[sesionDiaIndex]) {
+        return rutina.sesionesPlanificadas[sesionDiaIndex]; // Retornamos el día de la rutina correspondiente al índice
       } else {
-        throw new Error('Día no encontrado en la rutina');
+        throw new Error('Día/sesion no encontrado en la rutina');
       }
     } catch (err) {
-      console.error('Error al obtener el día de la rutina:', err);
+      console.error('Error al obtener el día/sesion de la rutina:', err);
       throw err;
     }
   }
@@ -131,7 +139,7 @@ export class RutinaService {
   // Método para eliminar una rutina específica
   async eliminarRutina(rutinaId: string) {
     try {
-      const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina para asegurarnos de que existe y tiene la versión correcta
+      const rutina: Rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina para asegurarnos de que existe y tiene la versión correcta
       const response = await this.baseDatos.remove(rutina);
       console.log('RUTINA.SERVICE -> Rutina eliminada con éxito', response);
       this.cargarRutinas(); // Recargar las rutinas después de eliminar una
@@ -143,11 +151,11 @@ export class RutinaService {
   }
 
   // Método para agregar un ejercicio a un día específico de una rutina
-  async agregarEjercicioARutina(rutinaId: string, diaIndex: number, nuevoEjercicio: EjercicioPlan) {
+  async agregarEjercicioARutina(rutinaId: string, sesionDiaIndex: number, nuevoEjercicioPlanificado: EjercicioPlanificado) {
     try {
-      const rutina = await this.obtenerRutinaPorId(rutinaId);
-      if (rutina.dias && rutina.dias[diaIndex]) {
-        rutina.dias[diaIndex].ejercicios.push(nuevoEjercicio);
+      const rutina: Rutina = await this.obtenerRutinaPorId(rutinaId);
+      if (rutina.sesionesPlanificadas && rutina.sesionesPlanificadas[sesionDiaIndex]) {
+        rutina.sesionesPlanificadas[sesionDiaIndex].ejerciciosPlanificados.push(nuevoEjercicioPlanificado);
         console.log('RUTINA.SERVICE -> Ejercicio agregado a dia de rutina')
         return this.actualizarRutina(rutina); // Actualizamos la rutina con el nuevo ejercicio
       } else {
@@ -159,12 +167,12 @@ export class RutinaService {
     }
   }
 
-  // Método para actualizar la fecha de entrenamiento de un día específico
-  async actualizarFechaEntrenamiento(rutinaId: string, diaIndex: number, nuevaFecha: string) {
+  /* // Método para actualizar la fecha de entrenamiento de un día específico
+  async actualizarFechaEntrenamiento(rutinaId: string, sesionDiaIndex: number, nuevaFecha: string) {
     try {
-      const rutina = await this.obtenerRutinaPorId(rutinaId);
-      if (rutina.dias && rutina.dias[diaIndex]) {
-        rutina.dias[diaIndex].fechaEntrenamiento = nuevaFecha;
+      const rutina:Rutina = await this.obtenerRutinaPorId(rutinaId);
+      if (rutina.sesionesPlanificadas && rutina.sesionesPlanificadas[sesionDiaIndex]) {
+        rutina.sesionesPlanificadas[sesionDiaIndex].fechaEntrenamiento = nuevaFecha;
         console.log('RUTINA.SERVICE -> Actualizada fecha')
         return this.actualizarRutina(rutina); // Actualizamos la rutina con la nueva fecha
       } else {
@@ -174,5 +182,5 @@ export class RutinaService {
       console.error('RUTINA.SERVICE -> Error al actualizar fecha de entrenamiento:', err);
       throw err;
     }
-  }
+  } */
 }

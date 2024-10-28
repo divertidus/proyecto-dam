@@ -5,29 +5,29 @@ export interface HistorialEntrenamiento {
   _id?: string;
   entidad: 'historialEntrenamiento';
   usuarioId: string;
-  entrenamientos: DiaEntrenamiento[];
+  sesionesRealizadas: SesionEntrenamiento[];  // Colección de todas las sesiones realizadas
 }
 
 // Modelo de Día de Entrenamiento (Registro Real)
-export interface DiaEntrenamiento {
+export interface SesionEntrenamiento {
   _id?: string;
-  fechaEntrenamiento: string;
-  diaRutinaId: string;
-  ejercicios: EjercicioRealizado[];
-  notas?: string;
+  fechaSesion: string;              // Fecha en que se realizó la sesión
+  sesionPlanificadaId: string;      // ID de la sesión planificada (de la rutina)
+  ejerciciosSesion: EjercicioSesion[]; // Lista de ejercicios realizados
+  notas?: string;                   // Notas sobre la sesión completa
 }
 
-// Modelo de EjercicioRealizado (Registro Real)
-export interface EjercicioRealizado {
+// Modelo de EjercicioSesion (Ejercicio Realizado dentro de una Sesión)
+export interface EjercicioSesion {
   _id?: string;
-  ejercicioId: string;
-  series: SerieReal[];
-  notas?: string;
-  anteriorVezEjercicioID?:string
+  idEjercicioPlanificado: string;               // Referencia al ejercicio original
+  seriesSesion: SerieSesion[];      // Series realizadas en esta sesión
+  notas?: string;                   // Notas específicas del ejercicio
+  idEjercicioSesionAnterior?: string; // ID del ejercicio en la sesión anterior
 }
 
-// Modelo de SerieReal (Registro Real)
-export interface SerieReal {
+// Modelo de SerieSesion (Detalles de una Serie Realizada)
+export interface SerieSesion {
   _id?: string;
   numeroSerie: number;
   repeticiones?: number;

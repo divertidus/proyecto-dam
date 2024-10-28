@@ -3,35 +3,37 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
 import { Subscription } from 'rxjs';
-import { IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
-   IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput } from '@ionic/angular/standalone';
+import {
+  IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput
+} from '@ionic/angular/standalone';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { EjercicioPlanificado, SesionPlanificada } from 'src/app/models/rutina.model';
 
 @Component({
   selector: 'app-form-dia',
   templateUrl: './form-dia.component.html',
   styleUrls: ['./form-dia.component.scss'],
   standalone: true,
-  imports: [IonButton,IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader, 
-    IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText, 
-    IonLabel, IonItem, IonFooter, CommonModule, FormsModule,ToolbarModalesCancelarComponent]
+  imports: [IonButton, IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
+    IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText,
+    IonLabel, IonItem, IonFooter, CommonModule, FormsModule, ToolbarModalesCancelarComponent]
 
 })
 export class FormDiaComponent implements OnInit {
 
   //@Input() ejercicios: Ejercicio[] = []; // Lista de ejercicios disponibles
-  @Input() diaExistente: DiaRutina | null = null; // Día ya existente, si estamos editando
+  @Input() sesionExistente: SesionPlanificada | null = null; // Día ya existente, si estamos editando
   @Input() modo: 'crear' | 'editar' = 'crear'; // Modo de operación (crear o editar)
   @Input() numeroDiasExistentes: number = 0; // Número de días ya existentes en la rutina
 
-  nombreDia: string = '';
-  descripcionDia: string = '';
-  ejerciciosEnRutina: EjercicioPlan[] = []; // Ejercicios añadidos al día
+  sesionNombre: string = '';
+  descripcionSesion: string = '';
+  ejerciciosEnRutina: EjercicioPlanificado[] = []; // Ejercicios añadidos al día
   ejerciciosFiltrados: Ejercicio[] = []; // Para no modificar la lista original
-  ejercicios: Ejercicio[] = []; // Lista de ejercicios obtenidos del servicio
+  ejerciciosObtenidos: Ejercicio[] = []; // Lista de ejercicios obtenidos del servicio
   private ejerciciosSub: Subscription; // Para manejar la suscripción
 
   constructor(
@@ -41,40 +43,46 @@ export class FormDiaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //this.ejercicioService.cargarEjercicios() // O los cargo en el controlador del Ejercicios-service o aqui.
-    // Nos suscribimos al observable ejercicios$ que expone los ejercicios cargados
+    // Cargar ejercicios al iniciar el componente
     this.ejerciciosSub = this.ejercicioService.ejercicios$.subscribe(data => {
-      this.ejercicios = data;
-      this.ejerciciosFiltrados = [...this.ejercicios]; // Inicializa los ejercicios filtrados
+      this.ejerciciosObtenidos = data;
+      this.ejerciciosFiltrados = [...this.ejerciciosObtenidos]; // Inicializa los ejercicios filtrados
     });
 
     if (this.modo === 'editar') {
-      // Si estamos en modo edición, cargamos los datos del día existente
-      this.nombreDia = this.diaExistente ? this.diaExistente.diaNombre : '';
-      this.ejerciciosEnRutina = [...(this.diaExistente?.ejercicios || [])]; // Copia los ejercicios existentes para edición
+      // Cargar datos del día existente si estamos en modo edición
+      console.log('Sesion existente: ', this.sesionExistente)
+      console.log('Sesion existente nombre: ', this.sesionExistente.nombreSesion)
+      this.sesionNombre = this.sesionExistente.nombreSesion ? this.sesionExistente.nombreSesion : '';
+      this.ejerciciosEnRutina = [...(this.sesionExistente?.ejerciciosPlanificados || [])];
     } else {
-      // Si estamos creando un nuevo día, aseguramos que no haya ejercicios añadidos y asignamos nombre por defecto
-      this.nombreDia = `Día ${this.numeroDiasExistentes + 1}`;
+      // Si estamos creando un nuevo día, inicializamos el nombre y vaciamos la lista de ejercicios
+      console.log('SIN EDICION')
+      this.sesionNombre = `Día ${this.numeroDiasExistentes + 1}`;
       this.ejerciciosEnRutina = [];
     }
-
-    this.descripcionDia = '';
   }
 
-// Filtrar los ejercicios cuando el usuario realiza una búsqueda
-buscarEjercicios(event: any) {
-  const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
+  /* // Método para cargar ejercicios desde el servicio
+  async cargarEjercicios() {
+    this.ejerciciosObtenidos = await this.ejercicioService.obtenerEjercicios(); // Cargar la lista de ejercicios
+    this.ejerciciosFiltrados = [...this.ejerciciosObtenidos]; // Copiar para el filtro de búsqueda
+  } */
 
-  if (valorBusqueda === '') {
-    this.ejerciciosFiltrados = [...this.ejercicios]; // Restaura la lista original
-  } else {
-    this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
-      ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
-      (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-      (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
-    );
+  // Filtrar los ejercicios cuando el usuario realiza una búsqueda
+  buscarEjercicios(event: any) {
+    const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
+
+    if (valorBusqueda === '') {
+      this.ejerciciosFiltrados = [...this.ejerciciosObtenidos]; // Restaura la lista original
+    } else {
+      this.ejerciciosFiltrados = this.ejerciciosObtenidos.filter(ejercicio =>
+        ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
+        (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
+        (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
+      );
+    }
   }
-}
 
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({
@@ -140,57 +148,58 @@ buscarEjercicios(event: any) {
   }
 
 
-  // Agregar un ejercicio con los detalles ingresados
   agregarEjercicio(ejercicio: Ejercicio, series: number, repeticiones: number, notas: string) {
-    const ejercicioPlan: EjercicioPlan = {
-      ejercicioId: ejercicio._id!,
-      series: Array(series).fill({ repeticiones }), // Crea las series con el número de repeticiones
-      notas: notas || '',
-
+    const ejercicioPlanificado: EjercicioPlanificado = {
+      idEjercicioOriginal: ejercicio._id!,
+      seriesPlanificadas: Array(series).fill({ repeticiones }),
+      notas: notas || ''
     };
 
-    this.ejerciciosEnRutina.push(ejercicioPlan); // Añadir el ejercicio a la rutina
+    this.ejerciciosEnRutina.push(ejercicioPlanificado);
+    console.log("Ejercicio añadido a ejerciciosEnRutina:", this.ejerciciosEnRutina);
   }
 
   guardar() {
-    // Verificar si se ingresó una descripción
-    if (!this.descripcionDia || this.descripcionDia.trim() === '') {
-      // Mostrar una alerta si la descripción está vacía
+    // Validar descripción
+    if (!this.descripcionSesion || this.descripcionSesion.trim() === '') {
       this.alertController.create({
         header: 'Error',
         message: 'Por favor, ingrese una descripción para el día.',
         buttons: ['Aceptar']
       }).then(alert => alert.present());
-
-      return; // Detener el guardado hasta que se ingrese la descripción
+      return;
     }
-
-    // Verificar si se seleccionó al menos un ejercicio
+  
+    // Validar ejercicios en rutina
     if (this.ejerciciosEnRutina.length === 0) {
-      // Mostrar una alerta si no hay ejercicios seleccionados
       this.alertController.create({
         header: 'Error',
         message: 'Por favor, seleccione al menos un ejercicio para el día.',
         buttons: ['Aceptar']
       }).then(alert => alert.present());
-
-      return; // Detener el guardado hasta que se seleccione un ejercicio
+      return;
     }
-
-    /*   // Si el nombre del día no se especifica, asignamos un nombre automático basado en el número de días existentes en la rutina
-      if (!this.nombreDia || this.nombreDia.trim() === '') {
-        const diaIndex = this.diaExistente ? this.diaExistente.ejercicios.length : 0; // Obtiene el número de días ya existentes
-        this.nombreDia = `Día ${diaIndex + 1}`; // Asigna el nombre como "Día X", donde X es el siguiente número disponible
-      } */
-
-    const nuevoDia: DiaRutina = {
-      diaNombre: this.nombreDia,
-      ejercicios: this.ejerciciosEnRutina,
-      descripcion: this.descripcionDia // Guarda la descripción proporcionada por el usuario
+  
+    // Construir nueva sesión
+    const nuevaSesion: SesionPlanificada = {
+      nombreSesion: this.sesionNombre,
+      descripcion: this.descripcionSesion,
+      ejerciciosPlanificados: this.ejerciciosEnRutina
     };
-
-    this.modalController.dismiss(nuevoDia); // Enviar los datos de vuelta al componente padre
+  
+    // Validación final antes de cerrar
+    if (!nuevaSesion || !nuevaSesion.ejerciciosPlanificados || nuevaSesion.ejerciciosPlanificados.length === 0) {
+      console.error('La sesión añadida no contiene ejercicios o está incompleta.');
+      return;
+    }
+  
+    console.log("Contenido de nuevaSesion antes de cerrar el modal:", JSON.stringify(nuevaSesion, null, 2));
+  
+    // Cerrar el modal y pasar nuevaSesion completa
+    this.modalController.dismiss(nuevaSesion);
   }
+
+
 
   // Cancelar la operación de creación o edición
   cancelarOperacion() {

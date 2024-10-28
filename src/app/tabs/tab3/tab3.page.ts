@@ -5,14 +5,14 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { ToolbarLoggedComponent } from "../../componentes/shared/toolbar-logged/toolbar-logged.component";
 import { UltimoEntrenoComponent } from 'src/app/componentes/shared/ultimo-entreno/ultimo-entreno.component';
-import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
+import { Rutina, SesionPlanificada } from 'src/app/models/rutina.model';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
-import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { IonContent, IonButton, IonModal, IonAlert } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
+import { HistorialEntrenamiento, SesionEntrenamiento } from 'src/app/models/historial-entrenamiento';
 
 @Component({
   selector: 'app-tab3',
@@ -25,7 +25,7 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
 export class Tab3Page implements OnInit {
   usuarioLogeado: Usuario | null = null;
   rutinas: Rutina[] = [];
-  ultimoEntrenamiento: DiaEntrenamiento | null = null; // Guardar el último entrenamiento
+  ultimoEntrenamiento: SesionEntrenamiento | null = null; // Guardar el último entrenamiento
 
   constructor(
     private authService: AuthService,
@@ -116,7 +116,7 @@ export class Tab3Page implements OnInit {
       if (!this.usuarioLogeado) return;
 
       // Obtenemos el historial del usuario
-      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      const historiales:HistorialEntrenamiento[] = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
       if (historiales.length === 0) {
         console.log('No hay entrenamientos registrados');
         return;
@@ -125,12 +125,12 @@ export class Tab3Page implements OnInit {
       // Ordenamos los historiales por fecha
       historiales.sort(
         (a, b) =>
-          new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
-          new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
+          new Date(b.sesionesRealizadas[0].fechaSesion).getTime() -
+          new Date(a.sesionesRealizadas[0].fechaSesion).getTime()
       );
 
       // Cargamos el último entrenamiento
-      this.ultimoEntrenamiento = historiales[0].entrenamientos[0];
+      this.ultimoEntrenamiento = historiales[0].sesionesRealizadas[0];
     } catch (error) {
       console.error('Error al cargar el último entrenamiento:', error);
     }
@@ -144,12 +144,12 @@ export class Tab3Page implements OnInit {
     // Mostrar un selector para que el usuario elija si desea seguir el día sugerido o seleccionar otro
     const alert = await this.alertController.create({
       header: 'Selecciona el día de entrenamiento',
-      inputs: rutina.dias.map((dia, index) => ({
+      inputs: rutina.sesionesPlanificadas.map((sesionDia, index) => ({
         name: `dia_${index}`,
         type: 'radio',
-        label: dia.diaNombre,
-        value: dia,
-        checked: dia === siguienteDia // Marcar el día sugerido
+        label: sesionDia.nombreSesion,
+        value: sesionDia,
+        checked: sesionDia === siguienteDia // Marcar el día sugerido
       })),
       buttons: [
         {
@@ -158,11 +158,11 @@ export class Tab3Page implements OnInit {
         },
         {
           text: 'Aceptar',
-          handler: (diaSeleccionado: DiaRutina) => {
-            console.log('Día seleccionado:', diaSeleccionado);
+          handler: (sesionDiaSeleccinada: SesionPlanificada) => {
+            console.log('Día seleccionado:', sesionDiaSeleccinada);
             // Aquí puedes redirigir al usuario al día seleccionado
-            console.log('Navegando a tab4 con:', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre });
-            this.router.navigate(['/tabs/tab4', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre }]);
+            console.log('Navegando a tab4 con:', { rutinaId: rutina._id, diaRutinaId: sesionDiaSeleccinada.nombreSesion });
+            this.router.navigate(['/tabs/tab4', { rutinaId: rutina._id, diaRutinaId: sesionDiaSeleccinada.nombreSesion }]);
 
           },
         },
@@ -172,30 +172,30 @@ export class Tab3Page implements OnInit {
     await alert.present();
   }
 
-  obtenerProximoDia(rutina: Rutina): DiaRutina {
+  obtenerProximoDia(rutina: Rutina): SesionPlanificada {
     if (!this.ultimoEntrenamiento) {
       // Si no hay historiales previos, sugerimos el primer día de la rutina
       console.log('No hay entrenamientos previos. Sugerimos el primer día de la rutina.');
-      return rutina.dias[0];
+      return rutina.sesionesPlanificadas[0];
     }
 
     // Buscar el índice del día correspondiente al último entrenamiento realizado
-    const indiceUltimoDia = rutina.dias.findIndex(d => d.diaNombre === this.ultimoEntrenamiento?.diaRutinaId);
+    const indiceUltimoDia = rutina.sesionesPlanificadas.findIndex(d => d.nombreSesion === this.ultimoEntrenamiento?.sesionPlanificadaId);
 
     if (indiceUltimoDia === -1) {
       // Si el índice es -1, significa que el día no se encontró, así que sugerimos el primer día
       console.log('El último día realizado no se encontró en la rutina. Sugerimos el primer día de la rutina.');
-      return rutina.dias[0];
+      return rutina.sesionesPlanificadas[0];
     }
 
-    if (indiceUltimoDia === rutina.dias.length - 1) {
+    if (indiceUltimoDia === rutina.sesionesPlanificadas.length - 1) {
       // Si el último día fue el último en la lista, sugerimos el primer día para volver a comenzar
       console.log('El último día realizado fue el último de la rutina. Sugerimos el primer día de la rutina.');
-      return rutina.dias[0];
+      return rutina.sesionesPlanificadas[0];
     } else {
       // Si no, sugerimos el siguiente día
-      console.log(`El último día realizado fue el día ${rutina.dias[indiceUltimoDia].diaNombre}. Sugerimos el siguiente día: ${rutina.dias[indiceUltimoDia + 1].diaNombre}.`);
-      return rutina.dias[indiceUltimoDia + 1];
+      console.log(`El último día realizado fue el día ${rutina.sesionesPlanificadas[indiceUltimoDia].nombreSesion}. Sugerimos el siguiente día: ${rutina.sesionesPlanificadas[indiceUltimoDia + 1].nombreSesion}.`);
+      return rutina.sesionesPlanificadas[indiceUltimoDia + 1];
     }
   }
 }

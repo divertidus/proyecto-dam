@@ -42,7 +42,7 @@ export class EjercicioService {
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
 
-      console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
+    //  console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
       await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
@@ -171,7 +171,7 @@ export class EjercicioService {
       });
       const ejercicios = result.docs;
       this.ejerciciosSubject.next(ejercicios); // Emite la lista actualizada
-      console.log('Ejercicio.Service -> Cargados ejercicios en BehaviorSubject');
+   //   console.log('Ejercicio.Service -> Cargados ejercicios en BehaviorSubject');
       this.ejerciciosSubject.next(ejercicios); // Emitimos los ejercicios para que todos los suscriptores los reciban
     } catch (error) {
       console.error('Ejercicio.Service -> Error al cargar ejercicios:', error);

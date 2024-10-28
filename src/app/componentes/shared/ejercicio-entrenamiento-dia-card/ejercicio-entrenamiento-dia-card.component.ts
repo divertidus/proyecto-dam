@@ -1,9 +1,9 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SerieReal, EjercicioRealizado } from 'src/app/models/historial-entrenamiento';
 import { IonItem, IonCheckbox, IonLabel } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { ModalController, PopoverController } from '@ionic/angular';
+import { EjercicioSesion, SerieSesion } from 'src/app/models/historial-entrenamiento';
 @Component({
   selector: 'app-ejercicio-entrenamiento-dia-card',
   templateUrl: './ejercicio-entrenamiento-dia-card.component.html',
@@ -14,10 +14,10 @@ import { ModalController, PopoverController } from '@ionic/angular';
 })
 export class EjercicioEntrenamientoDiaCardComponent {
 
-  @Input() ejercicio: EjercicioRealizado; // Ejercicio actual que se está mostrando
+  @Input() ejercicioSesion: EjercicioSesion; // Ejercicio actual que se está mostrando
 
   // Método para verificar si una serie está completada
-  isSerieCompletada(serie: SerieReal): boolean {
-    return serie.repeticiones > 0 && serie.peso !== undefined; // La serie está completada si tiene repeticiones y peso
+  isSerieCompletada(serieSesion: SerieSesion): boolean {
+    return serieSesion.repeticiones > 0 && serieSesion.peso !== undefined; // La serie está completada si tiene repeticiones y peso
   }
 }

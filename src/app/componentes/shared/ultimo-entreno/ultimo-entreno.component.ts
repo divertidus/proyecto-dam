@@ -2,7 +2,6 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular/standalone";
@@ -10,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { HistorialEntrenamiento, SesionEntrenamiento } from 'src/app/models/historial-entrenamiento';
 
 @Component({
   selector: 'app-ultimo-entreno',
@@ -20,7 +20,7 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   providers: [ModalController, PopoverController]
 })
 export class UltimoEntrenoComponent implements OnInit {
-  ultimoEntrenamiento: DiaEntrenamiento | null = null; // Almacena el último entrenamiento
+  ultimoEntrenamiento: SesionEntrenamiento | null = null; // Almacena el último entrenamiento
   usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado  
   expandido: boolean = false; // Inicialmente expandido
 
@@ -77,7 +77,7 @@ export class UltimoEntrenoComponent implements OnInit {
       if (!this.usuarioLogeado) return;
 
       // Obtenemos el historial del usuario
-      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      const historiales: HistorialEntrenamiento[] = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
       if (historiales.length === 0) {
         console.log('No hay entrenamientos registrados');
         return;
@@ -86,12 +86,12 @@ export class UltimoEntrenoComponent implements OnInit {
       // Ordenamos los historiales por fecha
       historiales.sort(
         (a, b) =>
-          new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
-          new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
+          new Date(b.sesionesRealizadas[0].fechaSesion).getTime() -
+          new Date(a.sesionesRealizadas[0].fechaSesion).getTime()
       );
 
       // Cargamos el último entrenamiento
-      this.ultimoEntrenamiento = historiales[0].entrenamientos[0];
+      this.ultimoEntrenamiento = historiales[0].sesionesRealizadas[0];
 
     } catch (error) {
       console.error('Error al cargar el último entrenamiento:', error);

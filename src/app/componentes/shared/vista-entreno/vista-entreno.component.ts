@@ -3,18 +3,18 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
 import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert, IonContent } from '@ionic/angular/standalone';
 import {
   IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonList, IonItem, IonIcon, IonFooter, IonButton
 } from "@ionic/angular/standalone";
-import { DiaEntrenamiento, HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { AuthService } from 'src/app/auth/auth.service'; // Importamos AuthService
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { SesionPlanificada } from 'src/app/models/rutina.model';
+import { HistorialEntrenamiento, SesionEntrenamiento } from 'src/app/models/historial-entrenamiento';
 
 
 @Component({
@@ -54,7 +54,7 @@ export class VistaEntrenoComponent implements OnInit {
       this.diaRutinaId = params.get('diaRutinaId');
       this.rutinaId = params.get('rutinaId');
       if (this.diaRutinaId && this.rutinaId) {
-        this.cargarDiaRutinaPorNombre(this.rutinaId, this.diaRutinaId);
+        this.cargarSesionPlanificadaPorNombre(this.rutinaId, this.diaRutinaId);
       }
     });
 
@@ -76,49 +76,45 @@ export class VistaEntrenoComponent implements OnInit {
 
   }
 
-  // Método para cargar y contar ejercicios
-  async cargarDiaRutinaPorNombre(rutinaId: string, diaNombre: string) {
+  async cargarSesionPlanificadaPorNombre(rutinaId: string, nombreSesion: string) {
     try {
-      const diaRutina: DiaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
-      if (diaRutina) {
-        this.ejercicios = await Promise.all(diaRutina.ejercicios.map(async (ej) => {
-          const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
+      const sesionPlanificada: SesionPlanificada = await this.rutinaService.obtenerSesionPlanificadaPorNombre(rutinaId, nombreSesion);
+      if (sesionPlanificada) {
+        this.ejercicios = await Promise.all(sesionPlanificada.ejerciciosPlanificados.map(async (ej) => {
+          const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.idEjercicioOriginal);
           let ultimoPeso = null;
           if (this.usuarioId) {
-            ultimoPeso = await this.historialService.obtenerUltimoPesoEjercicio(this.usuarioId, ej.ejercicioId);
+            ultimoPeso = await this.historialService.obtenerUltimoPesoEjercicio(this.usuarioId, ej.idEjercicioOriginal);
           }
 
-          // Configuración de series y atributos del ejercicio
-          const seriesReal = (ej.series || []).map((serie: any) => ({
+          const seriesSesion = (ej.seriesPlanificadas || []).map((serie: any) => ({
             numeroSerie: serie.numeroSerie,
             repeticiones: serie.repeticiones,
             peso: ultimoPeso || 0,
             pesoAnterior: ultimoPeso || 0,
-            completado: false,  // Inicialización de la propiedad completado
+            completado: false,
             dolor: false,
             conAyuda: false,
             alFallo: false,
             enEdicion: true,
-            notas: '' // Inicialmente no hay notas
+            notas: ''
           }));
 
           return {
             ...ej,
             nombreEjercicio: ejercicioDetalles.nombre,
-            seriesReal: seriesReal,
+            seriesReal: seriesSesion,
             seriesCompletadas: 0,
-            seriesTotal: seriesReal.length,
+            seriesTotal: seriesSesion.length,
             abierto: false,
             completado: false,
           };
         }));
 
-        // Actualizar el contador total de ejercicios y completados
         this.totalEjercicios = this.ejercicios.length;
         this.actualizarEjerciciosCompletados();
-        console.log("Estructura de ejercicios cargados:", this.ejercicios);
       } else {
-        console.error(`Día de rutina con nombre ${diaNombre} no encontrado`);
+        console.error(`Día de rutina con nombre ${nombreSesion} no encontrado`);
       }
     } catch (error) {
       console.error('Error al cargar el día de la rutina:', error);
@@ -140,22 +136,20 @@ export class VistaEntrenoComponent implements OnInit {
         {
           text: 'Cancelar',
           role: 'cancel',
-          handler: () => {
-            console.log('Nota cancelada');
-          },
         },
         {
           text: 'Guardar',
           handler: (data) => {
             this.ejercicios[ejercicioIndex].seriesReal[serieIndex].notas = data.nota;
-            console.log('Nota guardada para la serie:', data.nota);
           },
         },
       ],
     });
-
     await alert.present();
   }
+
+
+
 
   // Método para abrir el alert para agregar notas
   async abrirNotas(index: number) {
@@ -252,62 +246,36 @@ export class VistaEntrenoComponent implements OnInit {
 
   guardarSesion(mensajeEstado?: string) {
     const ejerciciosCompletados = this.ejercicios.map(ej => {
-      const esEjercicioNoIniciado = ej.seriesCompletadas === 0;
-      const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
-      const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
-  
-      // Añadimos el log para verificar cada serie antes de guardarla
-      const seriesCompletadas = ej.seriesReal
-        .filter(serie => serie.completado)
-        .map((serie, index) => {
-          console.log(`Serie ${index + 1}:`, {
-            alFallo: serie.alFallo,
-            conAyuda: serie.conAyuda,
-            dolor: serie.dolor
-          });
-          
-          return {
-            numeroSerie: index + 1,
-            repeticiones: serie.repeticiones,
-            peso: serie.peso,
-            alFallo: serie.alFallo,
-            conAyuda: serie.conAyuda,
-            dolor: serie.dolor,
-            notas: serie.notas || null,
-          };
-        });
-  
       return {
-        ejercicioId: ej.ejercicioId,
-        series: esEjercicioNoIniciado ? [] : seriesCompletadas,
-        notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
-          ? 'NO SE HIZO'
-          : esEjercicioIncompleto
-            ? 'INCOMPLETO'
-            : esEjercicioCompleto
-              ? ej.notas || null
-              : null,
+        idEjercicioPlanificado: ej.ejercicioId, // Cambiado de ejercicioId a idEjercicioPlanificado
+        seriesSesion: ej.seriesReal.map((serie, index) => ({
+          numeroSerie: index + 1,
+          repeticiones: serie.completado ? serie.repeticiones : null,
+          peso: serie.completado ? serie.peso : null,
+          alFallo: serie.alFallo,
+          conAyuda: serie.conAyuda,
+          dolor: serie.dolor,
+          notas: serie.notas || null,
+        })),
+        notas: ej.notas || null,
       };
     });
-  
-    // Crear `DiaEntrenamiento`
-    const nuevoDiaEntrenamiento: DiaEntrenamiento = {
-      fechaEntrenamiento: new Date().toISOString(),
-      diaRutinaId: this.diaRutinaId,
-      ejercicios: ejerciciosCompletados,
+
+    const nuevaSesionEntrenamiento: SesionEntrenamiento = {
+      fechaSesion: new Date().toISOString(),
+      sesionPlanificadaId: this.diaRutinaId,
+      ejerciciosSesion: ejerciciosCompletados,
       notas: '',
     };
-  
+
     const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
       entidad: 'historialEntrenamiento',
       usuarioId: this.usuarioId!,
-      entrenamientos: [nuevoDiaEntrenamiento],
+      sesionesRealizadas: [nuevaSesionEntrenamiento],
     };
-  
-    // Guardar el nuevo historial de entrenamiento
+
     this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
       .then(() => {
-        console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
         this.mostrarAlertaExito();
         this.router.navigate(['/tabs/tab3']);
       })
@@ -349,14 +317,12 @@ export class VistaEntrenoComponent implements OnInit {
 
   decrementarPeso(ejercicio: any, serieIndex: number) {
     const serie = ejercicio.seriesReal[serieIndex];
-    if (!serie.peso) serie.peso = 0;
-    serie.peso = Math.max(0, serie.peso - 1.25);
+    serie.peso = Math.max(0, (serie.peso || 0) - 1.25);
   }
 
   incrementarPeso(ejercicio: any, serieIndex: number) {
     const serie = ejercicio.seriesReal[serieIndex];
-    if (!serie.peso) serie.peso = 0;
-    serie.peso += 1.25;
+    serie.peso = (serie.peso || 0) + 1.25;
   }
 
   // Método para toggle edición
@@ -377,25 +343,20 @@ export class VistaEntrenoComponent implements OnInit {
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
 
-    // Validar que los campos necesarios estén completos
     if (!serie.repeticiones || !serie.peso) {
-      // Mostrar mensaje de error o alerta
       return;
     }
 
-    // Marcar la serie como completada
     serie.completado = true;
     serie.enEdicion = false;
 
-    // Incrementar el contador de series completadas si es la siguiente en la secuencia
     if (serieIndex === ejercicio.seriesCompletadas) {
       ejercicio.seriesCompletadas++;
     }
 
-    // Marcar el ejercicio como completado si todas las series lo están
     if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
       ejercicio.completado = true;
-      this.actualizarEjerciciosCompletados(); // Llamar para actualizar el estado global
+      this.actualizarEjerciciosCompletados();
     }
   }
 

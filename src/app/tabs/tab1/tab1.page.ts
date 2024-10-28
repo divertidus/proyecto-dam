@@ -7,7 +7,7 @@ import { UserListComponent } from "../../componentes/usuario/user-list/user-list
 import { AuthService } from '../../auth/auth.service';
 import { Usuario } from '../../models/usuario.model';
 import { ModalController } from '@ionic/angular';
-import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
+import { Rutina, SesionPlanificada } from 'src/app/models/rutina.model';
 import { Subscription } from 'rxjs';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
@@ -24,7 +24,7 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
   standalone: true,
   imports: [IonAlert, IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
     UserListComponent, ToolbarLoggedComponent, FormsModule],
-  providers: [ModalController,PopoverController]
+  providers: [ModalController, PopoverController]
 })
 export class Tab1Page implements OnInit, OnDestroy {
 
@@ -96,7 +96,7 @@ export class Tab1Page implements OnInit, OnDestroy {
           ejercicios: this.ejercicios, // Pasar la lista de ejercicios
           diaExistente: null, // No pasamos día existente porque es para añadir un nuevo día
           modo: 'crear', // Siempre será modo "crear" cuando estamos añadiendo un nuevo día
-          numeroDiasExistentes: rutina ? rutina.dias.length : 0 // Número de días existentes en la rutina
+          numeroDiasExistentes: rutina ? (rutina.sesionesPlanificadas ? rutina.sesionesPlanificadas.length : 0) : 0
         }
       });
 
@@ -121,30 +121,40 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   // Método para crear una nueva rutina con un día
-  crearRutinaConDia(dia: DiaRutina) {
+  crearRutinaConDia(sesionPlanificada: SesionPlanificada) {
     const numeroRutina = this.rutinas.length + 1; // Definir el número de la nueva rutina
     const nuevaRutina: Rutina = {
       nombre: `Rutina ${numeroRutina}`,
-      dias: [dia], // Añadir el día creado a la nueva rutina
+      sesionesPlanificadas: sesionPlanificada ? [sesionPlanificada] : [], // Añadir el día creado a la nueva rutina
       usuarioId: this.usuarioLogeado?._id || '',
       entidad: 'rutina',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      descripcion: '', // o algún valor por defecto
     };
 
     this.rutinaService.agregarRutina(nuevaRutina).then(response => {
       nuevaRutina._id = response.id; // Guardar el ID generado
       this.rutinas.push(nuevaRutina); // Añadir la rutina a la lista local
       console.log('Nueva rutina creada con éxito');
-      this.rutinaService.cargarRutinas(); // Refrescar las rutinas
+      this.rutinaService.cargarRutinas();
+    }).catch(error => {
+      console.error("Error al crear la rutina:", error);
     });
+
   }
 
   // Método para guardar un nuevo día en una rutina existente
-  guardarNuevoDiaEnRutina(rutina: Rutina, dia: DiaRutina) {
-    rutina.dias.push(dia);
+  guardarNuevoDiaEnRutina(rutina: Rutina, sesionPlanificada: SesionPlanificada) {
+    if (!rutina.sesionesPlanificadas) {
+      rutina.sesionesPlanificadas = []; // Inicialización si es undefined
+    }
+
+    rutina.sesionesPlanificadas.push(sesionPlanificada);
     this.rutinaService.actualizarRutina(rutina).then(() => {
       console.log('Nuevo día añadido y rutina actualizada');
-      this.rutinaService.cargarRutinas(); // Refrescar la lista de rutinas después de añadir el nuevo día
+      this.rutinaService.cargarRutinas();
+    }).catch(error => {
+      console.error("Error al actualizar la rutina:", error);
     });
   }
 

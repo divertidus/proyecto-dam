@@ -1,19 +1,19 @@
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
-    <ion-card-title>{{ entrenamientoActual.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
-    <ion-card-subtitle>{{ entrenamientoActual.diaRutinaId }}</ion-card-subtitle>
+    <ion-card-title>{{ entrenamientoActual.fechaSesion | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
+    <ion-card-subtitle>{{ entrenamientoActual.sesionPlanificadaId }}</ion-card-subtitle>
   </ion-card-header>
   <ion-card-content *ngIf="expandido">
     <p *ngIf="entrenamientoActual.notas"><strong>Notas del día:</strong> {{ entrenamientoActual.notas }}</p>
     <ion-list>
-      <ion-item *ngFor="let ejercicio of entrenamientoActual.ejercicios; let j = index">
+      <ion-item *ngFor="let ejercicioSesion of entrenamientoActual.ejerciciosSesion; let j = index">
         <ion-label>
-          <h2>{{ obtenerNombreEjercicio(ejercicio.ejercicioId) }}</h2>
+          <h2>{{ obtenerNombreEjercicio(ejercicioSesion.idEjercicioPlanificado) }}</h2>
           <!-- Mostrar notas del ejercicio si existen -->
-          <p *ngIf="ejercicio.notas"><strong>Notas del ejercicio:</strong> <i>{{ ejercicio.notas }}</i></p>
+          <p *ngIf="ejercicioSesion.notas"><strong>Notas del ejercicio:</strong> <i>{{ ejercicioSesion.notas }}</i></p>
 
           <!-- Lista de series del ejercicio -->
-          <ng-container *ngFor="let serie of ejercicio.series; let k = index">
+          <ng-container *ngFor="let serie of ejercicioSesion.seriesSesion; let k = index">
             <p>
               <!-- Encabezado reducido a "S X" -->
               S{{ serie.numeroSerie }}: {{ serie.repeticiones }} reps
