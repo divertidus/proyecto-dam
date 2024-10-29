@@ -457,15 +457,15 @@ export class ReiniciarDatosService {
 
       // Generamos los días de entrenamiento con fechas asignadas
       const diasEntrenamientos = [
-        { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1', descripcion: 'Espalda y bíceps', ejercicioRealizado: dia1Entrenamiento1 },
-        { fechaEntrenamiento: '2024-10-02', diaRutinaId: 'Día 2', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento1 },
-        { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento1 },
-        { fechaEntrenamiento: '2024-10-04', diaRutinaId: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento2 },
-        { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento2 }, // Sin series en un ejercicio
-        { fechaEntrenamiento: '2024-10-06', diaRutinaId: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 },
-        { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 2', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento2 },
-        { fechaEntrenamiento: '2024-10-08', diaRutinaId: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento3 },
-        { fechaEntrenamiento: '2024-10-09', diaRutinaId: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
+        { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y bíceps', ejercicioRealizado: dia1Entrenamiento1 },
+        { fechaEntrenamiento: '2024-10-02', diaRutinaId: 'Día 2', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento1 },
+        { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 3', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento1 },
+        { fechaEntrenamiento: '2024-10-04', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento2 },
+        { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento2 }, // Sin series en un ejercicio
+        { fechaEntrenamiento: '2024-10-06', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 },
+        { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 2', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento2 },
+        { fechaEntrenamiento: '2024-10-08', diaRutinaId: 'Día 3', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento3 },
+        { fechaEntrenamiento: '2024-10-09', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
       ];
 
       // Obtener todos los historiales del usuario logeado
@@ -496,6 +496,7 @@ export class ReiniciarDatosService {
             _id: uuidv4(),
             fechaEntrenamiento: diaEntrenamiento.fechaEntrenamiento,
             diaRutinaId: diaEntrenamiento.diaRutinaId,
+            nombreRutinaEntrenamiento: diaEntrenamiento.nombreRutinaEntrenamiento,
             descripcion: diaEntrenamiento.descripcion,
             ejerciciosRealizados: diaEntrenamiento.ejercicioRealizado
           };
@@ -504,12 +505,12 @@ export class ReiniciarDatosService {
         }
       }
 
-     // Actualizar el historial existente
-     await this.historialService.agregarHistorial(historial);
-     console.log('Historial de entrenamientos actualizado correctamente.');
-   } catch (error) {
-     console.error('Error al actualizar el historial de entrenamientos:', error);
-     throw error;
-   }
+      // Actualizar el historial existente
+      await this.historialService.agregarHistorial(historial);
+      console.log('Historial de entrenamientos actualizado correctamente.');
+    } catch (error) {
+      console.error('Error al actualizar el historial de entrenamientos:', error);
+      throw error;
+    }
   }
 }

@@ -1,7 +1,7 @@
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
     <ion-card-title>{{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
-    <ion-card-subtitle>{{ diaEntrenamiento.diaRutinaId }} - {{ diaEntrenamiento.descripcion }}</ion-card-subtitle>
+    <ion-card-subtitle>{{diaEntrenamiento.nombreRutinaEntrenamiento}} -> {{ diaEntrenamiento.diaRutinaId }} - {{ diaEntrenamiento.descripcion }}</ion-card-subtitle>
   </ion-card-header>
 
   <!-- Contenido desplegable -->

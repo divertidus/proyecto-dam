@@ -35,7 +35,7 @@ export class VistaEntrenoComponent implements OnInit {
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
   rutinaId: string | null = null; // ID de la rutina
   usuarioId: string | null = null; // Añadir esta propiedad
-
+  nombreRutinaEntrenamiento: string | null
   // Variables de conteo
   ejerciciosCompletados = 0;
   totalEjercicios = 0;
@@ -79,11 +79,16 @@ export class VistaEntrenoComponent implements OnInit {
 
   }
 
-  // Método para cargar y contar ejercicios
   async cargarDiaRutinaPorNombre(rutinaId: string, diaNombre: string) {
     try {
-      const diaRutina: DiaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
+      // Cargamos la rutina completa para obtener su nombre
+      const rutina = await this.rutinaService.obtenerRutinaPorId(rutinaId);
+      const diaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
+
       if (diaRutina) {
+        this.nombreRutinaEntrenamiento = rutina.nombre; // Guardamos el nombre de la rutina
+
+        // Asigna ejercicios como antes
         this.ejercicios = await Promise.all(diaRutina.ejercicios.map(async (ej: EjercicioPlan) => {
           const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
           let ultimoPeso = null;
@@ -274,8 +279,9 @@ export class VistaEntrenoComponent implements OnInit {
     });
 
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
-      _id: uuidv4(), // Generar un nuevo _id único
+      _id: uuidv4(),
       fechaEntrenamiento: new Date().toISOString(),
+      nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento, // Aquí asignamos el nombre de la rutina
       diaRutinaId: this.diaRutinaId!,
       descripcion: this.descripcion,
       ejerciciosRealizados: ejerciciosCompletados,
