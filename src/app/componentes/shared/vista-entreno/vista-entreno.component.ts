@@ -30,6 +30,7 @@ export class VistaEntrenoComponent implements OnInit {
   [x: string]: any;
 
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
+  descripcion: string | null = null;
   ejercicios: any[] = []; // Aquí almacenaremos los ejercicios del día
   rutinaId: string | null = null; // ID de la rutina
   usuarioId: string | null = null; // Añadir esta propiedad
@@ -52,6 +53,7 @@ export class VistaEntrenoComponent implements OnInit {
     // Capturamos los parámetros de la URL
     this.route.paramMap.subscribe(params => {
       this.diaRutinaId = params.get('diaRutinaId');
+      this.descripcion = params.get('descripcion');
       this.rutinaId = params.get('rutinaId');
       if (this.diaRutinaId && this.rutinaId) {
         this.cargarDiaRutinaPorNombre(this.rutinaId, this.diaRutinaId);
@@ -254,6 +256,7 @@ export class VistaEntrenoComponent implements OnInit {
       const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
       const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
 
+
       const seriesCompletadas: SerieReal[] = ej.seriesReal
         .filter(serie => serie.completado)
         .map((serie, index) => ({
@@ -283,6 +286,7 @@ export class VistaEntrenoComponent implements OnInit {
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
       fechaEntrenamiento: new Date().toISOString(),
       diaRutinaId: this.diaRutinaId!,
+      descripcion: this.descripcion,
       ejerciciosRealizados: ejerciciosCompletados,
       notas: '',
     };

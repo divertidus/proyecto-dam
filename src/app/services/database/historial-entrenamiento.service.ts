@@ -229,25 +229,6 @@ export class HistorialService {
 
 }
 
-/* Ejemplo de Uso: Al Modificar un Peso en una Serie
- 
-Si deseas actualizar el peso anterior en sesiones posteriores cuando cambias el peso de una serie en una sesión específica, puedes llamar al método actualizarPesosPosteriores desde el lugar donde se hace la modificación.
-
-typescript
-Copiar código
-// Ejemplo de actualización en un componente
-async modificarPesoSerie(ejercicio: EjercicioRealizado, nuevoPeso: number, usuarioId: string) {
-// Modificar el peso actual de la serie
-ejercicio.series[0].peso = nuevoPeso;
-
-// Guardar el ejercicio con el peso actualizado
-await this.historialService.guardarEjercicio(ejercicio);
-
-// Llamar a actualizarPesosPosteriores para que el `pesoAnterior` en sesiones futuras refleje el nuevo peso
-await this.historialService.actualizarPesosPosteriores(ejercicio.ejercicioId, usuarioId, nuevoPeso);
-}
-*/
-
 
 
 

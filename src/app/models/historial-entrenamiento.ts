@@ -13,6 +13,7 @@ export interface DiaEntrenamiento {
   _id?: string;
   fechaEntrenamiento: string;
   diaRutinaId: string;
+  descripcion: string;
   ejerciciosRealizados: EjercicioRealizado[];
   notas?: string;
 }

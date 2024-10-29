@@ -1,7 +1,7 @@
 <!-- Lista de entrenamientos -->
 <ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
   <app-dia-entrenamiento-card 
-    [entrenamientoActual]="entrenamiento" 
+    [diaEntrenamiento]="entrenamiento" 
     [expandido]="isExpandido(i)" 
     [index]="i"
     [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)"

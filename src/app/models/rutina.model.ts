@@ -14,7 +14,7 @@ export interface Rutina {
 export interface DiaRutina {
   _id?: string;
   diaNombre: string;                // Nombre del día (ej. "Día 1: Espalda y Bíceps")
-  descripcion?: string;             // Descripción opcional para el día, p. ej., objetivos o comentarios generales
+  descripcion: string;             // Descripción opcional para el día, p. ej., objetivos o comentarios generales
   ejercicios: EjercicioPlan[];      // Lista de ejercicios a realizar ese día (sin pesos específicos)
 }
 

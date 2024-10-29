@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   imports: [IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
 export class DiaEntrenamientoCardComponent {
-  @Input() entrenamientoActual: DiaEntrenamiento; // Entrenamiento actual
+  @Input() diaEntrenamiento: DiaEntrenamiento; // Entrenamiento actual
   @Input() expandido: boolean = false; // Para saber si debe estar expandido
   @Input() index: number; // Índice del entrenamiento
   @Input() obtenerNombreEjercicio: (ejercicioId: string) => string; // Input de la función para obtener el nombre

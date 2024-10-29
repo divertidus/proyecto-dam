@@ -161,8 +161,8 @@ export class Tab3Page implements OnInit {
           handler: (diaSeleccionado: DiaRutina) => {
             console.log('Día seleccionado:', diaSeleccionado);
             // Aquí puedes redirigir al usuario al día seleccionado
-            console.log('Navegando a tab4 con:', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre });
-            this.router.navigate(['/tabs/tab4', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre }]);
+            console.log('Navegando a tab4 con:', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre, descripcion: diaSeleccionado.descripcion });
+            this.router.navigate(['/tabs/tab4', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre, descripcion: diaSeleccionado.descripcion }]);
 
           },
         },

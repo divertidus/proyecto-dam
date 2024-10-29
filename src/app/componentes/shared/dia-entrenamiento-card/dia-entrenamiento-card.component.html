@@ -1,12 +1,12 @@
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
-    <ion-card-title>{{ entrenamientoActual.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
-    <ion-card-subtitle>{{ entrenamientoActual.diaRutinaId }}</ion-card-subtitle>
+    <ion-card-title>{{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
+    <ion-card-subtitle>{{ diaEntrenamiento.diaRutinaId }} - {{diaEntrenamiento.descripcion}}</ion-card-subtitle>
   </ion-card-header>
   <ion-card-content *ngIf="expandido">
-    <p *ngIf="entrenamientoActual.notas"><strong>Notas del día:</strong> {{ entrenamientoActual.notas }}</p>
+    <p *ngIf="diaEntrenamiento.notas"><strong>Notas del día:</strong> {{ diaEntrenamiento.notas }}</p>
     <ion-list>
-      <ion-item *ngFor="let ejercicio of entrenamientoActual.ejerciciosRealizados; let j = index">
+      <ion-item *ngFor="let ejercicio of diaEntrenamiento.ejerciciosRealizados; let j = index">
         <ion-label>
           <h2>{{ ejercicio.nombreEjercicioRealizado }}</h2> <!-- //obtenerNombre -->
           <!-- Mostrar notas del ejercicio si existen -->
