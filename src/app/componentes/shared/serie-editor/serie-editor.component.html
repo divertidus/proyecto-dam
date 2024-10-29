@@ -1,0 +1,16 @@
+<div class="exercise-row">
+  <span class="series-number">{{ serieReal.numeroSerie }}.</span>
+  <ion-input type="number" [(ngModel)]="serieReal.repeticiones" class="reps-input" placeholder="Reps"
+    [disabled]="!enEdicion"></ion-input>
+  <div class="weight-control">
+    <button class="control-button minus" (click)="decrementarPeso()" [disabled]="!enEdicion">-</button>
+    <ion-input type="number" [(ngModel)]="serieReal.peso" class="weight-input"
+      [placeholder]="serieReal.pesoAnterior?.toString() || '0'" [disabled]="!enEdicion"></ion-input>
+    <button class="control-button plus" (click)="incrementarPeso()" [disabled]="!enEdicion">+</button>
+    <span class="weight-label">({{ serieReal.pesoAnterior || 80 }} kg)</span>
+  </div>
+  <ion-button fill="clear" size="small" (click)="toggleEditMode()" class="ok-button"
+    [disabled]="enEdicion && serieReal.peso === 0">
+    {{ enEdicion ? 'OK' : 'EDIT' }}
+  </ion-button>
+</div>

@@ -1,24 +1,32 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { DiaEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
-import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel } from "@ionic/angular/standalone";
+import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel, IonButton, IonIcon } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
-
+import { AlertController } from '@ionic/angular';
+import { SerieEditorComponent } from '../serie-editor/serie-editor.component';
 @Component({
   selector: 'app-dia-entrenamiento-card',
   templateUrl: './dia-entrenamiento-card.component.html',
   styleUrls: ['./dia-entrenamiento-card.component.scss'],
   standalone: true,
-  imports: [IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
+  providers: [AlertController],
+  imports: [IonIcon, SerieEditorComponent, IonButton, IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
 export class DiaEntrenamientoCardComponent {
   @Input() diaEntrenamiento: DiaEntrenamiento; // Entrenamiento actual
   @Input() expandido: boolean = false; // Para saber si debe estar expandido
   @Input() index: number; // Índice del entrenamiento
   @Input() obtenerNombreEjercicio: (ejercicioId: string) => string; // Input de la función para obtener el nombre
+  @Input() editable: boolean = false;
 
   @Output() toggleExpand = new EventEmitter<number>(); // Evento para expandir/colapsar
+  @Output() diaEliminado = new EventEmitter<string>(); // Cambiamos el tipo a `string`
 
+
+  constructor(private alertController: AlertController) {
+
+  }
   // Método para manejar el click y emitir el índice para cambiar el estado de expansión
   onToggleExpand() {
     this.toggleExpand.emit(this.index);
@@ -37,7 +45,41 @@ export class DiaEntrenamientoCardComponent {
     // Devolvemos una cadena con todos los checks separados por guiones
     return checks.length > 0 ? checks.join(' - ') : '';
   }
+
+  // Método para confirmar la eliminación del día
+  async confirmarEliminarDia() {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Eliminación',
+      message: '¿Estás seguro de que deseas eliminar este día del historial?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Eliminar',
+          handler: () => this.eliminarDia(),
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+
+  // Lógica para eliminar el día y emitir el evento con el ID
+
+  eliminarDia() {
+    if (this.diaEntrenamiento && this.diaEntrenamiento._id) {
+      console.log(`Eliminando día con ID: ${this.diaEntrenamiento._id}`);
+      
+      this.diaEliminado.emit(this.diaEntrenamiento._id); // Enviar el ID
+    } else {
+      console.error("No se pudo encontrar el ID del día a eliminar.");
+    }
+  }
+
+
+
 }
+
+
 
 
 

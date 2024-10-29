@@ -1,11 +1,9 @@
 <!-- Lista de entrenamientos -->
-<ion-list *ngFor="let entrenamiento of entrenamientos; let i = index">
-  <app-dia-entrenamiento-card 
-    [diaEntrenamiento]="entrenamiento" 
-    [expandido]="isExpandido(i)" 
-    [index]="i"
-    [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)"
-    (toggleExpand)="toggleEntrenamiento($event)">
+<ion-list>
+  <app-dia-entrenamiento-card *ngFor="let entrenamiento of entrenamientos; let i = index"
+    [diaEntrenamiento]="entrenamiento" [expandido]="isExpandido(i)" [index]="i"
+    [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)" (toggleExpand)="toggleEntrenamiento($event)"
+    [editable]="true" (diaEliminado)="handleEliminarDia($event)">
   </app-dia-entrenamiento-card>
 </ion-list>
 

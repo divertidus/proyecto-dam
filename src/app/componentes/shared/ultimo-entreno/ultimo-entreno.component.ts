@@ -23,7 +23,6 @@ export class UltimoEntrenoComponent implements OnInit {
   ultimoEntrenamiento: DiaEntrenamiento | null = null; // Almacena el último entrenamiento
   usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado  
   expandido: boolean = false; // Inicialmente expandido
-
   nombresEjercicios: { [id: string]: string } = {};
 
   constructor(
@@ -33,25 +32,18 @@ export class UltimoEntrenoComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // Suscribirse al observable del usuario logeado
+    // Cargar datos del usuario logeado y suscribirse a historial$
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
-      // Reiniciar los datos cuando el usuario cambia
+      this.usuarioLogeado = usuario || null;
       this.ultimoEntrenamiento = null;
       this.expandido = false;
 
       if (usuario) {
-        this.usuarioLogeado = usuario; // Guardamos el usuario logeado
-        await this.cargarNombresEjercicios()
-        await this.cargarUltimoEntrenamiento(); // Cargamos el último entrenamiento
-      } else {
-        this.usuarioLogeado = null;
+        await this.cargarNombresEjercicios(); // Cargar nombres de ejercicios una vez
+        this.historialService.historial$.subscribe((historiales) => {
+          this.actualizarUltimoEntrenamiento(historiales); // Actualizar último entrenamiento
+        });
       }
-    });
-
-
-    // Suscribirse a los cambios del historial y recargar el último entrenamiento
-    this.historialService.historial$.subscribe(async () => {
-      await this.cargarUltimoEntrenamiento();
     });
   }
 
@@ -71,30 +63,22 @@ export class UltimoEntrenoComponent implements OnInit {
     this.expandido = !this.expandido; // Alterna entre expandido y contraído
   }
 
-  // Método para cargar el último entrenamiento del usuario logeado
-  async cargarUltimoEntrenamiento() {
-    try {
-      if (!this.usuarioLogeado) return;
-
-      // Obtenemos el historial del usuario
-      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
-      if (historiales.length === 0) {
-        console.log('No hay entrenamientos registrados');
-        return;
-      }
-
-      // Ordenamos los historiales por fecha
-      historiales.sort(
-        (a, b) =>
-          new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
-          new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
-      );
-
-      // Cargamos el último entrenamiento
-      this.ultimoEntrenamiento = historiales[0].entrenamientos[0];
-
-    } catch (error) {
-      console.error('Error al cargar el último entrenamiento:', error);
+  // Actualiza el último entrenamiento basado en el historial actual
+  actualizarUltimoEntrenamiento(historiales: any[]) {
+    if (historiales.length === 0) {
+      this.ultimoEntrenamiento = null;
+      console.log('No hay entrenamientos registrados');
+      return;
     }
+
+    // Aplanar todos los entrenamientos y ordenar por fecha
+    const todosLosEntrenamientos = historiales.map(historial => historial.entrenamientos).flat();
+    todosLosEntrenamientos.sort((a, b) =>
+      new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
+    );
+
+    // Asignar el último entrenamiento actualizado
+    this.ultimoEntrenamiento = todosLosEntrenamientos[0];
+    console.log("Último entrenamiento actualizado:", this.ultimoEntrenamiento);
   }
 }

@@ -3,6 +3,7 @@
 // Modelo de Historial de Entrenamientos
 export interface HistorialEntrenamiento {
   _id?: string;
+  _rev?:string;
   entidad: 'historialEntrenamiento';
   usuarioId: string;
   entrenamientos: DiaEntrenamiento[];

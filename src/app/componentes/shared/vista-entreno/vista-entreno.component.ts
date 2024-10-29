@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { DiaRutina, EjercicioPlan, Rutina } from 'src/app/models/rutina.model';
+import { DiaRutina, EjercicioPlan } from 'src/app/models/rutina.model';
 import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert, IonContent } from '@ionic/angular/standalone';
 import {
   IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
@@ -14,7 +14,8 @@ import { AuthService } from 'src/app/auth/auth.service'; // Importamos AuthServi
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
-import { ChangeDetectorRef } from '@angular/core';
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 @Component({
@@ -252,11 +253,7 @@ export class VistaEntrenoComponent implements OnInit {
 
   guardarSesion(mensajeEstado?: string) {
     const ejerciciosCompletados: EjercicioRealizado[] = this.ejercicios.map(ej => {
-      const esEjercicioNoIniciado = ej.seriesCompletadas === 0;
-      const esEjercicioIncompleto = ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal;
-      const esEjercicioCompleto = ej.seriesCompletadas === ej.seriesTotal;
-
-
+      // Aquí estructura la lógica de los ejercicios completados
       const seriesCompletadas: SerieReal[] = ej.seriesReal
         .filter(serie => serie.completado)
         .map((serie, index) => ({
@@ -268,22 +265,16 @@ export class VistaEntrenoComponent implements OnInit {
           dolor: serie.dolor,
           notas: serie.notas || null,
         }));
-
       return {
         ejercicioPlanId: ej.ejercicioPlanId,
         nombreEjercicioRealizado: ej.nombreEjercicio,
-        series: esEjercicioNoIniciado ? [] : seriesCompletadas,
-        notas: esEjercicioNoIniciado && mensajeEstado === 'NO SE HIZO'
-          ? 'NO SE HIZO'
-          : esEjercicioIncompleto
-            ? 'INCOMPLETO'
-            : esEjercicioCompleto
-              ? ej.notas || null
-              : null,
+        series: seriesCompletadas,
+        notas: ej.notas || null,
       };
     });
 
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
+      _id: uuidv4(), // Generar un nuevo _id único
       fechaEntrenamiento: new Date().toISOString(),
       diaRutinaId: this.diaRutinaId!,
       descripcion: this.descripcion,

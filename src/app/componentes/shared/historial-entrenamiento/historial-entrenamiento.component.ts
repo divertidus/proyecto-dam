@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { firstValueFrom, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-historial-entrenamiento',
@@ -34,44 +35,58 @@ export class HistorialEntrenamientoComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.authService.usuarioLogeado$.subscribe(async (usuario) => {
-      if (usuario) {
-        this.usuarioLogeado = usuario;
-        await this.cargarNombresEjercicios(); // Cargar nombres de ejercicios
-        await this.cargarEntrenamientos();
-      }
-    });
-
-    // Suscribirse al observable de cambios en el historial
-    this.historialService.historial$.subscribe(async () => {
-      await this.cargarEntrenamientos(); // Recargar los entrenamientos cuando el historial cambie
+    // Cargar datos al recibir un usuario logeado y escuchar cambios en el historial
+    this.authService.usuarioLogeado$.pipe(
+      switchMap(async (usuario) => {
+        if (usuario) {
+          this.usuarioLogeado = usuario;
+          await this.cargarNombresEjercicios(); // Cargar nombres de ejercicios una vez
+          await this.historialService.cargarHistoriales(usuario._id); // Cargar historiales para el usuario logeado
+        }
+        return this.historialService.historial$;
+      })
+    ).subscribe(historiales => {
+      console.log('Cambio detectado en historial$:', historiales);
+      this.cargarEntrenamientos(); // Actualizar entrenamientos cuando historial$ cambie
     });
   }
 
+  // Cargar todos los entrenamientos
   // Cargar todos los entrenamientos
   async cargarEntrenamientos() {
     try {
       if (!this.usuarioLogeado) return;
 
-      this.entrenamientos = []; // Limpiar entrenamientos antes de recargar
-
+      // Obtener los historiales del usuario
       const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
       if (historiales.length === 0) {
         console.log('No hay entrenamientos registrados');
         return;
       }
 
-      this.entrenamientos = historiales.flatMap(h => h.entrenamientos);
-      console.log("Estructura de entrenamientos cargados:", this.entrenamientos);
+      // Aplanar los entrenamientos de todos los historiales y asignarlos a `this.entrenamientos`
+      this.entrenamientos = historiales.reduce((acc, historial) => {
+        return acc.concat(historial.entrenamientos);
+      }, [] as DiaEntrenamiento[]);
+
+      // Verificar que todos los entrenamientos tengan un _id
+      this.entrenamientos.forEach(entrenamiento => {
+        if (!entrenamiento._id) {
+          console.warn("El día de entrenamiento no tiene un ID:", entrenamiento);
+        }
+      });
+
+      // Ordenar los entrenamientos por fecha
       this.entrenamientos.sort(
         (a, b) =>
           new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
       );
+
+      console.log("Estructura de entrenamientos cargados:", this.entrenamientos);
     } catch (error) {
       console.error('Error al cargar los entrenamientos:', error);
     }
-}
-
+  }
 
   // Cargar los nombres de los ejercicios en el mapa `nombresEjercicios`
   async cargarNombresEjercicios() {
@@ -100,4 +115,68 @@ export class HistorialEntrenamientoComponent implements OnInit {
     return this.entrenamientosExpandido.has(index);
   }
 
+  // Método para manejar la eliminación de un día
+
+  async handleEliminarDia(diaEntrenamientoId: string) {
+    console.log('Entrando en el handle de eliminarDia');
+    if (!diaEntrenamientoId) {
+      console.error("ID de día de entrenamiento no definido.");
+      return;
+    }
+    console.log('En handleEliminarDia antes del const historialId = await this.obtenerHistorialIdPorDia(diaEntrenamientoId);');
+
+    // Intentar cargar historiales si están vacíos
+    let historialId = await this.obtenerHistorialIdPorDia(diaEntrenamientoId);
+
+    if (!historialId) {
+      console.warn('El arreglo de historiales está vacío o el historial específico no fue encontrado, recargando historiales...');
+      await this.cargarEntrenamientos(); // Asegura que los datos estén cargados
+      historialId = await this.obtenerHistorialIdPorDia(diaEntrenamientoId);
+    }
+
+    if (!historialId) {
+      console.error("No se encontró un historial para el día de entrenamiento especificado.");
+      return;
+    }
+
+    console.log('En handleEliminarDia antes del try');
+    try {
+      console.log('En handleEliminarDia dentro del try');
+      await this.historialService.eliminarDiaEntrenamiento(historialId, diaEntrenamientoId);
+      console.log(`Día con id ${diaEntrenamientoId} eliminado de la base de datos y del historial.`);
+
+      // Recargar los entrenamientos desde la base de datos para mantener la sincronización
+      await this.cargarEntrenamientos();
+    } catch (error) {
+      console.error('Error al eliminar el día de entrenamiento de la base de datos:', error);
+    }
+  }
+
+  // Método auxiliar para obtener el ID del historial asociado a un día
+  // Método auxiliar para obtener el ID del historial asociado a un día
+  async obtenerHistorialIdPorDia(diaId: string): Promise<string | null> {
+    console.log('Iniciando obtenerHistorialIdPorDia con diaId:', diaId);
+
+    try {
+      const historiales = await firstValueFrom(this.historialService.historial$); // Obtiene los historiales
+      console.log('Historiales obtenidos:', historiales);
+
+      const historial = historiales.find(h => {
+        const encontrado = h.entrenamientos.some(dia => dia._id === diaId);
+        console.log(`Verificando historial con ID ${h._id}, resultado de búsqueda para diaId ${diaId}:`, encontrado);
+        return encontrado;
+      });
+
+      if (historial) {
+        console.log('Historial encontrado con ID:', historial._id);
+        return historial._id!;
+      } else {
+        console.warn('No se encontró un historial que contenga el día con ID:', diaId);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al obtener el historial:', error);
+      return null;
+    }
+  }
 }

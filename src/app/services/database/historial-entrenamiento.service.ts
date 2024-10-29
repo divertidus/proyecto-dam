@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Para manejar la lista de historiales de manera reactiva
-import { EjercicioRealizado, HistorialEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
+import { DiaEntrenamiento, EjercicioRealizado, HistorialEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
 
 @Injectable({
   providedIn: 'root' // Servicio disponible en toda la aplicación
@@ -18,38 +18,58 @@ export class HistorialService {
   constructor(private servicioBaseDatos: DatabaseService) {
     // Obtenemos la base de datos a través del servicio general de base de datos
     this.baseDatos = this.servicioBaseDatos.obtenerBaseDatos();
-    
+
   }
 
   // Método para agregar un nuevo historial de entrenamiento
-  async agregarHistorial(historial: HistorialEntrenamiento) {
+  async agregarHistorial(historial: HistorialEntrenamiento): Promise<void> {
     try {
-      // Mostrar el objeto completo en consola antes de guardarlo
-      console.log('Historial que se guarda:', historial);
-      const respuesta = await this.baseDatos.post(historial);
-      console.log('Historial añadido con éxito', respuesta);
-  
-      const historiales = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
-      this.historialSubject.next(historiales);
-  
-      return respuesta;
+      if (historial._id) {
+        try {
+          const existingDoc = await this.baseDatos.get(historial._id);
+          await this.baseDatos.put({
+            ...historial,
+            _rev: existingDoc._rev
+          });
+        } catch (err: any) {
+          if (err.name === 'not_found') {
+            await this.baseDatos.put(historial);
+          } else {
+            throw err;
+          }
+        }
+      } else {
+        const existingHistoriales = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
+
+        if (existingHistoriales.length > 0) {
+          const existingHistorial = existingHistoriales[0];
+          await this.baseDatos.put({
+            ...historial,
+            _id: existingHistorial._id,
+            _rev: existingHistorial._rev
+          });
+        } else {
+          historial._id = `historial_${historial.usuarioId}_${Date.now()}`;
+          await this.baseDatos.put(historial);
+        }
+      }
+      await this.cargarHistoriales(historial.usuarioId); // Recarga historiales en historial$
     } catch (error) {
-      console.error('Error al agregar historial:', error);
+      console.error('Error al agregar/actualizar historial:', error);
       throw error;
     }
   }
 
   // Método para obtener todos los historiales de un usuario
-  async obtenerHistorialesPorUsuario(usuarioId: string) {
+  async obtenerHistorialesPorUsuario(usuarioId: string): Promise<HistorialEntrenamiento[]> {
     try {
-      const resultado = await this.baseDatos.find({
+      const result = await this.baseDatos.find({
         selector: {
           entidad: 'historialEntrenamiento',
           usuarioId: usuarioId
         }
       });
-      const historiales = resultado.docs;
-      return historiales;
+      return result.docs as HistorialEntrenamiento[];
     } catch (error) {
       console.error('Error al obtener historiales:', error);
       throw error;
@@ -72,6 +92,7 @@ export class HistorialService {
     try {
       const respuesta = await this.baseDatos.put(historial);
       console.log('Historial actualizado con éxito', respuesta);
+      await this.cargarHistoriales(historial.usuarioId); // Recarga historiales en historial$
       return respuesta;
     } catch (error) {
       console.error('Error al actualizar historial:', error);
@@ -84,6 +105,7 @@ export class HistorialService {
     try {
       const respuesta = await this.baseDatos.remove(historial);
       console.log('Historial eliminado con éxito', respuesta);
+      await this.cargarHistoriales(historial.usuarioId); // Recarga historiales en historial$
       return respuesta;
     } catch (error) {
       console.error('Error al eliminar historial:', error);
@@ -95,32 +117,29 @@ export class HistorialService {
   async cargarHistoriales(usuarioId: string) {
     try {
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
-      this.historialSubject.next(historiales); // Actualizamos el BehaviorSubject con los historiales obtenidos
-      console.log('Historiales cargados en BehaviorSubject');
+      this.historialSubject.next(historiales); // Actualizamos el BehaviorSubject con los historiales obtenidos  
+      console.log('Historiales cargados en BehaviorSubject:', historiales);
     } catch (error) {
       console.error('Error al cargar historiales:', error);
       throw error;
     }
   }
 
-  async obtenerUltimoEntrenamientoPorUsuario(usuarioId: string): Promise<HistorialEntrenamiento | null> {
+  async obtenerUltimoEntrenamientoPorUsuario(usuarioId: string): Promise<DiaEntrenamiento | null> {
     try {
-      // Obtenemos el historial del usuario
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
       if (historiales.length === 0) {
         console.log('No hay entrenamientos registrados');
         return null;
       }
 
-      // Ordenamos los historiales por fecha descendente
       historiales.sort(
         (a, b) =>
-          new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
-          new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
+          new Date(b.entrenamientos[b.entrenamientos.length - 1].fechaEntrenamiento).getTime() -
+          new Date(a.entrenamientos[a.entrenamientos.length - 1].fechaEntrenamiento).getTime()
       );
 
-      // Devolvemos el último entrenamiento
-      return historiales[0].entrenamientos[0];
+      return historiales[0].entrenamientos[historiales[0].entrenamientos.length - 1] || null;
     } catch (error) {
       console.error('Error al obtener el último entrenamiento:', error);
       return null;
@@ -142,12 +161,12 @@ export class HistorialService {
       // Recorremos los entrenamientos de más reciente a más antiguo
       for (const historial of historiales) {
         for (const diaEntrenamiento of historial.entrenamientos) {
-          for (const ejercicioRealizado of diaEntrenamiento.ejercicios) {
+          for (const ejercicioRealizado of diaEntrenamiento.ejerciciosRealizados) {
             // Aquí se compara el ejercicio actual del entrenamiento con el ejercicioId que estamos buscando
-       //     console.log(`Buscando coincidencia de ejercicioId: ${ejercicioRealizado.ejercicioId} === ${ejercicioId}`);
+            //     console.log(`Buscando coincidencia de ejercicioId: ${ejercicioRealizado.ejercicioId} === ${ejercicioId}`);
 
             // Si el ID del ejercicio coincide con el que estamos buscando
-            if (ejercicioRealizado.ejercicioId === ejercicioId) {
+            if (ejercicioRealizado.ejercicioPlanId === ejercicioId) {
               // Buscar la serie con peso registrado
               const serieConPeso = ejercicioRealizado.series.find(serie => serie.peso !== undefined && serie.peso !== null);
 
@@ -226,6 +245,40 @@ export class HistorialService {
     }
   }
 
+
+  async eliminarDiaEntrenamiento(historialId: string, diaId: string): Promise<void> {
+    console.log('HISTORIAL-SERVICE->Intentando eliminar, fuera del try: ', historialId, diaId);
+    try {
+      const historial = await this.baseDatos.get(historialId);
+      if (!historial) {
+        console.error('Historial no encontrado para el ID proporcionado:', historialId);
+        return;
+      }
+  
+      // Filtrar los entrenamientos para eliminar el día específico
+      const entrenamientosActualizados = historial.entrenamientos.filter((dia: DiaEntrenamiento) => dia._id !== diaId);
+  
+      if (entrenamientosActualizados.length === historial.entrenamientos.length) {
+        console.log(`No se encontró el día con ID ${diaId} para eliminar.`);
+        return;
+      }
+  
+      // Actualizar el historial con los entrenamientos restantes
+      historial.entrenamientos = entrenamientosActualizados;
+      await this.baseDatos.put({
+        ...historial,
+        _rev: historial._rev
+      });
+  
+      console.log(`Día con ID ${diaId} eliminado correctamente.`);
+  
+      // Forzar recarga de historial$ con los datos actualizados
+      await this.cargarHistoriales(historial.usuarioId);
+    } catch (error) {
+      console.error(`Error al eliminar el día con ID ${diaId}:`, error);
+      throw error;
+    }
+  }
 
 }
 

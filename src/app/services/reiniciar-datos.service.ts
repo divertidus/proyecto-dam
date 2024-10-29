@@ -6,9 +6,11 @@ import { RutinaService } from './database/rutina.service';
 import { DatabaseService } from './database/database.service';
 import { HistorialService } from './database/historial-entrenamiento.service';
 import { Ejercicio } from '../models/ejercicio.model';
-import { HistorialEntrenamiento } from '../models/historial-entrenamiento';
+import { DiaEntrenamiento, HistorialEntrenamiento } from '../models/historial-entrenamiento';
 import { DiaRutina, Rutina } from '../models/rutina.model';
 import { Usuario } from '../models/usuario.model';
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable({
   providedIn: 'root'
@@ -454,7 +456,7 @@ export class ReiniciarDatosService {
       ];
 
       // Generamos los días de entrenamiento con fechas asignadas
-      const historiales = [
+      const diasEntrenamientos = [
         { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1', descripcion: 'Espalda y bíceps', ejercicioRealizado: dia1Entrenamiento1 },
         { fechaEntrenamiento: '2024-10-02', diaRutinaId: 'Día 2', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento1 },
         { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento1 },
@@ -466,27 +468,48 @@ export class ReiniciarDatosService {
         { fechaEntrenamiento: '2024-10-09', diaRutinaId: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
       ];
 
-      // Agregamos los historiales a la base de datos
-      for (const historial of historiales) {
-        const nuevoHistorial: HistorialEntrenamiento = {
+      // Obtener todos los historiales del usuario logeado
+      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(usuarioLogeado._id!);
+
+      let historial: HistorialEntrenamiento;
+
+      if (historialesExistentes.length > 0) {
+        historial = historialesExistentes[0];
+      } else {
+        historial = {
           entidad: 'historialEntrenamiento',
           usuarioId: usuarioLogeado._id!,
-          entrenamientos: [
-            {
-              fechaEntrenamiento: historial.fechaEntrenamiento,
-              diaRutinaId: historial.diaRutinaId,
-              descripcion: historial.descripcion,
-              ejerciciosRealizados: historial.ejercicioRealizado,
-
-            }
-          ]
+          entrenamientos: []
         };
-        await this.historialService.agregarHistorial(nuevoHistorial);
       }
 
-      console.log('Historial de entrenamientos añadido correctamente.');
-    } catch (error) {
-      console.error('Error al añadir el historial de entrenamientos:', error);
-    }
+      // Agregar o actualizar los días de entrenamiento en el historial
+      // Agregar o actualizar los días de entrenamiento
+      for (const diaEntrenamiento of diasEntrenamientos) {
+        const diaExistente = historial.entrenamientos.find(dia =>
+          dia.fechaEntrenamiento === diaEntrenamiento.fechaEntrenamiento &&
+          dia.diaRutinaId === diaEntrenamiento.diaRutinaId
+        );
+
+        if (!diaExistente) {
+          const nuevoDiaEntrenamiento: DiaEntrenamiento = {
+            _id: uuidv4(),
+            fechaEntrenamiento: diaEntrenamiento.fechaEntrenamiento,
+            diaRutinaId: diaEntrenamiento.diaRutinaId,
+            descripcion: diaEntrenamiento.descripcion,
+            ejerciciosRealizados: diaEntrenamiento.ejercicioRealizado
+          };
+
+          historial.entrenamientos.push(nuevoDiaEntrenamiento);
+        }
+      }
+
+     // Actualizar el historial existente
+     await this.historialService.agregarHistorial(historial);
+     console.log('Historial de entrenamientos actualizado correctamente.');
+   } catch (error) {
+     console.error('Error al actualizar el historial de entrenamientos:', error);
+     throw error;
+   }
   }
 }
