@@ -83,9 +83,9 @@ export class ReiniciarDatosService {
       const usuariosExistentes = await this.usuarioService.obtenerUsuarios();
       if (usuariosExistentes.length === 0) {
         const nuevoUsuario: Usuario = {
+          entidad: 'usuario',
           nombre: 'AutoUsuario',
           email: 'auto@pruebas.com',
-          entidad: 'usuario',
           timestamp: new Date().toISOString(),
         };
         await this.usuarioService.agregarUsuario(nuevoUsuario);
@@ -101,16 +101,16 @@ export class ReiniciarDatosService {
   // Inicializar ejercicios si no existen
   async inicializarEjercicios(): Promise<{ [key: string]: string }> {
     const ejercicios: Ejercicio[] = [
-      { nombre: 'Jalón de Espalda', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { nombre: 'Remo Agarre Cerrado (Cuernos)', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { nombre: 'Jalón Cerrado', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { nombre: 'Martillo (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
-      { nombre: 'Press Banco Tumbado (Mancuernas)', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
-      { nombre: 'Máquina Aperturas', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
-      { nombre: 'Fondos en Paralelas', entidad: 'ejercicio', tipoPeso: 'peso corporal', musculoPrincipal: 'Tríceps' },
-      { nombre: 'Sentadillas Multipower', entidad: 'ejercicio', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
-      { nombre: 'Elevaciones Laterales', entidad: 'ejercicio', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
-      { nombre: 'Prensa de Piernas', entidad: 'ejercicio', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
+      { entidad: 'ejercicio',nombre: 'Jalón de Espalda', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { entidad: 'ejercicio',nombre: 'Remo Agarre Cerrado (Cuernos)', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { entidad: 'ejercicio',nombre: 'Jalón Cerrado', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
+      { entidad: 'ejercicio',nombre: 'Martillo (Mancuernas)', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
+      { entidad: 'ejercicio',nombre: 'Press Banco Tumbado (Mancuernas)', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
+      { entidad: 'ejercicio',nombre: 'Máquina Aperturas', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
+      { entidad: 'ejercicio',nombre: 'Fondos en Paralelas', tipoPeso: 'peso corporal', musculoPrincipal: 'Tríceps' },
+      { entidad: 'ejercicio',nombre: 'Sentadillas Multipower', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
+      { entidad: 'ejercicio',nombre: 'Elevaciones Laterales', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
+      { entidad: 'ejercicio',nombre: 'Prensa de Piernas', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
     ];
 
     const ejerciciosMap: { [key: string]: string } = {};
@@ -149,8 +149,8 @@ export class ReiniciarDatosService {
 
       const diasRutina: DiaRutina[] = [
         {
-          diaNombre: 'Día 1: Espalda y Bíceps',
-          descripcion: 'Entrenamiento de espalda y bíceps',
+          diaNombre: 'Día 1',
+          descripcion: 'Espalda y bíceps',
           ejercicios: [
             { ejercicioId: ejerciciosMap['Jalón de Espalda'],nombreEjercicio:'Jalón de Espalda', series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
             { ejercicioId: ejerciciosMap['Remo Agarre Cerrado (Cuernos)'],nombreEjercicio:'Remo Agarre Cerrado (Cuernos)', series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
@@ -158,8 +158,8 @@ export class ReiniciarDatosService {
           ]
         },
         {
-          diaNombre: 'Día 2: Pecho y Tríceps',
-          descripcion: 'Entrenamiento de pecho y tríceps',
+          diaNombre: 'Día 2',
+          descripcion: 'Pecho y tríceps',
           ejercicios: [
             { ejercicioId: ejerciciosMap['Press Banco Tumbado (Mancuernas)'],nombreEjercicio:'Press Banco Tumbado (Mancuernas)', series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
             { ejercicioId: ejerciciosMap['Máquina Aperturas'],nombreEjercicio:'Máquina Aperturas', series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
@@ -167,8 +167,8 @@ export class ReiniciarDatosService {
           ]
         },
         {
-          diaNombre: 'Día 3: Pierna y Hombro',
-          descripcion: 'Entrenamiento de pierna y hombro',
+          diaNombre: 'Día 3',
+          descripcion: 'Pierna y hombro',
           ejercicios: [
             { ejercicioId: ejerciciosMap['Sentadillas Multipower'],nombreEjercicio:'Sentadillas Multipower', series: Array(4).fill({ numeroSerie: 1, repeticiones: 10 }) },
             { ejercicioId: ejerciciosMap['Elevaciones Laterales'],nombreEjercicio:'Elevaciones Laterales', series: Array(4).fill({ numeroSerie: 1, repeticiones: 12 }) },
@@ -180,8 +180,8 @@ export class ReiniciarDatosService {
       const rutinasExistentes = await this.rutinaService.obtenerRutinasPorUsuario(usuarioLogeado._id!);
       if (rutinasExistentes.length === 0) {
         const nuevaRutina: Rutina = {
-          nombre: 'Rutina 1',
           entidad: 'rutina',
+          nombre: 'Rutina 1',
           usuarioId: usuarioLogeado._id!,
           dias: diasRutina,
           timestamp: new Date().toISOString(),

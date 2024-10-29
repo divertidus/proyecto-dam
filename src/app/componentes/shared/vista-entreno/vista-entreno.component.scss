@@ -11,106 +11,62 @@
 }
 
 .exercise-card-custom {
-  width: 100%; /* Ocupa todo el ancho del contenedor */
-  margin: 8px 0; /* Añade margen vertical entre las tarjetas */
+  width: 100%;
+  margin: 8px 0;
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem; /* Añade algo de padding interno para dar espacio */
-  border-radius: 8px; /* Bordes redondeados para mejorar la separación visual */
+  border-radius: 8px;
 }
 
+/* Header compacto y diferenciado */
 .exercise-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem; /* Reduce el padding */
+  background-color: #f0f0f0; /* Color tenue para distinguirlo del contenido */
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
 }
 
 .exercise-title {
   color: #333;
   font-size: 1rem;
   font-weight: 600;
-  overflow: hidden; /* Permite que el título ocupe varias líneas si es necesario */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   flex: 1;
 }
 
 .progress-container {
   display: flex;
   align-items: center;
-  gap: 12px; /* Aumenta el espacio entre 0/4 y el icono */
-  white-space: nowrap;
+  gap: 8px;
+  font-size: 0.85rem;
 }
 
-.progress-container {
-  display: flex;
-  align-items: center;
-  gap: 12px; /* Ajusta el espacio aquí si es necesario */
-  white-space: nowrap;
-}
-
-.note-icon {
-  font-size: 1.2rem;
-  color: #007bff;
-  cursor: pointer;
-  margin-left: 8px; /* Espacio entre el icono de notas y el peso anterior */
-}
-
-.weight-control {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-right: auto;
-
-  .control-button {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background: #f5f5f5;
-    border-radius: 4px;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #666;
-    padding: 0;
-    
-    &:hover:not(:disabled) {
-      background: #e0e0e0;
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-}
-
-.ok-button {
-  --color: #2196F3;
-  margin-left: 8px; /* Espacio entre el OK/EDIT y el icono de notas */
-}
-
-.edit-icon {
+.edit-icon, .note-icon {
   font-size: 1.2rem;
   color: #007bff;
   cursor: pointer;
 }
 
+/* Contenido de cada serie */
 .exercise-container {
-  margin: 8px 0;
-  
-  &:last-child {
-    margin-bottom: 4px;
-  }
+  padding: 0.5rem;
+  background-color: #f9f9f9; /* Color más claro para las series */
+  border-radius: 0 0 8px 8px;
 }
 
 .exercise-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 8px;
+  padding: 0.2rem 0.5rem;
   margin-bottom: 4px;
+  background-color: #ffffff; /* Fondo blanco para cada serie */
+  border-radius: 4px;
 }
 
 .series-number {
@@ -120,43 +76,41 @@
   text-align: right;
 }
 
-.reps-input {
+/* Inputs de repeticiones y peso */
+.reps-input, .weight-input {
   width: 45px;
   height: 32px;
   text-align: center;
   border: 1px solid #ddd;
   border-radius: 4px;
-  --padding-start: 4px;
-  --padding-end: 4px;
   font-size: 0.9rem;
   background: white;
-
-  &.ion-disabled {
-    opacity: 0.6;
-    background: #f5f5f5;
-  }
 }
 
+.weight-label {
+  color: #ff4444;
+  font-size: 0.8rem;
+  min-width: 45px;
+}
+
+/* Botones de control de peso */
 .weight-control {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-right: auto;
 
   .control-button {
     width: 28px;
     height: 28px;
-    border: none;
-    background: #f5f5f5;
+    background-color: #f0f0f0;
     border-radius: 4px;
     font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     color: #666;
-    padding: 0;
-    
+    cursor: pointer;
+
     &:hover:not(:disabled) {
       background: #e0e0e0;
     }
@@ -168,29 +122,7 @@
   }
 }
 
-.weight-input {
-  width: 45px;
-  height: 32px;
-  text-align: center;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  --padding-start: 4px;
-  --padding-end: 4px;
-  font-size: 0.9rem;
-  background: white;
-
-  &.ion-disabled {
-    opacity: 0.6;
-    background: #f5f5f5;
-  }
-}
-
-.weight-label {
-  color: #ff4444;
-  font-size: 0.8rem;
-  min-width: 45px;
-}
-
+/* Botones de acción */
 .action-buttons {
   display: flex;
   gap: 4px;
@@ -205,21 +137,18 @@
       --color: #2196F3;
     }
 
-    &.edit-button {
-      --color: #FFA000;
-    }
-
     &:disabled {
       opacity: 0.5;
     }
   }
 }
 
+/* Checkbox de opciones */
 .checkbox-row {
   display: flex;
-  gap: 16px;
-  padding-left: 32px;
-  margin-top: 2px;
+  justify-content: center;
+  gap: 20px;
+  padding-left: 8px;
 }
 
 .checkbox-label {
@@ -228,46 +157,27 @@
   gap: 4px;
   font-size: 0.85rem;
   color: #666;
-  cursor: pointer;
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 }
 
-ion-checkbox {
-  --size: 18px;
-  --border-radius: 4px;
-  --border-color: #ddd;
-  --border-color-checked: #666;
-  --background-checked: #666;
-  margin: 0;
-
-  &.ion-disabled {
-    opacity: 0.5;
-  }
+.centered-checkboxes {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
 }
 
-// Eliminar flechas de inputs numéricos
+/* Eliminar flechas de inputs numéricos */
 ion-input {
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 20;
   }
-  
 }
 
-.centered-checkboxes {
-  display: flex;
-  justify-content: center;
-  gap: 20px; /* Espacio entre cada checkbox */
-  align-items: center;  
-}
-
+/* Ajustes generales */
 .content-adjusted {
-  --padding-bottom: 70px; /* Ajuste para que el contenido se ajuste al footer */
+  --padding-bottom: 70px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -278,5 +188,5 @@ ion-input {
   bottom: 0;
   width: 100%;
   z-index: 10;
-  background-color: #fff; /* Opcional para dar color al fondo del footer */
+  background-color: #fff;
 }

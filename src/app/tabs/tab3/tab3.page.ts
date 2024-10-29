@@ -147,7 +147,7 @@ export class Tab3Page implements OnInit {
       inputs: rutina.dias.map((dia, index) => ({
         name: `dia_${index}`,
         type: 'radio',
-        label: dia.diaNombre,
+        label: dia.diaNombre+' - '+dia.descripcion,
         value: dia,
         checked: dia === siguienteDia // Marcar el día sugerido
       })),

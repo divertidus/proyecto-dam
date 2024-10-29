@@ -17,3 +17,28 @@
     margin-left: 10px;
     flex-shrink: 0; /* Evita que el botón se encoja si el espacio es limitado */
   }
+
+
+  
+  .ejercicios-seleccionados-container ion-card-content {
+    max-height: 40vh; /* Limita la altura del contenido para que no ocupe toda la pantalla */
+    overflow-y: auto; /* Habilita el scroll solo si el contenido excede el espacio */
+  }
+  
+  .header-compact {
+    padding: 8px 12px; /* Reduce el padding del header */
+  }
+  
+  .header-compact ion-card-title {
+    font-size: 1rem; /* Ajusta el tamaño de la fuente para que sea más compacto */
+    margin: 0; /* Elimina cualquier margen adicional */
+  }
+  
+  .header-compact ion-icon {
+    font-size: 1.2rem; /* Reduce ligeramente el tamaño del icono */
+  }
+  
+  .header-compact ion-row {
+    --ion-grid-padding: 0; /* Elimina el padding de la grid */
+    align-items: center; /* Centra verticalmente los elementos */
+  }

@@ -324,16 +324,45 @@ export class VistaEntrenoComponent implements OnInit {
   }
 
   toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
-    const serie = this.ejercicios[ejercicioIndex].seriesReal[serieIndex];
+    const ejercicio = this.ejercicios[ejercicioIndex];
+    const serie = ejercicio.seriesReal[serieIndex];
+
     if (serie.enEdicion) {
-      // Guardar cambios y bloquear edición
+      // Al hacer clic en "OK", verificar que el peso no sea 0
+      if (serie.peso === 0) {
+        console.warn("El peso no puede ser 0. Establezca un valor de peso.");
+        return;
+      }
+
+      // Confirmar los cambios y bloquear la edición
       serie.enEdicion = false;
-      this.marcarSerieCompletada(ejercicioIndex, serieIndex);
+      serie.completado = true;
+
+      // Establecer el peso predeterminado para las siguientes series solo si es la primera vez y no existe peso anterior
+      if (!serie.pesoAnterior) {
+        ejercicio.seriesReal.forEach((s, i) => {
+          if (i > serieIndex && s.peso === 0) {
+            s.peso = serie.peso; // Actualizamos el peso como predeterminado
+          }
+        });
+      }
+
+      // Incrementar el contador de series completadas
+      if (serieIndex === ejercicio.seriesCompletadas) {
+        ejercicio.seriesCompletadas++;
+      }
+
+      // Marcar el ejercicio como completado si todas las series lo están
+      if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
+        ejercicio.completado = true;
+        this.actualizarEjerciciosCompletados();
+      }
     } else {
-      // Permitir edición
+      // Permitir la edición si se hace clic en "EDIT"
       serie.enEdicion = true;
     }
   }
+
 
   decrementarPeso(ejercicio: any, serieIndex: number) {
     const serie = ejercicio.seriesReal[serieIndex];

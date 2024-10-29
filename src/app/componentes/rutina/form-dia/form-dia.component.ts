@@ -142,6 +142,15 @@ export class FormDiaComponent implements OnInit {
   }
 
 
+  mostrarEjerciciosSeleccionados: boolean = false;
+
+  toggleExpandirEjercicios() {
+    if (this.ejerciciosEnRutina.length > 0) {
+      this.mostrarEjerciciosSeleccionados = !this.mostrarEjerciciosSeleccionados;
+    }
+  }
+
+
   // Agregar un ejercicio con los detalles ingresados
   agregarEjercicio(ejercicio: Ejercicio, series: number, repeticiones: number, notas: string) {
     const ejercicioPlan: EjercicioPlan = {

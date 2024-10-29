@@ -26,7 +26,7 @@
                     <ion-icon name="create-outline" class="note-icon" (click)="abrirNotasSerie(i, j)"></ion-icon>
                   </div>
                   <div class="action-buttons">
-                    <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button">
+                    <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button" [disabled]="serie.enEdicion && serie.peso === 0">
                       {{ serie.enEdicion ? 'OK' : 'EDIT' }}
                     </ion-button>
                   </div>

@@ -34,10 +34,10 @@ export class EjercicioService {
       // Agregamos el ejercicio a la base de datos usando las propiedades del objeto
       const respuesta = await this.baseDatos.post({
 
+        entidad: 'ejercicio',
         nombre: nuevoEjercicio.nombre, // Nombre del ejercicio
         descripcion: nuevoEjercicio.descripcion,// Descripción opcional del ejercicio
         equipamiento: nuevoEjercicio.tipoPeso, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
-        entidad: 'ejercicio',
         imagen: nuevoEjercicio.imagen || '', // Imagen opcional del ejercicio, vacía si no se proporciona
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
