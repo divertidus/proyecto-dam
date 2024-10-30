@@ -256,55 +256,66 @@ export class VistaEntrenoComponent implements OnInit {
     }
   }
 
-  guardarSesion(mensajeEstado?: string) {
-    const ejerciciosCompletados: EjercicioRealizado[] = this.ejercicios.map(ej => {
-      // Aquí estructura la lógica de los ejercicios completados
-      const seriesCompletadas: SerieReal[] = ej.seriesReal
-        .filter(serie => serie.completado)
-        .map((serie, index) => ({
-          numeroSerie: index + 1,
-          repeticiones: serie.repeticiones,
-          peso: serie.peso,
-          alFallo: serie.alFallo,
-          conAyuda: serie.conAyuda,
-          dolor: serie.dolor,
-          notas: serie.notas || null,
-        }));
-      return {
-        ejercicioPlanId: ej.ejercicioPlanId,
-        nombreEjercicioRealizado: ej.nombreEjercicio,
-        series: seriesCompletadas,
-        notas: ej.notas || null,
-      };
-    });
-
+  async guardarSesion(mensajeEstado?: string) {
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
-      _id: uuidv4(),
-      fechaEntrenamiento: new Date().toISOString(),
-      nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento, // Aquí asignamos el nombre de la rutina
-      diaRutinaId: this.diaRutinaId!,
-      descripcion: this.descripcion,
-      ejerciciosRealizados: ejerciciosCompletados,
-      notas: '',
+        _id: uuidv4(),
+        fechaEntrenamiento: new Date().toISOString(),
+        nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento, 
+        diaRutinaId: this.diaRutinaId!,
+        descripcion: this.descripcion,
+        ejerciciosRealizados: this.ejercicios.map(ej => {
+            return {
+                ejercicioPlanId: ej.ejercicioPlanId,
+                nombreEjercicioRealizado: ej.nombreEjercicio,
+                series: ej.seriesReal
+                    .filter(serie => serie.completado)
+                    .map((serie, index) => ({
+                        numeroSerie: index + 1,
+                        repeticiones: serie.repeticiones,
+                        peso: serie.peso,
+                        alFallo: serie.alFallo,
+                        conAyuda: serie.conAyuda,
+                        dolor: serie.dolor,
+                        notas: serie.notas || null,
+                    })),
+                notas: ej.notas || null,
+            };
+        }),
+        notas: '',
     };
+  
+    try {
+        // Obtener el historial del usuario
+        const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioId!);
 
-    const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
-      entidad: 'historialEntrenamiento',
-      usuarioId: this.usuarioId!,
-      entrenamientos: [nuevoDiaEntrenamiento],
-    };
+        let historialExistente: HistorialEntrenamiento | null = null;
+        if (historialesExistentes && historialesExistentes.length > 0) {
+            historialExistente = historialesExistentes[0]; // Toma el primer historial, si existe
+        }
 
-    this.historialService.agregarHistorial(nuevoHistorialEntrenamiento)
-      .then(() => {
+        if (historialExistente) {
+            // Añadir el nuevo día de entrenamiento al historial existente
+            historialExistente.entrenamientos.push(nuevoDiaEntrenamiento);
+            await this.historialService.actualizarHistorial(historialExistente);  // Actualiza en la base de datos
+        } else {
+            // Crear un nuevo historial de entrenamiento si no existe
+            const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
+                entidad: 'historialEntrenamiento',
+                usuarioId: this.usuarioId!,
+                entrenamientos: [nuevoDiaEntrenamiento],
+            };
+            await this.historialService.agregarHistorial(nuevoHistorialEntrenamiento);  // Crea un nuevo historial en la base de datos
+        }
+
         console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
         this.mostrarAlertaExito();
-        this.router.navigate(['/tabs/tab3']);
-      })
-      .catch(error => {
+        this.router.navigate(['/tabs/tab3']);  // Redireccionar después de guardar
+    } catch (error) {
         console.error('Error al guardar el entrenamiento:', error);
         this.mostrarAlertaError();
-      });
-  }
+    }
+}
+  
 
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({

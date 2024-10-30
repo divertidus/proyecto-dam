@@ -224,18 +224,18 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 80, },
-            { numeroSerie: 2, repeticiones: 10, peso: 82 },
-            { numeroSerie: 3, repeticiones: 8, peso: 84 }
+            { numeroSerie: 1, repeticiones: 10, peso: 60, },
+            { numeroSerie: 2, repeticiones: 10, peso: 65 },
+            { numeroSerie: 3, repeticiones: 8, peso: 70 }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 85 },
-            { numeroSerie: 2, repeticiones: 10, peso: 87 },
-            { numeroSerie: 3, repeticiones: 8, peso: 90 }
+            { numeroSerie: 1, repeticiones: 10, peso: 50 },
+            { numeroSerie: 2, repeticiones: 10, peso: 50 },
+            { numeroSerie: 3, repeticiones: 8, peso: 55 }
           ]
         },
         {
@@ -243,8 +243,8 @@ export class ReiniciarDatosService {
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 8, peso: 20 },
-            { numeroSerie: 2, repeticiones: 8, peso: 22 },
-            { numeroSerie: 3, repeticiones: 6, peso: 24 }
+            { numeroSerie: 2, repeticiones: 8, peso: 20 },
+            { numeroSerie: 3, repeticiones: 6, peso: 25 }
           ]
         }
       ];
@@ -255,7 +255,7 @@ export class ReiniciarDatosService {
           nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 60 },
-            { numeroSerie: 2, repeticiones: 10, peso: 62 },
+            { numeroSerie: 2, repeticiones: 10, peso: 60 },
             { numeroSerie: 3, repeticiones: 8, peso: 65 }
           ]
         },
@@ -264,7 +264,7 @@ export class ReiniciarDatosService {
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
             { numeroSerie: 1, repeticiones: 12, peso: 40 },
-            { numeroSerie: 2, repeticiones: 12, peso: 42 },
+            { numeroSerie: 2, repeticiones: 12, peso: 40 },
             { numeroSerie: 3, repeticiones: 10, peso: 45 }
           ]
         },
@@ -272,8 +272,8 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Fondos en Paralelas'],
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 0 },
-            { numeroSerie: 2, repeticiones: 10, peso: 0 }
+            { numeroSerie: 1, repeticiones: 10, peso: 50 },
+            { numeroSerie: 2, repeticiones: 10, peso: 50 }
           ]
         }
       ];

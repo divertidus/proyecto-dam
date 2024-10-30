@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
+import { DiaEntrenamiento, HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
@@ -23,7 +23,7 @@ export class HistorialEntrenamientoComponent implements OnInit {
   entrenamientos: DiaEntrenamiento[] = []; // Almacena todos los entrenamientos
   usuarioLogeado: Usuario | null = null; // Almacena el usuario logeado
   entrenamientosExpandido: Set<number> = new Set<number>(); // Set para manejar entrenamientos expandidos
-  comparaciones: { [key: number]: any } = {}; // Almacena las comparaciones de los entrenamientos
+  //comparaciones: { [key: number]: any } = {}; // Almacena las comparaciones de los entrenamientos
 
   // Añadimos un mapa para almacenar los nombres de los ejercicios
   nombresEjercicios: { [id: string]: string } = {}
@@ -35,23 +35,35 @@ export class HistorialEntrenamientoComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // Cargar datos al recibir un usuario logeado y escuchar cambios en el historial
-    this.authService.usuarioLogeado$.pipe(
-      switchMap(async (usuario) => {
+    // Cambiamos la lógica para estar seguros de una suscripción sólida y clara
+    this.authService.usuarioLogeado$
+      .pipe(switchMap(usuario => {
         if (usuario) {
           this.usuarioLogeado = usuario;
-          await this.cargarNombresEjercicios(); // Cargar nombres de ejercicios una vez
-          await this.historialService.cargarHistoriales(usuario._id); // Cargar historiales para el usuario logeado
+          return this.historialService.historial$;
         }
-        return this.historialService.historial$;
-      })
-    ).subscribe(historiales => {
-      console.log('Cambio detectado en historial$:', historiales);
-      this.cargarEntrenamientos(); // Actualizar entrenamientos cuando historial$ cambie
-    });
+        return [];
+      }))
+      .subscribe(historiales => {
+        console.log('Historial actualizado en historial$:', historiales);
+        this.actualizarEntrenamientos(historiales);
+      });
+  }
+  // Método para cargar y ordenar entrenamientos
+  actualizarEntrenamientos(historiales: HistorialEntrenamiento[]) {
+    this.entrenamientos = historiales
+      .map(historial => historial.entrenamientos)
+      .flat()
+      .sort(
+        (a, b) =>
+          new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
+      );
+    console.log("Estructura de entrenamientos cargados:", this.entrenamientos);
   }
 
-  // Cargar todos los entrenamientos
+
+
+
   // Cargar todos los entrenamientos
   async cargarEntrenamientos() {
     try {

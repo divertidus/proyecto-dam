@@ -37,7 +37,7 @@ export class SerieEditorComponent {
     if (!this.serieReal.peso) {
       this.serieReal.peso = 0; // Valor inicial si es undefined o null
     }
-    this.serieReal.peso += 1.25;
+    this.serieReal.peso += 2.50;
   }
 
   decrementarPeso() {
