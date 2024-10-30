@@ -81,49 +81,11 @@ export class VistaEntrenoComponent implements OnInit {
 
   async cargarDiaRutinaPorNombre(rutinaId: string, diaNombre: string) {
     try {
-      // Cargamos la rutina completa para obtener su nombre
-      const rutina = await this.rutinaService.obtenerRutinaPorId(rutinaId);
-      const diaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
+      const { rutina, diaRutina } = await this.cargarRutina(rutinaId, diaNombre);
 
       if (diaRutina) {
-        this.nombreRutinaEntrenamiento = rutina.nombre; // Guardamos el nombre de la rutina
-
-        // Asigna ejercicios como antes
-        this.ejercicios = await Promise.all(diaRutina.ejercicios.map(async (ej: EjercicioPlan) => {
-          const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
-
-          // Obtenemos el último ejercicio realizado por el usuario
-          let ultimoEjercicio: EjercicioRealizado | null = null;
-          if (this.usuarioId) {
-            ultimoEjercicio = await this.historialService.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId);
-          }
-
-          const seriesReal: SerieReal[] = (ej.series || []).map((serie, index) => ({
-            numeroSerie: serie.numeroSerie,
-            repeticiones: serie.repeticiones,
-            repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
-            peso: ultimoEjercicio?.series[index]?.peso || 0,
-            pesoAnterior: ultimoEjercicio?.series[index]?.peso ?? null, // Asignamos null si no hay peso anterior
-            alFallo: false,
-            conAyuda: false,
-            dolor: false,
-            enEdicion: true,
-            notas: ''
-          }));
-
-          return {
-            ejercicioPlanId: ej.ejercicioId,
-            nombreEjercicio: ejercicioDetalles.nombre,
-            seriesReal,
-            seriesCompletadas: 0,
-            seriesTotal: seriesReal.length,
-            abierto: false,
-            completado: false,
-            notas: '',
-            anteriorVezEjercicioID: ultimoEjercicio?._id || null // Guardamos el ID del último ejercicio realizado
-          };
-        }));
-
+        this.nombreRutinaEntrenamiento = rutina.nombre;
+        this.ejercicios = await Promise.all(diaRutina.ejercicios.map(ej => this.crearEjercicio(ej)));
         this.totalEjercicios = this.ejercicios.length;
         this.actualizarEjerciciosCompletados();
       } else {
@@ -133,6 +95,58 @@ export class VistaEntrenoComponent implements OnInit {
       console.error('Error al cargar el día de la rutina:', error);
     }
   }
+
+  // Método para cargar la rutina y el día de la rutina
+  private async cargarRutina(rutinaId: string, diaNombre: string) {
+    const rutina = await this.rutinaService.obtenerRutinaPorId(rutinaId);
+    const diaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
+    return { rutina, diaRutina };
+  }
+
+  // Método para obtener el último ejercicio realizado por el usuario
+  private async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
+    return await this.historialService.obtenerUltimoEjercicioRealizado(usuarioId, ejercicioId);
+  }
+
+  // Método para crear las series con valores anteriores
+  private crearSerieReal(serie: SerieReal, ultimoEjercicio: EjercicioRealizado | null, index: number): SerieReal {
+    return {
+      numeroSerie: serie.numeroSerie,
+      repeticiones: serie.repeticiones,
+      repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
+      peso: ultimoEjercicio?.series[index]?.peso || 0,
+      pesoAnterior: ultimoEjercicio?.series[index]?.peso || null,
+      alFallo: false,
+      conAyuda: false,
+      dolor: false,
+      enEdicion: true,
+      notas: ''
+    };
+  }
+
+  // Método para crear cada ejercicio con sus series y valores anteriores
+  private async crearEjercicio(ej: EjercicioPlan) {
+    const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
+    const ultimoEjercicio = this.usuarioId ? await this.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId) : null;
+ 
+    // Verificar el contenido de ultimoEjercicio y su _id
+    console.log("Detalles del último ejercicio encontrado:", ultimoEjercicio);
+ 
+    const seriesReal: SerieReal[] = (ej.series || []).map((serie, index) => this.crearSerieReal(serie, ultimoEjercicio, index));
+ 
+    return {
+       ejercicioPlanId: ej.ejercicioId,
+       nombreEjercicio: ejercicioDetalles.nombre,
+       seriesReal,
+       seriesCompletadas: 0,
+       seriesTotal: seriesReal.length,
+       abierto: false,
+       completado: false,
+       notas: '',
+       anteriorVezEjercicioID: ultimoEjercicio?._id || null
+    };
+ }
+ 
 
   // Método para abrir el alert para agregar notas a una serie específica
   async abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
@@ -293,7 +307,7 @@ export class VistaEntrenoComponent implements OnInit {
               notas: serie.notas || null,
             })),
           notas: notasEjercicio, // Guardamos el estado del ejercicio en 'notas' si aplica
-          anteriorVezEjercicioID: ej.anteriorVezEjercicioID || null,
+          anteriorVezEjercicioID: ej._id || null,
         };
       }),
       notas: '',

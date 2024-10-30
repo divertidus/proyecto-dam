@@ -222,6 +222,7 @@ export class ReiniciarDatosService {
       const dia1Entrenamiento1 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 60, },
@@ -232,6 +233,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 50 },
@@ -242,6 +244,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 8, peso: 20 },
@@ -255,6 +258,7 @@ export class ReiniciarDatosService {
       const dia2Entrenamiento1 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 60 },
@@ -265,6 +269,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Máquina Aperturas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
             { numeroSerie: 1, repeticiones: 12, peso: 40 },
@@ -275,6 +280,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Fondos en Paralelas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 50 },
@@ -288,6 +294,7 @@ export class ReiniciarDatosService {
       const dia3Entrenamiento1 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 100, alFallo: false, dolor: false, ayuda: false },
@@ -298,6 +305,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
             { numeroSerie: 1, repeticiones: 12, peso: 10, alFallo: false, dolor: true, ayuda: false },
@@ -308,6 +316,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 120, alFallo: false, dolor: true, ayuda: true },
@@ -322,6 +331,7 @@ export class ReiniciarDatosService {
       const dia1Entrenamiento2 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 82, pesoAnterior: 80, alfallo: false, dolor: true, ayuda: false },
@@ -332,6 +342,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 87, pesoAnterior: 85, alfallo: false, dolor: true, ayuda: false },
@@ -342,6 +353,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 22, pesoAnterior: 20, alfallo: false, dolor: true, ayuda: false },
@@ -355,6 +367,7 @@ export class ReiniciarDatosService {
       const dia3Entrenamiento2 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 105, pesoAnterior: 100, alfallo: false, dolor: true, ayuda: false },
@@ -365,6 +378,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
 
@@ -372,6 +386,7 @@ export class ReiniciarDatosService {
         }, // No se registran seriees para este ejercicio
         {
           ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 125, pesoAnterior: 120, alfallo: false, dolor: true, ayuda: false },
@@ -385,6 +400,7 @@ export class ReiniciarDatosService {
       const dia1Entrenamiento3 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
@@ -395,6 +411,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 90, pesoAnterior: 87, alfallo: true, dolor: false, ayuda: false },
@@ -405,6 +422,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: false },
@@ -418,6 +436,7 @@ export class ReiniciarDatosService {
       const dia2Entrenamiento2 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 65, pesoAnterior: 60, alfallo: false, dolor: true, ayuda: false },
@@ -428,6 +447,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Máquina Aperturas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
             { numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 45, pesoAnterior: 40, alfallo: false, dolor: false, ayuda: true },
@@ -438,6 +458,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Fondos en Paralelas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 50 },
@@ -451,6 +472,7 @@ export class ReiniciarDatosService {
       const dia3Entrenamiento3 = [
         {
           ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: true, dolor: true, ayuda: false },
@@ -461,6 +483,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
             { numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 12, pesoAnterior: 10, alfallo: false, dolor: true, ayuda: true },
@@ -471,6 +494,7 @@ export class ReiniciarDatosService {
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
+          _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
             { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },

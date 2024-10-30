@@ -42,4 +42,5 @@ export interface SerieReal {
   conAyuda?: boolean;
   dolor?: boolean;
   notas?: string;
+  enEdicion?:boolean
 }

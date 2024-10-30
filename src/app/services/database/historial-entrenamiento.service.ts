@@ -246,33 +246,40 @@ export class HistorialService {
 
   async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
     try {
-      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
+        const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
 
-      if (historiales.length === 0) return null;
+        if (historiales.length === 0) return null;
 
-      // Ordenar los historiales para obtener el más reciente primero
-      historiales.sort((a, b) =>
-        new Date(b.entrenamientos[b.entrenamientos.length - 1].fechaEntrenamiento).getTime() -
-        new Date(a.entrenamientos[a.entrenamientos.length - 1].fechaEntrenamiento).getTime()
-      );
+        // Aplanar todos los entrenamientos y ordenar por fecha
+        const todosLosEntrenamientos = historiales
+            .flatMap(historial => historial.entrenamientos)
+            .sort((a, b) =>
+                new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
+            );
 
-      // Buscar el último `EjercicioRealizado` correspondiente al `ejercicioId`
-      for (const historial of historiales) {
-        for (const diaEntrenamiento of historial.entrenamientos) {
-          for (const ejercicioRealizado of diaEntrenamiento.ejerciciosRealizados) {
-            if (ejercicioRealizado.ejercicioPlanId === ejercicioId) {
-              return ejercicioRealizado; // Retornar el primer ejercicio encontrado (último cronológicamente)
+        // Buscar el ejercicio más reciente con el ejercicioId dado
+        for (const diaEntrenamiento of todosLosEntrenamientos) {
+            const ejercicioRealizado = diaEntrenamiento.ejerciciosRealizados.find(
+                ejercicio => ejercicio.ejercicioPlanId === ejercicioId
+            );
+
+            if (ejercicioRealizado) {
+                console.log('Detalles del ejercicio encontrado:', {
+                    ejercicioPlanId: ejercicioRealizado.ejercicioPlanId,
+                    id: ejercicioRealizado._id,
+                    nombre: ejercicioRealizado.nombreEjercicioRealizado,
+                    series: ejercicioRealizado.series
+                });
+                return ejercicioRealizado; // Retorna el primer ejercicio encontrado en orden cronológico inverso
             }
-          }
         }
-      }
 
-      return null; // No se encontró el ejercicio en el historial
+        return null; // No se encontró el ejercicio en el historial
     } catch (error) {
-      console.error('Error al obtener el último ejercicio realizado:', error);
-      return null;
+        console.error('Error al obtener el último ejercicio realizado:', error);
+        return null;
     }
-  }
+}
 }
 
 

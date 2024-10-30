@@ -13,6 +13,7 @@
         </ion-card-header>
         <ion-card-content *ngIf="ejercicio.abierto">
           <div class="exercise-container">
+            <p *ngIf="ejercicio.anteriorVezEjercicioID">ID del ejercicio anterior: {{ ejercicio.anteriorVezEjercicioID }}</p> <!-- Mostrar el ID anterior aquí -->
             <ng-container *ngFor="let serie of ejercicio.seriesReal; let j = index">
               <div *ngIf="j <= ejercicio.seriesCompletadas">
                 <div class="exercise-row">
@@ -56,6 +57,7 @@
     </ion-item>
   </ion-list>
 </ion-content>
+
 
 <ion-footer class="ion-padding footer-fixed">
   <div class="footer-info">
