@@ -226,7 +226,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 60, },
             { numeroSerie: 2, repeticiones: 10, peso: 65 },
-            { numeroSerie: 3, repeticiones: 8, peso: 70 }
+            { numeroSerie: 3, repeticiones: 8, peso: 70 },
+            { numeroSerie: 4, repeticiones: 8, peso: 70 }
           ]
         },
         {
@@ -235,7 +236,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 50 },
             { numeroSerie: 2, repeticiones: 10, peso: 50 },
-            { numeroSerie: 3, repeticiones: 8, peso: 55 }
+            { numeroSerie: 3, repeticiones: 8, peso: 55 },
+            { numeroSerie: 4, repeticiones: 8, peso: 55 }
           ]
         },
         {
@@ -244,7 +246,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 8, peso: 20 },
             { numeroSerie: 2, repeticiones: 8, peso: 20 },
-            { numeroSerie: 3, repeticiones: 6, peso: 25 }
+            { numeroSerie: 3, repeticiones: 6, peso: 25 },
+            { numeroSerie: 4, repeticiones: 6, peso: 25 }
           ]
         }
       ];
@@ -256,7 +259,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 60 },
             { numeroSerie: 2, repeticiones: 10, peso: 60 },
-            { numeroSerie: 3, repeticiones: 8, peso: 65 }
+            { numeroSerie: 3, repeticiones: 8, peso: 65 },
+            { numeroSerie: 4, repeticiones: 8, peso: 65 }
           ]
         },
         {
@@ -265,7 +269,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 12, peso: 40 },
             { numeroSerie: 2, repeticiones: 12, peso: 40 },
-            { numeroSerie: 3, repeticiones: 10, peso: 45 }
+            { numeroSerie: 3, repeticiones: 10, peso: 45 },
+            { numeroSerie: 4, repeticiones: 10, peso: 45 }
           ]
         },
         {
@@ -273,7 +278,9 @@ export class ReiniciarDatosService {
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 50 },
-            { numeroSerie: 2, repeticiones: 10, peso: 50 }
+            { numeroSerie: 2, repeticiones: 10, peso: 50 },
+            { numeroSerie: 3, repeticiones: 8, peso: 55 },
+            { numeroSerie: 4, repeticiones: 8, peso: 55 }
           ]
         }
       ];
@@ -285,7 +292,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 100, alFallo: false, dolor: false, ayuda: false },
             { numeroSerie: 2, repeticiones: 10, peso: 105, alFallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 3, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -294,7 +302,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 12, peso: 10, alFallo: false, dolor: true, ayuda: false },
             { numeroSerie: 2, repeticiones: 12, peso: 12, alFallo: true, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false }
+            { numeroSerie: 3, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false }
           ]
         },
         {
@@ -303,7 +312,8 @@ export class ReiniciarDatosService {
           series: [
             { numeroSerie: 1, repeticiones: 10, peso: 120, alFallo: false, dolor: true, ayuda: true },
             { numeroSerie: 2, repeticiones: 10, peso: 125, alFallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true }
+            { numeroSerie: 3, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true },
+            { numeroSerie: 4, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true }
           ]
         }
       ];
@@ -314,27 +324,30 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 82, pesoAnterior: 80, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 82, pesoAnterior: 80, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 87, pesoAnterior: 85, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 89, pesoAnterior: 87, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 87, pesoAnterior: 85, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 89, pesoAnterior: 87, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 8, peso: 22, pesoAnterior: 20, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 8, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: true },
-            { numeroSerie: 3, repeticiones: 6, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 22, pesoAnterior: 20, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: true },
+            { numeroSerie: 3, repeticiones: 6, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 6, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false },
           ]
         }
       ];
@@ -344,9 +357,10 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 105, pesoAnterior: 100, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 110, pesoAnterior: 105, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 105, pesoAnterior: 100, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -360,9 +374,10 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 125, pesoAnterior: 120, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 125, pesoAnterior: 120, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false }
           ]
         }
       ];
@@ -372,27 +387,31 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: false, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 90, pesoAnterior: 87, alfallo: true, dolor: false, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 92, pesoAnterior: 90, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 90, pesoAnterior: 87, alfallo: true, dolor: false, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 92, pesoAnterior: 90, alfallo: false, dolor: false, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 8, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 8, peso: 26, pesoAnterior: 24, alfallo: true, dolor: true, ayuda: true },
-            { numeroSerie: 3, repeticiones: 6, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false }]
+            { numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: true, dolor: true, ayuda: true },
+            { numeroSerie: 3, repeticiones: 6, repeticionesAnterior: 10, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false },
+            { numeroSerie: 4, repeticiones: 6, repeticionesAnterior: 10, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false }
+          ]
         }
       ];
 
@@ -401,26 +420,30 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'],
           nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 65, pesoAnterior: 60, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 67, pesoAnterior: 65, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 65, pesoAnterior: 60, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 67, pesoAnterior: 65, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Máquina Aperturas'],
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
-            { numeroSerie: 1, repeticiones: 12, peso: 45, pesoAnterior: 40, alfallo: false, dolor: false, ayuda: true },
-            { numeroSerie: 2, repeticiones: 12, peso: 47, pesoAnterior: 45, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 3, repeticiones: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false }
+            { numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 45, pesoAnterior: 40, alfallo: false, dolor: false, ayuda: true },
+            { numeroSerie: 2, repeticiones: 12, repeticionesAnterior: 10, peso: 47, pesoAnterior: 45, alfallo: false, dolor: false, ayuda: false },
+            { numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false },
+            { numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Fondos en Paralelas'],
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 0, pesoAnterior: 0 },
-            { numeroSerie: 2, repeticiones: 10, peso: 0, pesoAnterior: 0 }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 50 },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 50 },
+            { numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 55 },
+            { numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 55 }
           ]
         }
       ];
@@ -430,27 +453,30 @@ export class ReiniciarDatosService {
           ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 110, pesoAnterior: 105, alfallo: true, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: true, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
-            { numeroSerie: 1, repeticiones: 12, peso: 12, pesoAnterior: 10, alfallo: false, dolor: true, ayuda: true },
-            { numeroSerie: 2, repeticiones: 12, peso: 14, pesoAnterior: 12, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 12, pesoAnterior: 10, alfallo: false, dolor: true, ayuda: true },
+            { numeroSerie: 2, repeticiones: 12, repeticionesAnterior: 10, peso: 14, pesoAnterior: 12, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
           ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false }
+            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false },
+            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false }
           ]
         }
       ];

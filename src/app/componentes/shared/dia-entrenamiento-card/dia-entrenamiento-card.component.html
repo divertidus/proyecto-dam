@@ -1,7 +1,8 @@
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
     <ion-card-title>{{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
-    <ion-card-subtitle>{{diaEntrenamiento.nombreRutinaEntrenamiento}} -> {{ diaEntrenamiento.diaRutinaId }} - {{ diaEntrenamiento.descripcion }}</ion-card-subtitle>
+    <ion-card-subtitle>{{diaEntrenamiento.nombreRutinaEntrenamiento}} -> {{ diaEntrenamiento.diaRutinaId }} - {{
+      diaEntrenamiento.descripcion }}</ion-card-subtitle>
   </ion-card-header>
 
   <!-- Contenido desplegable -->
@@ -30,11 +31,13 @@
           <!-- Series del ejercicio -->
           <ng-container *ngFor="let serie of ejercicio.series; let k = index">
             <p>
-              S{{ serie.numeroSerie }}: {{ serie.repeticiones }} reps {{ serie.peso ? ('- ' + serie.peso + ' kg') : ''
-              }}
-              <span *ngIf="serie.pesoAnterior || serie.repeticionesAnterior">
-                (<i>{{ serie.pesoAnterior ? serie.pesoAnterior + ' kg' : '' }} {{ serie.repeticionesAnterior ? ', ' +
-                  serie.repeticionesAnterior + ' reps' : '' }}</i>)
+              S{{ serie.numeroSerie }}: 
+              {{ serie.repeticiones }}
+              <span *ngIf="serie.repeticionesAnterior">({{ serie.repeticionesAnterior }})</span>
+              reps
+              <span *ngIf="serie.peso">- {{ serie.peso }} kg</span>
+              <span *ngIf="serie.pesoAnterior">
+                ({{ serie.pesoAnterior }} kg)
               </span>
               <small *ngIf="getSerieDetails(serie) || serie.notas">
                 - {{ getSerieDetails(serie) }}

@@ -91,20 +91,22 @@ export class VistaEntrenoComponent implements OnInit {
         // Asigna ejercicios como antes
         this.ejercicios = await Promise.all(diaRutina.ejercicios.map(async (ej: EjercicioPlan) => {
           const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
-          let ultimoPeso = null;
+
+          // Obtenemos el último ejercicio realizado por el usuario
+          let ultimoEjercicio: EjercicioRealizado | null = null;
           if (this.usuarioId) {
-            ultimoPeso = await this.historialService.obtenerUltimoPesoEjercicio(this.usuarioId, ej.ejercicioId);
+            ultimoEjercicio = await this.historialService.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId);
           }
 
-          const seriesReal: SerieReal[] = (ej.series || []).map(serie => ({
+          const seriesReal: SerieReal[] = (ej.series || []).map((serie, index) => ({
             numeroSerie: serie.numeroSerie,
             repeticiones: serie.repeticiones,
-            peso: ultimoPeso || 0,
-            pesoAnterior: ultimoPeso || 0,
-            completado: false,
-            dolor: false,
-            conAyuda: false,
+            repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
+            peso: ultimoEjercicio?.series[index]?.peso || 0,
+            pesoAnterior: ultimoEjercicio?.series[index]?.peso ?? null, // Asignamos null si no hay peso anterior
             alFallo: false,
+            conAyuda: false,
+            dolor: false,
             enEdicion: true,
             notas: ''
           }));
@@ -117,7 +119,8 @@ export class VistaEntrenoComponent implements OnInit {
             seriesTotal: seriesReal.length,
             abierto: false,
             completado: false,
-            notas: ''
+            notas: '',
+            anteriorVezEjercicioID: ultimoEjercicio?._id || null // Guardamos el ID del último ejercicio realizado
           };
         }));
 
@@ -221,7 +224,7 @@ export class VistaEntrenoComponent implements OnInit {
             {
               text: 'Guardar',
               handler: () => {
-                this.guardarSesion('NO SE HIZO'); // Guardamos incluyendo notas de "NO SE HIZO" para ejercicios no iniciados
+                this.guardarSesion('No se hizo'); // Guardamos incluyendo notas de "NO SE HIZO" para ejercicios no iniciados
               }
             }
           ]
@@ -258,64 +261,73 @@ export class VistaEntrenoComponent implements OnInit {
 
   async guardarSesion(mensajeEstado?: string) {
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
-        _id: uuidv4(),
-        fechaEntrenamiento: new Date().toISOString(),
-        nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento, 
-        diaRutinaId: this.diaRutinaId!,
-        descripcion: this.descripcion,
-        ejerciciosRealizados: this.ejercicios.map(ej => {
-            return {
-                ejercicioPlanId: ej.ejercicioPlanId,
-                nombreEjercicioRealizado: ej.nombreEjercicio,
-                series: ej.seriesReal
-                    .filter(serie => serie.completado)
-                    .map((serie, index) => ({
-                        numeroSerie: index + 1,
-                        repeticiones: serie.repeticiones,
-                        peso: serie.peso,
-                        alFallo: serie.alFallo,
-                        conAyuda: serie.conAyuda,
-                        dolor: serie.dolor,
-                        notas: serie.notas || null,
-                    })),
-                notas: ej.notas || null,
-            };
-        }),
-        notas: '',
+      _id: uuidv4(),
+      fechaEntrenamiento: new Date().toISOString(),
+      nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento,
+      diaRutinaId: this.diaRutinaId!,
+      descripcion: this.descripcion,
+      ejerciciosRealizados: this.ejercicios.map(ej => {
+        // Estado de notas basado en si el ejercicio fue iniciado o completado
+        let notasEjercicio = '';
+        if (ej.seriesCompletadas === 0) {
+          notasEjercicio = mensajeEstado === 'No se hizo' ? 'No se hizo' : ''; // Solo si está completamente sin iniciar
+        } else if (ej.seriesCompletadas < ej.seriesTotal) {
+          notasEjercicio = 'Incompleto';
+        }
+
+        return {
+          _id: uuidv4(),
+          ejercicioPlanId: ej.ejercicioPlanId,
+          nombreEjercicioRealizado: ej.nombreEjercicio,
+          series: ej.seriesReal
+            .filter(serie => serie.completado)
+            .map((serie, index) => ({
+              numeroSerie: index + 1,
+              repeticiones: serie.repeticiones,
+              repeticionesAnterior: serie.repeticionesAnterior || null,
+              peso: serie.peso,
+              pesoAnterior: serie.pesoAnterior || null,
+              alFallo: serie.alFallo,
+              conAyuda: serie.conAyuda,
+              dolor: serie.dolor,
+              notas: serie.notas || null,
+            })),
+          notas: notasEjercicio, // Guardamos el estado del ejercicio en 'notas' si aplica
+          anteriorVezEjercicioID: ej.anteriorVezEjercicioID || null,
+        };
+      }),
+      notas: '',
     };
-  
+
     try {
-        // Obtener el historial del usuario
-        const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioId!);
+      // Guardar o actualizar en la base de datos como hasta ahora
+      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioId!);
+      let historialExistente: HistorialEntrenamiento | null = null;
+      if (historialesExistentes.length > 0) {
+        historialExistente = historialesExistentes[0];
+      }
 
-        let historialExistente: HistorialEntrenamiento | null = null;
-        if (historialesExistentes && historialesExistentes.length > 0) {
-            historialExistente = historialesExistentes[0]; // Toma el primer historial, si existe
-        }
+      if (historialExistente) {
+        historialExistente.entrenamientos.push(nuevoDiaEntrenamiento);
+        await this.historialService.actualizarHistorial(historialExistente);
+      } else {
+        const nuevoHistorial: HistorialEntrenamiento = {
+          entidad: 'historialEntrenamiento',
+          usuarioId: this.usuarioId!,
+          entrenamientos: [nuevoDiaEntrenamiento],
+        };
+        await this.historialService.agregarHistorial(nuevoHistorial);
+      }
 
-        if (historialExistente) {
-            // Añadir el nuevo día de entrenamiento al historial existente
-            historialExistente.entrenamientos.push(nuevoDiaEntrenamiento);
-            await this.historialService.actualizarHistorial(historialExistente);  // Actualiza en la base de datos
-        } else {
-            // Crear un nuevo historial de entrenamiento si no existe
-            const nuevoHistorialEntrenamiento: HistorialEntrenamiento = {
-                entidad: 'historialEntrenamiento',
-                usuarioId: this.usuarioId!,
-                entrenamientos: [nuevoDiaEntrenamiento],
-            };
-            await this.historialService.agregarHistorial(nuevoHistorialEntrenamiento);  // Crea un nuevo historial en la base de datos
-        }
-
-        console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
-        this.mostrarAlertaExito();
-        this.router.navigate(['/tabs/tab3']);  // Redireccionar después de guardar
+      console.log('Nueva sesión de entrenamiento guardada:', nuevoDiaEntrenamiento);
+      this.mostrarAlertaExito();
+      this.router.navigate(['/tabs/tab3']);
     } catch (error) {
-        console.error('Error al guardar el entrenamiento:', error);
-        this.mostrarAlertaError();
+      console.error('Error al guardar el entrenamiento:', error);
+      this.mostrarAlertaError();
     }
-}
-  
+  }
+
 
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({

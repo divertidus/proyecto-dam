@@ -243,6 +243,36 @@ export class HistorialService {
       throw error;
     }
   }
+
+  async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
+    try {
+      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
+
+      if (historiales.length === 0) return null;
+
+      // Ordenar los historiales para obtener el más reciente primero
+      historiales.sort((a, b) =>
+        new Date(b.entrenamientos[b.entrenamientos.length - 1].fechaEntrenamiento).getTime() -
+        new Date(a.entrenamientos[a.entrenamientos.length - 1].fechaEntrenamiento).getTime()
+      );
+
+      // Buscar el último `EjercicioRealizado` correspondiente al `ejercicioId`
+      for (const historial of historiales) {
+        for (const diaEntrenamiento of historial.entrenamientos) {
+          for (const ejercicioRealizado of diaEntrenamiento.ejerciciosRealizados) {
+            if (ejercicioRealizado.ejercicioPlanId === ejercicioId) {
+              return ejercicioRealizado; // Retornar el primer ejercicio encontrado (último cronológicamente)
+            }
+          }
+        }
+      }
+
+      return null; // No se encontró el ejercicio en el historial
+    } catch (error) {
+      console.error('Error al obtener el último ejercicio realizado:', error);
+      return null;
+    }
+  }
 }
 
 
