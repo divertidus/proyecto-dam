@@ -111,6 +111,7 @@ export class VistaEntrenoComponent implements OnInit {
   // Método para crear las series con valores anteriores
   private crearSerieReal(serie: SerieReal, ultimoEjercicio: EjercicioRealizado | null, index: number): SerieReal {
     return {
+      _id: uuidv4(),
       numeroSerie: serie.numeroSerie,
       repeticiones: serie.repeticiones,
       repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,

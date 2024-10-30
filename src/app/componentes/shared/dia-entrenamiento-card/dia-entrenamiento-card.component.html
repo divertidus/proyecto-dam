@@ -1,11 +1,11 @@
+<!-- dia-entrenamiento-card.component.html -->
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
     <ion-card-title>{{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
-    <ion-card-subtitle>{{diaEntrenamiento.nombreRutinaEntrenamiento}} -> {{ diaEntrenamiento.diaRutinaId }} - {{
+    <ion-card-subtitle>{{ diaEntrenamiento.nombreRutinaEntrenamiento }} -> {{ diaEntrenamiento.diaRutinaId }} - {{
       diaEntrenamiento.descripcion }}</ion-card-subtitle>
   </ion-card-header>
 
-  <!-- Contenido desplegable -->
   <ion-card-content *ngIf="expandido">
     <!-- Botón para eliminar el día entero, solo si editable es true -->
     <ion-button *ngIf="editable" fill="clear" size="small" color="danger" expand="full"
@@ -19,26 +19,15 @@
     <ion-list>
       <ion-item *ngFor="let ejercicio of diaEntrenamiento.ejerciciosRealizados; let j = index">
         <ion-label>
-          <!-- Título del ejercicio con icono de editar, solo si editable es true -->
-          <h2>
-            {{ ejercicio.nombreEjercicioRealizado }}
-            <ion-icon *ngIf="editable" name="create-outline" color="primary" class="edit-icon"></ion-icon>
-          </h2>
+          <h2>{{ ejercicio.nombreEjercicioRealizado }}</h2>
+          <ion-icon *ngIf="editable" name="create-outline" color="primary"
+            (click)="abrirModalEditarEjercicio(j)"></ion-icon>
 
-          <!-- Notas del ejercicio si existen -->
-          <p *ngIf="ejercicio.notas"><strong>Notas del ejercicio:</strong> <i>{{ ejercicio.notas }}</i></p>
-
-          <!-- Series del ejercicio -->
+          <!-- Mostrar series con el icono de edición para abrir el modal -->
           <ng-container *ngFor="let serie of ejercicio.series; let k = index">
             <p>
-              S{{ serie.numeroSerie }}: 
-              {{ serie.repeticiones }}
-              <span *ngIf="serie.repeticionesAnterior">({{ serie.repeticionesAnterior }})</span>
-              reps
-              <span *ngIf="serie.peso">- {{ serie.peso }} kg</span>
-              <span *ngIf="serie.pesoAnterior">
-                ({{ serie.pesoAnterior }} kg)
-              </span>
+              S{{ serie.numeroSerie }} -> reps: {{ serie.repeticiones }} peso: {{ serie.peso }} kg
+             <!--  <ion-icon *ngIf="editable" name="create-outline" color="primary" (click)="editarSerie(j, k)"></ion-icon> -->
               <small *ngIf="getSerieDetails(serie) || serie.notas">
                 - {{ getSerieDetails(serie) }}
                 <span *ngIf="serie.notas">, <i>{{ serie.notas }}</i></span>
@@ -48,5 +37,10 @@
         </ion-label>
       </ion-item>
     </ion-list>
+
+    <!-- Botón para editar el historial completo de este día -->
+    <!-- <ion-button *ngIf="editable" color="secondary" expand="block" (click)="abrirModalEditar()">
+      Editar Ejercicio Completo
+    </ion-button> -->
   </ion-card-content>
 </ion-card>

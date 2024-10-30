@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar {{ ejercicio.nombreEjercicioRealizado }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngIf="editable">
+      <ion-label position="stacked">Notas del ejercicio</ion-label>
+      <ion-textarea [(ngModel)]="ejercicio.notas"></ion-textarea>
+    </ion-item>
+
+    <ion-item *ngFor="let serie of ejercicio.series; let i = index">
+      <ion-label>
+        <h2>S{{ serie.numeroSerie }}</h2>
+      </ion-label>
+      <ion-input [(ngModel)]="serie.repeticiones" placeholder="Reps"></ion-input>
+      <ion-input [(ngModel)]="serie.peso" placeholder="Peso (kg)"></ion-input>
+      <ion-textarea [(ngModel)]="serie.notas" placeholder="Notas"></ion-textarea>
+
+      <ion-item lines="none">
+        <ion-label>Con Ayuda</ion-label>
+        <ion-checkbox [(ngModel)]="serie.conAyuda"></ion-checkbox>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label>Al Fallo</ion-label>
+        <ion-checkbox [(ngModel)]="serie.alFallo"></ion-checkbox>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label>Dolor</ion-label>
+        <ion-checkbox [(ngModel)]="serie.dolor"></ion-checkbox>
+      </ion-item>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
+</ion-content>

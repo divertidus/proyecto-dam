@@ -1,17 +1,19 @@
+/* dia-entrenamiento-card.component.ts */
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { DiaEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
 import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel, IonButton, IonIcon } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
-import { AlertController } from '@ionic/angular';
-import { SerieEditorComponent } from '../serie-editor/serie-editor.component';
+import { AlertController, ModalController } from '@ionic/angular';
+import { EditarHistorialComponent } from '../../historial/editar-historial-modal/editar-historial-modal.component';
+
 @Component({
   selector: 'app-dia-entrenamiento-card',
   templateUrl: './dia-entrenamiento-card.component.html',
   styleUrls: ['./dia-entrenamiento-card.component.scss'],
   standalone: true,
-  providers: [AlertController],
-  imports: [IonIcon, SerieEditorComponent, IonButton, IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
+  providers: [AlertController, ModalController],
+  imports: [IonIcon, IonButton, IonLabel, IonItem, EditarHistorialComponent, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
 export class DiaEntrenamientoCardComponent {
   @Input() diaEntrenamiento: DiaEntrenamiento; // Entrenamiento actual
@@ -24,7 +26,7 @@ export class DiaEntrenamientoCardComponent {
   @Output() diaEliminado = new EventEmitter<string>(); // Cambiamos el tipo a `string`
 
 
-  constructor(private alertController: AlertController) {
+  constructor(private alertController: AlertController, private modalController: ModalController) {
 
   }
   // Método para manejar el click y emitir el índice para cambiar el estado de expansión
@@ -68,7 +70,7 @@ export class DiaEntrenamientoCardComponent {
   eliminarDia() {
     if (this.diaEntrenamiento && this.diaEntrenamiento._id) {
       console.log(`Eliminando día con ID: ${this.diaEntrenamiento._id}`);
-      
+
       this.diaEliminado.emit(this.diaEntrenamiento._id); // Enviar el ID
     } else {
       console.error("No se pudo encontrar el ID del día a eliminar.");
@@ -76,14 +78,27 @@ export class DiaEntrenamientoCardComponent {
   }
 
 
+  // Método para abrir el modal `editar-historial` para editar un ejercicio completo
+  async abrirModalEditarEjercicio(ejercicioIndex: number) {
+    const ejercicio = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex];
 
+    const modal = await this.modalController.create({
+      component: EditarHistorialComponent,
+      componentProps: {
+        ejercicio: ejercicio, // Enviamos el ejercicio específico a editar
+        editable: this.editable
+      },
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data && result.data.actualizado) {
+        console.log('Ejercicio actualizado:', result.data.ejercicio);
+      }
+    });
+
+    await modal.present();
+  }
 }
-
-
-
-
-
-
 
 /*
 
@@ -96,4 +111,40 @@ index: El índice de la tarjeta en la lista general,
 útil para la interacción (expansión/contracción).
 Outputs (opcional por ahora, pero útil si quieres interacción desde fuera):
 toggleExpand: Un evento que puedes emitir al hacer click en la tarjeta, 
-para que la página/tab que contiene las tarjetas pueda manejar la expansión.*/ 
+para que la página/tab que contiene las tarjetas pueda manejar la expansión.*/
+
+/*
+  // Editar una sola serie (con alert)
+  async editarSerie(ejercicioIndex: number, serieIndex: number) {
+    const ejercicio = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex];
+    const serie = ejercicio.series[serieIndex];
+
+    const alert = await this.alertController.create({
+      header: `Editar S${serie.numeroSerie} - ${ejercicio.nombreEjercicioRealizado}`,
+      inputs: [
+        { name: 'repeticiones', type: 'number', placeholder: 'Repeticiones', value: serie.repeticiones?.toString() || '', label: 'Reps' },
+        { name: 'peso', type: 'number', placeholder: 'Peso (kg)', value: serie.peso?.toString() || '', label: 'Peso' },
+        { name: 'notas', type: 'textarea', placeholder: 'Notas', value: serie.notas || '', label: 'Notas' },
+        { name: 'conAyuda', type: 'checkbox', label: 'Con Ayuda', checked: serie.conAyuda || false },
+        { name: 'alFallo', type: 'checkbox', label: 'Al Fallo', checked: serie.alFallo || false },
+        { name: 'dolor', type: 'checkbox', label: 'Dolor', checked: serie.dolor || false }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            serie.repeticiones = parseInt(data.repeticiones, 10);
+            serie.peso = parseFloat(data.peso);
+            serie.notas = data.notas;
+            serie.conAyuda = data.conAyuda || false;
+            serie.alFallo = data.alFallo || false;
+            serie.dolor = data.dolor || false;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+*/

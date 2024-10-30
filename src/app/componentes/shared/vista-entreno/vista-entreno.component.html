@@ -7,42 +7,55 @@
             <span class="exercise-title">{{ ejercicio.nombreEjercicio }}</span>
             <span class="progress-container">
               <span class="progress-indicator">{{ ejercicio.seriesCompletadas }} / {{ ejercicio.seriesTotal }}</span>
-              <ion-icon name="create-outline" (click)="abrirNotas(i); $event.stopPropagation()" class="edit-icon"></ion-icon>
+              <ion-icon name="create-outline" (click)="abrirNotas(i); $event.stopPropagation()"
+                class="edit-icon"></ion-icon>
             </span>
           </ion-card-title>
         </ion-card-header>
         <ion-card-content *ngIf="ejercicio.abierto">
           <div class="exercise-container">
-            <p *ngIf="ejercicio.anteriorVezEjercicioID">ID del ejercicio anterior: {{ ejercicio.anteriorVezEjercicioID }}</p> <!-- Mostrar el ID anterior aquí -->
+            <p *ngIf="ejercicio.anteriorVezEjercicioID">ID del ejercicio anterior: {{ ejercicio.anteriorVezEjercicioID
+              }}</p> <!-- Mostrar el ID anterior aquí -->
             <ng-container *ngFor="let serie of ejercicio.seriesReal; let j = index">
               <div *ngIf="j <= ejercicio.seriesCompletadas">
                 <div class="exercise-row">
-                  <span class="series-number">{{ j + 1 }}.</span>
-                  <ion-input type="number" [(ngModel)]="serie.repeticiones" class="reps-input" placeholder="10" [disabled]="!serie.enEdicion"></ion-input>
+                  <span class="series-number">S{{ j + 1 }}.</span>
+                  <ion-input type="number" [(ngModel)]="serie.repeticiones" class="reps-input" placeholder="10"
+                    [disabled]="!serie.enEdicion"></ion-input>
                   <div class="weight-control">
-                    <button class="control-button minus" (click)="decrementarPeso(ejercicio, j)" [disabled]="!serie.enEdicion">-</button>
-                    <ion-input type="number" [(ngModel)]="serie.peso" class="weight-input" [placeholder]="serie.pesoAnterior?.toString() || '0'" [disabled]="!serie.enEdicion"></ion-input>
-                    <button class="control-button plus" (click)="incrementarPeso(ejercicio, j)" [disabled]="!serie.enEdicion">+</button>
-                    <span class="weight-label">({{ serie.pesoAnterior || 80 }} kg)</span>
+                    <button class="control-button minus" (click)="decrementarPeso(ejercicio, j)"
+                      [disabled]="!serie.enEdicion">-</button>
+                    <ion-input type="number" [(ngModel)]="serie.peso" class="weight-input"
+                      [placeholder]="serie.pesoAnterior?.toString() || '0'" [disabled]="!serie.enEdicion"></ion-input>
+                    <button class="control-button plus" (click)="incrementarPeso(ejercicio, j)"
+                      [disabled]="!serie.enEdicion">+</button>
+
+                    <!-- Mostrar peso anterior solo si existe -->
+                    <span *ngIf="serie.pesoAnterior" class="weight-label">({{ serie.pesoAnterior }} kg)</span>
+
                     <ion-icon name="create-outline" class="note-icon" (click)="abrirNotasSerie(i, j)"></ion-icon>
                   </div>
                   <div class="action-buttons">
-                    <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button" [disabled]="serie.enEdicion && serie.peso === 0">
+                    <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button"
+                      [disabled]="serie.enEdicion && serie.peso === 0">
                       {{ serie.enEdicion ? 'OK' : 'EDIT' }}
                     </ion-button>
                   </div>
                 </div>
                 <div class="checkbox-row centered-checkboxes">
                   <label class="checkbox-label">
-                    <ion-checkbox mode="ios" [(ngModel)]="serie.alFallo" [disabled]="!serie.enEdicion" class="checkbox-plain"></ion-checkbox>
+                    <ion-checkbox mode="ios" [(ngModel)]="serie.alFallo" [disabled]="!serie.enEdicion"
+                      class="checkbox-plain"></ion-checkbox>
                     <span>Fallo</span>
                   </label>
                   <label class="checkbox-label">
-                    <ion-checkbox mode="ios" [(ngModel)]="serie.dolor" [disabled]="!serie.enEdicion" class="checkbox-plain"></ion-checkbox>
+                    <ion-checkbox mode="ios" [(ngModel)]="serie.dolor" [disabled]="!serie.enEdicion"
+                      class="checkbox-plain"></ion-checkbox>
                     <span>Dolor</span>
                   </label>
                   <label class="checkbox-label">
-                    <ion-checkbox mode="ios" [(ngModel)]="serie.conAyuda" [disabled]="!serie.enEdicion" class="checkbox-plain"></ion-checkbox>
+                    <ion-checkbox mode="ios" [(ngModel)]="serie.conAyuda" [disabled]="!serie.enEdicion"
+                      class="checkbox-plain"></ion-checkbox>
                     <span>Ayuda</span>
                   </label>
                 </div>

@@ -246,40 +246,99 @@ export class HistorialService {
 
   async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
     try {
-        const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
+      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
 
-        if (historiales.length === 0) return null;
+      if (historiales.length === 0) return null;
 
-        // Aplanar todos los entrenamientos y ordenar por fecha
-        const todosLosEntrenamientos = historiales
-            .flatMap(historial => historial.entrenamientos)
-            .sort((a, b) =>
-                new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
-            );
+      // Aplanar todos los entrenamientos y ordenar por fecha
+      const todosLosEntrenamientos = historiales
+        .flatMap(historial => historial.entrenamientos)
+        .sort((a, b) =>
+          new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
+        );
 
-        // Buscar el ejercicio más reciente con el ejercicioId dado
-        for (const diaEntrenamiento of todosLosEntrenamientos) {
-            const ejercicioRealizado = diaEntrenamiento.ejerciciosRealizados.find(
-                ejercicio => ejercicio.ejercicioPlanId === ejercicioId
-            );
+      // Buscar el ejercicio más reciente con el ejercicioId dado
+      for (const diaEntrenamiento of todosLosEntrenamientos) {
+        const ejercicioRealizado = diaEntrenamiento.ejerciciosRealizados.find(
+          ejercicio => ejercicio.ejercicioPlanId === ejercicioId
+        );
 
-            if (ejercicioRealizado) {
-                console.log('Detalles del ejercicio encontrado:', {
-                    ejercicioPlanId: ejercicioRealizado.ejercicioPlanId,
-                    id: ejercicioRealizado._id,
-                    nombre: ejercicioRealizado.nombreEjercicioRealizado,
-                    series: ejercicioRealizado.series
-                });
-                return ejercicioRealizado; // Retorna el primer ejercicio encontrado en orden cronológico inverso
-            }
+        if (ejercicioRealizado) {
+          console.log('Detalles del ejercicio encontrado:', {
+            ejercicioPlanId: ejercicioRealizado.ejercicioPlanId,
+            id: ejercicioRealizado._id,
+            nombre: ejercicioRealizado.nombreEjercicioRealizado,
+            series: ejercicioRealizado.series
+          });
+          return ejercicioRealizado; // Retorna el primer ejercicio encontrado en orden cronológico inverso
         }
+      }
 
-        return null; // No se encontró el ejercicio en el historial
+      return null; // No se encontró el ejercicio en el historial
     } catch (error) {
-        console.error('Error al obtener el último ejercicio realizado:', error);
-        return null;
+      console.error('Error al obtener el último ejercicio realizado:', error);
+      return null;
     }
-}
+  }
+
+  ///////////////////////// SERIES /////////////////////////// 
+
+  // Crear una nueva serie en un ejercicio de un día específico
+  async crearSerie(historial: HistorialEntrenamiento, diaEntrenamiento: DiaEntrenamiento, ejercicio: EjercicioRealizado, nuevaSerie: SerieReal): Promise<void> {
+    try {
+      // Verificar y asignar un ID único a la nueva serie si no existe
+      nuevaSerie._id = nuevaSerie._id || `serie_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      ejercicio.series.push(nuevaSerie); // Agregar la serie al ejercicio
+
+      await this.baseDatos.put({ ...historial, _rev: historial._rev });
+      console.log('Serie creada exitosamente');
+    } catch (error) {
+      console.error('Error al crear serie:', error);
+      throw error;
+    }
+  }
+
+  // Obtener una serie específica
+  async obtenerSerie(historial: HistorialEntrenamiento, diaEntrenamiento: DiaEntrenamiento, ejercicio: EjercicioRealizado, serieId: string): Promise<SerieReal | null> {
+    try {
+      // Buscar la serie específica dentro del ejercicio dado
+      return ejercicio.series.find((serie: SerieReal) => serie._id === serieId) || null;
+    } catch (error) {
+      console.error('Error al obtener serie:', error);
+      throw error;
+    }
+  }
+
+  // Actualizar una serie existente
+  async actualizarSerie(historial: HistorialEntrenamiento, diaEntrenamiento: DiaEntrenamiento, ejercicio: EjercicioRealizado, serieActualizada: SerieReal): Promise<void> {
+    try {
+      // Buscar el índice de la serie a actualizar en el ejercicio
+      const indexSerie = ejercicio.series.findIndex((serie: SerieReal) => serie._id === serieActualizada._id);
+      if (indexSerie === -1) throw new Error('Serie no encontrada');
+
+      ejercicio.series[indexSerie] = { ...serieActualizada }; // Actualizar la serie en el arreglo
+
+      await this.baseDatos.put({ ...historial, _rev: historial._rev });
+      console.log('Serie actualizada exitosamente');
+    } catch (error) {
+      console.error('Error al actualizar serie:', error);
+      throw error;
+    }
+  }
+
+  // Eliminar una serie específica
+  async eliminarSerie(historial: HistorialEntrenamiento, diaEntrenamiento: DiaEntrenamiento, ejercicio: EjercicioRealizado, serieId: string): Promise<void> {
+    try {
+      // Filtrar las series para eliminar la serie con el ID especificado
+      ejercicio.series = ejercicio.series.filter((serie: SerieReal) => serie._id !== serieId);
+
+      await this.baseDatos.put({ ...historial, _rev: historial._rev });
+      console.log('Serie eliminada exitosamente');
+    } catch (error) {
+      console.error('Error al eliminar serie:', error);
+      throw error;
+    }
+  }
 }
 
 

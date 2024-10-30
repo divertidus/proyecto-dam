@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonFooter, IonButton, IonSpinner, IonAlert } from '@ionic/angular/standalone';
 import { UserListComponent } from "../../componentes/usuario/user-list/user-list.component";
 import { Router } from '@angular/router';
-import { GestionUsuariosComponent } from "../../componentes/usuario/gestion-usuarios/gestion-usuarios.component";
+
 import { Usuario } from 'src/app/models/usuario.model';
 import { UsuarioService } from 'src/app/services/database/usuario.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
@@ -18,7 +18,7 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./seleccionar-usuario.page.scss'],
   standalone: true,
   imports: [IonAlert, IonSpinner, IonButton, IonFooter, IonContent, IonHeader,
-    IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent, GestionUsuariosComponent],
+    IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent],
   providers: [AlertController]
 })
 export class SeleccionarUsuarioPage implements OnInit {

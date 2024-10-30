@@ -8,6 +8,7 @@ import { EmailPasswordAuthProvider } from './email-password.provider';
 import { GoogleAuthProvider } from './google-auth.provider';
 import { Usuario } from '../models/usuario.model';
 import { UsuarioService } from '../services/database/usuario.service';
+import { HistorialService } from '../services/database/historial-entrenamiento.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class AuthService {
 
   private authProvider: AuthProvider; // Proveedor de autenticación
 
-  constructor(private usuarioService: UsuarioService) {
+  constructor(private usuarioService: UsuarioService, private historialService: HistorialService) {
     this.authProvider = new ProveedorSeleccionUsuario(); // Inicializa con el proveedor por defecto
     // this.authProvider = new EmailPasswordAuthProvider(); // para iniciar sesion con email y contraseña si lo pongo
     // this.authProvider = new GoogleAuthProvider(); // par ainiciar sesion con google si lo pongo
@@ -52,13 +53,16 @@ export class AuthService {
   }
 
   // Método para iniciar sesión directamente con el usuario seleccionado
+  // En auth.service.ts, tras iniciar sesión
   async loginConUsuarioSeleccionado(): Promise<void> {
     try {
-      const usuario = await this.authProvider.login(); // Llama al método login del proveedor
-      this.estadoUsuarioLogeado.next(usuario); // Actualiza el estado del usuario logueado
-      console.log(`AUTH.SERVICE -> Usuario logueado: ${usuario.nombre}`); // Muestra en consola el usuario logueado
+      const usuario = await this.authProvider.login();
+      this.estadoUsuarioLogeado.next(usuario);
+      console.log(`Usuario logueado: ${usuario.nombre}`);
+      // Asegúrate de cargar el historial del usuario inmediatamente después del login
+      this.historialService.cargarHistoriales(usuario._id);
     } catch (error) {
-      console.error(error.message); // Manejo de errores
+      console.error(error.message);
     }
   }
 

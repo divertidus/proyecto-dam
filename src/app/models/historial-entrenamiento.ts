@@ -3,7 +3,7 @@
 // Modelo de Historial de Entrenamientos
 export interface HistorialEntrenamiento {
   _id?: string;
-  _rev?:string;
+  _rev?: string;
   entidad: 'historialEntrenamiento';
   usuarioId: string;
   entrenamientos: DiaEntrenamiento[];
@@ -14,7 +14,7 @@ export interface DiaEntrenamiento {
   _id?: string;
   fechaEntrenamiento: string;
   diaRutinaId: string;
-  nombreRutinaEntrenamiento: string; 
+  nombreRutinaEntrenamiento: string;
   descripcion: string;
   ejerciciosRealizados: EjercicioRealizado[];
   notas?: string;
@@ -42,5 +42,5 @@ export interface SerieReal {
   conAyuda?: boolean;
   dolor?: boolean;
   notas?: string;
-  enEdicion?:boolean
+  enEdicion?: boolean
 }

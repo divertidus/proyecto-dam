@@ -87,25 +87,25 @@ export class DatabaseService {
   }
 
   // Método para eliminar todos los documentos de la base de datos
-async eliminarTodosLosDocumentos(): Promise<void> {
-  try {
-    // Obtener todos los documentos incluyendo sus IDs y _revs
-    const result = await this.baseDatos.allDocs();
-    
-    // Mapear los documentos a un formato necesario para la eliminación masiva
-    const documentosAEliminar = result.rows.map((row: any) => ({
-      _id: row.id,
-      _rev: row.value.rev,
-      _deleted: true  // Flag para marcar los documentos como eliminados
-    }));
-    
-    // Usar el método bulkDocs para eliminar todos los documentos de una sola vez
-    const respuesta = await this.baseDatos.bulkDocs(documentosAEliminar);
-    console.log("Todos los documentos han sido eliminados:", respuesta);
-  } catch (error) {
-    console.error("Error al eliminar todos los documentos:", error);
+  async eliminarTodosLosDocumentos(): Promise<void> {
+    try {
+      // Obtener todos los documentos incluyendo sus IDs y _revs
+      const result = await this.baseDatos.allDocs();
+
+      // Mapear los documentos a un formato necesario para la eliminación masiva
+      const documentosAEliminar = result.rows.map((row: any) => ({
+        _id: row.id,
+        _rev: row.value.rev,
+        _deleted: true  // Flag para marcar los documentos como eliminados
+      }));
+
+      // Usar el método bulkDocs para eliminar todos los documentos de una sola vez
+      const respuesta = await this.baseDatos.bulkDocs(documentosAEliminar);
+      console.log("Todos los documentos han sido eliminados:", respuesta);
+    } catch (error) {
+      console.error("Error al eliminar todos los documentos:", error);
+    }
   }
-}
 
 }
 

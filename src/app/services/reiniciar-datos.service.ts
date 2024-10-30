@@ -225,10 +225,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 60, },
-            { numeroSerie: 2, repeticiones: 10, peso: 65 },
-            { numeroSerie: 3, repeticiones: 8, peso: 70 },
-            { numeroSerie: 4, repeticiones: 8, peso: 70 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, peso: 60, },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, peso: 65 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, peso: 70 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, peso: 70 }
           ]
         },
         {
@@ -236,10 +236,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 50 },
-            { numeroSerie: 2, repeticiones: 10, peso: 50 },
-            { numeroSerie: 3, repeticiones: 8, peso: 55 },
-            { numeroSerie: 4, repeticiones: 8, peso: 55 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, peso: 50 },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, peso: 50 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, peso: 55 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, peso: 55 }
           ]
         },
         {
@@ -247,10 +247,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 8, peso: 20 },
-            { numeroSerie: 2, repeticiones: 8, peso: 20 },
-            { numeroSerie: 3, repeticiones: 6, peso: 25 },
-            { numeroSerie: 4, repeticiones: 6, peso: 25 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 8, peso: 20 },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 8, peso: 20 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 6, peso: 25 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 6, peso: 25 }
           ]
         }
       ];
@@ -261,10 +261,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 60 },
-            { numeroSerie: 2, repeticiones: 10, peso: 60 },
-            { numeroSerie: 3, repeticiones: 8, peso: 65 },
-            { numeroSerie: 4, repeticiones: 8, peso: 65 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, peso: 60 },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, peso: 60 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, peso: 65 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, peso: 65 }
           ]
         },
         {
@@ -272,10 +272,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
-            { numeroSerie: 1, repeticiones: 12, peso: 40 },
-            { numeroSerie: 2, repeticiones: 12, peso: 40 },
-            { numeroSerie: 3, repeticiones: 10, peso: 45 },
-            { numeroSerie: 4, repeticiones: 10, peso: 45 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 12, peso: 40 },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 12, peso: 40 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 10, peso: 45 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 10, peso: 45 }
           ]
         },
         {
@@ -283,10 +283,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 50 },
-            { numeroSerie: 2, repeticiones: 10, peso: 50 },
-            { numeroSerie: 3, repeticiones: 8, peso: 55 },
-            { numeroSerie: 4, repeticiones: 8, peso: 55 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, peso: 50 },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, peso: 50 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, peso: 55 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, peso: 55 }
           ]
         }
       ];
@@ -297,10 +297,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 100, alFallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, peso: 105, alFallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, peso: 100, alFallo: false, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, peso: 105, alFallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, peso: 110, alFallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -308,10 +308,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
-            { numeroSerie: 1, repeticiones: 12, peso: 10, alFallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 12, peso: 12, alFallo: true, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 12, peso: 10, alFallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 12, peso: 12, alFallo: true, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 10, peso: 14, alFallo: true, dolor: true, ayuda: false }
           ]
         },
         {
@@ -319,10 +319,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, peso: 120, alFallo: false, dolor: true, ayuda: true },
-            { numeroSerie: 2, repeticiones: 10, peso: 125, alFallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true },
-            { numeroSerie: 4, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, peso: 120, alFallo: false, dolor: true, ayuda: true },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, peso: 125, alFallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, peso: 130, alFallo: true, dolor: true, ayuda: true }
           ]
         }
       ];
@@ -334,10 +334,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 82, pesoAnterior: 80, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 82, pesoAnterior: 80, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -345,10 +345,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 87, pesoAnterior: 85, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 89, pesoAnterior: 87, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 87, pesoAnterior: 85, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 89, pesoAnterior: 87, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 91, pesoAnterior: 89, alfallo: true, dolor: true, ayuda: false }
           ]
         },
         {
@@ -356,10 +356,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 22, pesoAnterior: 20, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: true },
-            { numeroSerie: 3, repeticiones: 6, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 6, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 22, pesoAnterior: 20, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: true },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 6, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 6, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: false, dolor: true, ayuda: false },
           ]
         }
       ];
@@ -370,10 +370,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 105, pesoAnterior: 100, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 105, pesoAnterior: 100, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -389,10 +389,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 125, pesoAnterior: 120, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 125, pesoAnterior: 120, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false }
           ]
         }
       ];
@@ -403,10 +403,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 84, pesoAnterior: 82, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 86, pesoAnterior: 84, alfallo: false, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 88, pesoAnterior: 86, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -414,10 +414,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 90, pesoAnterior: 87, alfallo: true, dolor: false, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 92, pesoAnterior: 90, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 90, pesoAnterior: 87, alfallo: true, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 92, pesoAnterior: 90, alfallo: false, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 94, pesoAnterior: 92, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -425,10 +425,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: true, dolor: true, ayuda: true },
-            { numeroSerie: 3, repeticiones: 6, repeticionesAnterior: 10, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 4, repeticiones: 6, repeticionesAnterior: 10, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: true, dolor: true, ayuda: true },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 6, repeticionesAnterior: 10, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 6, repeticionesAnterior: 10, peso: 28, pesoAnterior: 26, alfallo: false, dolor: false, ayuda: false }
           ]
         }
       ];
@@ -439,10 +439,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 65, pesoAnterior: 60, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 67, pesoAnterior: 65, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 65, pesoAnterior: 60, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 67, pesoAnterior: 65, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 70, pesoAnterior: 67, alfallo: true, dolor: false, ayuda: false }
           ]
         },
         {
@@ -450,10 +450,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
-            { numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 45, pesoAnterior: 40, alfallo: false, dolor: false, ayuda: true },
-            { numeroSerie: 2, repeticiones: 12, repeticionesAnterior: 10, peso: 47, pesoAnterior: 45, alfallo: false, dolor: false, ayuda: false },
-            { numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false },
-            { numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 45, pesoAnterior: 40, alfallo: false, dolor: false, ayuda: true },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 12, repeticionesAnterior: 10, peso: 47, pesoAnterior: 45, alfallo: false, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 47, alfallo: true, dolor: false, ayuda: false }
           ]
         },
         {
@@ -461,10 +461,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 50 },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 50 },
-            { numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 55 },
-            { numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 55 }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 50, pesoAnterior: 50 },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 50 },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 55 },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 55, pesoAnterior: 55 }
           ]
         }
       ];
@@ -475,10 +475,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: true, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 110, pesoAnterior: 105, alfallo: true, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 115, pesoAnterior: 110, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 120, pesoAnterior: 115, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -486,10 +486,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
-            { numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 12, pesoAnterior: 10, alfallo: false, dolor: true, ayuda: true },
-            { numeroSerie: 2, repeticiones: 12, repeticionesAnterior: 10, peso: 14, pesoAnterior: 12, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 12, pesoAnterior: 10, alfallo: false, dolor: true, ayuda: true },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 12, repeticionesAnterior: 10, peso: 14, pesoAnterior: 12, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 10, repeticionesAnterior: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 10, repeticionesAnterior: 10, peso: 16, pesoAnterior: 14, alfallo: false, dolor: true, ayuda: false }
           ]
         },
         {
@@ -497,10 +497,10 @@ export class ReiniciarDatosService {
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
-            { numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false },
-            { numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false }
+            { _id: uuidv4(),numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 130, pesoAnterior: 125, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 135, pesoAnterior: 130, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 3, repeticiones: 8, repeticionesAnterior: 10, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false },
+            { _id: uuidv4(),numeroSerie: 4, repeticiones: 8, repeticionesAnterior: 10, peso: 140, pesoAnterior: 135, alfallo: false, dolor: true, ayuda: false }
           ]
         }
       ];
