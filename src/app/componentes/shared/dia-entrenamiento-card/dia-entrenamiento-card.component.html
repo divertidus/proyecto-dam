@@ -2,7 +2,8 @@
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
     <ion-card-title>{{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
-    <ion-card-subtitle>{{ diaEntrenamiento.nombreRutinaEntrenamiento }} -> {{ diaEntrenamiento.diaRutinaId }} - {{ diaEntrenamiento.descripcion }}</ion-card-subtitle>
+    <ion-card-subtitle>{{ diaEntrenamiento.nombreRutinaEntrenamiento }} -> {{ diaEntrenamiento.diaRutinaId }} - {{
+      diaEntrenamiento.descripcion }}</ion-card-subtitle>
   </ion-card-header>
 
   <ion-card-content *ngIf="expandido">
@@ -24,6 +25,11 @@
       <ion-item *ngFor="let ejercicio of diaEntrenamiento.ejerciciosRealizados; let j = index">
         <ion-label>
           <h2>{{ ejercicio.nombreEjercicioRealizado }}</h2>
+
+          <!-- Mostrar estado del ejercicio -->
+          <p *ngIf="ejercicio.notas">
+            <strong>Estado:</strong> {{ ejercicio.notas }}
+          </p>
 
           <!-- Mostrar series -->
           <ng-container *ngFor="let serie of ejercicio.series; let k = index">

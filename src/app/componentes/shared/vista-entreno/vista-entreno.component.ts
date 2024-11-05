@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
     IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
-export class VistaEntrenoComponent implements OnInit { 
+export class VistaEntrenoComponent implements OnInit {
   [x: string]: any;
 
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
@@ -129,25 +129,25 @@ export class VistaEntrenoComponent implements OnInit {
   private async crearEjercicio(ej: EjercicioPlan) {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
     const ultimoEjercicio = this.usuarioId ? await this.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId) : null;
- 
+
     // Verificar el contenido de ultimoEjercicio y su _id
     console.log("Detalles del último ejercicio encontrado:", ultimoEjercicio);
- 
+
     const seriesReal: SerieReal[] = (ej.series || []).map((serie, index) => this.crearSerieReal(serie, ultimoEjercicio, index));
- 
+
     return {
-       ejercicioPlanId: ej.ejercicioId,
-       nombreEjercicio: ejercicioDetalles.nombre,
-       seriesReal,
-       seriesCompletadas: 0,
-       seriesTotal: seriesReal.length,
-       abierto: false,
-       completado: false,
-       notas: '',
-       anteriorVezEjercicioID: ultimoEjercicio?._id || null
+      ejercicioPlanId: ej.ejercicioId,
+      nombreEjercicio: ejercicioDetalles.nombre,
+      seriesReal,
+      seriesCompletadas: 0,
+      seriesTotal: seriesReal.length,
+      abierto: false,
+      completado: false,
+      notas: '',
+      anteriorVezEjercicioID: ultimoEjercicio?._id || null
     };
- }
- 
+  }
+
 
   // Método para abrir el alert para agregar notas a una serie específica
   async abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
@@ -307,7 +307,8 @@ export class VistaEntrenoComponent implements OnInit {
               dolor: serie.dolor,
               notas: serie.notas || null,
             })),
-          notas: notasEjercicio, // Guardamos el estado del ejercicio en 'notas' si aplica
+          // Concatenamos el estado con la nota del usuario, separados por un guion o salto de línea
+          notas: [notasEjercicio, ej.notas].filter(nota => nota).join(' - '), 
           anteriorVezEjercicioID: ej._id || null,
         };
       }),

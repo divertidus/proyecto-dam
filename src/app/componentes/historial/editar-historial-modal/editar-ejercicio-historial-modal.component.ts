@@ -1,6 +1,6 @@
 /* editar-ejercicio-historial-modal.component.ts */
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { DiaEntrenamiento, EjercicioRealizado, SerieReal } from 'src/app/models/historial-entrenamiento';
 import { IonHeader, IonContent, IonLabel, IonCheckbox, IonToolbar, IonTitle, IonButtons, IonButton, IonList, IonItem, IonInput, IonTextarea, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { NgFor, NgIf } from '@angular/common';
   imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonTextarea, IonInput, IonItem,
     IonList, IonButton, IonButtons, IonTitle, NgIf, NgFor,
     IonToolbar, IonCheckbox, IonLabel, IonContent, IonHeader, FormsModule],
-  providers: [],
+  providers: [AlertController, ModalController],
   standalone: true
 })
 export class EditarEjercicioHistorialComponent implements OnInit {
@@ -23,7 +23,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
 
   ejercicioAbiertoIndex: number | null = null; // Índice del ejercicio actualmente abierto
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private alertController: AlertController) { }
 
   ngOnInit() {
     console.log('Día entrenamiento recibido en el modal:', this.diaEntrenamiento);
@@ -60,14 +60,65 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     serie.enEdicion = !serie.enEdicion;
   }
 
-  abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
+  async abrirNotasEjercicio(index: number) {
+    const alert = await this.alertController.create({
+      header: 'Editar Nota del Ejercicio',
+      inputs: [
+        {
+          name: 'nota',
+          type: 'text',
+          placeholder: 'Escribe tu nota aquí',
+          value: this.diaEntrenamiento.ejerciciosRealizados[index].notas || '',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            this.diaEntrenamiento.ejerciciosRealizados[index].notas = data.nota;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
     const serie = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex].series[serieIndex];
-    // Puedes implementar un modal para agregar notas aquí si lo deseas
+    const alert = await this.alertController.create({
+      header: 'Editar Nota de la Serie',
+      inputs: [
+        {
+          name: 'nota',
+          type: 'text',
+          placeholder: 'Escribe tu nota aquí',
+          value: serie.notas || '',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            serie.notas = data.nota;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   // Método para alternar el ejercicio abierto
   toggleEjercicio(index: number) {
     this.ejercicioAbiertoIndex = this.ejercicioAbiertoIndex === index ? null : index;
   }
-
 }
