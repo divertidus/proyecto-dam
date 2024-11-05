@@ -26,14 +26,16 @@
           <!-- Mostrar series con el icono de edición para abrir el modal -->
           <ng-container *ngFor="let serie of ejercicio.series; let k = index">
             <p>
-              S{{ serie.numeroSerie }} -> reps: {{ serie.repeticiones }} peso: {{ serie.peso }} kg
-             <!--  <ion-icon *ngIf="editable" name="create-outline" color="primary" (click)="editarSerie(j, k)"></ion-icon> -->
+              S{{ serie.numeroSerie }} -> reps: {{ serie.repeticiones }}
+              <span *ngIf="serie.repeticionesAnterior">({{ serie.repeticionesAnterior }})</span>
+              peso: {{ serie.peso }} kg
+              <span *ngIf="serie.pesoAnterior">({{ serie.pesoAnterior }} kg)</span>
               <small *ngIf="getSerieDetails(serie) || serie.notas">
                 - {{ getSerieDetails(serie) }}
                 <span *ngIf="serie.notas">, <i>{{ serie.notas }}</i></span>
               </small>
             </p>
-          </ng-container>
+          </ng-container> 
         </ion-label>
       </ion-item>
     </ion-list>
