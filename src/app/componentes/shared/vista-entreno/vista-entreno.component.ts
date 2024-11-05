@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
     IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
 })
-export class VistaEntrenoComponent implements OnInit {
+export class VistaEntrenoComponent implements OnInit { 
   [x: string]: any;
 
   diaRutinaId: string | null = null; // Usamos diaRutinaId como el nombre del día
@@ -342,7 +342,6 @@ export class VistaEntrenoComponent implements OnInit {
       this.mostrarAlertaError();
     }
   }
-
 
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({

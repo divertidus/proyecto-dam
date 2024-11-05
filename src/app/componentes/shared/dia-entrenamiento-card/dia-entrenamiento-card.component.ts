@@ -1,11 +1,12 @@
 /* dia-entrenamiento-card.component.ts */
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { DiaEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
-import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel, IonButton, IonIcon } from "@ionic/angular/standalone";
+import { DiaEntrenamiento, HistorialEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
+import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel, IonButton, IonIcon, IonHeader } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
-import { EditarHistorialComponent } from '../../historial/editar-historial-modal/editar-historial-modal.component';
+import { EditarEjercicioHistorialComponent } from '../../historial/editar-historial-modal/editar-ejercicio-historial-modal.component';
+import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 
 @Component({
   selector: 'app-dia-entrenamiento-card',
@@ -13,7 +14,7 @@ import { EditarHistorialComponent } from '../../historial/editar-historial-modal
   styleUrls: ['./dia-entrenamiento-card.component.scss'],
   standalone: true,
   providers: [AlertController, ModalController],
-  imports: [IonIcon, IonButton, IonLabel, IonItem, EditarHistorialComponent, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
+  imports: [IonHeader, IonIcon, IonButton, IonLabel, IonItem, EditarEjercicioHistorialComponent, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
 export class DiaEntrenamientoCardComponent {
   @Input() diaEntrenamiento: DiaEntrenamiento; // Entrenamiento actual
@@ -26,7 +27,10 @@ export class DiaEntrenamientoCardComponent {
   @Output() diaEliminado = new EventEmitter<string>(); // Cambiamos el tipo a `string`
 
 
-  constructor(private alertController: AlertController, private modalController: ModalController) {
+  constructor(private alertController: AlertController,
+    private modalController: ModalController,
+    private historialService: HistorialService
+  ) {
 
   }
   // Método para manejar el click y emitir el índice para cambiar el estado de expansión
@@ -78,26 +82,26 @@ export class DiaEntrenamientoCardComponent {
   }
 
 
-  // Método para abrir el modal `editar-historial` para editar un ejercicio completo
-  async abrirModalEditarEjercicio(ejercicioIndex: number) {
-    const ejercicio = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex];
-
+  // Llamada al servicio de actualización sin historialId
+  async abrirModalEditarDiaCompleto() {
     const modal = await this.modalController.create({
-      component: EditarHistorialComponent,
-      componentProps: {
-        ejercicio: ejercicio, // Enviamos el ejercicio específico a editar
-        editable: this.editable
-      },
+      component: EditarEjercicioHistorialComponent,
+      componentProps: { diaEntrenamiento: this.diaEntrenamiento, editable: this.editable }
     });
 
-    modal.onDidDismiss().then((result) => {
+    modal.onDidDismiss().then(async (result) => {
       if (result.data && result.data.actualizado) {
-        console.log('Ejercicio actualizado:', result.data.ejercicio);
+        console.log('Día de entrenamiento actualizado:', result.data.diaEntrenamiento);
+        this.diaEntrenamiento = result.data.diaEntrenamiento;
+
+        // Llamar al método simplificado sin historialId
+        await this.historialService.actualizarDiaEntrenamiento(this.diaEntrenamiento);
       }
     });
 
     await modal.present();
   }
+
 }
 
 /*

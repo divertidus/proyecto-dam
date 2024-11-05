@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Para manejar la lista de historiales de manera reactiva
 import { DiaEntrenamiento, EjercicioRealizado, HistorialEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root' // Servicio disponible en toda la aplicación
@@ -227,7 +228,7 @@ export class HistorialService {
 
 
   // Eliminar un día específico de un historial y recargar el historial
-  async eliminarDiaEntrenamiento(historialId: string, diaId: string): Promise<void> {
+  /*async eliminarDiaEntrenamiento(historialId: string, diaId: string): Promise<void> {
     try {
       const historial = await this.baseDatos.get(historialId);
       if (!historial) return;
@@ -242,7 +243,7 @@ export class HistorialService {
       console.error(`Error al eliminar el día con ID ${diaId}:`, error);
       throw error;
     }
-  }
+  }*/
 
   async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
     try {
@@ -339,6 +340,116 @@ export class HistorialService {
       throw error;
     }
   }
+
+  ///////////////////////// DIAS /////////////////////////// 
+
+  // Crear un nuevo día de entrenamiento en el historial
+  async crearDiaEntrenamiento(historial: HistorialEntrenamiento, nuevoDia: DiaEntrenamiento): Promise<void> {
+    try {
+      // Asignar un ID único usando uuidv4() si no tiene uno
+      nuevoDia._id = nuevoDia._id || uuidv4();
+      historial.entrenamientos.push(nuevoDia); // Agregar el nuevo día al historial
+
+      // Guardar el historial actualizado en la base de datos
+      await this.baseDatos.put({ ...historial, _rev: historial._rev });
+      console.log('Día de entrenamiento creado exitosamente');
+    } catch (error) {
+      console.error('Error al crear el día de entrenamiento:', error);
+      throw error;
+    }
+  }
+
+  // Obtener un día específico de entrenamiento por su ID
+  async obtenerDiaEntrenamiento(historial: HistorialEntrenamiento, diaId: string): Promise<DiaEntrenamiento | null> {
+    try {
+      // Buscar el día de entrenamiento dentro del historial por su ID
+      return historial.entrenamientos.find((dia: DiaEntrenamiento) => dia._id === diaId) || null;
+    } catch (error) {
+      console.error('Error al obtener el día de entrenamiento:', error);
+      throw error;
+    }
+  }
+
+  // Servicio de historial de entrenamiento
+  async actualizarDiaEntrenamiento(diaActualizado: DiaEntrenamiento): Promise<void> {
+    try {
+      // Obtener el historial completo que contiene el día específico en la base de datos
+      const result = await this.baseDatos.find({
+        selector: {
+          entidad: 'historialEntrenamiento',
+          entrenamientos: { $elemMatch: { _id: diaActualizado._id } }
+        }
+      });
+
+      if (result.docs.length === 0) {
+        console.error('No se encontró ningún historial que contenga el día a actualizar.');
+        return;
+      }
+
+      const historial = result.docs[0]; // Obtener el historial encontrado
+
+      // Localizar y actualizar el día específico dentro del historial
+      const indexDia = historial.entrenamientos.findIndex(dia => dia._id === diaActualizado._id);
+      if (indexDia === -1) {
+        console.error('El día de entrenamiento no se encontró en el historial.');
+        return;
+      }
+
+      // Actualizar el día en el arreglo de entrenamientos
+      historial.entrenamientos[indexDia] = { ...diaActualizado };
+
+      // Guardar el historial completo con el día actualizado en la base de datos
+      await this.baseDatos.put({ ...historial, _rev: historial._rev });
+      console.log('Día de entrenamiento actualizado exitosamente en la base de datos.');
+    } catch (error) {
+      console.error('Error al actualizar el día de entrenamiento en la base de datos:', error);
+      throw error;
+    }
+  }
+
+  // Método para obtener el historialId de un día de entrenamiento específico
+  async obtenerHistorialIdPorDia(diaId: string): Promise<string | null> {
+    try {
+      const historiales = await this.historial$.toPromise(); // Espera a que los historiales se carguen
+      const historial = historiales.find(h =>
+        h.entrenamientos.some(dia => dia._id === diaId)
+      );
+
+      return historial ? historial._id : null;
+    } catch (error) {
+      console.error('Error al obtener historialId por diaId:', error);
+      return null;
+    }
+  }
+
+  // Eliminar un día específico de entrenamiento por su ID
+  async eliminarDiaEntrenamiento(historialId: string, diaId: string): Promise<void> {
+    try {
+      // Obtener el historial completo desde la base de datos usando el historialId
+      const historial = await this.baseDatos.get(historialId);
+      if (!historial) {
+        console.error('No se encontró el historial con el ID especificado.');
+        return;
+      }
+
+      // Filtrar el arreglo para eliminar el día con el ID especificado
+      historial.entrenamientos = historial.entrenamientos.filter((dia: DiaEntrenamiento) => dia._id !== diaId);
+
+      // Guardar el historial actualizado en la base de datos
+      await this.baseDatos.put({ ...historial, _rev: historial._rev });
+      console.log(`Día con ID ${diaId} eliminado exitosamente del historial con ID ${historialId}`);
+
+      // Obtener y emitir el historial actualizado
+      const historialesActualizados = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
+      await this.emitirHistorialActualizado(historialesActualizados); // Emitir el historial actualizado
+    } catch (error) {
+      console.error(`Error al eliminar el día con ID ${diaId} del historial con ID ${historialId}:`, error);
+      throw error;
+    }
+  }
+
+
+
 }
 
 
