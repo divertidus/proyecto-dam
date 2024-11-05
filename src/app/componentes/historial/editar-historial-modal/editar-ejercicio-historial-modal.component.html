@@ -1,10 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- Mostrar "Editando" y el día del entrenamiento + la fecha -->
+    <ion-title>
+      Editando - {{ diaEntrenamiento.nombreRutinaEntrenamiento }} ({{ diaEntrenamiento.fechaEntrenamiento | date:
+      'dd/MM/yyyy' }})
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="content-adjusted">
   <ng-container *ngFor="let ejercicio of diaEntrenamiento.ejerciciosRealizados; let i = index">
     <ion-card>
       <ion-card-header (click)="toggleEjercicio(i)">
         <ion-card-title class="exercise-header">
           {{ ejercicio.nombreEjercicioRealizado }}
-          <!-- Botón de editar notas del ejercicio, deshabilitado si no está en edición -->
+          <!-- Botón de editar notas del ejercicio -->
           <ion-icon name="create-outline" (click)="abrirNotasEjercicio(i); $event.stopPropagation()" class="edit-icon">
           </ion-icon>
         </ion-card-title>
@@ -18,6 +29,7 @@
 
         <!-- Series del Ejercicio -->
         <ng-container *ngFor="let serie of ejercicio.series; let j = index">
+          <!-- Ejemplo de HTML ajustado -->
           <div class="exercise-row">
             <span class="series-number">S{{ j + 1 }}.</span>
 
@@ -35,8 +47,8 @@
               </ion-input>
               <button class="control-button plus" (click)="incrementarPeso(serie)"
                 [disabled]="!serie.enEdicion">+</button>
-
               <span *ngIf="serie.pesoAnterior" class="weight-label">({{ serie.pesoAnterior }} kg)</span>
+
               <!-- Botón de edición de notas de la serie, deshabilitado si no está en edición -->
               <ion-icon *ngIf="serie.enEdicion" name="create-outline" class="note-icon" (click)="abrirNotasSerie(i, j)">
               </ion-icon>
@@ -44,10 +56,15 @@
 
             <div class="action-buttons">
               <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button"
-                [disabled]="serie.enEdicion && serie.peso === 0">
+                [disabled]="serie.peso === 0">
                 {{ serie.enEdicion ? 'OK' : 'EDIT' }}
               </ion-button>
             </div>
+
+            <!-- Botón para eliminar la última serie, posicionado a la derecha de la fila -->
+            <ion-icon *ngIf="j === ejercicio.series.length - 1" name="trash-outline" class="delete-icon delete-right"
+              (click)="confirmarEliminarSerie(i, j)">
+            </ion-icon>
           </div>
 
           <!-- Checkbox para opciones adicionales (al fallo, dolor, con ayuda) -->
@@ -74,9 +91,26 @@
             <span>Nota de la serie: {{ serie.notas }}</span>
           </div>
         </ng-container>
+
+        <!-- Botón para añadir una serie extra debajo de las existentes -->
+        <ion-button *ngIf="mostrarBotonAnadirSerie(ejercicio)" expand="block" fill="outline"
+          (click)="confirmarAnadirSerie(i)">
+          Añadir Serie Extra
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </ng-container>
 
-  <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
+
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+
+    <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
+
+    <!-- Botón de cancelar con confirmación de salida sin guardar -->
+    <ion-button expand="full" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
+
+  </ion-toolbar>
+</ion-footer>

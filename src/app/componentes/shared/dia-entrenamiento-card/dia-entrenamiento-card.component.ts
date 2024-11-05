@@ -1,8 +1,10 @@
 /* dia-entrenamiento-card.component.ts */
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { DiaEntrenamiento, HistorialEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
-import { IonCard, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonList, IonItem, IonLabel, IonButton, IonIcon, IonHeader } from "@ionic/angular/standalone";
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { DiaEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
+import { IonCard, IonCardContent, IonCardSubtitle, 
+  IonCardTitle, IonCardHeader, IonList, 
+  IonItem, IonLabel, IonButton, IonIcon, IonHeader } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { EditarEjercicioHistorialComponent } from '../../historial/editar-historial-modal/editar-ejercicio-historial-modal.component';
