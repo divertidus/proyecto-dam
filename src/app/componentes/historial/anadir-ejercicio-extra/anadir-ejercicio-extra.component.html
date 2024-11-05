@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Añadir Ejercicio Extra</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="cancelarAnadirEjercicio()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Barra de búsqueda -->
+  <ion-item>
+    <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicio..."></ion-searchbar>
+  </ion-item>
+
+  <!-- Lista de ejercicios filtrados -->
+  <ion-list>
+    <ion-item *ngFor="let ejercicio of ejerciciosFiltrados">
+      <ion-label>{{ ejercicio.nombre }}</ion-label>
+      <ion-button fill="clear" (click)="confirmarAnadirEjercicio(ejercicio)">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

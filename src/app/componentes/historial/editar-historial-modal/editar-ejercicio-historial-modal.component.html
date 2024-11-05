@@ -90,7 +90,32 @@
       </ion-card-content>
     </ion-card>
   </ng-container>
+
+  <!-- Barra de búsqueda para añadir un nuevo ejercicio realizado basado en un ejercicio existente -->
+  <ion-item>
+    <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+  </ion-item>
+
+  <!-- Lista de ejercicios disponibles para añadir -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let ejercicio of ejerciciosFiltrados">
+        <ion-card (click)="agregarEjercicioRealizado(ejercicio)">
+          <ion-card-header>
+            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <img [src]="ejercicio.imagen || 'assets/imagenes/ejercicios/ejercicio-default.png'"
+              alt="Imagen del ejercicio" class="imagen-ejercicio" />
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+
+
 
 <ion-footer>
   <ion-toolbar>

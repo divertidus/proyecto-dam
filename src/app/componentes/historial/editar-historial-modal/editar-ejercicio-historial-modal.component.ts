@@ -1,15 +1,20 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { DiaEntrenamiento, EjercicioRealizado, SerieReal } from 'src/app/models/historial-entrenamiento';
-import { IonHeader, IonContent, IonLabel, IonCheckbox, IonToolbar, IonTitle, IonButtons, IonButton, IonList, IonItem, IonInput, IonTextarea, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFooter } from '@ionic/angular/standalone';
+import { IonHeader, IonContent, IonLabel, IonCheckbox, IonToolbar, IonTitle, IonButtons, IonButton, IonList, IonItem, IonInput, IonTextarea, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFooter, IonSearchbar, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { v4 as uuidv4 } from 'uuid';
+import { AnadirEjercicioExtraComponent } from '../anadir-ejercicio-extra/anadir-ejercicio-extra.component';
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { Ejercicio } from 'src/app/models/ejercicio.model';
 
 @Component({
   selector: 'app-editar-ejercicio-historia-modal',
   templateUrl: './editar-ejercicio-historial-modal.component.html',
   styleUrls: ['./editar-ejercicio-historial-modal.component.scss'],
-  imports: [IonFooter, IonCardContent, CommonModule, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonTextarea, IonInput, IonItem,
+  imports: [IonCol, IonRow, IonGrid, IonSearchbar, IonFooter, IonCardContent, CommonModule, IonCardTitle,
+    IonCardHeader, IonCard, IonIcon, IonTextarea, IonInput, IonItem,
     IonList, IonButton, IonButtons, IonTitle, NgIf, NgFor,
     IonToolbar, IonCheckbox, IonLabel, IonContent, IonHeader, FormsModule],
   providers: [AlertController, ModalController],
@@ -23,14 +28,21 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   diaEntrenamientoBackup: DiaEntrenamiento; // Backup para trabajar temporalmente
   ejercicioAbiertoIndex: number | null = null; // Índice del ejercicio actualmente abierto
   nuevaSerieEnEdicion: boolean = false; // Indicador de nueva serie en edición
+  ejerciciosDisponibles: Ejercicio[] = [];
+  ejerciciosFiltrados: Ejercicio[] = [];
 
-  constructor(private modalController: ModalController, private alertController: AlertController) { }
+  constructor(private modalController: ModalController,
+    private alertController: AlertController,
+    private ejercicioService: EjercicioService
+  ) { }
 
   ngOnInit() {
     // Creamos un backup profundo para trabajar en él
+
     this.diaEntrenamientoBackup = JSON.parse(JSON.stringify(this.diaEntrenamiento));
     console.log('Día entrenamiento recibido en el modal:', this.diaEntrenamiento);
     console.log('Historial ID recibido en el modal:', this.historialId); // Verificar que historialId se recibe correctamente
+    this.cargarEjerciciosDisponibles();
   }
 
   cerrarModal() {
@@ -143,7 +155,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     const ultimaSerie = ejercicio.series[ejercicio.series.length - 1];
 
     const nuevaSerie: SerieReal = {
-      _id: '',
+      _id: uuidv4(),
       numeroSerie: ultimaSerie.numeroSerie + 1,
       repeticiones: ultimaSerie.repeticiones,
       peso: ultimaSerie.peso,
@@ -213,5 +225,73 @@ export class EditarEjercicioHistorialComponent implements OnInit {
         }
       ]
     }).then(alert => alert.present());
+  }
+
+  // Método para abrir el modal de añadir un nuevo ejercicio
+  async abrirModalAnadirEjercicio() {
+    const modal = await this.modalController.create({
+      component: AnadirEjercicioExtraComponent,
+      componentProps: {
+        ejerciciosDisponibles: this.ejerciciosDisponibles, // Pasa la lista de ejercicios disponibles
+      },
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.role !== 'cancel' && data.data) {
+        this.agregarEjercicioNuevo(data.data); // Añade el ejercicio seleccionado a la lista actual
+      }
+    });
+
+    await modal.present();
+  }
+
+  agregarEjercicioNuevo(ejercicio) {
+    const nuevoEjercicio = {
+      ...ejercicio,
+      series: [],
+      notas: 'Ejercicio añadido',
+    };
+    this.diaEntrenamientoBackup.ejerciciosRealizados.push(nuevoEjercicio); // Añade el ejercicio a la lista actual
+  }
+
+  // Cargar ejercicios ya existentes
+  cargarEjerciciosDisponibles() {
+    this.ejercicioService.ejercicios$.subscribe(data => {
+      this.ejerciciosDisponibles = data;
+      this.ejerciciosFiltrados = [...this.ejerciciosDisponibles];
+    });
+  }
+
+  // Filtrar ejercicios por búsqueda
+  buscarEjercicios(event: any) {
+    const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
+    this.ejerciciosFiltrados = valorBusqueda
+      ? this.ejerciciosDisponibles.filter(ejercicio => ejercicio.nombre.toLowerCase().includes(valorBusqueda))
+      : [...this.ejerciciosDisponibles];
+  }
+
+  // Crear un EjercicioRealizado basado en un Ejercicio existente
+  // Crear un EjercicioRealizado basado en un Ejercicio existente
+  agregarEjercicioRealizado(ejercicio: Ejercicio) {
+    const nuevoEjercicioRealizado: EjercicioRealizado = {
+      ejercicioPlanId: ejercicio._id,
+      nombreEjercicioRealizado: ejercicio.nombre,
+      series: [ // Creamos una serie inicial para evitar errores en propiedades no definidas
+        {
+          numeroSerie: 1,
+          repeticiones: 0,      // Repeticiones inicializadas a 0
+          peso: 0,              // Peso inicial a 0
+          enEdicion: true,      // Activa la edición para esta serie
+          alFallo: false,
+          conAyuda: false,
+          dolor: false,
+          notas: ''
+        }
+      ],
+      notas: '',
+      anteriorVezEjercicioID: ''
+    };
+
+    this.diaEntrenamientoBackup.ejerciciosRealizados.push(nuevoEjercicioRealizado);
   }
 }
