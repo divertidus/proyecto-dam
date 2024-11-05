@@ -20,12 +20,15 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   @Input() editable: boolean; // Define si el modal permite edición
   @Input() historialId: string; // Recibe historialId
 
+  diaEntrenamientoBackup: DiaEntrenamiento; // Backup para trabajar temporalmente
   ejercicioAbiertoIndex: number | null = null; // Índice del ejercicio actualmente abierto
   nuevaSerieEnEdicion: boolean = false; // Indicador de nueva serie en edición
 
   constructor(private modalController: ModalController, private alertController: AlertController) { }
 
   ngOnInit() {
+    // Creamos un backup profundo para trabajar en él
+    this.diaEntrenamientoBackup = JSON.parse(JSON.stringify(this.diaEntrenamiento));
     console.log('Día entrenamiento recibido en el modal:', this.diaEntrenamiento);
     console.log('Historial ID recibido en el modal:', this.historialId); // Verificar que historialId se recibe correctamente
   }
@@ -34,11 +37,12 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     this.modalController.dismiss();
   }
 
+  // Guardar cambios: aplicamos los cambios del backup al objeto principal
   guardarCambios() {
-    // Incluye historialId en los datos devueltos
+    this.diaEntrenamiento = JSON.parse(JSON.stringify(this.diaEntrenamientoBackup));
     this.modalController.dismiss({
       diaEntrenamiento: this.diaEntrenamiento,
-      historialId: this.historialId, // Asegura historialId en el objeto resultante
+      historialId: this.historialId,
       actualizado: true
     });
   }
@@ -116,16 +120,13 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     this.ejercicioAbiertoIndex = this.ejercicioAbiertoIndex === index ? null : index;
   }
 
-  // Método para confirmar la adición de una serie
+  // Añadir serie extra, trabajando sobre el backup
   async confirmarAnadirSerie(ejercicioIndex: number) {
     const alert = await this.alertController.create({
       header: 'Añadir Serie Extra',
       message: '¿Deseas añadir una serie extra a este ejercicio?',
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Añadir',
           handler: () => {
@@ -138,22 +139,22 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   }
 
   anadirSerieExtra(ejercicioIndex: number) {
-    const ejercicio = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex];
-    const ultimaSerie = ejercicio.series[ejercicio.series.length - 1]; // Última serie de la misma sesión
+    const ejercicio = this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex];
+    const ultimaSerie = ejercicio.series[ejercicio.series.length - 1];
 
     const nuevaSerie: SerieReal = {
-      _id: '', // Define el ID de la serie si es necesario
+      _id: '',
       numeroSerie: ultimaSerie.numeroSerie + 1,
-      repeticiones: ultimaSerie.repeticiones, // Mismo número de repeticiones de la última serie
-      peso: ultimaSerie.peso, // Mismo peso de la última serie
+      repeticiones: ultimaSerie.repeticiones,
+      peso: ultimaSerie.peso,
       alFallo: false,
       conAyuda: false,
       dolor: false,
       enEdicion: true,
-      notas: 'Serie extra', // Nota predeterminada
+      notas: 'Serie extra'
     };
 
-    ejercicio.series.push(nuevaSerie); // Agrega la nueva serie al final del ejercicio
+    ejercicio.series.push(nuevaSerie);
   }
 
   mostrarBotonAnadirSerie(ejercicio: any): boolean {
@@ -161,46 +162,43 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   }
 
 
-  // Método para confirmar la eliminación de una serie
+  // Eliminar serie, trabajando sobre el backup
   async confirmarEliminarSerie(ejercicioIndex: number, serieIndex: number) {
     const alert = await this.alertController.create({
       header: 'Eliminar Serie',
       message: '¿Estás seguro de que quieres eliminar la última serie?',
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Eliminar',
           handler: () => {
             this.eliminarSerie(ejercicioIndex, serieIndex);
-          },
-        },
-      ],
+          }
+        }
+      ]
     });
     await alert.present();
   }
 
   eliminarSerie(ejercicioIndex: number, serieIndex: number) {
-    const ejercicio = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex];
+    const ejercicio = this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex];
     if (ejercicio.series.length > 0 && serieIndex === ejercicio.series.length - 1) {
-      ejercicio.series.pop(); // Eliminar la última serie
+      ejercicio.series.pop(); // Eliminar solo en el backup
     }
   }
 
   // Método para alternar entre edición y confirmación de la nueva serie
   toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
-    const serie = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex].series[serieIndex];
+    const serie = this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex].series[serieIndex];
     serie.enEdicion = !serie.enEdicion;
 
-    // Si la nueva serie se edita y se confirma (OK), se desactiva el estado de nueva serie
     if (!serie.enEdicion) {
       this.nuevaSerieEnEdicion = false;
     }
   }
 
-  // Método para confirmar la salida sin guardar cambios
+
+  // Cancelar sin guardar cambios: simplemente cerramos el modal
   confirmarCancelarEdicion() {
     this.alertController.create({
       header: 'Cancelar Edición',
@@ -210,7 +208,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
         {
           text: 'Salir sin Guardar',
           handler: () => {
-            this.modalController.dismiss(null, 'cancel');
+            this.modalController.dismiss(null, 'cancel'); // No aplicamos cambios
           }
         }
       ]
