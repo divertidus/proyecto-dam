@@ -1,0 +1,24 @@
+/* entrenamiento.component.scss */
+
+/* Estilos generales del contenido de entrenamiento */
+ion-content {
+    padding: 16px;
+    background-color: #f4f4f9;
+}
+
+/* Botón para comenzar el entrenamiento */
+ion-button {
+    font-size: 1.2em;
+    margin-top: 20px;
+    color: #fff;
+    --background: #3e8e41;
+    --border-radius: 8px;
+}
+
+.app-vista-entreno {
+    margin-top: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    background-color: #fff;
+}

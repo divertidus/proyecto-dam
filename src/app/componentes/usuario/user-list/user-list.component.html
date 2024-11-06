@@ -1,21 +1,18 @@
-<!-- gestion-usuarios.compoennte.html -->
-<ion-list *ngIf="usuarios.length > 0">
-  <ion-list-header>
-    <ion-label>Usuarios Guardados</ion-label>
-  </ion-list-header>
-
-  <ion-item *ngFor="let usuario of usuarios" (click)="elegirUsuarioDeLista(usuario)">
-    <ion-avatar>
-      <img [src]="usuario.imagenPerfil" />
+<div class="usuarios-grid">
+  <!-- Tarjetas para los usuarios existentes -->
+  <div *ngFor="let usuario of usuarios" class="usuario-card" (click)="elegirUsuarioDeLista(usuario)">
+    <ion-avatar class="avatar">
+      <img [src]="usuario.imagenPerfil" alt="Imagen del usuario" />
     </ion-avatar>
-    <ion-card class="usuario-card">
-      <ion-card-header>
-        <ion-card-title>{{ usuario.nombre }}</ion-card-title>
-        <ion-card-subtitle>{{ usuario.email }}</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-  </ion-item>
-</ion-list>
+    <h3 class="nombre">{{ usuario.nombre }}</h3>
+    <p class="email">{{ usuario.email }}</p>
+  </div>
 
-<!-- Mensaje si no hay usuarios -->
-<ion-label *ngIf="usuarios.length === 0">No hay usuarios guardados.</ion-label>
+  <!-- Tarjeta para añadir un nuevo usuario usando una imagen personalizada -->
+  <div class="usuario-card nuevo-usuario" (click)="irCrearUsuario()">
+    <ion-avatar class="avatar">
+      <img src="assets/imagenes/menus/principal/add.png" alt="Añadir usuario" />
+    </ion-avatar>
+    <p>Crear Nuevo</p>
+  </div>
+</div>

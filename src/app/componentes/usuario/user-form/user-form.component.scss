@@ -1,0 +1,47 @@
+/* user-form.component.scss */
+
+/* Tarjeta del formulario */
+ion-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+ion-card-header {
+    background-color: #3e8e41;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    padding: 15px;
+    text-align: center;
+}
+
+ion-card-title {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Contenido de la tarjeta */
+ion-card-content {
+    padding: 20px;
+}
+
+ion-item {
+    --background: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+/* Etiquetas de los campos */
+ion-label {
+    color: #4a4a4a;
+}
+
+/* Botón de "Guardar Usuario" */
+ion-button {
+    background-color: #3e8e41;
+    color: #ffffff;
+    font-weight: bold;
+    margin-top: 20px;
+    --border-radius: 8px;
+}

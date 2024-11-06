@@ -1,0 +1,19 @@
+/* crear-usuario.component.scss */
+
+/* Encabezado y título */
+ion-title {
+    font-weight: bold;
+    color: #3e8e41;
+    text-align: center;
+}
+
+/* Margen y espacio para el botón de retroceso */
+ion-back-button {
+    --color: #3e8e41;
+}
+
+/* Contenido en pantalla completa */
+ion-content {
+    padding: 20px;
+    background-color: #f4f4f9;
+}

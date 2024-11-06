@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonFooter, IonButton, IonSpinner, IonAlert } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonFooter, IonButton, IonSpinner, IonAlert, IonIcon, IonAvatar } from '@ionic/angular/standalone';
 import { UserListComponent } from "../../componentes/usuario/user-list/user-list.component";
 import { Router } from '@angular/router';
 
@@ -17,7 +17,7 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './seleccionar-usuario.page.html',
   styleUrls: ['./seleccionar-usuario.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonSpinner, IonButton, IonFooter, IonContent, IonHeader,
+  imports: [IonAvatar, IonIcon, IonAlert, IonSpinner, IonButton, IonFooter, IonContent, IonHeader,
     IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent],
   providers: [AlertController]
 })

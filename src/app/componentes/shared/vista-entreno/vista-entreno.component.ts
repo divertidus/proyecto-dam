@@ -505,23 +505,28 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   anadirSerieExtra(ejercicioIndex: number) {
     const ejercicio = this.ejercicios[ejercicioIndex];
-
+  
+    // Obtener las repeticiones de la última serie completada o actual
+    const repeticionesPrevias = ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.repeticiones || 0;
+    const pesoPrevio = ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.peso || 0;
+  
     const nuevaSerie: SerieReal = {
       _id: uuidv4(),
       numeroSerie: ejercicio.seriesReal.length + 1,
-      repeticiones: 0, // Valor inicial
-      peso: 0, // Valor inicial
-      pesoAnterior: ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.peso || 0, // Basado en el peso de la última serie
+      repeticiones: repeticionesPrevias,  // Usar repeticiones de la última serie
+      peso: pesoPrevio,                   // Usar el peso de la última serie
+      pesoAnterior: pesoPrevio,           // Asignar el peso de la última serie como `pesoAnterior`
       alFallo: false,
       conAyuda: false,
       dolor: false,
       enEdicion: true, // Permitir edición inicial
       notas: 'Serie extra' // Identificador de serie extra
     };
-
+  
     // Añadir la nueva serie al array `seriesReal`, sin modificar `seriesTotal`
     ejercicio.seriesReal.push(nuevaSerie);
   }
+  
 
   async confirmarEliminarUltimaSerie(ejercicioIndex: number) {
     const alert = await this.alertController.create({

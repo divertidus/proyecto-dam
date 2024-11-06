@@ -1,0 +1,59 @@
+/* historial-entrenamiento.component.scss */
+
+/* Espacio adicional en la parte superior del contenido */
+ion-content {
+    padding-top: 20px;
+}
+
+/* Estilos para el encabezado de la lista */
+h3 {
+    color: #3b3b3b;
+    font-weight: 500;
+    font-size: 1.2em;
+    margin: 24px 0 12px; /* Incremento del margen superior e inferior */
+    text-align: center;
+}
+
+/* Estilos para la lista de entrenamientos */
+ion-list {
+    padding: 0 16px; /* Espacio lateral adicional para que no toque los bordes */
+    margin-top: 10px;
+}
+
+/* Espacio entre las tarjetas de entrenamiento */
+app-dia-entrenamiento-card {
+    margin-bottom: 16px; /* Mayor espacio entre las tarjetas */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra más suave para destacar cada tarjeta */
+    overflow: hidden; /* Evita desbordamientos en el borde redondeado */
+}
+
+/* Estilos para el ion-card cuando no hay entrenamientos */
+ion-card {
+    margin: 20px 16px; /* Espacio adicional alrededor de la tarjeta */
+    padding: 20px; /* Espacio interno más generoso */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    text-align: center;
+    color: #6b6b6b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título del ion-card */
+ion-card-title {
+    font-weight: 600;
+    color: #3b3b3b;
+    margin-bottom: 12px; /* Separación extra del contenido */
+}
+
+/* Contenido del ion-card */
+ion-card-content {
+    font-size: 0.9em;
+    color: #4a4a4a;
+    line-height: 1.5; /* Espacio entre líneas para una lectura más fácil */
+}
+
+/* Agregar padding al ion-content para mayor separación superior */
+ion-content.content-centered {
+    padding-top: 40px;
+}

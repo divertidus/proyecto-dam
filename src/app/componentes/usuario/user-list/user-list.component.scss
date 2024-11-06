@@ -1,11 +1,82 @@
+/* Espacio adicional superior en el grid de usuarios */
+.usuarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto 0; /* Aumenta el margen superior */
+  }
+
+/* Tarjeta de usuario y de crear nuevo usuario con altura fija */
 .usuario-card {
-    margin: 10px; // Espaciado entre las tarjetas
-    flex: 1; // Asegura que las tarjetas crezcan uniformemente
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px; /* Altura mínima uniforme para todas las tarjetas */
+    height: 150px;
+  }
+
+.usuario-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-ion-card {
-    --min-height: 120px; // Altura mínima para todas las tarjetas
-    display: flex; // Permite que el contenido dentro del ion-card se alinee
-    flex-direction: column; // Alinea el contenido en columnas
-    justify-content: space-between; // Espaciado entre los elementos
+/* Avatar del usuario */
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 8px; /* Ajuste del espaciado con el nombre */
+}
+
+.avatar img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Ajuste del espacio entre el nombre y el email */
+.nombre {
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    margin: 4px 0; /* Reduce el margen para disminuir la distancia con el email */
+}
+
+.email {
+    font-size: 0.85em;
+    color: #616161;
+    margin-top: 2px; /* Reduce el margen superior para disminuir el espacio */
+}
+
+/* Tarjeta especial para crear un nuevo usuario */
+.nuevo-usuario {
+    background-color: #e0f7fa;
+    color: #00796b;
+    font-weight: bold;
+    min-height: 150px; /* Asegura que también tenga la misma altura */
+    height: 150px;
+}
+
+/* Ajuste de la imagen para crear nuevo usuario */
+.nuevo-usuario .avatar {
+    background-color: #e0f7fa;
+    width: 60px;
+    height: 60px;
+}
+
+.nuevo-usuario p {
+    margin-top: 5px;
+    color: #00796b;
 }

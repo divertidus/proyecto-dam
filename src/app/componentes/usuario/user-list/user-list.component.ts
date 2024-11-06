@@ -4,16 +4,17 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
-import { IonList, IonListHeader, IonLabel, IonItem, IonAvatar, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle } from "@ionic/angular/standalone";
+import { IonList, IonListHeader, IonLabel, IonItem, IonAvatar, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonContent, IonHeader, IonToolbar, IonTitle, IonIcon } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
   standalone: true,
-  imports: [IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonAvatar, IonItem, IonLabel, IonListHeader, IonList, FormsModule, CommonModule]
+  imports: [IonIcon, IonTitle, IonToolbar, IonHeader, IonContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonAvatar, IonItem, IonLabel, IonListHeader, IonList, FormsModule, CommonModule]
 })
 export class UserListComponent implements OnInit {
+
   @Input() usuarios: Usuario[] = [];
 
   usuarioSeleccionado: Usuario | null = null; // Agregar una propiedad para el usuario seleccionado
@@ -32,14 +33,15 @@ export class UserListComponent implements OnInit {
   }
 
   async login(): Promise<void> {
-    console.log('soy el login en list')
     if (this.usuarioSeleccionado) {
       await this.authService.loginConUsuarioSeleccionado(); // Inicia sesión con el usuario seleccionado
-      console.log('justo antes del navigate');
       this.router.navigate(['/tabs']); // Redirige a la tab1 después de iniciar sesión
-      console.log('justo después del navigate');
     } else {
-      console.error('No hay usuario seleccionado para iniciar sesión'); // Manejo de error si no hay usuario
+      console.error('No hay usuario seleccionado para iniciar sesión');
     }
+  }
+
+  irCrearUsuario(): void {
+    this.router.navigate(['/crear-usuario']); // Navega a la página de creación de usuario
   }
 }

@@ -1,6 +1,7 @@
 <!-- historial-entrenamiento.component.hmtl -->
 <!-- Lista de entrenamientos -->
 <ion-list>
+  <h3 *ngIf="entrenamientos.length > 0">Entrenamientos anteriores</h3>
   <app-dia-entrenamiento-card *ngFor="let entrenamiento of entrenamientos; let i = index"
     [diaEntrenamiento]="entrenamiento" [expandido]="isExpandido(i)" [index]="i"
     [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)" (toggleExpand)="toggleEntrenamiento($event)"

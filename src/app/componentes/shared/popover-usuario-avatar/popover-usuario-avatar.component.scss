@@ -1,0 +1,57 @@
+/* Contenedor principal */
+ion-list {
+    margin: 12px 0;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Elemento de lista */
+ion-item {
+    --background: #ffffff;
+    --border-color: transparent;
+    padding: 6px 12px; /* Menos padding para reducir altura */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+}
+
+ion-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Avatar de usuario */
+ion-avatar {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin-right: 8px; /* Menos espacio entre avatar y texto */
+}
+
+/* Nombre del usuario */
+ion-label h2 {
+    font-size: 0.9rem; /* Tamaño más pequeño */
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Añade puntos suspensivos si es muy largo */
+}
+
+/* Icono de cerrar sesión */
+ion-icon {
+    color: #ff3b30;
+    font-size: 1.2rem; /* Tamaño de icono más compacto */
+    margin-right: 6px; /* Espacio reducido entre icono y etiqueta */
+}
+
+/* Estilo del último elemento */
+ion-item:last-child {
+    margin-top: 8px;
+    color: #ff3b30;
+    font-size: 0.9rem;
+    font-weight: 500;
+}

@@ -39,7 +39,9 @@
                     <button class="control-button plus" (click)="incrementarPeso(ejercicio, j)"
                       [disabled]="!serie.enEdicion">+</button>
                     <span *ngIf="serie.pesoAnterior" class="weight-label">({{ serie.pesoAnterior }} kg)</span>
-                    <ion-icon name="create-outline" class="note-icon" (click)="abrirNotasSerie(i, j)"></ion-icon>
+                    <!-- Botón de notas solo visible en modo edición -->
+                    <ion-icon *ngIf="serie.enEdicion" name="create-outline" class="note-icon"
+                      (click)="abrirNotasSerie(i, j)"></ion-icon>
                   </div>
 
                   <div class="action-buttons">

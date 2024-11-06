@@ -1,31 +1,30 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>seleccionar-usuario</ion-title>
+    <ion-title>Seleccionar Usuario</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="content-centered">
+  <!-- Logo de la aplicación -->
+  <div class="logo-container">
+    <img src="assets/imagenes/menus/principal/logo-inicio.png" alt="Mi Rutina Logo" class="logo-image" />
+  </div>
+
   <!-- Mostrar el spinner mientras los usuarios están cargando -->
   <ion-spinner *ngIf="isLoading"></ion-spinner>
 
   <!-- Mostrar mensaje si no hay usuarios cuando la carga ha terminado -->
-  <div *ngIf="!isLoading && usuarios.length === 0">
+  <div *ngIf="!isLoading && usuarios.length === 0" class="no-usuarios-message">
     <p>No se encontraron usuarios. Por favor, cree uno nuevo.</p>
   </div>
 
   <!-- Mostrar la lista de usuarios cuando la carga ha terminado y existen usuarios -->
   <app-user-list *ngIf="!isLoading && usuarios.length > 0" [usuarios]="usuarios"></app-user-list>
-
-  <!-- Botones para crear y administrar usuarios -->
-  <ion-footer *ngIf="!isLoading">
-    <ion-button expand="full" (click)="irCrearUsuario()">Crear Nuevo Usuario</ion-button>
-    <ion-button expand="full" (click)="irAdministrarUsuarios()">Administrar usuarios</ion-button>
-
-  </ion-footer>
-
 </ion-content>
+
+<!-- Botón adicional para reiniciar la base de datos -->
 <ion-footer *ngIf="!isLoading">
-  <!-- Añadir un botón para reiniciar la base de datos -->
+  <ion-button expand="full" (click)="irAdministrarUsuarios()">Administrar usuarios</ion-button>
   <ion-button expand="full" color="danger" (click)="reiniciarBaseDatos()">Reiniciar Base de Datos</ion-button>
   <ion-alert></ion-alert>
 </ion-footer>
