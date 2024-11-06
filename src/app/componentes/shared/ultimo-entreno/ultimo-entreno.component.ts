@@ -32,16 +32,15 @@ export class UltimoEntrenoComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // Cargar datos del usuario logeado y suscribirse a historial$
+    // Suscribirse al usuario logeado y al historial de entrenamientos
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
       this.usuarioLogeado = usuario || null;
-      this.ultimoEntrenamiento = null;
-      this.expandido = false;
-
       if (usuario) {
         await this.cargarNombresEjercicios(); // Cargar nombres de ejercicios una vez
+
+        // Suscripción al historial de entrenamientos
         this.historialService.historial$.subscribe((historiales) => {
-          this.actualizarUltimoEntrenamiento(historiales); // Actualizar último entrenamiento
+          this.actualizarUltimoEntrenamiento(historiales);
         });
       }
     });
@@ -49,21 +48,19 @@ export class UltimoEntrenoComponent implements OnInit {
 
   async cargarNombresEjercicios() {
     const ejercicios = await this.ejercicioService.obtenerEjercicios();
-    ejercicios.forEach(ejercicio => {
+    ejercicios.forEach((ejercicio) => {
       this.nombresEjercicios[ejercicio._id] = ejercicio.nombre;
     });
   }
 
-  // Método para obtener el nombre del ejercicio usando su ID
   obtenerNombreEjercicio(ejercicioId: string): string {
     return this.nombresEjercicios[ejercicioId] || 'Ejercicio desconocido';
   }
 
   toggleEntrenamiento() {
-    this.expandido = !this.expandido; // Alterna entre expandido y contraído
+    this.expandido = !this.expandido;
   }
 
-  // Actualiza el último entrenamiento basado en el historial actual
   actualizarUltimoEntrenamiento(historiales: any[]) {
     if (historiales.length === 0) {
       this.ultimoEntrenamiento = null;
@@ -71,14 +68,12 @@ export class UltimoEntrenoComponent implements OnInit {
       return;
     }
 
-    // Aplanar todos los entrenamientos y ordenar por fecha
-    const todosLosEntrenamientos = historiales.map(historial => historial.entrenamientos).flat();
+    const todosLosEntrenamientos = historiales.map((historial) => historial.entrenamientos).flat();
     todosLosEntrenamientos.sort((a, b) =>
       new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
     );
 
-    // Asignar el último entrenamiento actualizado
     this.ultimoEntrenamiento = todosLosEntrenamientos[0];
-    console.log("Último entrenamiento actualizado:", this.ultimoEntrenamiento);
+    console.log('Último entrenamiento actualizado:', this.ultimoEntrenamiento);
   }
 }

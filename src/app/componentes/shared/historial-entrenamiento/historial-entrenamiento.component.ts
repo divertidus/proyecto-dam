@@ -36,21 +36,24 @@ export class HistorialEntrenamientoComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // Cambiamos la lógica para estar seguros de una suscripción sólida y clara
-    this.authService.usuarioLogeado$
-      .pipe(switchMap(usuario => {
-        if (usuario) {
-          this.usuarioLogeado = usuario;
-          return this.historialService.historial$;
-        }
-        return [];
-      }))
-      .subscribe(historiales => {
-        console.log('Historial actualizado en historial$:', historiales);
-        this.actualizarEntrenamientos(historiales);
-      });
+    this.authService.usuarioLogeado$.subscribe(usuario => {
+      if (usuario) {
+        this.usuarioLogeado = usuario;
+        this.suscribirHistorial(); // Nos suscribimos a los cambios en historial$
+        this.cargarNombresEjercicios();
+      }
+    });
   }
-  // Método para cargar y ordenar entrenamientos
+
+  // Nos suscribimos a `historial$` del servicio para cargar y actualizar los entrenamientos
+  suscribirHistorial() {
+    this.historialService.historial$.subscribe(historiales => {
+      console.log('Historial actualizado en historial$:', historiales);
+      this.actualizarEntrenamientos(historiales);
+    });
+  }
+
+  // Cargar y ordenar entrenamientos desde el historial actualizado
   actualizarEntrenamientos(historiales: HistorialEntrenamiento[]) {
     this.entrenamientos = historiales
       .map(historial => historial.entrenamientos)
@@ -61,9 +64,6 @@ export class HistorialEntrenamientoComponent implements OnInit {
       );
     console.log("Estructura de entrenamientos cargados:", this.entrenamientos);
   }
-
-
-
 
   // Cargar todos los entrenamientos
   async cargarEntrenamientos() {

@@ -22,42 +22,36 @@ export class HistorialService {
 
   }
 
-  // Método para agregar un nuevo historial de entrenamiento
+
   // Agregar o actualizar un historial de entrenamiento
-  // Método para agregar o actualizar el historial de entrenamiento
   async agregarHistorial(historial: HistorialEntrenamiento): Promise<void> {
     try {
-      // Buscar si ya existe el historial de este usuario
       const historialesExistentes = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
       let historialExistente = historialesExistentes[0];
 
       if (historialExistente) {
-        // Agregar el nuevo entrenamiento al historial existente
         historialExistente.entrenamientos.push(...historial.entrenamientos);
         await this.baseDatos.put({
           ...historialExistente,
           _rev: historialExistente._rev,
         });
       } else {
-        // Crear uno nuevo si no existe
         historial._id = `historial_${historial.usuarioId}_${Date.now()}`;
         await this.baseDatos.put(historial);
       }
 
-      // Emitir inmediatamente el historial actualizado
-      // Emitir el historial actualizado después de confirmarse la operación en la base de datos
-      const historialesActualizados = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
-      await this.emitirHistorialActualizado(historialesActualizados);
-
+      await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
       console.error('Error al agregar o actualizar el historial:', error);
       throw error;
     }
   }
 
-  private async emitirHistorialActualizado(historiales: HistorialEntrenamiento[]): Promise<void> {
-    this.historialSubject.next([...historiales]);
-    console.log('Historiales cargados y emitidos en BehaviorSubject:', historiales);
+  // Método para emitir los historiales actualizados
+  private async emitirHistorialActualizado(usuarioId: string): Promise<void> {
+    const historialesActualizados = await this.obtenerHistorialesPorUsuario(usuarioId);
+    this.historialSubject.next([...historialesActualizados]);
+    console.log('Historiales emitidos en BehaviorSubject:', historialesActualizados);
   }
 
   // Método para obtener todos los historiales de un usuario
@@ -89,19 +83,18 @@ export class HistorialService {
   async actualizarHistorial(historial: HistorialEntrenamiento): Promise<void> {
     try {
       await this.baseDatos.put(historial);
-      await this.cargarHistoriales(historial.usuarioId); // Recargar historial actualizado
+      await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
       console.error('Error al actualizar historial:', error);
       throw error;
     }
   }
 
-  // Método para eliminar un historial de la base de datos
   // Eliminar un historial completo
   async eliminarHistorial(historial: HistorialEntrenamiento): Promise<void> {
     try {
       await this.baseDatos.remove(historial);
-      await this.cargarHistoriales(historial.usuarioId); // Recargar historial actualizado
+      await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
       console.error('Error al eliminar historial:', error);
       throw error;
@@ -121,6 +114,7 @@ export class HistorialService {
     }
   }
 
+  // Obtener el último entrenamiento de un usuario
   async obtenerUltimoEntrenamientoPorUsuario(usuarioId: string): Promise<DiaEntrenamiento | null> {
     try {
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
@@ -325,13 +319,11 @@ export class HistorialService {
   // Crear un nuevo día de entrenamiento en el historial
   async crearDiaEntrenamiento(historial: HistorialEntrenamiento, nuevoDia: DiaEntrenamiento): Promise<void> {
     try {
-      // Asignar un ID único usando uuidv4() si no tiene uno
       nuevoDia._id = nuevoDia._id || uuidv4();
-      historial.entrenamientos.push(nuevoDia); // Agregar el nuevo día al historial
+      historial.entrenamientos.push(nuevoDia);
 
-      // Guardar el historial actualizado en la base de datos
       await this.baseDatos.put({ ...historial, _rev: historial._rev });
-      console.log('Día de entrenamiento creado exitosamente');
+      await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
       console.error('Error al crear el día de entrenamiento:', error);
       throw error;
@@ -349,10 +341,9 @@ export class HistorialService {
     }
   }
 
-  // Servicio de historial de entrenamiento
+  // Actualizar un día específico de entrenamiento
   async actualizarDiaEntrenamiento(diaActualizado: DiaEntrenamiento): Promise<void> {
     try {
-      // Obtener el historial completo que contiene el día específico en la base de datos
       const result = await this.baseDatos.find({
         selector: {
           entidad: 'historialEntrenamiento',
@@ -365,23 +356,18 @@ export class HistorialService {
         return;
       }
 
-      const historial = result.docs[0]; // Obtener el historial encontrado
-
-      // Localizar y actualizar el día específico dentro del historial
+      const historial = result.docs[0];
       const indexDia = historial.entrenamientos.findIndex(dia => dia._id === diaActualizado._id);
       if (indexDia === -1) {
         console.error('El día de entrenamiento no se encontró en el historial.');
         return;
       }
 
-      // Actualizar el día en el arreglo de entrenamientos
       historial.entrenamientos[indexDia] = { ...diaActualizado };
-
-      // Guardar el historial completo con el día actualizado en la base de datos
       await this.baseDatos.put({ ...historial, _rev: historial._rev });
-      console.log('Día de entrenamiento actualizado exitosamente en la base de datos.');
+      await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
-      console.error('Error al actualizar el día de entrenamiento en la base de datos:', error);
+      console.error('Error al actualizar el día de entrenamiento:', error);
       throw error;
     }
   }
@@ -401,28 +387,20 @@ export class HistorialService {
     }
   }
 
-  // Eliminar un día específico de entrenamiento por su ID
+  // Eliminar un día específico de entrenamiento
   async eliminarDiaEntrenamiento(historialId: string, diaId: string): Promise<void> {
     try {
-      // Obtener el historial completo desde la base de datos usando el historialId
       const historial = await this.baseDatos.get(historialId);
       if (!historial) {
         console.error('No se encontró el historial con el ID especificado.');
         return;
       }
 
-      // Filtrar el arreglo para eliminar el día con el ID especificado
       historial.entrenamientos = historial.entrenamientos.filter((dia: DiaEntrenamiento) => dia._id !== diaId);
-
-      // Guardar el historial actualizado en la base de datos
       await this.baseDatos.put({ ...historial, _rev: historial._rev });
-      console.log(`Día con ID ${diaId} eliminado exitosamente del historial con ID ${historialId}`);
-
-      // Obtener y emitir el historial actualizado
-      const historialesActualizados = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
-      await this.emitirHistorialActualizado(historialesActualizados); // Emitir el historial actualizado
+      await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
-      console.error(`Error al eliminar el día con ID ${diaId} del historial con ID ${historialId}:`, error);
+      console.error(`Error al eliminar el día con ID ${diaId}:`, error);
       throw error;
     }
   }

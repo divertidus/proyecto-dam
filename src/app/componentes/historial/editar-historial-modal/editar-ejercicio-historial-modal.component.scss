@@ -24,9 +24,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.4rem 0.8rem;
-    /* Reduce el padding */
     background-color: #f0f0f0;
-    /* Color tenue para distinguirlo del contenido */
     border-bottom: 1px solid #ddd;
     border-radius: 8px 8px 0 0;
 }
@@ -59,7 +57,6 @@
 .exercise-container {
     padding: 0.5rem;
     background-color: #f9f9f9;
-    /* Color más claro para las series */
     border-radius: 0 0 8px 8px;
 }
 
@@ -70,7 +67,6 @@
     padding: 0.2rem 0.5rem;
     margin-bottom: 4px;
     background-color: #ffffff;
-    /* Fondo blanco para cada serie */
     border-radius: 4px;
 }
 
@@ -84,7 +80,7 @@
 /* Inputs de repeticiones y peso */
 .reps-input,
 .weight-input {
-    width: 45px;
+    width: 50px;
     height: 32px;
     text-align: center;
     border: 1px solid #ddd;
@@ -130,13 +126,13 @@
 
 /* Icono de eliminar alineado a la derecha de la fila */
 .delete-icon.delete-right {
-    margin-left: auto; /* Alinea a la derecha */
-    color: #ff4444; /* Color más destacado */
+    margin-left: auto;
+    color: #ff4444;
     font-size: 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-  }
+}
 
 /* Botones de acción */
 .action-buttons {
@@ -184,15 +180,12 @@
 
 /* Eliminar flechas de inputs numéricos */
 ion-input {
-
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
         -webkit-appearance: none;
-        margin: 20;
+        margin: 0;
     }
 }
-
-
 
 /* Ajustes generales */
 .content-adjusted {
@@ -202,10 +195,17 @@ ion-input {
     height: 100%;
 }
 
+/* Estilo de la barra de pie */
 .footer-fixed {
     position: fixed;
     bottom: 0;
     width: 100%;
     z-index: 10;
     background-color: #fff;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }

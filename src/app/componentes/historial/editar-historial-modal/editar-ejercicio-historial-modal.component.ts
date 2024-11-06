@@ -100,7 +100,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
           name: 'nota',
           type: 'text',
           placeholder: 'Escribe tu nota aquí',
-          value: this.diaEntrenamiento.ejerciciosRealizados[index].notas || '',
+          value: this.diaEntrenamientoBackup.ejerciciosRealizados[index].notas || '',
         },
       ],
       buttons: [
@@ -111,7 +111,9 @@ export class EditarEjercicioHistorialComponent implements OnInit {
         {
           text: 'Guardar',
           handler: (data) => {
-            this.diaEntrenamiento.ejerciciosRealizados[index].notas = data.nota;
+            // Guardamos la nota directamente en el backup para que se actualice en tiempo real
+            this.diaEntrenamientoBackup.ejerciciosRealizados[index].notas = data.nota;
+            console.log(`Nota guardada para el ejercicio "${this.diaEntrenamientoBackup.ejerciciosRealizados[index].nombreEjercicioRealizado}": ${data.nota}`);
           },
         },
       ],
@@ -121,7 +123,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   }
 
   async abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
-    const serie = this.diaEntrenamiento.ejerciciosRealizados[ejercicioIndex].series[serieIndex];
+    const serie = this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex].series[serieIndex];
     const alert = await this.alertController.create({
       header: 'Editar Nota de la Serie',
       inputs: [
@@ -140,7 +142,9 @@ export class EditarEjercicioHistorialComponent implements OnInit {
         {
           text: 'Guardar',
           handler: (data) => {
+            // Guardamos la nota directamente en el backup
             serie.notas = data.nota;
+            console.log(`Nota guardada para la serie ${serie.numeroSerie} del ejercicio "${this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex].nombreEjercicioRealizado}": ${data.nota}`);
           },
         },
       ],
@@ -148,6 +152,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
 
     await alert.present();
   }
+
 
   // Método para alternar el ejercicio abierto
   toggleEjercicio(index: number) {
@@ -253,12 +258,12 @@ export class EditarEjercicioHistorialComponent implements OnInit {
 
     // Si la serie eliminada estaba completa, restamos uno a `seriesCompletadas`
     if (esSerieCompletada) {
-        ejercicio.seriesCompletadas = Math.max(0, ejercicio.seriesCompletadas - 1);
+      ejercicio.seriesCompletadas = Math.max(0, ejercicio.seriesCompletadas - 1);
     }
 
     // Actualizar `seriesCompletadas` para reflejar el cambio en la interfaz
     this.actualizarSeriesCompletadas(ejercicioIndex);
-}
+  }
 
   toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
     const ejercicio = this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex];
