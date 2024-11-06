@@ -66,9 +66,11 @@
           <ion-button fill="clear" color="medium" (click)="editarEjercicio(i)">
             <ion-icon name="create"></ion-icon>
           </ion-button>
+          <ion-modal></ion-modal>
           <ion-button fill="clear" color="danger" (click)="eliminarEjercicio(i)">
             <ion-icon name="trash"></ion-icon>
           </ion-button>
+          <ion-alert></ion-alert>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -79,6 +81,8 @@
 <ion-footer>
   <ion-toolbar>
     <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
+    <ion-alert></ion-alert>
     <ion-button expand="full" color="success" (click)="guardar()">Guardar</ion-button>
+    <ion-alert></ion-alert>
   </ion-toolbar>
 </ion-footer>

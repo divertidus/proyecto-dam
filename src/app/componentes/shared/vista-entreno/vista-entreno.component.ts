@@ -278,9 +278,9 @@ export class VistaEntrenoComponent implements OnInit {
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
       _id: uuidv4(),
       fechaEntrenamiento: new Date().toISOString(),
-      nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento,
+      nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento || 'Rutina sin nombre',
       diaRutinaId: this.diaRutinaId!,
-      descripcion: this.descripcion,
+      descripcion: this.descripcion || '',
       ejerciciosRealizados: this.ejercicios.map(ej => {
         // Estado de notas basado en si el ejercicio fue iniciado o completado
         let notasEjercicio = '';
@@ -290,6 +290,7 @@ export class VistaEntrenoComponent implements OnInit {
           notasEjercicio = 'Incompleto';
         }
 
+        // Crear la estructura de cada ejercicio realizado con seriesCompletadas y seriesTotal
         return {
           _id: uuidv4(),
           ejercicioPlanId: ej.ejercicioPlanId,
@@ -307,8 +308,9 @@ export class VistaEntrenoComponent implements OnInit {
               dolor: serie.dolor,
               notas: serie.notas || null,
             })),
-          // Concatenamos el estado con la nota del usuario, separados por un guion o salto de línea
-          notas: [notasEjercicio, ej.notas].filter(nota => nota).join(' - '), 
+          seriesCompletadas: ej.seriesCompletadas || 0,
+          seriesTotal: ej.seriesTotal || ej.seriesReal.length,
+          notas: [notasEjercicio, ej.notas].filter(nota => nota).join(' - '),
           anteriorVezEjercicioID: ej._id || null,
         };
       }),
@@ -316,11 +318,19 @@ export class VistaEntrenoComponent implements OnInit {
     };
 
     try {
-      // Guardar o actualizar en la base de datos como hasta ahora
-      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioId!);
+      if (!this.usuarioId) {
+        console.error('El usuario no está identificado.');
+        return;
+      }
+
+      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioId);
       let historialExistente: HistorialEntrenamiento | null = null;
+
       if (historialesExistentes.length > 0) {
         historialExistente = historialesExistentes[0];
+        console.log('Historial existente encontrado:', historialExistente);
+      } else {
+        console.log('No se encontró un historial existente para el usuario.');
       }
 
       if (historialExistente) {
@@ -329,7 +339,7 @@ export class VistaEntrenoComponent implements OnInit {
       } else {
         const nuevoHistorial: HistorialEntrenamiento = {
           entidad: 'historialEntrenamiento',
-          usuarioId: this.usuarioId!,
+          usuarioId: this.usuarioId,
           entrenamientos: [nuevoDiaEntrenamiento],
         };
         await this.historialService.agregarHistorial(nuevoHistorial);
@@ -433,26 +443,37 @@ export class VistaEntrenoComponent implements OnInit {
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
 
-    // Validar que los campos necesarios estén completos
-    if (!serie.repeticiones || !serie.peso) {
-      // Mostrar mensaje de error o alerta
+    // Validar que los campos necesarios estén completos y mostrar un mensaje de alerta en caso de error
+    if (!serie.repeticiones || serie.peso === undefined || serie.peso <= 0) {
+      console.warn("La serie necesita repeticiones y peso definidos para completarse.");
       return;
     }
 
-    // Marcar la serie como completada
+    // Marcar la serie como completada y bloquear su edición
     serie.completado = true;
     serie.enEdicion = false;
 
-    // Incrementar el contador de series completadas si es la siguiente en la secuencia
+    // Si es la siguiente serie en la secuencia, incrementa el contador de series completadas
     if (serieIndex === ejercicio.seriesCompletadas) {
       ejercicio.seriesCompletadas++;
     }
 
-    // Marcar el ejercicio como completado si todas las series lo están
+    // Si todas las series están completadas, marca el ejercicio como completado
     if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
       ejercicio.completado = true;
-      this.actualizarEjerciciosCompletados(); // Llamar para actualizar el estado global
     }
+
+    // Actualizar los pesos de las siguientes series solo si esta es la primera serie completada en el ejercicio
+    if (serieIndex === 0 && ejercicio.seriesCompletadas === 1) {
+      ejercicio.seriesReal.forEach((s, i) => {
+        if (i > serieIndex && s.peso === 0) {
+          s.peso = serie.peso; // Establece el peso inicial para las siguientes series
+        }
+      });
+    }
+
+    // Actualizar el contador global de ejercicios completados si el ejercicio está completo
+    this.actualizarEjerciciosCompletados();
   }
 
   editarSerie(ejercicioIndex: number, serieIndex: number) {

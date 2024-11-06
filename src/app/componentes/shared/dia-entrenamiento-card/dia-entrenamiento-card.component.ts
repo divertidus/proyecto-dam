@@ -2,9 +2,11 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DiaEntrenamiento, SerieReal } from 'src/app/models/historial-entrenamiento';
-import { IonCard, IonCardContent, IonCardSubtitle, 
-  IonCardTitle, IonCardHeader, IonList, 
-  IonItem, IonLabel, IonButton, IonIcon, IonHeader } from "@ionic/angular/standalone";
+import {
+  IonCard, IonCardContent, IonCardSubtitle,
+  IonCardTitle, IonCardHeader, IonList,
+  IonItem, IonLabel, IonButton, IonIcon, IonHeader
+} from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { EditarEjercicioHistorialComponent } from '../../historial/editar-historial-modal/editar-ejercicio-historial-modal.component';
@@ -24,7 +26,7 @@ export class DiaEntrenamientoCardComponent {
   @Input() index: number; // Índice del entrenamiento
   @Input() obtenerNombreEjercicio: (ejercicioId: string) => string; // Input de la función para obtener el nombre
   @Input() editable: boolean = false;
-
+  @Input() usuarioId: string;
   @Output() toggleExpand = new EventEmitter<number>(); // Evento para expandir/colapsar
   @Output() diaEliminado = new EventEmitter<string>(); // Cambiamos el tipo a `string`
 
@@ -88,7 +90,11 @@ export class DiaEntrenamientoCardComponent {
   async abrirModalEditarDiaCompleto() {
     const modal = await this.modalController.create({
       component: EditarEjercicioHistorialComponent,
-      componentProps: { diaEntrenamiento: this.diaEntrenamiento, editable: this.editable }
+      componentProps: {
+        diaEntrenamiento: this.diaEntrenamiento,
+        editable: this.editable,
+        usuarioId: this.usuarioId
+      }
     });
 
     modal.onDidDismiss().then(async (result) => {

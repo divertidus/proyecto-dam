@@ -85,8 +85,6 @@ export class HistorialService {
     }
   }
 
-  // Método para actualizar un historial
-
   // Actualizar un historial específico
   async actualizarHistorial(historial: HistorialEntrenamiento): Promise<void> {
     try {
@@ -225,25 +223,6 @@ export class HistorialService {
       console.error('Error al actualizar pesos en entrenamientos posteriores:', error);
     }
   }
-
-
-  // Eliminar un día específico de un historial y recargar el historial
-  /*async eliminarDiaEntrenamiento(historialId: string, diaId: string): Promise<void> {
-    try {
-      const historial = await this.baseDatos.get(historialId);
-      if (!historial) return;
-
-      historial.entrenamientos = historial.entrenamientos.filter((dia: DiaEntrenamiento) => dia._id !== diaId);
-      await this.baseDatos.put({ ...historial, _rev: historial._rev });
-
-      // Emitir el historial actualizado
-      const historialesActualizados = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
-      await this.emitirHistorialActualizado(historialesActualizados);
-    } catch (error) {
-      console.error(`Error al eliminar el día con ID ${diaId}:`, error);
-      throw error;
-    }
-  }*/
 
   async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
     try {

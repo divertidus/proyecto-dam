@@ -26,6 +26,11 @@
         <ion-label>
           <h2>{{ ejercicio.nombreEjercicioRealizado }}</h2>
 
+          <!-- Progreso de series completadas -->
+          <p class="progress-indicator">
+            <strong>Series completadas:</strong> {{ ejercicio.seriesCompletadas || 0 }} / {{ ejercicio.seriesTotal }}
+          </p>
+
           <!-- Mostrar estado del ejercicio -->
           <p *ngIf="ejercicio.notas">
             <strong>Estado:</strong> {{ ejercicio.notas }}

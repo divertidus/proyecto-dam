@@ -8,8 +8,7 @@ import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-ca
 import { Subscription } from 'rxjs';
 import {
   IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput, IonList, IonIcon
-} from '@ionic/angular/standalone';
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput, IonList, IonIcon, IonAlert, IonModal } from '@ionic/angular/standalone';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
@@ -17,7 +16,7 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   templateUrl: './form-dia.component.html',
   styleUrls: ['./form-dia.component.scss'],
   standalone: true,
-  imports: [IonIcon, IonList, IonButton, IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
+  imports: [IonModal, IonAlert, IonIcon, IonList, IonButton, IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText,
     IonLabel, IonItem, IonFooter, CommonModule, FormsModule, ToolbarModalesCancelarComponent]
 

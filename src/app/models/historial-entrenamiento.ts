@@ -26,6 +26,8 @@ export interface EjercicioRealizado {
   ejercicioPlanId: string;
   nombreEjercicioRealizado: string;
   series: SerieReal[];
+  seriesCompletadas: number; // Añadido
+  seriesTotal: number; // Añadido
   notas?: string;
   anteriorVezEjercicioID?: string
 }
