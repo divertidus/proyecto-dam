@@ -47,6 +47,11 @@
                       [disabled]="serie.enEdicion && serie.peso === 0">
                       {{ serie.enEdicion ? 'OK' : 'EDIT' }}
                     </ion-button>
+                    <!-- Icono de cubo de basura visible solo en la última serie extra -->
+                    <ion-icon
+                      *ngIf="j === ejercicio.seriesReal.length - 1 && ejercicio.seriesReal.length > ejercicio.seriesTotal"
+                      name="trash-outline" class="delete-icon delete-right" (click)="confirmarEliminarUltimaSerie(i)">
+                    </ion-icon>
                   </div>
                 </div>
 
@@ -73,6 +78,10 @@
                 </div>
               </div>
             </ng-container>
+            <ion-button *ngIf="ejercicio.seriesCompletadas === ejercicio.seriesTotal" expand="block" fill="outline"
+              (click)="anadirSerieExtra(i)">
+              Añadir Serie Extra
+            </ion-button>
           </div>
         </ion-card-content>
       </ion-card>

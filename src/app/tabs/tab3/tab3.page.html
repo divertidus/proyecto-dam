@@ -1,13 +1,18 @@
-<!-- /* tab3.page.html */ -->
-<app-toolbar-logged [titulo]="'Entrenamiento'"></app-toolbar-logged>
+<app-toolbar-logged
+    [titulo]="entrenamientoEnProgreso ? 'Entrenamiento en curso' : 'Entrenamiento'"></app-toolbar-logged>
 
 <ion-content>
-    <app-ultimo-entreno></app-ultimo-entreno>
+    <ng-container *ngIf="entrenamientoEnProgreso; else startContent">
+        <app-vista-entreno *ngIf="entrenamientoEnProgreso" [rutinaId]="entrenamientoDetalles?.rutinaId"
+            [diaRutinaId]="entrenamientoDetalles?.diaRutinaId" [descripcion]="entrenamientoDetalles?.descripcion">
+        </app-vista-entreno>
+    </ng-container>
 
-    <!-- Botón Comenzar -->
-    <ion-button (click)="onComenzarButtonClick()" expand="block">
-        Comenzar a entrenar
-    </ion-button>
-    <ion-alert></ion-alert> <!-- PARA QUE FUNCIONE LA ALERTA EN PROD -->
-
+    <ng-template #startContent>
+        <app-ultimo-entreno></app-ultimo-entreno>
+        <ion-button (click)="onComenzarButtonClick()" expand="block">
+            Comenzar a entrenar
+        </ion-button>
+        <ion-alert></ion-alert>
+    </ng-template>
 </ion-content>

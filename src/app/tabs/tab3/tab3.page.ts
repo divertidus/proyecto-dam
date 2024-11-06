@@ -13,13 +13,15 @@ import { IonContent, IonButton, IonModal, IonAlert } from "@ionic/angular/standa
 import { FormsModule } from '@angular/forms';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
+import { EntrenamientoEstadoService } from 'src/app/services/sesion/entrenamiento-estado.service';
+import { VistaEntrenoComponent } from "../../componentes/shared/vista-entreno/vista-entreno.component";
 
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonModal, IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent],
+  imports: [IonAlert, IonModal, IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent, VistaEntrenoComponent],
   providers: [ModalController, PopoverController]
 })
 export class Tab3Page implements OnInit {
@@ -27,60 +29,82 @@ export class Tab3Page implements OnInit {
   rutinas: Rutina[] = [];
   ultimoEntrenamiento: DiaEntrenamiento | null = null; // Guardar el último entrenamiento
 
+  entrenamientoEnProgreso = false;
+  entrenamientoDetalles: { rutinaId: string; diaRutinaId: string; descripcion: string } | null = null;
+
   constructor(
     private authService: AuthService,
     private rutinaService: RutinaService,
     private historialService: HistorialService,
     private alertController: AlertController,
+    private entrenamientoEstadoService: EntrenamientoEstadoService,
     private router: Router
   ) { }
 
   async ngOnInit(): Promise<void> {
-    // Suscribirse al usuario logueado
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
       this.ultimoEntrenamiento = null;
 
       if (usuario) {
         this.usuarioLogeado = usuario;
-        // Cargar las rutinas del usuario
-        // Suscribirse a los cambios en las rutinas del usuario
         this.rutinaService.rutinas$.subscribe((rutinas) => {
           this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
         });
-
-        // Suscribirse a los cambios en el historial
         this.historialService.historial$.subscribe(() => {
-          this.cargarUltimoEntrenamiento(); // Recargar último entrenamiento cuando el historial cambie
+          this.cargarUltimoEntrenamiento();
+        });
+
+        // Revisar si hay un entrenamiento en progreso en el estado global
+        const estadoEntrenamiento = this.entrenamientoEstadoService.obtenerEstadoActual();
+        this.entrenamientoEnProgreso = estadoEntrenamiento.enProgreso;
+        if (this.entrenamientoEnProgreso) {
+          this.entrenamientoDetalles = {
+            rutinaId: estadoEntrenamiento.rutinaId!,
+            diaRutinaId: estadoEntrenamiento.diaRutinaId!,
+            descripcion: estadoEntrenamiento.descripcion
+          };
+        }
+
+        // Suscribirse a los cambios en el estado de entrenamiento
+        this.entrenamientoEstadoService.entrenamientoState$.subscribe((estado) => {
+          this.entrenamientoEnProgreso = estado.enProgreso;
+          if (estado.enProgreso) {
+            this.entrenamientoDetalles = {
+              rutinaId: estado.rutinaId!,
+              diaRutinaId: estado.diaRutinaId!,
+              descripcion: estado.descripcion
+            };
+            console.log("Datos recibidos en Tab3Page para VistaEntrenoComponent:", this.entrenamientoDetalles);
+          } else {
+            this.entrenamientoDetalles = null;
+          }
         });
 
       } else {
-        // Si no hay usuario logueado, reiniciar las variables
         this.usuarioLogeado = null;
         this.rutinas = [];
         this.ultimoEntrenamiento = null;
+        this.entrenamientoEnProgreso = false;
+        this.entrenamientoDetalles = null;
       }
     });
   }
 
   async onComenzarButtonClick() {
-    console.log('Botón Comenzar presionado');
-
-    // Aseguramos que el último entrenamiento esté actualizado
     await this.cargarUltimoEntrenamiento();
-    console.log('Último entrenamiento cargado:', this.ultimoEntrenamiento);
 
     if (!this.usuarioLogeado || this.rutinas.length === 0) {
-        console.error('No hay usuario logueado o no hay rutinas disponibles.');
-        return;
+      console.error('No hay usuario logueado o no hay rutinas disponibles.');
+      return;
     }
 
     if (this.rutinas.length === 1) {
-        const rutina: Rutina = this.rutinas[0];
-        this.sugerirProximoDia(rutina);
+      const rutina: Rutina = this.rutinas[0];
+      this.sugerirProximoDia(rutina);
     } else {
-        await this.mostrarSelectorDeRutina();
+      await this.mostrarSelectorDeRutina();
     }
-}
+  }
 
   async mostrarSelectorDeRutina() {
     const alert = await this.alertController.create({
@@ -108,46 +132,17 @@ export class Tab3Page implements OnInit {
     await alert.present();
   }
 
-  async cargarUltimoEntrenamiento() {
-    try {
-        console.log('Dentro de cargarUltimoEntrenamiento');
-        if (!this.usuarioLogeado) return;
-
-        // Obtener el historial más reciente de manera reactiva
-        const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
-        if (historiales.length === 0) {
-            console.log('No hay entrenamientos registrados');
-            this.ultimoEntrenamiento = null;
-            return;
-        }
-
-        // Ordenar los historiales por fecha, y actualizar `this.ultimoEntrenamiento`
-        const entrenamientosOrdenados = historiales.flatMap(h => h.entrenamientos).sort(
-            (a, b) => new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
-        );
-
-        // Almacenar el último entrenamiento en la propiedad
-        this.ultimoEntrenamiento = entrenamientosOrdenados[0];
-        console.log('Último entrenamiento actualizado:', this.ultimoEntrenamiento);
-    } catch (error) {
-        console.error('Error al cargar el último entrenamiento:', error);
-    }
-}
-
   async sugerirProximoDia(rutina: Rutina) {
-    // Obtener el próximo día sugerido de entrenamiento
     const siguienteDia = this.obtenerProximoDia(rutina);
-    console.log('Día sugerido para el próximo entrenamiento:', siguienteDia);
 
-    // Mostrar un selector para que el usuario elija si desea seguir el día sugerido o seleccionar otro
     const alert = await this.alertController.create({
       header: 'Selecciona el día de entrenamiento',
       inputs: rutina.dias.map((dia, index) => ({
         name: `dia_${index}`,
         type: 'radio',
-        label: dia.diaNombre + ' - ' + dia.descripcion,
+        label: `${dia.diaNombre} - ${dia.descripcion}`,
         value: dia,
-        checked: dia === siguienteDia // Marcar el día sugerido
+        checked: dia === siguienteDia
       })),
       buttons: [
         {
@@ -157,11 +152,23 @@ export class Tab3Page implements OnInit {
         {
           text: 'Aceptar',
           handler: (diaSeleccionado: DiaRutina) => {
-            console.log('Día seleccionado:', diaSeleccionado);
-            // Aquí puedes redirigir al usuario al día seleccionado
-            console.log('Navegando a tab4 con:', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre, descripcion: diaSeleccionado.descripcion });
-            this.router.navigate(['/tabs/tab4', { rutinaId: rutina._id, diaRutinaId: diaSeleccionado.diaNombre, descripcion: diaSeleccionado.descripcion }]);
+            if (rutina && diaSeleccionado) {
+              console.log('Datos para iniciar entrenamiento:', {
+                rutinaId: rutina._id,
+                diaRutinaId: diaSeleccionado.diaNombre,
+                descripcion: diaSeleccionado.descripcion
+              });
 
+              // Enviar los datos al estado global
+              this.entrenamientoEstadoService.comenzarEntrenamiento(
+                rutina._id,
+                diaSeleccionado.diaNombre,
+                diaSeleccionado.descripcion
+              );
+
+              // Confirmación en consola de que la información se envió
+              console.log("Estado actualizado para el entrenamiento en progreso:", this.entrenamientoEstadoService.obtenerEstadoActual());
+            }
           },
         },
       ],
@@ -172,27 +179,32 @@ export class Tab3Page implements OnInit {
 
   obtenerProximoDia(rutina: Rutina): DiaRutina {
     if (!this.ultimoEntrenamiento) {
-      console.log('No hay entrenamientos previos. Sugerimos el primer día de la rutina.');
       return rutina.dias[0];
     }
 
-    // Verifica el último día entrenado
-    console.log("Último entrenamiento disponible:", this.ultimoEntrenamiento);
-
-    // Buscar el índice del día correspondiente al último entrenamiento realizado
     const indiceUltimoDia = rutina.dias.findIndex(d => d.diaNombre === this.ultimoEntrenamiento?.diaRutinaId);
+    return indiceUltimoDia === -1 || indiceUltimoDia === rutina.dias.length - 1
+      ? rutina.dias[0]
+      : rutina.dias[indiceUltimoDia + 1];
+  }
 
-    if (indiceUltimoDia === -1) {
-      console.log('El último día realizado no se encontró en la rutina. Sugerimos el primer día de la rutina.');
-      return rutina.dias[0];
-    }
+  async cargarUltimoEntrenamiento() {
+    try {
+      if (!this.usuarioLogeado) return;
 
-    if (indiceUltimoDia === rutina.dias.length - 1) {
-      console.log('El último día realizado fue el último de la rutina. Sugerimos el primer día de la rutina.');
-      return rutina.dias[0];
-    } else {
-      console.log(`El último día realizado fue el día ${rutina.dias[indiceUltimoDia].diaNombre}. Sugerimos el siguiente día: ${rutina.dias[indiceUltimoDia + 1].diaNombre}.`);
-      return rutina.dias[indiceUltimoDia + 1];
+      const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      if (historiales.length === 0) {
+        this.ultimoEntrenamiento = null;
+        return;
+      }
+
+      const entrenamientosOrdenados = historiales.flatMap(h => h.entrenamientos).sort(
+        (a, b) => new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
+      );
+      this.ultimoEntrenamiento = entrenamientosOrdenados[0];
+    } catch (error) {
+      console.error('Error al cargar el último entrenamiento:', error);
     }
   }
 }
+
