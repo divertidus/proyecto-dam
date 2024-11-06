@@ -20,9 +20,9 @@
             <!-- Nota del ejercicio antes de comenzar las series -->
             <p *ngIf="ejercicio.notas" class="exercise-note">Nota: {{ ejercicio.notas }}</p>
 
-            <p *ngIf="ejercicio.anteriorVezEjercicioID">
+            <!--  <p *ngIf="ejercicio.anteriorVezEjercicioID">
               ID del ejercicio anterior: {{ ejercicio.anteriorVezEjercicioID }}
-            </p>
+            </p> -->
 
             <ng-container *ngFor="let serie of ejercicio.seriesReal; let j = index">
               <div *ngIf="j <= ejercicio.seriesCompletadas">

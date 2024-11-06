@@ -3,10 +3,10 @@
   padding: 0.5rem;
 
   ion-item {
-    --background: transparent;
-    --padding-start: 0;
-    --padding-end: 0;
-    --inner-padding-end: 0;
+      --background: transparent;
+      --padding-start: 0;
+      --padding-end: 0;
+      --inner-padding-end: 0;
   }
 }
 
@@ -23,8 +23,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.4rem 0.8rem; /* Reduce el padding */
-  background-color: #f0f0f0; /* Color tenue para distinguirlo del contenido */
+  padding: 0.4rem 0.8rem;
+  /* Reduce el padding */
+  background-color: #f0f0f0;
+  /* Color tenue para distinguirlo del contenido */
   border-bottom: 1px solid #ddd;
   border-radius: 8px 8px 0 0;
 }
@@ -46,7 +48,8 @@
   font-size: 0.85rem;
 }
 
-.edit-icon, .note-icon {
+.edit-icon,
+.note-icon {
   font-size: 1.2rem;
   color: #007bff;
   cursor: pointer;
@@ -55,7 +58,7 @@
 /* Contenido de cada serie */
 .exercise-container {
   padding: 0.5rem;
-  background-color: #f9f9f9; /* Color más claro para las series */
+  background-color: #f9f9f9;
   border-radius: 0 0 8px 8px;
 }
 
@@ -65,7 +68,7 @@
   gap: 8px;
   padding: 0.2rem 0.5rem;
   margin-bottom: 4px;
-  background-color: #ffffff; /* Fondo blanco para cada serie */
+  background-color: #ffffff;
   border-radius: 4px;
 }
 
@@ -77,8 +80,9 @@
 }
 
 /* Inputs de repeticiones y peso */
-.reps-input, .weight-input {
-  width: 45px;
+.reps-input,
+.weight-input {
+  width: 50px;
   height: 32px;
   text-align: center;
   border: 1px solid #ddd;
@@ -100,26 +104,36 @@
   gap: 4px;
 
   .control-button {
-    width: 28px;
-    height: 28px;
-    background-color: #f0f0f0;
-    border-radius: 4px;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    cursor: pointer;
+      width: 28px;
+      height: 28px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      cursor: pointer;
 
-    &:hover:not(:disabled) {
-      background: #e0e0e0;
-    }
+      &:hover:not(:disabled) {
+          background: #e0e0e0;
+      }
 
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+      &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+      }
   }
+}
+
+/* Icono de eliminar alineado a la derecha de la fila */
+.delete-icon.delete-right {
+  margin-left: auto;
+  color: #ff4444;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 /* Botones de acción */
@@ -128,18 +142,18 @@
   gap: 4px;
 
   ion-button {
-    --padding-start: 8px;
-    --padding-end: 8px;
-    height: 32px;
-    margin: 0;
+      --padding-start: 8px;
+      --padding-end: 8px;
+      height: 32px;
+      margin: 0;
 
-    &.ok-button {
-      --color: #2196F3;
-    }
+      &.ok-button {
+          --color: #2196F3;
+      }
 
-    &:disabled {
-      opacity: 0.5;
-    }
+      &:disabled {
+          opacity: 0.5;
+      }
   }
 }
 
@@ -168,10 +182,11 @@
 
 /* Eliminar flechas de inputs numéricos */
 ion-input {
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 20;
+      -webkit-appearance: none;
+      margin: 0;
   }
 }
 
@@ -183,10 +198,17 @@ ion-input {
   height: 100%;
 }
 
+/* Estilo de la barra de pie */
 .footer-fixed {
   position: fixed;
   bottom: 0;
   width: 100%;
   z-index: 10;
   background-color: #fff;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
