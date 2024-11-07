@@ -19,60 +19,22 @@
       <ion-card-header>
         <ion-card-title>{{ ejercicio.nombreEjercicio }}</ion-card-title>
       </ion-card-header>
-
       <ion-card-content>
-        <div *ngIf="!isEditing(ejercicio)">
-          <p><strong>Series:</strong> {{ ejercicio.series }}</p>
-          <p><strong>Repeticiones:</strong> {{ ejercicio.repeticiones }}</p>
-          <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
-          <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>
-          <ion-buttons>
-            <ion-button color="primary" (click)="iniciarEdicionEjercicio(ejercicio)">
-              <ion-icon name="create-outline"></ion-icon>
-            </ion-button>
-            <ion-button color="danger" (click)="eliminarEjercicio(ejercicio)">
-              <ion-icon name="trash-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </div>
-
-        <!-- Formulario de edición del ejercicio -->
-        <ng-container *ngIf="isEditing(ejercicio)">
-          <ion-item>
-            <ion-label position="floating">Series</ion-label>
-            <ion-input type="number" [(ngModel)]="ejercicioEnEdicion.series"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Repeticiones</ion-label>
-            <ion-input type="number" [(ngModel)]="ejercicioEnEdicion.repeticiones"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Tipo de Peso</ion-label>
-            <ion-select [(ngModel)]="ejercicioEnEdicion.tipoPeso">
-              <ion-select-option value="barra">Barra</ion-select-option>
-              <ion-select-option value="mancuernas">Mancuernas</ion-select-option>
-              <ion-select-option value="máquina">Máquina</ion-select-option>
-              <ion-select-option value="peso corporal">Peso Corporal</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Notas</ion-label>
-            <ion-textarea [(ngModel)]="ejercicioEnEdicion.notas"></ion-textarea>
-          </ion-item>
-          <ion-button expand="block" color="primary" (click)="confirmarEdicionEjercicio()">Guardar Cambios</ion-button>
-        </ng-container>
+        <p><strong>Series:</strong> {{ ejercicio.series }}</p>
+        <p><strong>Repeticiones:</strong> {{ ejercicio.repeticiones }}</p>
+        <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
+        <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>
       </ion-card-content>
     </ion-card>
   </ion-list>
-
-  <ion-button expand="block" color="success" (click)="agregarNuevoEjercicio()">
-    <ion-icon name="add-circle-outline"></ion-icon> Agregar Nuevo Ejercicio
-  </ion-button>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
-    <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
-    <ion-button expand="full" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
+    <ion-button expand="block" color="success" (click)="agregarEjercicioSuelto()">
+      <ion-icon name="add-circle-outline"></ion-icon> Agregar Nuevo Ejercicio
+    </ion-button>
+    <ion-button expand="block" (click)="guardarCambios()">Guardar Cambios</ion-button>
+    <ion-button expand="block" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
   </ion-toolbar>
 </ion-footer>

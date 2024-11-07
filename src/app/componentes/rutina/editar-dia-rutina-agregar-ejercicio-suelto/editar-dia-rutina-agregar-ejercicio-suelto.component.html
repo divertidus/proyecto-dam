@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-item lines="none">
+      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="height: 100%; overflow-y: auto;">
+    <ion-grid>
+      <ion-row class="ion-align-items-stretch">
+        <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
+          <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
+            <ion-card-header>
+              <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+                alt="Imagen del ejercicio" class="imagen-ejercicio" />
+              <div class="ejercicio-info">
+                <p>{{ ejercicio.tipoPeso }}</p>
+                <p>{{ ejercicio.musculoPrincipal }}</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="full" color="danger" (click)="cerrarModal()">Cancelar</ion-button>
+  </ion-toolbar>
+</ion-footer>

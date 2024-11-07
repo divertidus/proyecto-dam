@@ -10,6 +10,8 @@ import {
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
+import { Ejercicio } from 'src/app/models/ejercicio.model';
+import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
 
 @Component({
   selector: 'app-editar-dia-rutina',
@@ -20,7 +22,7 @@ import { NgFor, NgIf } from '@angular/common';
     IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent,
     IonItem, IonLabel, IonTextarea, IonList, IonSelect, IonSelectOption,
     FormsModule, NgIf, NgFor, IonCard, IonCardHeader, IonCardTitle,
-    IonCardContent, IonIcon
+    IonCardContent, IonIcon, EditarDiaRutinaAgregarEjercicioSueltoComponent
   ],
   providers: []
 })
@@ -28,10 +30,12 @@ export class EditarDiaRutinaComponent implements OnInit {
 
   @Input() diaRutina: DiaRutina;
   ejercicioEnEdicion: EjercicioPlan | null = null;
+  ejercicios: Ejercicio[] = []; // Agregamos esta propiedad para almacenar ejercicios
+
 
   constructor(private modalController: ModalController, private alertController: AlertController) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log('Datos de diaRutina recibidos:', this.diaRutina);
   }
 
@@ -62,24 +66,29 @@ export class EditarDiaRutinaComponent implements OnInit {
     console.log("Ejercicio eliminado:", ejercicio);
   }
 
-  // Agregar un nuevo ejercicio
-  agregarNuevoEjercicio() {
-    const nuevoEjercicio: EjercicioPlan = {
-      ejercicioId: 'nuevo-ejercicio-' + (this.diaRutina.ejercicios.length + 1),
-      nombreEjercicio: 'Nuevo Ejercicio',
-      series: 3,
-      repeticiones: 10,
-      tipoPeso: 'mancuernas',
-      notas: ''
-    };
-    this.diaRutina.ejercicios.push(nuevoEjercicio);
-    console.log("Nuevo ejercicio agregado:", nuevoEjercicio);
+  async agregarEjercicioSuelto() {
+    const modal = await this.modalController.create({
+      component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
+    });
+  
+    modal.onDidDismiss().then((result) => {
+      const ejercicioSeleccionado = result.data as EjercicioPlan;
+      
+      console.log('Ejercicio recibido en padre:', ejercicioSeleccionado); // <--- LOG aquí
+  
+      if (ejercicioSeleccionado) {
+        this.diaRutina.ejercicios.push(ejercicioSeleccionado);
+      }
+    });
+  
+    await modal.present();
   }
 
-  // Guardar cambios y cerrar el modal
-  async guardarCambios() {
-    console.log("Guardar cambios y cerrar modal con diaRutina:", this.diaRutina);
-    await this.modalController.dismiss(this.diaRutina);
+
+  guardarCambios() {
+    console.log('Ejercicios en diaRutina al guardar:', this.diaRutina.ejercicios); // <--- LOG aquí
+    // Aquí iría la lógica para guardar o enviar los cambios
+    this.modalController.dismiss(this.diaRutina);
   }
 
   // Cancelar y cerrar el modal sin guardar
