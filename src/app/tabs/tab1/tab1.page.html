@@ -24,6 +24,7 @@
                 class="icono-eliminar-rutina"></ion-icon>
             </div>
           </div>
+          
           <ion-card-subtitle>{{ rutina.dias.length }} días en esta rutina</ion-card-subtitle>
           <!-- Mostrar la descripción si existe -->
           <ion-card-subtitle *ngIf="rutina.descripcion">{{ rutina.descripcion }}</ion-card-subtitle>
@@ -38,7 +39,7 @@
             <ng-container *ngFor="let dia of rutina.dias">
               <div class="dia-container">
                 <h3>{{ dia.diaNombre }} - {{dia.descripcion}}</h3> <!-- Nombre del Día -->
-
+                <ion-button (click)="editarDiaRutina(rutina, dia)">Editar Día</ion-button>
                 <!-- Lista compacta de ejercicios del día -->
                 <ul>
                   <li *ngFor="let ejercicioPlan of dia.ejercicios">

@@ -41,21 +41,24 @@
 <div class="ejercicios-seleccionados-container">
   <ion-card>
     <!-- Header de la lista de ejercicios seleccionados con icono de chevron a la derecha -->
-    <ion-card-header (click)="toggleExpandirEjercicios()" [class.disabled]="ejerciciosEnRutina.length === 0" class="header-compact">
+    <ion-card-header (click)="toggleExpandirEjercicios()" [class.disabled]="ejerciciosEnRutina.length === 0"
+      class="header-compact">
       <ion-grid>
         <ion-row class="ion-align-items-center">
           <ion-col>
             <ion-card-title>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-card-title>
           </ion-col>
           <ion-col size="auto">
-            <ion-icon [name]="mostrarEjerciciosSeleccionados ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
+            <ion-icon
+              [name]="mostrarEjerciciosSeleccionados ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-header>
 
     <!-- Contenido expandible de los ejercicios seleccionados -->
-    <ion-card-content *ngIf="mostrarEjerciciosSeleccionados && ejerciciosEnRutina.length > 0" style="max-height: 40vh; overflow-y: auto;">
+    <ion-card-content *ngIf="mostrarEjerciciosSeleccionados && ejerciciosEnRutina.length > 0"
+      style="max-height: 40vh; overflow-y: auto;">
       <ion-list>
         <ion-item *ngFor="let ejercicio of ejerciciosEnRutina; let i = index">
           <ion-label>

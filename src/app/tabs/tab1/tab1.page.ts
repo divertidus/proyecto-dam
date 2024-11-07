@@ -15,6 +15,7 @@ import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logge
 import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal, IonAlert } from "@ionic/angular/standalone";
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
+import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-rutina/editar-dia-rutina.component';
 
 
 @Component({
@@ -23,8 +24,8 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
   imports: [IonAlert, IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
-    UserListComponent, ToolbarLoggedComponent, FormsModule],
-  providers: [ModalController,PopoverController]
+    UserListComponent, ToolbarLoggedComponent, FormsModule, EditarDiaRutinaComponent],
+  providers: [ModalController, PopoverController]
 })
 export class Tab1Page implements OnInit, OnDestroy {
 
@@ -242,5 +243,27 @@ export class Tab1Page implements OnInit, OnDestroy {
       ]
     });
     await alert.present();
+  }
+
+  async editarDiaRutina(rutina: Rutina, diaRutina: DiaRutina) {
+    const modal = await this.modalController.create({
+      component: EditarDiaRutinaComponent,
+      componentProps: {
+        diaRutina: JSON.parse(JSON.stringify(diaRutina)) // Enviamos una copia para evitar mutaciones directas
+      }
+    });
+
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+
+    if (data) {
+      const index = rutina.dias.findIndex(dia => dia._id === diaRutina._id);
+      if (index !== -1) {
+        rutina.dias[index] = { ...data };
+        this.rutinaService.actualizarRutina(rutina).then(() => {
+          console.log('Rutina actualizada con el día editado');
+        });
+      }
+    }
   }
 }
