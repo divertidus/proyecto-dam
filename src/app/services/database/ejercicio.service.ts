@@ -1,4 +1,4 @@
-// servicio/ejercicio.service.ts
+//  // servicio/ejercicio.service.ts
 import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Importamos BehaviorSubject para manejar la lista de ejercicios de manera reactiva
@@ -42,11 +42,11 @@ export class EjercicioService {
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
 
-      console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
+      //  console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
       await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
+      //  console.error('Ejercicio.Service -> Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -60,13 +60,13 @@ export class EjercicioService {
       });
 
       // Verificamos que se están obteniendo los ejercicios
-      console.log('Ejercicio.Service -> Ejercicios obtenidos:', resultado.docs);
+      //  console.log('Ejercicio.Service -> Ejercicios obtenidos:', resultado.docs);
 
       // Extraemos los ejercicios de los documentos
       const ejercicios = resultado.docs;
       return ejercicios; // Devolvemos la lista de ejercicios
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al obtener ejercicios:', error); // Mostramos en consola si ocurre un error
+      //  console.error('Ejercicio.Service -> Error al obtener ejercicios:', error); // Mostramos en consola si ocurre un error
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
@@ -84,10 +84,10 @@ export class EjercicioService {
     try {
       // Ejecutamos la consulta en la base de datos
       const resultado = await this.baseDatos.find(consulta);
-      console.log('Ejercicio.Service -> Obtenido ejercicio por nombre')
+      //  console.log('Ejercicio.Service -> Obtenido ejercicio por nombre')
       return resultado.docs; // Devolvemos los documentos que coinciden con la consulta
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al obtener ejercicio por nombre:', error); // Mostramos el error si ocurre
+      //  console.error('Ejercicio.Service -> Error al obtener ejercicio por nombre:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -96,10 +96,10 @@ export class EjercicioService {
   async obtenerEjercicioPorId(id: string): Promise<Ejercicio> {
     try {
       const resultado = await this.baseDatos.get(id); // Obtener el documento por ID
-      console.log('Ejercicio.Service -> Obtenido ejercicio por ID:', resultado);
+      //  console.log('Ejercicio.Service -> Obtenido ejercicio por ID:', resultado);
       return resultado; // Retornar el ejercicio encontrado
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error);
+      //  console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error);
       throw error; // Lanzar el error para manejarlo fuera de esta función
     }
   }
@@ -109,10 +109,10 @@ export class EjercicioService {
     try {
       // Utilizamos el método `get` para obtener el documento por ID
       const resultado = await this.baseDatos.get(id);
-      console.log('Ejercicio.Service -> Obtenido ejercicio por id')
+      //  console.log('Ejercicio.Service -> Obtenido ejercicio por id')
       return resultado; // Devolvemos el ejercicio encontrado
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error); // Mostramos el error si ocurre
+      //  console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera
     }
   }
@@ -127,10 +127,10 @@ export class EjercicioService {
         }
       });
       const ejercicios = result.docs;
-      console.log('Ejercicio.Service -> Obtenidos ejercicios por musculo')
+      //  console.log('Ejercicio.Service -> Obtenidos ejercicios por musculo')
       return ejercicios;
     } catch (err) {
-      console.error('Ejercicio.Service -> Error al obtener ejercicios por músculo:', err);
+      //  console.error('Ejercicio.Service -> Error al obtener ejercicios por músculo:', err);
       throw err;
     }
   }*/
@@ -140,11 +140,11 @@ export class EjercicioService {
     try {
       // Actualizamos el ejercicio en la base de datos usando `put`
       const respuesta = await this.baseDatos.put(ejercicio);
-      console.log('Ejercicio.Service -> Ejercicio actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
+      //  console.log('Ejercicio.Service -> Ejercicio actualizado con éxito', respuesta); // Mostramos un mensaje si la actualización fue exitosa
       await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al actualizar ejercicio:', error); // Mostramos el error si ocurre uno
+      //  console.error('Ejercicio.Service -> Error al actualizar ejercicio:', error); // Mostramos el error si ocurre uno
       throw error; // Lanzamos el error para manejarlo fuera de la función
     }
   }
@@ -154,11 +154,11 @@ export class EjercicioService {
     try {
       // Eliminamos el ejercicio usando `remove`
       const respuesta = await this.baseDatos.remove(ejercicio);
-      console.log('Ejercicio.Service -> Ejercicio eliminado con éxito', respuesta); // Mensaje si se eliminó correctamente
+      //  console.log('Ejercicio.Service -> Ejercicio eliminado con éxito', respuesta); // Mensaje si se eliminó correctamente
       await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al eliminar ejercicio:', error); // Mostramos el error si ocurre
+      //  console.error('Ejercicio.Service -> Error al eliminar ejercicio:', error); // Mostramos el error si ocurre
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }
@@ -171,10 +171,10 @@ export class EjercicioService {
       });
       const ejercicios = result.docs;
       this.ejerciciosSubject.next(ejercicios); // Emite la lista actualizada
-      console.log('Ejercicio.Service -> Cargados ejercicios en BehaviorSubject');
+      //  console.log('Ejercicio.Service -> Cargados ejercicios en BehaviorSubject');
       this.ejerciciosSubject.next(ejercicios); // Emitimos los ejercicios para que todos los suscriptores los reciban
     } catch (error) {
-      console.error('Ejercicio.Service -> Error al cargar ejercicios:', error);
+      //  console.error('Ejercicio.Service -> Error al cargar ejercicios:', error);
       throw error; // Lanzamos el error para manejarlo externamente
     }
   }
@@ -217,7 +217,7 @@ export class EjercicioService {
 
       // Agregar los ejercicios iniciales
       const resultados = await this.baseDatos.bulkDocs(ejerciciosIniciales);
-      console.log('Ejercicio.Service -> Ejercicios iniciales agregados:', resultados);
+      //  console.log('Ejercicio.Service -> Ejercicios iniciales agregados:', resultados);
     }
   }
 

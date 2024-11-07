@@ -1,7 +1,8 @@
 <ion-content class="content-adjusted" fullscreen="true">
   <ion-list class="exercise-list-custom">
     <ion-item *ngFor="let ejercicio of ejercicios; let i = index" lines="none">
-      <ion-card class="exercise-card-custom">
+      <ion-card class="exercise-card-custom"
+        [ngClass]="{'exercise-card-completed': ejercicio.seriesCompletadas >= ejercicio.seriesTotal}">
         <ion-card-header (click)="toggleEjercicio(i)">
           <ion-card-title class="exercise-header">
             <span class="exercise-title">{{ ejercicio.nombreEjercicio }}</span>
@@ -80,7 +81,8 @@
                 </div>
               </div>
             </ng-container>
-            <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline" (click)="anadirSerieExtra(i)">
+            <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline"
+              (click)="anadirSerieExtra(i)">
               Añadir Serie Extra
             </ion-button>
           </div>

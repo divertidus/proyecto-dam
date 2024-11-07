@@ -16,6 +16,8 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { v4 as uuidv4 } from 'uuid';
 import { EntrenamientoEstadoService } from 'src/app/services/sesion/entrenamiento-estado.service';
+import { NgClass } from '@angular/common';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 
@@ -26,7 +28,7 @@ import { EntrenamientoEstadoService } from 'src/app/services/sesion/entrenamient
   standalone: true,
   imports: [IonContent, IonAlert, IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
     IonCardContent, IonCardTitle, IonCardHeader,
-    IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgFor, NgIf, IonCheckbox]
+    IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgClass, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit, OnChanges {
   [x: string]: any;
@@ -54,7 +56,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     private historialService: HistorialService,
     private authService: AuthService,
     private router: Router,
-    private entrenamientoEstadoService: EntrenamientoEstadoService
+    private entrenamientoEstadoService: EntrenamientoEstadoService,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -145,8 +148,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
     const ultimoEjercicio = this.usuarioId ? await this.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId) : null;
 
-    console.log("Detalles del ejercicio plan:", ej);
-    console.log("Detalles del ejercicio obtenido:", ejercicioDetalles);
+    //console.log("Detalles del ejercicio plan:", ej);
+    //console.log("Detalles del ejercicio obtenido:", ejercicioDetalles);
 
     // Generar series según el número de series y repeticiones del nuevo modelo
     const seriesReal: SerieReal[] = Array.from({ length: ej.series }).map((_, index) => {
@@ -389,6 +392,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
 
+    console.log(`Ejecutando toggleEditarSerie para ejercicio ${ejercicioIndex}, serie ${serieIndex}`);
+
     if (serie.enEdicion) {
       if (serie.peso === 0) {
         console.warn("El peso no puede ser 0. Establezca un valor de peso.");
@@ -402,6 +407,15 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         ejercicio.seriesCompletadas++;
         serie.completado = true; // Marcar la serie como completada
       }
+
+      // Verificar si todas las series están completadas para cerrar el ejercicio
+      if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
+        ejercicio.abierto = false; // Cerrar el ejercicio
+        console.log(`Ejercicio ${ejercicioIndex} completado y cerrado. Estado de 'abierto':`, ejercicio.abierto);
+      } else {
+        console.log(`Ejercicio ${ejercicioIndex} aún no completo. Estado de 'abierto':`, ejercicio.abierto);
+      }
+
     } else {
       serie.enEdicion = true;
     }
@@ -438,6 +452,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   // Método para marcar serie completada
 
   marcarSerieCompletada(ejercicioIndex: number, serieIndex: number) {
+    console.log(`Método marcarSerieCompletada llamado para ejercicio ${ejercicioIndex}, serie ${serieIndex}`);
+
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
 
@@ -456,9 +472,13 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       ejercicio.seriesCompletadas++;
     }
 
-    // Si todas las series están completadas, marca el ejercicio como completado
+    // Si todas las series están completadas, marca el ejercicio como completado y ciérralo
     if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
       ejercicio.completado = true;
+      ejercicio.abierto = false;  // Cerrar el ejercicio automáticamente
+      console.log(`Ejercicio ${ejercicioIndex} cerrado al completarse. Estado de 'abierto':`, ejercicio.abierto);
+    } else {
+      console.log(`Ejercicio ${ejercicioIndex} aún abierto. Estado de 'abierto':`, ejercicio.abierto);
     }
 
     // Actualizar los pesos de las siguientes series solo si esta es la primera serie completada en el ejercicio
@@ -472,7 +492,12 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
     // Actualizar el contador global de ejercicios completados si el ejercicio está completo
     this.actualizarEjerciciosCompletados();
+
+    // Forzar la detección de cambios para asegurar que el HTML refleje el estado actualizado
+    this.changeDetectorRef.detectChanges();
   }
+
+
 
   editarSerie(ejercicioIndex: number, serieIndex: number) {
     const serie = this.ejercicios[ejercicioIndex].seriesReal[serieIndex];
@@ -497,10 +522,17 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
 
   toggleEjercicio(index: number) {
+    // Cerrar todos los ejercicios menos el seleccionado
+    this.ejercicios.forEach((ejercicio, i) => {
+      if (i !== index) {
+        ejercicio.abierto = false;
+      }
+    });
+
+    // Alternar el estado abierto/cerrado del ejercicio seleccionado sin importar su estado de completado
     this.ejercicios[index].abierto = !this.ejercicios[index].abierto;
   }
 
-  // Función para actualizar el conteo de ejercicios completados
   private actualizarEjerciciosCompletados() {
     // Contar solo los ejercicios donde seriesCompletadas es igual a seriesTotal
     this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.seriesCompletadas >= ej.seriesTotal).length;
@@ -529,7 +561,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     // Actualizar el estado general de ejercicios completados
     this.actualizarEjerciciosCompletados();
   }
-
 
   async confirmarEliminarUltimaSerie(ejercicioIndex: number) {
     const alert = await this.alertController.create({

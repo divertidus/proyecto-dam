@@ -3,10 +3,10 @@
   padding: 0.5rem;
 
   ion-item {
-      --background: transparent;
-      --padding-start: 0;
-      --padding-end: 0;
-      --inner-padding-end: 0;
+    --background: transparent;
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
   }
 }
 
@@ -16,6 +16,13 @@
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+}
+
+/* vista-entreno.component.scss */
+.exercise-card-completed {
+  background-color: #d4edda;
+  /* Verde claro para indicar que está completo */
+  border: 1px solid #c3e6cb;
 }
 
 /* Header compacto y diferenciado */
@@ -104,25 +111,25 @@
   gap: 4px;
 
   .control-button {
-      width: 28px;
-      height: 28px;
-      background-color: #f0f0f0;
-      border-radius: 4px;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #666;
-      cursor: pointer;
+    width: 28px;
+    height: 28px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    cursor: pointer;
 
-      &:hover:not(:disabled) {
-          background: #e0e0e0;
-      }
+    &:hover:not(:disabled) {
+      background: #e0e0e0;
+    }
 
-      &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-      }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -142,18 +149,18 @@
   gap: 4px;
 
   ion-button {
-      --padding-start: 8px;
-      --padding-end: 8px;
-      height: 32px;
-      margin: 0;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    height: 32px;
+    margin: 0;
 
-      &.ok-button {
-          --color: #2196F3;
-      }
+    &.ok-button {
+      --color: #2196F3;
+    }
 
-      &:disabled {
-          opacity: 0.5;
-      }
+    &:disabled {
+      opacity: 0.5;
+    }
   }
 }
 
@@ -185,8 +192,8 @@ ion-input {
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
 

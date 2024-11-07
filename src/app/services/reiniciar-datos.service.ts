@@ -123,7 +123,7 @@ export class ReiniciarDatosService {
         for (const ejercicio of ejercicios) {
           const response = await this.ejercicioService.agregarEjercicio(ejercicio);
           ejerciciosMap[ejercicio.nombre] = response.id;
-          console.log(`Ejercicio ${ejercicio.nombre} añadido correctamente con ID: ${response.id}`);
+         // console.log(`Ejercicio ${ejercicio.nombre} añadido correctamente con ID: ${response.id}`);
         }
       } else {
         ejerciciosExistentes.forEach(e => {
