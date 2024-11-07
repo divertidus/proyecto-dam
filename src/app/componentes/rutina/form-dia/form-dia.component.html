@@ -63,7 +63,7 @@
         <ion-item *ngFor="let ejercicio of ejerciciosEnRutina; let i = index">
           <ion-label>
             <h3>{{ i + 1 }}. {{ ejercicio.nombreEjercicio }}</h3>
-            <p>Series {{ ejercicio.series.length }} x {{ ejercicio.series[0]?.repeticiones }} repeticiones</p>
+            <p>Series {{ ejercicio.series }} x {{ ejercicio.repeticiones }} repeticiones</p>
             <p *ngIf="ejercicio.notas">Notas: {{ ejercicio.notas }}</p>
           </ion-label>
           <ion-button fill="clear" color="medium" (click)="editarEjercicio(i)">

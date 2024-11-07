@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DiaRutina, EjercicioPlan, Serie } from 'src/app/models/rutina.model';
+import { DiaRutina, EjercicioPlan } from 'src/app/models/rutina.model';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { ModalController, AlertController } from '@ionic/angular';
 import {
@@ -40,31 +40,19 @@ export class EditarDiaRutinaComponent implements OnInit {
     return this.ejercicioEnEdicion?.ejercicioId === ejercicio.ejercicioId;
   }
 
+
+
   iniciarEdicionEjercicio(ejercicio: EjercicioPlan) {
-    this.ejercicioEnEdicion = {
-      ...ejercicio,
-      series: ejercicio.series && ejercicio.series.length > 0
-        ? [...ejercicio.series]
-        : [{ numeroSerie: 1, repeticiones: 10 }]
-    };
-    console.log("Modo de edición activado para el ejercicio:", this.ejercicioEnEdicion);
+    this.ejercicioEnEdicion = { ...ejercicio }; // Crea una copia del ejercicio seleccionado
   }
 
-  actualizarSeries(event: any) {
-    const seriesCount = event.target.value;
-    this.ejercicioEnEdicion.series = Array(seriesCount).fill({ repeticiones: this.ejercicioEnEdicion.series[0]?.repeticiones || 10 });
-  }
-
-
-  // Confirmar los cambios en el ejercicio editado
   confirmarEdicionEjercicio() {
     if (this.ejercicioEnEdicion) {
       const index = this.diaRutina.ejercicios.findIndex(e => e.ejercicioId === this.ejercicioEnEdicion?.ejercicioId);
       if (index !== -1) {
         this.diaRutina.ejercicios[index] = { ...this.ejercicioEnEdicion };
-        console.log("Cambios guardados en ejercicio:", this.diaRutina.ejercicios[index]);
       }
-      this.ejercicioEnEdicion = null; // Salir del modo de edición
+      this.ejercicioEnEdicion = null;
     }
   }
 
@@ -79,7 +67,8 @@ export class EditarDiaRutinaComponent implements OnInit {
     const nuevoEjercicio: EjercicioPlan = {
       ejercicioId: 'nuevo-ejercicio-' + (this.diaRutina.ejercicios.length + 1),
       nombreEjercicio: 'Nuevo Ejercicio',
-      series: [{ numeroSerie: 1, repeticiones: 10 }],
+      series: 3,
+      repeticiones: 10,
       tipoPeso: 'mancuernas',
       notas: ''
     };
@@ -139,7 +128,28 @@ export class EditarDiaRutinaComponent implements OnInit {
     await alert.present();
   }
 
+  // Método para confirmar la cancelación de la edición
+  async confirmarCancelarEdicion() {
+    const alert = await this.alertController.create({
+      header: 'Cancelar edición',
+      message: '¿Estás seguro de que deseas cancelar sin guardar los cambios?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Sí, cancelar',
+          handler: async () => {
+            await this.modalController.dismiss(); // Cierra el modal sin guardar cambios
+          }
+        }
+      ]
+    });
 
+    await alert.present(); // Muestra la alerta de confirmación
+  }
 
 
 

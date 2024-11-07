@@ -8,7 +8,8 @@ import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-ca
 import { Subscription } from 'rxjs';
 import {
   IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput, IonList, IonIcon, IonAlert, IonModal } from '@ionic/angular/standalone';
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput, IonList, IonIcon, IonAlert, IonModal
+} from '@ionic/angular/standalone';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
@@ -155,7 +156,8 @@ export class FormDiaComponent implements OnInit {
     const ejercicioPlan: EjercicioPlan = {
       ejercicioId: ejercicio._id!,
       nombreEjercicio: ejercicio.nombre,
-      series: Array(series).fill({ repeticiones }), // Crea las series con el número de repeticiones
+      series: series, // Crea las series con el número de repeticiones
+      repeticiones: repeticiones,
       notas: notas || '',
 
     };
@@ -223,14 +225,14 @@ export class FormDiaComponent implements OnInit {
         {
           name: 'series',
           type: 'number',
-          value: ejercicio.series.length,
+          value: ejercicio.series,
           placeholder: 'Número de Series',
           min: 1
         },
         {
           name: 'repeticiones',
           type: 'number',
-          value: ejercicio.series[0]?.repeticiones,
+          value: ejercicio.repeticiones,
           placeholder: 'Repeticiones por Serie',
           min: 1
         },
@@ -260,7 +262,8 @@ export class FormDiaComponent implements OnInit {
               return false;
             }
 
-            this.ejerciciosEnRutina[index].series = Array(data.series).fill({ repeticiones: data.repeticiones });
+            this.ejerciciosEnRutina[index].series = data.series;
+            this.ejerciciosEnRutina[index].repeticiones = data.repeticiones;
             this.ejerciciosEnRutina[index].notas = data.notas;
 
             return true;

@@ -148,7 +148,22 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     console.log("Detalles del ejercicio plan:", ej);
     console.log("Detalles del ejercicio obtenido:", ejercicioDetalles);
 
-    const seriesReal: SerieReal[] = (ej.series || []).map((serie, index) => this.crearSerieReal(serie, ultimoEjercicio, index));
+    // Generar series según el número de series y repeticiones del nuevo modelo
+    const seriesReal: SerieReal[] = Array.from({ length: ej.series }).map((_, index) => {
+      return {
+        _id: uuidv4(),
+        numeroSerie: index + 1,
+        repeticiones: ej.repeticiones,
+        repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
+        peso: ultimoEjercicio?.series[index]?.peso || 0,
+        pesoAnterior: ultimoEjercicio?.series[index]?.peso || null,
+        alFallo: false,
+        conAyuda: false,
+        dolor: false,
+        enEdicion: true,
+        notas: ''
+      };
+    });
 
     return {
       ejercicioPlanId: ej.ejercicioId,
@@ -505,11 +520,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   anadirSerieExtra(ejercicioIndex: number) {
     const ejercicio = this.ejercicios[ejercicioIndex];
-  
+
     // Obtener las repeticiones de la última serie completada o actual
     const repeticionesPrevias = ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.repeticiones || 0;
     const pesoPrevio = ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.peso || 0;
-  
+
     const nuevaSerie: SerieReal = {
       _id: uuidv4(),
       numeroSerie: ejercicio.seriesReal.length + 1,
@@ -522,11 +537,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       enEdicion: true, // Permitir edición inicial
       notas: 'Serie extra' // Identificador de serie extra
     };
-  
+
     // Añadir la nueva serie al array `seriesReal`, sin modificar `seriesTotal`
     ejercicio.seriesReal.push(nuevaSerie);
   }
-  
+
 
   async confirmarEliminarUltimaSerie(ejercicioIndex: number) {
     const alert = await this.alertController.create({

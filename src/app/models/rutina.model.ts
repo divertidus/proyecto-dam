@@ -24,13 +24,7 @@ export interface EjercicioPlan {
   ejercicioId: string;              // ID del ejercicio en la rutina
   nombreEjercicio: string;         // Nombre del ejercicio (para facilitar acceso directo)
   tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal';
-  series: Serie[];
+  series: number;
+  repeticiones: number;
   notas?: string               // Lista de series para el ejercicio (sin peso específico)
-}
-
-// Modelo de Serie (Plantilla)
-export interface Serie {
-  _id?: string; 
-  numeroSerie: number;              // Número de la serie (para identificar si es la primera, segunda, etc.)
-  repeticiones: number;             // Número de repeticiones para la serie
 }

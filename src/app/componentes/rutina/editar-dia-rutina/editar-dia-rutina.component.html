@@ -10,7 +10,10 @@
     <ion-textarea [(ngModel)]="diaRutina.descripcion"></ion-textarea>
   </ion-item>
 
-  <!-- Lista de ejercicios en el día -->
+  <div style="text-align: center; color: blue; padding: 10px;">
+    Ejercicios actuales: {{ diaRutina.ejercicios.length }}
+  </div>
+
   <ion-list *ngIf="diaRutina.ejercicios && diaRutina.ejercicios.length > 0">
     <ion-card *ngFor="let ejercicio of diaRutina.ejercicios">
       <ion-card-header>
@@ -19,8 +22,8 @@
 
       <ion-card-content>
         <div *ngIf="!isEditing(ejercicio)">
-          <p><strong>Series:</strong> {{ ejercicio.series.length }}</p>
-          <p><strong>Repeticiones:</strong> {{ ejercicio.series[0]?.repeticiones }}</p>
+          <p><strong>Series:</strong> {{ ejercicio.series }}</p>
+          <p><strong>Repeticiones:</strong> {{ ejercicio.repeticiones }}</p>
           <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
           <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>
           <ion-buttons>
@@ -34,14 +37,14 @@
         </div>
 
         <!-- Formulario de edición del ejercicio -->
-        <ng-container *ngIf="isEditing(ejercicio) && ejercicioEnEdicion">
+        <ng-container *ngIf="isEditing(ejercicio)">
           <ion-item>
             <ion-label position="floating">Series</ion-label>
-            <ion-input type="number" [(ngModel)]="ejercicioEnEdicion.series.length"></ion-input>
+            <ion-input type="number" [(ngModel)]="ejercicioEnEdicion.series"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Repeticiones</ion-label>
-            <ion-input type="number" [(ngModel)]="ejercicioEnEdicion.series[0].repeticiones"></ion-input>
+            <ion-input type="number" [(ngModel)]="ejercicioEnEdicion.repeticiones"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Tipo de Peso</ion-label>
@@ -67,14 +70,9 @@
   </ion-button>
 </ion-content>
 
-<!-- Footer actualizado -->
-<ion-footer class="ion-padding footer-fixed">
-  <div class="footer-info" text-center>
-    Ejercicios actuales: {{ diaRutina.ejercicios.length }}
-  </div>
+<ion-footer>
   <ion-toolbar>
-    <ion-button expand="full" color="primary" [disabled]="diaRutina.ejercicios.length === 0"
-      (click)="confirmarGuardar()">Guardar Cambios</ion-button>
-    <ion-button expand="full" color="danger" (click)="confirmarCancelar()">Cancelar</ion-button>
+    <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
+    <ion-button expand="full" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
   </ion-toolbar>
 </ion-footer>

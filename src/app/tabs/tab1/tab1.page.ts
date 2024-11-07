@@ -23,7 +23,8 @@ import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon, IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
+  imports: [IonAlert, IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
+     IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
     UserListComponent, ToolbarLoggedComponent, FormsModule, EditarDiaRutinaComponent],
   providers: [ModalController, PopoverController]
 })
