@@ -246,7 +246,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   async guardarEntrenamiento() {
     if (this.ejercicios && this.ejercicios.length > 0) {
       // Clasificamos los ejercicios en completados, incompletos y no iniciados
-      const ejerciciosCompletos = this.ejercicios.filter(ej => ej.seriesCompletadas === ej.seriesTotal);
+      const ejerciciosCompletos = this.ejercicios.filter(ej => ej.seriesCompletadas >= ej.seriesTotal);
       const ejerciciosIncompletos = this.ejercicios.filter(ej => ej.seriesCompletadas > 0 && ej.seriesCompletadas < ej.seriesTotal);
       const ejerciciosNoIniciados = this.ejercicios.filter(ej => ej.seriesCompletadas === 0);
 
@@ -390,39 +390,24 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     const serie = ejercicio.seriesReal[serieIndex];
 
     if (serie.enEdicion) {
-      // Al hacer clic en "OK", verificar que el peso no sea 0
       if (serie.peso === 0) {
         console.warn("El peso no puede ser 0. Establezca un valor de peso.");
         return;
       }
 
-      // Confirmar los cambios y bloquear la edición
       serie.enEdicion = false;
-      serie.completado = true;
 
-      // Establecer el peso predeterminado para las siguientes series solo si es la primera vez y no existe peso anterior
-      if (!serie.pesoAnterior) {
-        ejercicio.seriesReal.forEach((s, i) => {
-          if (i > serieIndex && s.peso === 0) {
-            s.peso = serie.peso; // Actualizamos el peso como predeterminado
-          }
-        });
-      }
-
-      // Incrementar el contador de series completadas
-      if (serieIndex === ejercicio.seriesCompletadas) {
+      // Incrementar seriesCompletadas solo si es la primera vez que se completa esta serie
+      if (!serie.completado) {
         ejercicio.seriesCompletadas++;
-      }
-
-      // Marcar el ejercicio como completado si todas las series lo están
-      if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
-        ejercicio.completado = true;
-        this.actualizarEjerciciosCompletados();
+        serie.completado = true; // Marcar la serie como completada
       }
     } else {
-      // Permitir la edición si se hace clic en "EDIT"
       serie.enEdicion = true;
     }
+
+    // Asegurar que se actualice el estado de ejercicios completados
+    this.actualizarEjerciciosCompletados();
   }
 
 
@@ -505,6 +490,9 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       };
     }
     serie.completado = false;
+
+    // Asegurar que ejerciciosCompletados se actualice
+    this.actualizarEjerciciosCompletados();
   }
 
 
@@ -514,32 +502,32 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   // Función para actualizar el conteo de ejercicios completados
   private actualizarEjerciciosCompletados() {
-    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.completado).length;
+    // Contar solo los ejercicios donde seriesCompletadas es igual a seriesTotal
+    this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.seriesCompletadas >= ej.seriesTotal).length;
     this.totalEjercicios = this.ejercicios.length;
   }
 
   anadirSerieExtra(ejercicioIndex: number) {
     const ejercicio = this.ejercicios[ejercicioIndex];
-
-    // Obtener las repeticiones de la última serie completada o actual
-    const repeticionesPrevias = ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.repeticiones || 0;
-    const pesoPrevio = ejercicio.seriesReal[ejercicio.seriesReal.length - 1]?.peso || 0;
+    const ultimaSerie = ejercicio.seriesReal[ejercicio.seriesReal.length - 1];
 
     const nuevaSerie: SerieReal = {
       _id: uuidv4(),
       numeroSerie: ejercicio.seriesReal.length + 1,
-      repeticiones: repeticionesPrevias,  // Usar repeticiones de la última serie
-      peso: pesoPrevio,                   // Usar el peso de la última serie
-      pesoAnterior: pesoPrevio,           // Asignar el peso de la última serie como `pesoAnterior`
+      repeticiones: ultimaSerie.repeticiones || 0,
+      peso: ultimaSerie.peso || 0, // Copiar el peso de la última serie sin establecer `pesoAnterior`
       alFallo: false,
       conAyuda: false,
       dolor: false,
-      enEdicion: true, // Permitir edición inicial
-      notas: 'Serie extra' // Identificador de serie extra
+      enEdicion: true,  // La nueva serie estará en edición
+      notas: 'Serie extra'
     };
 
-    // Añadir la nueva serie al array `seriesReal`, sin modificar `seriesTotal`
+    // Añadir la serie extra al array `seriesReal` sin afectar `seriesTotal`
     ejercicio.seriesReal.push(nuevaSerie);
+
+    // Actualizar el estado general de ejercicios completados
+    this.actualizarEjerciciosCompletados();
   }
 
 
@@ -576,6 +564,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         this.actualizarEjerciciosCompletados();
       }
     }
+  }
+
+  mostrarBotonAnadirSerieExtra(ejercicioIndex: number): boolean {
+    const ejercicio = this.ejercicios[ejercicioIndex];
+    return ejercicio.seriesReal.every(s => !s.enEdicion);
   }
 
 }

@@ -80,8 +80,7 @@
                 </div>
               </div>
             </ng-container>
-            <ion-button *ngIf="ejercicio.seriesCompletadas === ejercicio.seriesTotal" expand="block" fill="outline"
-              (click)="anadirSerieExtra(i)">
+            <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline" (click)="anadirSerieExtra(i)">
               Añadir Serie Extra
             </ion-button>
           </div>
