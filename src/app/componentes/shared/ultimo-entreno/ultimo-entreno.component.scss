@@ -4,3 +4,31 @@
     font-size: 18px;
     color: #666; // Puedes ajustar el color según tu esquema de colores
   }
+
+  /* Estilos para el mensaje de "sin entrenamientos" */
+.no-entrenamiento-card {
+  margin: 20px 16px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  color: #6b6b6b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-entrenamiento-card ion-card-title {
+  font-weight: 600;
+  color: #3b3b3b;
+  margin-bottom: 12px;
+}
+
+.no-entrenamiento-card ion-card-content {
+  font-size: 0.9em;
+  color: #4a4a4a;
+  line-height: 1.5;
+}
+
+/* Agregar padding al ion-content para mayor separación superior */
+ion-content.content-centered {
+  padding-top: 40px;
+}

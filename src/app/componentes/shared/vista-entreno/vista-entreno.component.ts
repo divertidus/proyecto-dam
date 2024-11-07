@@ -602,4 +602,54 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     return ejercicio.seriesReal.every(s => !s.enEdicion);
   }
 
+  async cancelarEntrenamiento() {
+    const alert = await this.alertController.create({
+      header: 'Cancelar Entrenamiento',
+      message: 'Si cancelas, los ejercicios realizados en esta sesión no se guardarán. ¿Estás seguro de que deseas cancelar?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancelación de entrenamiento abortada');
+          },
+        },
+        {
+          text: 'Sí, cancelar',
+          role: 'destructive',
+          handler: () => {
+            this.entrenamientoEnProgreso = false; // Marca el entrenamiento como finalizado
+            this.reiniciarEstadoEntrenamiento(); // Restablece el estado a su inicio
+            this.entrenamientoEstadoService.finalizarEntrenamiento(); // Finaliza la sesión en el estado de entrenamiento
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  // Método para reiniciar el estado del entrenamiento
+  reiniciarEstadoEntrenamiento() {
+    this.ejercicios.forEach(ejercicio => {
+      ejercicio.seriesCompletadas = 0;
+      ejercicio.seriesReal.forEach(serie => {
+        serie.repeticiones = null;
+        serie.peso = null;
+        serie.alFallo = false;
+        serie.dolor = false;
+        serie.conAyuda = false;
+        serie.completado = false;
+        serie.enEdicion = true;
+        serie.notas = '';
+      });
+      ejercicio.completado = false;
+      ejercicio.abierto = false;
+      ejercicio.notas = '';
+    });
+
+    this.ejerciciosCompletados = 0;
+    this.totalEjercicios = this.ejercicios.length;
+    console.log('Estado del entrenamiento reiniciado');
+  }
 }

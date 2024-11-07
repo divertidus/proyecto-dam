@@ -1,1 +1,27 @@
 
+/* tabs.page.scss */
+.slide-left-enter {
+    animation: slideLeftEnter 0.3s forwards;
+  }
+  
+  .slide-right-enter {
+    animation: slideRightEnter 0.3s forwards;
+  }
+  
+  @keyframes slideLeftEnter {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideRightEnter {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }

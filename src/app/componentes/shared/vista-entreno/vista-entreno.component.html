@@ -93,11 +93,16 @@
 </ion-content>
 
 
-<ion-footer class="ion-padding footer-fixed">
-  <div class="footer-info">
-    Ejercicios completados {{ ejerciciosCompletados }} de {{ totalEjercicios }}
+<ion-footer class="footer-fixed">
+  <div class="footer-content">
+    <span class="footer-info">
+      Ejercicios completados {{ ejerciciosCompletados }} de {{ totalEjercicios }}
+    </span>
+    <ion-button size="small" color="danger" (click)="cancelarEntrenamiento()">
+      Cancelar
+    </ion-button>
+    <ion-button size="small" [disabled]="ejerciciosCompletados <= 0" (click)="guardarEntrenamiento()" color="primary">
+      Guardar
+    </ion-button>
   </div>
-  <ion-button expand="block" [disabled]="ejerciciosCompletados <= 0" (click)="guardarEntrenamiento()" color="primary">
-    Guardar Entrenamiento
-  </ion-button>
 </ion-footer>
