@@ -18,6 +18,7 @@ export interface DiaEntrenamiento {
   descripcion: string;
   ejerciciosRealizados: EjercicioRealizado[];
   notas?: string;
+  tiempoEmpleado?:number
 }
 
 // Modelo de EjercicioRealizado (Registro Real)

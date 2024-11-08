@@ -1,7 +1,12 @@
 <!-- dia-entrenamiento-card.component.html -->
 <ion-card>
   <ion-card-header (click)="onToggleExpand()">
-    <ion-card-title>{{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}</ion-card-title>
+    <ion-card-title>
+      {{ diaEntrenamiento.fechaEntrenamiento | date: 'dd/MM/yyyy, HH:mm' }}
+      <ng-container *ngIf="diaEntrenamiento.tiempoEmpleado">
+        ({{ diaEntrenamiento.tiempoEmpleado }} min)
+      </ng-container>
+    </ion-card-title>
     <ion-card-subtitle>{{ diaEntrenamiento.nombreRutinaEntrenamiento }} -> {{ diaEntrenamiento.diaRutinaId }} - {{
       diaEntrenamiento.descripcion }}</ion-card-subtitle>
   </ion-card-header>

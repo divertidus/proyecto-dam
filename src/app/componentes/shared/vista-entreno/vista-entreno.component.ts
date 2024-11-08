@@ -48,6 +48,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   entrenamientoEnProgreso: boolean = false;
   entrenamientoDetalles: { rutinaId: string; diaRutinaId: string; descripcion: string } | null = null;
 
+  private inicioEntrenamiento: Date | null = null; // Hora de inicio del entrenamiento
+
   constructor(
     private route: ActivatedRoute,
     private rutinaService: RutinaService,
@@ -76,6 +78,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     // Solo suscripción al usuario
+    this.inicioEntrenamiento = new Date(); // Almacena la fecha y hora de inicio del entrenamiento
     this.authService.usuarioLogeado$.subscribe((usuario) => {
       if (usuario) {
         this.usuarioId = usuario._id;
@@ -148,9 +151,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
     const ultimoEjercicio = this.usuarioId ? await this.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId) : null;
 
-    //console.log("Detalles del ejercicio plan:", ej);
-    //console.log("Detalles del ejercicio obtenido:", ejercicioDetalles);
-
     // Generar series según el número de series y repeticiones del nuevo modelo
     const seriesReal: SerieReal[] = Array.from({ length: ej.series }).map((_, index) => {
       return {
@@ -158,7 +158,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         numeroSerie: index + 1,
         repeticiones: ej.repeticiones,
         repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
-        peso: ultimoEjercicio?.series[index]?.peso || 0,
+        peso: ultimoEjercicio?.series[index]?.peso ?? 0, // Cambiar de `||` a `??` para diferenciar peso 0 y null
         pesoAnterior: ultimoEjercicio?.series[index]?.peso || null,
         alFallo: false,
         conAyuda: false,
@@ -289,12 +289,18 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   }
 
   async guardarSesion(mensajeEstado?: string) {
+    const finEntrenamiento = new Date(); // Marca la fecha y hora de finalización del entrenamiento
+    const tiempoEmpleadoMinutos = this.inicioEntrenamiento
+      ? Math.floor((finEntrenamiento.getTime() - this.inicioEntrenamiento.getTime()) / 60000)
+      : 0; // Calcula la duración en minutos
+
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
       _id: uuidv4(),
-      fechaEntrenamiento: new Date().toISOString(),
+      fechaEntrenamiento: this.inicioEntrenamiento?.toISOString() || new Date().toISOString(),
       nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento || 'Rutina sin nombre',
       diaRutinaId: this.diaRutinaId!,
       descripcion: this.descripcion || '',
+      tiempoEmpleado: tiempoEmpleadoMinutos, // Tiempo empleado en minutos
       ejerciciosRealizados: this.ejercicios.map(ej => {
         let notasEjercicio = '';
         if (ej.seriesCompletadas === 0) {
@@ -391,22 +397,22 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
-  
+
     console.log(`Ejecutando toggleEditarSerie para ejercicio ${ejercicioIndex}, serie ${serieIndex}`);
-  
+
     if (serie.enEdicion) {
       if (serie.peso === 0) {
         console.warn("El peso no puede ser 0. Establezca un valor de peso.");
         return;
       }
-  
+
       serie.enEdicion = false;
-  
+
       // Incrementar seriesCompletadas solo si es la primera vez que se completa esta serie
       if (!serie.completado) {
         ejercicio.seriesCompletadas++;
         serie.completado = true; // Marcar la serie como completada
-  
+
         // **Actualizar el peso en la siguiente serie**
         if (serieIndex + 1 < ejercicio.seriesReal.length) {
           const siguienteSerie = ejercicio.seriesReal[serieIndex + 1];
@@ -416,7 +422,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
           }
         }
       }
-  
+
       // Verificar si todas las series están completadas para cerrar el ejercicio
       if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
         ejercicio.abierto = false; // Cerrar el ejercicio
@@ -424,11 +430,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       } else {
         console.log(`Ejercicio ${ejercicioIndex} aún no completo. Estado de 'abierto':`, ejercicio.abierto);
       }
-  
+
     } else {
       serie.enEdicion = true;
     }
-  
+
     // Asegurar que se actualice el estado de ejercicios completados
     this.actualizarEjerciciosCompletados();
   }
@@ -462,25 +468,25 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   marcarSerieCompletada(ejercicioIndex: number, serieIndex: number) {
     console.log(`Método marcarSerieCompletada llamado para ejercicio ${ejercicioIndex}, serie ${serieIndex}`);
-  
+
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
-  
+
     // Validar que los campos necesarios estén completos y mostrar un mensaje de alerta en caso de error
     if (!serie.repeticiones || serie.peso === undefined || serie.peso <= 0) {
       console.warn("La serie necesita repeticiones y peso definidos para completarse.");
       return;
     }
-  
+
     // Marcar la serie como completada y bloquear su edición
     serie.completado = true;
     serie.enEdicion = false;
-  
+
     // Si es la siguiente serie en la secuencia, incrementa el contador de series completadas
     if (serieIndex === ejercicio.seriesCompletadas) {
       ejercicio.seriesCompletadas++;
     }
-  
+
     // Si todas las series están completadas, marca el ejercicio como completado y ciérralo
     if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
       ejercicio.completado = true;
@@ -489,7 +495,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     } else {
       console.log(`Ejercicio ${ejercicioIndex} aún abierto. Estado de 'abierto':`, ejercicio.abierto);
     }
-  
+
     // **Actualizar el peso de la siguiente serie** si es la siguiente en la secuencia
     if (serieIndex + 1 < ejercicio.seriesReal.length) {
       const siguienteSerie = ejercicio.seriesReal[serieIndex + 1];
@@ -498,7 +504,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         console.log(`Peso de la serie ${serieIndex + 1} actualizado a ${serie.peso} kg`);
       }
     }
-  
+
     // Forzar la detección de cambios para asegurar que el HTML refleje el estado actualizado
     this.changeDetectorRef.detectChanges();
   }
