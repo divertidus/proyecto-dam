@@ -5,17 +5,22 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import {
   IonItem, IonSearchbar, IonGrid, IonRow, IonCol, IonCardHeader,
-  IonCardContent, IonCard, IonCardTitle, IonHeader, IonToolbar, IonContent, IonButton, IonFooter
+  IonCardContent, IonCard, IonCardTitle, IonHeader, IonToolbar, IonContent, IonButton, IonFooter, IonIcon, IonPopover, IonTitle
 } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
+import { FiltroEjercicioComponent, TipoPesoFiltro, MusculoPrincipalFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
 
 @Component({
   selector: 'app-editar-dia-rutina-agregar-ejercicio-suelto',
   templateUrl: './editar-dia-rutina-agregar-ejercicio-suelto.component.html',
   styleUrls: ['./editar-dia-rutina-agregar-ejercicio-suelto.component.scss'],
-  imports: [IonFooter, IonButton, IonContent, IonToolbar, IonHeader, IonCardTitle, IonCard, IonCardContent, IonCardHeader, IonCol, FormsModule, IonRow, IonGrid, IonSearchbar, IonItem, NgFor, NgIf],
+  imports: [IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
+    IonContent, IonToolbar, IonHeader, IonCardTitle,
+    IonCard, IonCardContent, IonCardHeader, IonCol,
+    FormsModule, IonRow, IonGrid, IonSearchbar, IonItem,
+    NgFor, NgIf, FiltroEjercicioComponent],
   standalone: true,
   providers: []
 })
@@ -26,6 +31,22 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
   ejercicios: Ejercicio[] = []; // Lista de ejercicios obtenidos del servicio
   ejerciciosFiltrados: Ejercicio[] = []; // Lista para los ejercicios filtrados en tiempo real
   private ejerciciosSub: Subscription; // Suscripción para manejar actualizaciones en tiempo real
+
+  filtroTipoPeso: TipoPesoFiltro = {
+    Barra: false,
+    Mancuernas: false,
+    Máquina: false,
+    "Peso Corporal": false,
+  };
+
+  filtroMusculoPrincipal: MusculoPrincipalFiltro = {
+    Pecho: false,
+    Espalda: false,
+    Hombro: false,
+    Pierna: false,
+    Biceps: false,
+    Triceps: false,
+  };
 
   constructor(
     private ejercicioService: EjercicioService,
@@ -82,9 +103,9 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
               notas: data.notas || '',
               tipoPeso: ejercicio.tipoPeso,
             };
-  
+
             console.log('Ejercicio seleccionado en hijo:', ejercicioPlan); // <--- LOG aquí
-            
+
             // Emitimos el ejercicio al cerrar el modal
             this.modalController.dismiss(ejercicioPlan);
             return true;
@@ -116,4 +137,43 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
       this.ejerciciosSub.unsubscribe();
     }
   }
+
+
+  aplicarFiltrosDesdeFiltro(event: { tipoPeso: TipoPesoFiltro; musculoPrincipal: MusculoPrincipalFiltro }) {
+    console.log('Filtros recibidos desde el popover:', event); // Depuración
+    this.filtroTipoPeso = event.tipoPeso;
+    this.filtroMusculoPrincipal = event.musculoPrincipal;
+    this.aplicarFiltros();
+  }
+
+
+
+  aplicarFiltros(valorBusqueda: string = '') {
+    console.log('Aplicando filtros con valores:', this.filtroTipoPeso, this.filtroMusculoPrincipal); // Depuración
+
+    this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio => {
+      const coincideBusqueda = ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
+        (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
+        (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda));
+
+      // Verificamos si hay algún tipo de peso marcado en los filtros
+      const tipoPesoActivo = Object.values(this.filtroTipoPeso).some(v => v);
+      const tipoPesoSeleccionado = tipoPesoActivo ?
+        this.filtroTipoPeso[ejercicio.tipoPeso as keyof TipoPesoFiltro] : true;
+
+      // Verificamos si hay algún grupo muscular marcado en los filtros
+      const musculoActivo = Object.values(this.filtroMusculoPrincipal).some(v => v);
+      const musculoSeleccionado = musculoActivo ?
+        this.filtroMusculoPrincipal[ejercicio.musculoPrincipal] : true;
+
+      // Combinamos todos los criterios para determinar si el ejercicio pasa el filtro
+      const resultado = coincideBusqueda && tipoPesoSeleccionado && musculoSeleccionado;
+
+      console.log(`Ejercicio: ${ejercicio.nombre} - Pasa filtro: ${resultado}`); // Depuración de cada ejercicio
+      return resultado;
+    });
+
+    console.log('Lista de ejercicios después de aplicar filtros:', this.ejerciciosFiltrados); // Resultado final
+  }
+
 }

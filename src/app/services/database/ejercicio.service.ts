@@ -14,7 +14,7 @@ export class EjercicioService {
   ejercicios$ = this.ejerciciosSubject.asObservable(); // Exponemos los ejercicios como un observable para "escuchar" cambios
 
   constructor(private servicioBaseDatos: DatabaseService) {
-    
+
     // Obtenemos la base de datos usando el servicio general de base de datos
     this.baseDatos = this.servicioBaseDatos.obtenerBaseDatos();
     this.cargarEjercicios()
@@ -31,22 +31,22 @@ export class EjercicioService {
     }
 
     try {
-      // Agregamos el ejercicio a la base de datos usando las propiedades del objeto
+      // Agregamos el ejercicio a la base de datos usando las propiedades del objeto `Ejercicio`
       const respuesta = await this.baseDatos.post({
-
         entidad: 'ejercicio',
         nombre: nuevoEjercicio.nombre, // Nombre del ejercicio
-        descripcion: nuevoEjercicio.descripcion,// Descripción opcional del ejercicio
-        equipamiento: nuevoEjercicio.tipoPeso, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
+        descripcion: nuevoEjercicio.descripcion, // Descripción opcional del ejercicio
+        tipoPeso: nuevoEjercicio.tipoPeso, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
+        musculoPrincipal: nuevoEjercicio.musculoPrincipal, // Grupo muscular principal trabajado
         imagen: nuevoEjercicio.imagen || '', // Imagen opcional del ejercicio, vacía si no se proporciona
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
 
-      //  console.log('Ejercicio.Service -> Ejercicio añadido con éxito', respuesta); // Mensaje en consola si todo salió bien
+      // Actualizamos los ejercicios en la aplicación
       await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
-      //  console.error('Ejercicio.Service -> Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
+      console.error('Error al agregar ejercicio:', error); // Si hay un error, lo mostramos
       throw error; // Lanzamos el error para manejarlo fuera de esta función
     }
   }

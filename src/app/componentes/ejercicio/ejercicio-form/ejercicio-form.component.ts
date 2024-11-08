@@ -19,7 +19,7 @@ export class EjercicioFormComponent implements OnInit {
     musculoPrincipal: '',
     entidad: 'ejercicio',
     nombre: '',
-    tipoPeso: 'barra',
+    tipoPeso: 'Barra',
     descripcion: ''
   };
 
@@ -33,7 +33,7 @@ export class EjercicioFormComponent implements OnInit {
     if (await this.validarFormulario()) {
       this.ejercicioAgregado.emit(this.nuevoEjercicio);
       // Reiniciar el formulario
-      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculoPrincipal: '', tipoPeso: 'barra', descripcion: '' };
+      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculoPrincipal: '', tipoPeso: 'Barra', descripcion: '' };
     }
   }
 

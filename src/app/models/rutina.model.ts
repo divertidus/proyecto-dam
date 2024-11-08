@@ -23,7 +23,7 @@ export interface EjercicioPlan {
   _id?: string; 
   ejercicioId: string;              // ID del ejercicio en la rutina
   nombreEjercicio: string;         // Nombre del ejercicio (para facilitar acceso directo)
-  tipoPeso?: 'barra' | 'mancuernas' | 'máquina' | 'peso corporal';
+  tipoPeso?: 'Barra' | 'Mancuernas' | 'Máquina' | 'Peso Corporal';
   series: number;
   repeticiones: number;
   notas?: string               // Lista de series para el ejercicio (sin peso específico)

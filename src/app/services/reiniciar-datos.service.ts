@@ -103,16 +103,16 @@ export class ReiniciarDatosService {
   // Inicializar ejercicios si no existen
   async inicializarEjercicios(): Promise<{ [key: string]: string }> {
     const ejercicios: Ejercicio[] = [
-      { entidad: 'ejercicio', nombre: 'Jalón de Espalda', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { entidad: 'ejercicio', nombre: 'Remo Agarre Cerrado (Cuernos)', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { entidad: 'ejercicio', nombre: 'Jalón Cerrado', tipoPeso: 'máquina', musculoPrincipal: 'Espalda' },
-      { entidad: 'ejercicio', nombre: 'Martillo (Mancuernas)', tipoPeso: 'mancuernas', musculoPrincipal: 'Bíceps' },
-      { entidad: 'ejercicio', nombre: 'Press Banco Tumbado (Mancuernas)', tipoPeso: 'mancuernas', musculoPrincipal: 'Pecho' },
-      { entidad: 'ejercicio', nombre: 'Máquina Aperturas', tipoPeso: 'máquina', musculoPrincipal: 'Pecho' },
-      { entidad: 'ejercicio', nombre: 'Fondos en Paralelas', tipoPeso: 'peso corporal', musculoPrincipal: 'Tríceps' },
-      { entidad: 'ejercicio', nombre: 'Sentadillas Multipower', tipoPeso: 'barra', musculoPrincipal: 'Piernas' },
-      { entidad: 'ejercicio', nombre: 'Elevaciones Laterales', tipoPeso: 'mancuernas', musculoPrincipal: 'Hombro' },
-      { entidad: 'ejercicio', nombre: 'Prensa de Piernas', tipoPeso: 'máquina', musculoPrincipal: 'Piernas' },
+      { entidad: 'ejercicio', nombre: 'Jalón de Espalda', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda' },
+      { entidad: 'ejercicio', nombre: 'Remo Agarre Cerrado (Cuernos)', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda' },
+      { entidad: 'ejercicio', nombre: 'Jalón Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda' },
+      { entidad: 'ejercicio', nombre: 'Martillo (Mancuernas)', tipoPeso: 'Mancuernas', musculoPrincipal: 'Biceps' },
+      { entidad: 'ejercicio', nombre: 'Press Banco Tumbado (Mancuernas)', tipoPeso: 'Mancuernas', musculoPrincipal: 'Pecho' },
+      { entidad: 'ejercicio', nombre: 'Máquina Aperturas', tipoPeso: 'Máquina', musculoPrincipal: 'Pecho' },
+      { entidad: 'ejercicio', nombre: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', musculoPrincipal: 'Triceps' },
+      { entidad: 'ejercicio', nombre: 'Sentadillas Multipower', tipoPeso: 'Barra', musculoPrincipal: 'Pierna' },
+      { entidad: 'ejercicio', nombre: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', musculoPrincipal: 'Hombro' },
+      { entidad: 'ejercicio', nombre: 'Prensa de Piernas', tipoPeso: 'Máquina', musculoPrincipal: 'Pierna' },
     ];
 
     const ejerciciosMap: { [key: string]: string } = {};
@@ -154,27 +154,27 @@ export class ReiniciarDatosService {
           diaNombre: 'Día 1',
           descripcion: 'Espalda y bíceps',
           ejercicios: [
-            { ejercicioId: ejerciciosMap['Jalón de Espalda'], nombreEjercicio: 'Jalón de Espalda', tipoPeso: 'máquina', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Remo Agarre Cerrado (Cuernos)'], nombreEjercicio: 'Remo Agarre Cerrado (Cuernos)', tipoPeso: 'máquina', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Martillo (Mancuernas)'], nombreEjercicio: 'Martillo (Mancuernas)', tipoPeso: 'mancuernas', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Jalón de Espalda'], nombreEjercicio: 'Jalón de Espalda', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Remo Agarre Cerrado (Cuernos)'], nombreEjercicio: 'Remo Agarre Cerrado (Cuernos)', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Martillo (Mancuernas)'], nombreEjercicio: 'Martillo (Mancuernas)', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
           ]
         },
         {
           diaNombre: 'Día 2',
           descripcion: 'Pecho y tríceps',
           ejercicios: [
-            { ejercicioId: ejerciciosMap['Press Banco Tumbado (Mancuernas)'], nombreEjercicio: 'Press Banco Tumbado (Mancuernas)', tipoPeso: 'mancuernas', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Máquina Aperturas'], nombreEjercicio: 'Máquina Aperturas', tipoPeso: 'máquina', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Fondos en Paralelas'], nombreEjercicio: 'Fondos en Paralelas', tipoPeso: 'peso corporal', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Press Banco Tumbado (Mancuernas)'], nombreEjercicio: 'Press Banco Tumbado (Mancuernas)', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Máquina Aperturas'], nombreEjercicio: 'Máquina Aperturas', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Fondos en Paralelas'], nombreEjercicio: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', series: 4, repeticiones: 10 },
           ]
         },
         {
           diaNombre: 'Día 3',
           descripcion: 'Pierna y hombro',
           ejercicios: [
-            { ejercicioId: ejerciciosMap['Sentadillas Multipower'], nombreEjercicio: 'Sentadillas Multipower', tipoPeso: 'barra', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Elevaciones Laterales'], nombreEjercicio: 'Elevaciones Laterales', tipoPeso: 'mancuernas', series: 4, repeticiones: 12 },
-            { ejercicioId: ejerciciosMap['Prensa de Piernas'], nombreEjercicio: 'Prensa de Piernas', tipoPeso: 'máquina', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Sentadillas Multipower'], nombreEjercicio: 'Sentadillas Multipower', tipoPeso: 'Barra', series: 4, repeticiones: 10 },
+            { ejercicioId: ejerciciosMap['Elevaciones Laterales'], nombreEjercicio: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', series: 4, repeticiones: 12 },
+            { ejercicioId: ejerciciosMap['Prensa de Piernas'], nombreEjercicio: 'Prensa de Piernas', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
           ]
         }
       ];

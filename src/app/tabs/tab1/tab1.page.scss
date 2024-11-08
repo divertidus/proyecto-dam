@@ -1,3 +1,36 @@
+/* Estilos para el mensaje de "sin rutinas" */
+.no-rutina-card {
+  margin: 20px 16px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  color: #6b6b6b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-rutina-card ion-card-title {
+  font-weight: 600;
+  color: #3b3b3b;
+  margin-bottom: 12px;
+}
+
+.no-rutina-card ion-card-content {
+  font-size: 0.9em;
+  color: #4a4a4a;
+  line-height: 1.5;
+}
+
+/* Botón para añadir nueva rutina con el mismo estilo que "Comenzar a entrenar" */
+.boton-crear-nueva {
+  font-size: 1.2em;
+  margin-top: 20px;
+  color: #fff;
+  --background: #3e8e41;
+  --border-radius: 8px;
+}
+
+/* Estilo para la lista de rutinas */
 ion-card {
   margin-bottom: 15px;
 }
@@ -31,7 +64,6 @@ ion-card-header {
   cursor: pointer;
   color: red;
   margin-top: 5px;
-  /* Espacio entre el lápiz y la X */
 }
 
 .dias-container {

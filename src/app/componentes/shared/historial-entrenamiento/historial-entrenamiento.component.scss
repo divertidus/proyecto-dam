@@ -1,9 +1,7 @@
 /* historial-entrenamiento.component.scss */
 
 /* Espacio adicional en la parte superior del contenido */
-ion-content {
-    padding-top: 20px;
-}
+
 
 /* Estilos para el encabezado de la lista */
 h3 {
@@ -17,7 +15,7 @@ h3 {
 /* Estilos para la lista de entrenamientos */
 ion-list {
     padding: 0 16px; /* Espacio lateral adicional para que no toque los bordes */
-    margin-top: 10px;
+   /*  margin-top: 10px; */
 }
 
 /* Espacio entre las tarjetas de entrenamiento */

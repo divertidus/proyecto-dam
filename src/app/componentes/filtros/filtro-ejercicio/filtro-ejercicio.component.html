@@ -1,0 +1,55 @@
+<!-- filtro-ejercicio.component.html -->
+
+<ion-list>
+  <ion-item>
+    <ion-label><strong>Tipo de Peso</strong></ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroTipoPeso['Barra']"></ion-checkbox>
+    <ion-label>Barra</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroTipoPeso['Mancuernas']"></ion-checkbox>
+    <ion-label>Mancuernas</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroTipoPeso['Maquina']"></ion-checkbox>
+    <ion-label>Máquina</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroTipoPeso['Peso Corporal']"></ion-checkbox>
+    <ion-label>Peso Corporal</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label><strong>Grupo Muscular</strong></ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroMusculo['Pecho']"></ion-checkbox>
+    <ion-label>Pecho</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroMusculo['Espalda']"></ion-checkbox>
+    <ion-label>Espalda</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroMusculo['Hombro']"></ion-checkbox>
+    <ion-label>Hombro</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroMusculo['Pierna']"></ion-checkbox>
+    <ion-label>Pierna</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroMusculo['Biceps']"></ion-checkbox>
+    <ion-label>Bíceps</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox slot="start" [(ngModel)]="filtroMusculo['Triceps']"></ion-checkbox>
+    <ion-label>Tríceps</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-button expand="full" (click)="onAplicarFiltros()">Aplicar Filtros</ion-button>
+  </ion-item>
+</ion-list>

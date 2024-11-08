@@ -1,7 +1,17 @@
+<!-- editar-dia-rutina-agregar-ejercicio-suelto.component.html -->
 <ion-header>
+  <!-- Barra de encabezado de selección de ejercicio -->
+  <ion-toolbar color="primary">
+    <ion-title class="encabezado-seleccion">Selecciona Ejercicio</ion-title>
+  </ion-toolbar>
+
+  <!-- Barra de búsqueda y botón de filtro -->
   <ion-toolbar>
     <ion-item lines="none">
       <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+      <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
+        <ion-icon name="filter-outline"></ion-icon>
+      </ion-button>
     </ion-item>
   </ion-toolbar>
 </ion-header>
@@ -13,7 +23,7 @@
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
           <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
             <ion-card-header>
-              <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
+              <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
@@ -35,3 +45,11 @@
     <ion-button expand="full" color="danger" (click)="cerrarModal()">Cancelar</ion-button>
   </ion-toolbar>
 </ion-footer>
+
+<ion-popover trigger="filtroPopoverTrigger" alignment="end">
+  <ng-template>
+    <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculo]="filtroMusculoPrincipal"
+      (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
+    </app-filtro-ejercicio>
+  </ng-template>
+</ion-popover>
