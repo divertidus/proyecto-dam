@@ -103,16 +103,16 @@ export class ReiniciarDatosService {
   // Inicializar ejercicios si no existen
   async inicializarEjercicios(): Promise<{ [key: string]: string }> {
     const ejercicios: Ejercicio[] = [
-      { entidad: 'ejercicio', nombre: 'Jalón de Espalda', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: true },
-      { entidad: 'ejercicio', nombre: 'Jalón Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Martillo', tipoPeso: 'Mancuernas', musculoPrincipal: 'Biceps', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Máquina Aperturas', tipoPeso: 'Máquina', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', musculoPrincipal: 'Triceps', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Sentadillas Multipower', tipoPeso: 'Barra', musculoPrincipal: 'Pierna', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', musculoPrincipal: 'Hombro', ejercicioPersonalizado: false },
-      { entidad: 'ejercicio', nombre: 'Prensa de Piernas', tipoPeso: 'Máquina', musculoPrincipal: 'Pierna', ejercicioPersonalizado: true },
+      { entidad: 'ejercicio', nombre: 'Jalón de Espalda', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio de tracción vertical para trabajar la espalda alta y dorsales.' },
+      { entidad: 'ejercicio', nombre: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: true, descripcion: 'Ejercicio de tracción horizontal para fortalecer la espalda media y baja.' },
+      { entidad: 'ejercicio', nombre: 'Jalón Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio para trabajar los dorsales y la espalda alta con agarre cerrado.' },
+      { entidad: 'ejercicio', nombre: 'Martillo', tipoPeso: 'Mancuernas', musculoPrincipal: 'Bíceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los bíceps y antebrazos, ideal para fortalecer los brazos.' },
+      { entidad: 'ejercicio', nombre: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo del pecho, especialmente la parte media y baja del pectoral.' },
+      { entidad: 'ejercicio', nombre: 'Máquina Aperturas', tipoPeso: 'Máquina', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para aislar los pectorales, enfocado en el estiramiento y contracción del músculo.' },
+      { entidad: 'ejercicio', nombre: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', musculoPrincipal: 'Tríceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio compuesto para trabajar tríceps, pecho y hombros, utilizando el peso corporal.' },
+      { entidad: 'ejercicio', nombre: 'Sentadillas Multipower', tipoPeso: 'Barra', musculoPrincipal: 'Pierna', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo de piernas, especialmente cuadríceps y glúteos, en la máquina multipower.' },
+      { entidad: 'ejercicio', nombre: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', musculoPrincipal: 'Hombro', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los hombros, enfocado en el deltoides lateral.' },
+      { entidad: 'ejercicio', nombre: 'Prensa de Piernas', tipoPeso: 'Máquina', musculoPrincipal: 'Pierna', ejercicioPersonalizado: true, descripcion: 'Ejercicio de empuje para trabajar piernas, principalmente cuadríceps y glúteos.' },
     ];
 
     const ejerciciosMap: { [key: string]: string } = {};

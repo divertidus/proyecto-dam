@@ -17,8 +17,11 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   providers: [ModalController, PopoverController]
 })
 export class EjercicioFormComponent {
+
+  @Input() modoEdicion: boolean = false;
+
   // Recibe el nuevo ejercicio
-  @Input() nuevoEjercicio: Ejercicio = {
+  @Input() ejercicio: Ejercicio = {
     musculoPrincipal: '',
     entidad: 'ejercicio',
     nombre: '',
@@ -33,6 +36,8 @@ export class EjercicioFormComponent {
     tipoPeso: false,
   };
 
+  formModificado = false; // Nueva propiedad para detectar cambios
+
   constructor(
     private ejercicioService: EjercicioService,
     private popoverController: PopoverController
@@ -40,21 +45,31 @@ export class EjercicioFormComponent {
 
   // Método para validar cada campo de forma individual
   validarCampo(campo: keyof typeof this.camposInvalidos) {
-    this.camposInvalidos[campo] = !this.nuevoEjercicio[campo];
+    this.camposInvalidos[campo] = !this.ejercicio[campo];
+    this.detectarCambios();
+  }
+
+
+  detectarCambios() {
+    // Detectar si hubo algún cambio en el formulario
+    this.formModificado = true;
   }
 
   private validarEjercicio(): boolean {
-    this.camposInvalidos.nombre = !this.nuevoEjercicio.nombre;
-    this.camposInvalidos.musculoPrincipal = !this.nuevoEjercicio.musculoPrincipal;
-    this.camposInvalidos.tipoPeso = !this.nuevoEjercicio.tipoPeso;
+    this.camposInvalidos.nombre = !this.ejercicio.nombre;
+    this.camposInvalidos.musculoPrincipal = !this.ejercicio.musculoPrincipal;
+    this.camposInvalidos.tipoPeso = !this.ejercicio.tipoPeso;
     return Object.values(this.camposInvalidos).every((campo) => !campo);
   }
 
-  async agregarEjercicio() {
-    if (this.validarEjercicio()) {
-      await this.ejercicioService.agregarEjercicio(this.nuevoEjercicio);
-      console.log('En agregarEjercicio de form antes del dismiss enviandolo: ', this.nuevoEjercicio)
-      this.popoverController.dismiss(this.nuevoEjercicio); // Cerrar el popover y devolver el ejercicio añadido
+  async guardarEjercicio() {
+    if (this.validarEjercicio() && this.formModificado) {
+      if (this.modoEdicion) {
+        await this.ejercicioService.actualizarEjercicio(this.ejercicio);
+      } else {
+        await this.ejercicioService.agregarEjercicio(this.ejercicio);
+      }
+      this.popoverController.dismiss(this.ejercicio);
     } else {
       console.log('Faltan campos por completar.');
     }

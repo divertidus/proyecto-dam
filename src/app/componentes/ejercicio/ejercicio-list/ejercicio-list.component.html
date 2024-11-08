@@ -15,20 +15,51 @@
     <ion-grid>
       <ion-row class="ion-align-items-stretch">
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
-          <ion-card class="ejercicio-card">
-            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
-              class="personalizado-icon"></ion-icon>
-            <ion-card-header>
-              <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
-                alt="Imagen del ejercicio" class="imagen-ejercicio" />
-              <div class="ejercicio-info">
-                <p><ion-icon name="barbell-outline"></ion-icon> {{ ejercicio.tipoPeso }}</p>
-                <p><ion-icon name="body-outline"></ion-icon> {{ ejercicio.musculoPrincipal }}</p>
-              </div>
-            </ion-card-content>
+          <ion-card class="ejercicio-card"
+            [ngClass]="{'tarjeta-seleccionada': ejercicioSeleccionadoId === ejercicio._id}"
+            (click)="toggleDetalle(ejercicio._id)">
+            <!-- Vista principal de la tarjeta (imagen y detalles básicos) -->
+            <ng-container *ngIf="ejercicioSeleccionadoId !== ejercicio._id; else detalleTemplate">
+              <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+                class="personalizado-icon"></ion-icon>
+              <ion-card-header>
+                <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+                  class="imagen-ejercicio" />
+                <div class="ejercicio-info">
+                  <p><ion-icon name="barbell-outline"></ion-icon> {{ ejercicio.tipoPeso }}</p>
+                  <p><ion-icon name="body-outline"></ion-icon> {{ ejercicio.musculoPrincipal }}</p>
+                </div>
+              </ion-card-content>
+            </ng-container>
+
+            <!-- Vista detallada (al hacer clic, muestra descripción y botones) -->
+            <ng-template #detalleTemplate>
+              <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+                class="personalizado-icon"></ion-icon>
+              <ion-card-header>
+                <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content class="detalle-card-content">
+                <!-- Contenedor de la descripción y los botones para evitar que se oculten -->
+                <div class="detalle-contenido">
+                  <p class="descripcion-ejercicio">{{ ejercicio.descripcion || 'Sin descripción' }}</p>
+                  <!-- Botones de "Editar" y "Eliminar" si es personalizado -->
+                  <div *ngIf="ejercicio.ejercicioPersonalizado" class="botones-acciones">
+                    <ion-button color="primary" fill="clear"
+                      (click)="editarEjercicio(ejercicio); $event.stopPropagation()">
+                      <ion-icon slot="icon-only" name="create-outline"></ion-icon> <!-- Icono de editar -->
+                    </ion-button>
+                    <ion-button color="danger" fill="clear"
+                      (click)="confirmarEliminar(ejercicio); $event.stopPropagation()">
+                      <ion-icon slot="icon-only" name="trash-outline"></ion-icon> <!-- Icono de eliminar -->
+                    </ion-button>
+                  </div>
+                </div>
+              </ion-card-content>
+            </ng-template>
           </ion-card>
         </ion-col>
       </ion-row>
@@ -36,18 +67,11 @@
   </div>
 
   <!-- Botón flotante para agregar nuevo ejercicio -->
-  <!--  <ion-fab class="boton-flotante" slot="fixed">
-    <ion-fab-button color="primary" (click)="abrirModalNuevoEjercicio()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab> -->
-
   <ion-fab class="boton-flotante" slot="fixed">
     <ion-fab-button color="primary" (click)="abrirFormularioEjercicio()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </ion-content>
 
 <ion-popover trigger="filtroPopoverTrigger" alignment="end">

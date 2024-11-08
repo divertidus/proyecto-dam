@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ ejercicio.nombre }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarPopover()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Nombre:</ion-label>
+    <ion-text>{{ ejercicio.nombre }}</ion-text>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Músculo:</ion-label>
+    <ion-text>{{ ejercicio.musculoPrincipal }}</ion-text>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Tipo:</ion-label>
+    <ion-text>{{ ejercicio.tipoPeso }}</ion-text>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Descripción:</ion-label>
+    <ion-text>{{ ejercicio.descripcion }}</ion-text>
+  </ion-item>
+
+  <!-- Mostrar el botón de eliminar solo si es un ejercicio personalizado -->
+  <ion-button expand="full" color="danger" (click)="eliminarEjercicio()" *ngIf="ejercicio.ejercicioPersonalizado">
+    Eliminar
+  </ion-button>
+
+  <ion-button expand="full" color="primary" (click)="guardarCambios()" *ngIf="ejercicio.ejercicioPersonalizado">
+    Guardar Cambios
+  </ion-button>
+</ion-content>

@@ -1,12 +1,10 @@
 ion-content {
-  padding-bottom: 500px; // Ajusta este valor si necesitas más o menos espacio
+  padding-bottom: 80px; /* Ajusta este valor si necesitas más o menos espacio */
 }
 
 .contenido-con-margen {
-  margin-bottom: 65px;
-  /* Ajusta el valor si necesitas más o menos espacio */
+  margin-bottom: 100px;
 }
-
 
 .fixed-toolbar {
   position: sticky;
@@ -30,15 +28,9 @@ ion-content {
 }
 
 .titulo-ejercicio {
-  font-size: 14px;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin: 0;
-  padding: 0 5px;
-  color: #222;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .imagen-ejercicio {
@@ -68,15 +60,47 @@ ion-content {
   position: absolute;
   top: 8px;
   right: 8px;
-  font-size: 20px;
-  color: #007acc;
+  font-size: 1.5rem;
+  color: var(--ion-color-primary);
 }
 
 .boton-flotante {
   position: fixed;
-  bottom: 40px; // Ajusta esta altura según el espacio que quieras
-  right: 20px; // Ajusta la distancia del lado derecho
+  bottom: 20px; /* Aumentamos la distancia desde el fondo */
+  right: 20px;
 }
 
+.descripcion-ejercicio {
+  font-size: 0.9rem; /* Reduce el tamaño de la fuente para evitar desplazamientos */
+  color: var(--ion-color-dark);
+  margin: 4px 0;
+  text-align: center;
+  max-height: 80px; /* Limita la altura máxima */
+  overflow: auto; /* Añade desplazamiento si es necesario */
+}
 
+.botones-acciones ion-button {
+  font-size: 1.2rem;
+  height: 30px;
+  width: 30px;
+  --border-radius: 50%;
+  margin: 0 4px;
+}
 
+.detalle-card-content {
+  padding: 8px 10px;
+}
+
+.detalle-contenido {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.tarjeta-seleccionada {
+  border: 2px solid var(--ion-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}

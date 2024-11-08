@@ -1,60 +1,76 @@
 /* ejercicio-form.component.scss */
 
 .form-container {
+    max-width: 100%;
+    /* Permite que use todo el ancho disponible del popover */
+    width: 100%;
+    /* Asegura que ocupe el 100% del espacio asignado */
+    margin: 0 auto;
     padding: 16px;
-    max-width: 350px;
-    margin: auto;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  ion-item {
+}
+
+ion-item {
     margin: 8px 0;
     --background: #f7f7f7;
     --border-radius: 8px;
-    --box-shadow: none;
     padding: 4px 8px;
-  }
-  
-  ion-label {
+}
+
+ion-label {
     font-weight: 500;
     color: #555;
-  }
-  
-  ion-input,
-  ion-select {
+}
+
+ion-input,
+ion-select {
     font-size: 16px;
     --padding-start: 8px;
-  }
-  
-  .campo-invalido {
+}
+
+.campo-invalido {
     color: red;
     font-size: 12px;
     margin-top: 4px;
     padding-left: 8px;
-  }
-  
-  ion-item.invalid {
+}
+
+ion-item.invalid {
     --highlight-color-focused: red;
     --border-color: red;
-  }
-  
-  ion-button {
+}
+
+ion-button {
     margin-top: 12px;
     border-radius: 8px;
     font-size: 16px;
-  }
-  
-  ion-button[color="primary"] {
+}
+
+ion-button[color="primary"] {
     --background: #3f51b5;
     --background-hover: #303f9f;
     --background-focused: #303f9f;
-  }
-  
-  ion-button[color="medium"] {
+}
+
+ion-button[color="medium"] {
     --background: #888;
     --background-hover: #777;
     --background-focused: #777;
-  }
-  
+}
+
+ion-card-title.titulo-ejercicio {
+    font-size: 1.2rem;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ion-textarea {
+    font-size: 1rem;
+    --padding-start: 8px;
+    min-height: 80px;
+    /* Altura inicial mínima */
+}

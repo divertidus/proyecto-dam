@@ -1,15 +1,15 @@
 <div class="form-container">
   <ion-item [class.invalid]="camposInvalidos.nombre">
     <ion-label position="floating">Nombre</ion-label>
-    <ion-input [(ngModel)]="nuevoEjercicio.nombre" name="nombre" required
-      (ionBlur)="validarCampo('nombre')"></ion-input>
+    <ion-input [(ngModel)]="ejercicio.nombre" name="nombre" required (ionBlur)="validarCampo('nombre')"
+      (ionInput)="detectarCambios()"></ion-input>
     <div *ngIf="camposInvalidos.nombre" class="campo-invalido">Este campo es obligatorio</div>
   </ion-item>
 
   <ion-item [class.invalid]="camposInvalidos.musculoPrincipal">
     <ion-label position="floating">Músculo</ion-label>
-    <ion-select [(ngModel)]="nuevoEjercicio.musculoPrincipal" interface="popover"
-      (ionChange)="validarCampo('musculoPrincipal')">
+    <ion-select [(ngModel)]="ejercicio.musculoPrincipal" interface="popover"
+      (ionChange)="validarCampo('musculoPrincipal'); detectarCambios()">
       <ion-select-option value="Espalda">Espalda</ion-select-option>
       <ion-select-option value="Hombro">Hombro</ion-select-option>
       <ion-select-option value="Pierna">Pierna</ion-select-option>
@@ -25,20 +25,23 @@
 
   <ion-item [class.invalid]="camposInvalidos.tipoPeso">
     <ion-label position="floating">Tipo</ion-label>
-    <ion-select [(ngModel)]="nuevoEjercicio.tipoPeso" interface="popover" (ionChange)="validarCampo('tipoPeso')">
-      <ion-select-option value="barra">Barra</ion-select-option>
-      <ion-select-option value="mancuerna">Mancuerna</ion-select-option>
-      <ion-select-option value="máquina">Máquina</ion-select-option>
-      <ion-select-option value="peso corporal">Peso Corporal</ion-select-option>
+    <ion-select [(ngModel)]="ejercicio.tipoPeso" interface="popover"
+      (ionChange)="validarCampo('tipoPeso'); detectarCambios()">
+      <ion-select-option value="Barra">Barra</ion-select-option>
+      <ion-select-option value="Mancuernas">Mancuernas</ion-select-option>
+      <ion-select-option value="Máquina">Máquina</ion-select-option>
+      <ion-select-option value="Peso Corporal">Peso Corporal</ion-select-option>
     </ion-select>
     <div *ngIf="camposInvalidos.tipoPeso" class="campo-invalido">Este campo es obligatorio</div>
   </ion-item>
 
   <ion-item>
     <ion-label position="floating">Descripción</ion-label>
-    <ion-input [(ngModel)]="nuevoEjercicio.descripcion" name="descripcion"></ion-input>
+    <ion-input [(ngModel)]="ejercicio.descripcion" name="descripcion" (ionInput)="detectarCambios()"></ion-input>
   </ion-item>
 
-  <ion-button expand="block" color="primary" (click)="agregarEjercicio()">Agregar Ejercicio</ion-button>
+  <ion-button expand="block" color="primary" (click)="guardarEjercicio()" [disabled]="!formModificado">
+    {{ modoEdicion ? 'Guardar Cambios' : 'Agregar Ejercicio' }}
+  </ion-button>
   <ion-button expand="block" color="medium" (click)="cerrarPopover()">Cancelar</ion-button>
 </div>

@@ -106,36 +106,6 @@ export class EjercicioService {
     }
   }
 
-  // Método para obtener un ejercicio específico por su ID
-  /*async obtenerEjercicioPorId(id: string) {
-    try {
-      // Utilizamos el método `get` para obtener el documento por ID
-      const resultado = await this.baseDatos.get(id);
-      //  console.log('Ejercicio.Service -> Obtenido ejercicio por id')
-      return resultado; // Devolvemos el ejercicio encontrado
-    } catch (error) {
-      //  console.error('Ejercicio.Service -> Error al obtener ejercicio por ID:', error); // Mostramos el error si ocurre
-      throw error; // Lanzamos el error para manejarlo fuera
-    }
-  }
-
-  // Método para obtener ejercicios por músculo
-  async obtenerEjerciciosPorMusculo(musculo: string) {
-    try {
-      const result = await this.baseDatos.find({
-        selector: {
-          entidad: 'ejercicio',
-          musculo: { $eq: musculo } // Filtramos por el campo musculo
-        }
-      });
-      const ejercicios = result.docs;
-      //  console.log('Ejercicio.Service -> Obtenidos ejercicios por musculo')
-      return ejercicios;
-    } catch (err) {
-      //  console.error('Ejercicio.Service -> Error al obtener ejercicios por músculo:', err);
-      throw err;
-    }
-  }*/
 
   // Método para actualizar un ejercicio
   async actualizarEjercicio(ejercicio: Ejercicio) {
