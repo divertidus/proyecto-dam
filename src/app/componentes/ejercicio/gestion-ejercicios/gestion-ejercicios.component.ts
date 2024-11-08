@@ -38,15 +38,4 @@ export class GestionEjerciciosComponent implements OnInit {
     this.cargarEjercicios(); // Recargamos la lista de ejercicios
   }
 
-  /*
-  //TODO AGREGAR VALIDACION FORMULARIO
-  async agregarEjercicio() {
-    const ejercicioCreado = await this.ejercicioService.agregarEjercicio(this.nuevoEjercicio);
-    this.ejercicios.push(ejercicioCreado);
-    this.nuevoEjercicio = { id: '', nombre: '', tipo: 'barra', cantidadSeries: 0, repeticiones: 0 }; // Reiniciar formulario
-    this.cargarEjercicios();
-  }
-    */
-
-  // Aquí puedes agregar métodos para actualizar y eliminar ejercicios también
 }

@@ -39,6 +39,7 @@ export class EjercicioService {
         tipoPeso: nuevoEjercicio.tipoPeso, // Tipo de ejercicio (mancuernas, barra, peso corporal, etc.)
         musculoPrincipal: nuevoEjercicio.musculoPrincipal, // Grupo muscular principal trabajado
         imagen: nuevoEjercicio.imagen || '', // Imagen opcional del ejercicio, vacía si no se proporciona
+        ejercicioPersonalizado: nuevoEjercicio.ejercicioPersonalizado,
         timestamp: new Date().toISOString() // Fecha y hora en que se añade el ejercicio
       });
 

@@ -20,7 +20,8 @@ export class EjercicioFormComponent implements OnInit {
     entidad: 'ejercicio',
     nombre: '',
     tipoPeso: 'Barra',
-    descripcion: ''
+    descripcion: '',
+    ejercicioPersonalizado: false
   };
 
   @Output() ejercicioAgregado = new EventEmitter<Ejercicio>(); // Emitimos el evento para agregar el ejercicio
@@ -33,7 +34,7 @@ export class EjercicioFormComponent implements OnInit {
     if (await this.validarFormulario()) {
       this.ejercicioAgregado.emit(this.nuevoEjercicio);
       // Reiniciar el formulario
-      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculoPrincipal: '', tipoPeso: 'Barra', descripcion: '' };
+      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculoPrincipal: '', tipoPeso: 'Barra', descripcion: '', ejercicioPersonalizado: false };
     }
   }
 

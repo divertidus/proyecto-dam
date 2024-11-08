@@ -6,4 +6,5 @@ export interface Ejercicio {
     tipoPeso: 'Barra' | 'Mancuernas' | 'Máquina' | 'Peso Corporal'; // Tipo de ejercicio
     musculoPrincipal: string;   // Grupo muscular principal trabajado
     imagen?: string;            // Imagen del ejercicio (opcional, para futuras versiones)
+    ejercicioPersonalizado:boolean
 }

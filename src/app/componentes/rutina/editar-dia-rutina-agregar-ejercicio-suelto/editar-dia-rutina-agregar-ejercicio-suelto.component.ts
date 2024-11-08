@@ -39,14 +39,8 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
     "Peso Corporal": false,
   };
 
-  filtroMusculoPrincipal: MusculoPrincipalFiltro = {
-    Pecho: false,
-    Espalda: false,
-    Hombro: false,
-    Pierna: false,
-    Biceps: false,
-    Triceps: false,
-  };
+  filtroMusculoPrincipal: { [key: string]: boolean } = {};   // Filtros de grupo muscular
+
 
   constructor(
     private ejercicioService: EjercicioService,

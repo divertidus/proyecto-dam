@@ -24,7 +24,7 @@ export class FiltroEjercicioComponent {
   };
 
   // `filtroMusculo` es dinámico y puede tener cualquier clave
-  @Input() filtroMusculo: MusculoPrincipalFiltro = {
+  @Input() filtroMusculoPrincipal: MusculoPrincipalFiltro = {
     Pecho: false,
     Espalda: false,
     Hombro: false,
@@ -38,7 +38,7 @@ export class FiltroEjercicioComponent {
 
 
   async onAplicarFiltros() {
-    this.aplicarFiltros.emit({ tipoPeso: this.filtroTipoPeso, musculoPrincipal: this.filtroMusculo });
+    this.aplicarFiltros.emit({ tipoPeso: this.filtroTipoPeso, musculoPrincipal: this.filtroMusculoPrincipal });
     await this.popoverController.dismiss();
   }
 }
