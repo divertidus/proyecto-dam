@@ -391,23 +391,32 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
-
+  
     console.log(`Ejecutando toggleEditarSerie para ejercicio ${ejercicioIndex}, serie ${serieIndex}`);
-
+  
     if (serie.enEdicion) {
       if (serie.peso === 0) {
         console.warn("El peso no puede ser 0. Establezca un valor de peso.");
         return;
       }
-
+  
       serie.enEdicion = false;
-
+  
       // Incrementar seriesCompletadas solo si es la primera vez que se completa esta serie
       if (!serie.completado) {
         ejercicio.seriesCompletadas++;
         serie.completado = true; // Marcar la serie como completada
+  
+        // **Actualizar el peso en la siguiente serie**
+        if (serieIndex + 1 < ejercicio.seriesReal.length) {
+          const siguienteSerie = ejercicio.seriesReal[serieIndex + 1];
+          if (!siguienteSerie.peso || siguienteSerie.peso === 0) {
+            siguienteSerie.peso = serie.peso; // Asigna el peso de la serie actual
+            console.log(`Peso de la siguiente serie (${serieIndex + 1}) establecido a ${serie.peso} kg`);
+          }
+        }
       }
-
+  
       // Verificar si todas las series están completadas para cerrar el ejercicio
       if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
         ejercicio.abierto = false; // Cerrar el ejercicio
@@ -415,11 +424,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       } else {
         console.log(`Ejercicio ${ejercicioIndex} aún no completo. Estado de 'abierto':`, ejercicio.abierto);
       }
-
+  
     } else {
       serie.enEdicion = true;
     }
-
+  
     // Asegurar que se actualice el estado de ejercicios completados
     this.actualizarEjerciciosCompletados();
   }
@@ -453,25 +462,25 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   marcarSerieCompletada(ejercicioIndex: number, serieIndex: number) {
     console.log(`Método marcarSerieCompletada llamado para ejercicio ${ejercicioIndex}, serie ${serieIndex}`);
-
+  
     const ejercicio = this.ejercicios[ejercicioIndex];
     const serie = ejercicio.seriesReal[serieIndex];
-
+  
     // Validar que los campos necesarios estén completos y mostrar un mensaje de alerta en caso de error
     if (!serie.repeticiones || serie.peso === undefined || serie.peso <= 0) {
       console.warn("La serie necesita repeticiones y peso definidos para completarse.");
       return;
     }
-
+  
     // Marcar la serie como completada y bloquear su edición
     serie.completado = true;
     serie.enEdicion = false;
-
+  
     // Si es la siguiente serie en la secuencia, incrementa el contador de series completadas
     if (serieIndex === ejercicio.seriesCompletadas) {
       ejercicio.seriesCompletadas++;
     }
-
+  
     // Si todas las series están completadas, marca el ejercicio como completado y ciérralo
     if (ejercicio.seriesCompletadas === ejercicio.seriesTotal) {
       ejercicio.completado = true;
@@ -480,19 +489,16 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     } else {
       console.log(`Ejercicio ${ejercicioIndex} aún abierto. Estado de 'abierto':`, ejercicio.abierto);
     }
-
-    // Actualizar los pesos de las siguientes series solo si esta es la primera serie completada en el ejercicio
-    if (serieIndex === 0 && ejercicio.seriesCompletadas === 1) {
-      ejercicio.seriesReal.forEach((s, i) => {
-        if (i > serieIndex && s.peso === 0) {
-          s.peso = serie.peso; // Establece el peso inicial para las siguientes series
-        }
-      });
+  
+    // **Actualizar el peso de la siguiente serie** si es la siguiente en la secuencia
+    if (serieIndex + 1 < ejercicio.seriesReal.length) {
+      const siguienteSerie = ejercicio.seriesReal[serieIndex + 1];
+      if (siguienteSerie.peso === 0 || siguienteSerie.peso === null) {
+        siguienteSerie.peso = serie.peso; // Asigna el peso de la serie actual como peso predeterminado para la siguiente serie
+        console.log(`Peso de la serie ${serieIndex + 1} actualizado a ${serie.peso} kg`);
+      }
     }
-
-    // Actualizar el contador global de ejercicios completados si el ejercicio está completo
-    this.actualizarEjerciciosCompletados();
-
+  
     // Forzar la detección de cambios para asegurar que el HTML refleje el estado actualizado
     this.changeDetectorRef.detectChanges();
   }
