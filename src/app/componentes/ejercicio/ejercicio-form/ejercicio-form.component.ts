@@ -2,18 +2,21 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastController, PopoverController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { IonLabel, IonItem, IonButton, IonAlert } from "@ionic/angular/standalone";
+import { IonLabel, IonItem, IonButton, IonAlert, IonCardContent } from "@ionic/angular/standalone";
 import { IonInput, IonSelectOption, IonSelect } from '@ionic/angular/standalone';
+import { NgFor, NgIf } from '@angular/common';
+import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
   selector: 'app-ejercicio-form',
   templateUrl: './ejercicio-form.component.html',
   styleUrls: ['./ejercicio-form.component.scss'],
   standalone: true,
-  imports: [IonAlert, IonButton, IonItem, IonLabel, FormsModule, IonInput, IonSelectOption, IonSelect],
+  imports: [IonCardContent, IonAlert, IonButton, IonItem,
+    IonLabel, FormsModule, IonInput, IonSelectOption, IonSelect, NgIf, NgFor],
   providers: [ModalController, PopoverController]
 })
-export class EjercicioFormComponent implements OnInit {
+export class EjercicioFormComponent {
   // Recibe el nuevo ejercicio
   @Input() nuevoEjercicio: Ejercicio = {
     musculoPrincipal: '',
@@ -21,39 +24,43 @@ export class EjercicioFormComponent implements OnInit {
     nombre: '',
     tipoPeso: 'Barra',
     descripcion: '',
-    ejercicioPersonalizado: false
+    ejercicioPersonalizado: true
   };
 
-  @Output() ejercicioAgregado = new EventEmitter<Ejercicio>(); // Emitimos el evento para agregar el ejercicio
+  camposInvalidos = {
+    nombre: false,
+    musculoPrincipal: false,
+    tipoPeso: false,
+  };
 
   constructor(
-    private toastController: ToastController) { }
+    private ejercicioService: EjercicioService,
+    private popoverController: PopoverController
+  ) { }
 
-  // Método para emitir el evento cuando se haga clic en "Agregar Ejercicio"
+  // Método para validar cada campo de forma individual
+  validarCampo(campo: keyof typeof this.camposInvalidos) {
+    this.camposInvalidos[campo] = !this.nuevoEjercicio[campo];
+  }
+
+  private validarEjercicio(): boolean {
+    this.camposInvalidos.nombre = !this.nuevoEjercicio.nombre;
+    this.camposInvalidos.musculoPrincipal = !this.nuevoEjercicio.musculoPrincipal;
+    this.camposInvalidos.tipoPeso = !this.nuevoEjercicio.tipoPeso;
+    return Object.values(this.camposInvalidos).every((campo) => !campo);
+  }
+
   async agregarEjercicio() {
-    if (await this.validarFormulario()) {
-      this.ejercicioAgregado.emit(this.nuevoEjercicio);
-      // Reiniciar el formulario
-      this.nuevoEjercicio = { entidad: 'ejercicio', nombre: '', musculoPrincipal: '', tipoPeso: 'Barra', descripcion: '', ejercicioPersonalizado: false };
+    if (this.validarEjercicio()) {
+      await this.ejercicioService.agregarEjercicio(this.nuevoEjercicio);
+      console.log('En agregarEjercicio de form antes del dismiss enviandolo: ', this.nuevoEjercicio)
+      this.popoverController.dismiss(this.nuevoEjercicio); // Cerrar el popover y devolver el ejercicio añadido
+    } else {
+      console.log('Faltan campos por completar.');
     }
   }
 
-
-
-  ngOnInit() { }
-
-  private async validarFormulario(): Promise<boolean> {
-    if (!this.nuevoEjercicio.nombre.trim()) {
-      const toast = await this.toastController.create({
-        message: 'El nombre del ejercicio es obligatorio',
-        duration: 2000,
-        color: 'danger'
-      });
-      await toast.present();
-      return false; // Devuelve false si la validación falla
-    }
-
-    // Si todas las validaciones pasan, devuelve true
-    return true;
+  async cerrarPopover() {
+    await this.popoverController.dismiss(null);
   }
 }

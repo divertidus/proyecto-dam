@@ -45,6 +45,7 @@ export class EjercicioService {
 
       // Actualizamos los ejercicios en la aplicación
       await this.cargarEjercicios(); // Actualiza ejercicios tras eliminar
+      console.log(respuesta)
       return respuesta; // Devolvemos la respuesta de la base de datos
     } catch (error) {
       console.error('Error al agregar ejercicio:', error); // Si hay un error, lo mostramos

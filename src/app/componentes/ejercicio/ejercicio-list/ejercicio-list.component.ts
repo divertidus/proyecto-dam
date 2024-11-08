@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { FiltroEjercicioComponent, TipoPesoFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
+import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
 @Component({
   selector: 'app-ejercicio-list',
   templateUrl: './ejercicio-list.component.html',
@@ -18,7 +19,8 @@ import { ModalController } from '@ionic/angular';
   imports: [IonFab, IonFabButton, IonContent, IonTitle, IonHeader, IonSearchbar, IonItem,
     IonPopover, IonToolbar, IonFooter, IonCol, IonCard, FormsModule,
     IonCardContent, IonIcon, IonButton, IonCardSubtitle, IonCardTitle,
-    IonCardHeader, IonRow, IonGrid, CommonModule, FiltroEjercicioComponent]
+    IonCardHeader, IonRow, IonGrid, CommonModule, FiltroEjercicioComponent,
+    EjercicioFormComponent]
 })
 export class EjercicioListComponent implements OnInit {
 
@@ -38,7 +40,8 @@ export class EjercicioListComponent implements OnInit {
 
   filtroMusculoPrincipal: { [key: string]: boolean } = {}; // Filtros de grupo muscular
 
-  constructor(private ejercicioService: EjercicioService, private modalController: ModalController) {
+  constructor(private ejercicioService: EjercicioService,
+    private popoverController: PopoverController) {
     addIcons(todosLosIconos);
   }
 
@@ -87,23 +90,28 @@ export class EjercicioListComponent implements OnInit {
     console.log('Ejercicios después de aplicar filtros:', this.ejerciciosFiltrados);
   }
 
-  // Métodos para emitir eventos de edición y eliminación
-  onEditarEjercicio(ejercicio: Ejercicio) {
-    this.editarEjercicio.emit(ejercicio);
+
+  async abrirFormularioEjercicio() {
+    const popover = await this.popoverController.create({
+      component: EjercicioFormComponent,
+      cssClass: 'popover-ejercicio-compacto',
+      backdropDismiss: true,
+    });
+
+    popover.onDidDismiss().then((result) => {
+      if (result.data) {
+        // Llamamos al método para actualizar la lista
+        this.actualizarListaEjercicios();
+      }
+    });
+
+    await popover.present();
   }
 
-  onEliminarEjercicio(ejercicio: Ejercicio) {
-    this.eliminarEjercicio.emit(ejercicio);
-  }
-
-  // Define el método cerrarModal()
-  cerrarModal() {
-    this.modalController.dismiss();
-  }
-
-  abrirModalNuevoEjercicio() {
-    // Abre el modal o ejecuta la función que se debe realizar al presionar el botón "+"
-    console.log('Botón de agregar nuevo ejercicio presionado');
-    // Implementa la lógica para abrir un modal o añadir un nuevo ejercicio aquí
+  private actualizarListaEjercicios() {
+    // Refrescar los ejercicios en caso de cambios
+    this.ejercicioService.ejercicios$.subscribe((ejercicios) => {
+      this.ejerciciosFiltrados = ejercicios;
+    });
   }
 }

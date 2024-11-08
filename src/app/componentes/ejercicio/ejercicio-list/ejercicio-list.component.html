@@ -16,7 +16,8 @@
       <ion-row class="ion-align-items-stretch">
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
           <ion-card class="ejercicio-card">
-            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline" class="personalizado-icon"></ion-icon>
+            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+              class="personalizado-icon"></ion-icon>
             <ion-card-header>
               <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
             </ion-card-header>
@@ -35,11 +36,18 @@
   </div>
 
   <!-- Botón flotante para agregar nuevo ejercicio -->
-  <ion-fab class="boton-flotante" slot="fixed">
+  <!--  <ion-fab class="boton-flotante" slot="fixed">
     <ion-fab-button color="primary" (click)="abrirModalNuevoEjercicio()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
+  </ion-fab> -->
+
+  <ion-fab class="boton-flotante" slot="fixed">
+    <ion-fab-button color="primary" (click)="abrirFormularioEjercicio()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
   </ion-fab>
+
 </ion-content>
 
 <ion-popover trigger="filtroPopoverTrigger" alignment="end">

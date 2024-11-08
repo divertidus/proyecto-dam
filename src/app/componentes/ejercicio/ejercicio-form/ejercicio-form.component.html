@@ -1,29 +1,44 @@
-<!-- ejercicio-form.component.html -->
+<div class="form-container">
+  <ion-item [class.invalid]="camposInvalidos.nombre">
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input [(ngModel)]="nuevoEjercicio.nombre" name="nombre" required
+      (ionBlur)="validarCampo('nombre')"></ion-input>
+    <div *ngIf="camposInvalidos.nombre" class="campo-invalido">Este campo es obligatorio</div>
+  </ion-item>
 
-<ion-item>
-  <ion-label position="floating">Nombre</ion-label>
-  <ion-input [(ngModel)]="nuevoEjercicio.nombre" name="nombre"></ion-input>
-</ion-item>
+  <ion-item [class.invalid]="camposInvalidos.musculoPrincipal">
+    <ion-label position="floating">Músculo</ion-label>
+    <ion-select [(ngModel)]="nuevoEjercicio.musculoPrincipal" interface="popover"
+      (ionChange)="validarCampo('musculoPrincipal')">
+      <ion-select-option value="Espalda">Espalda</ion-select-option>
+      <ion-select-option value="Hombro">Hombro</ion-select-option>
+      <ion-select-option value="Pierna">Pierna</ion-select-option>
+      <ion-select-option value="Gluteos">Glúteos</ion-select-option>
+      <ion-select-option value="Antebrazo">Antebrazo</ion-select-option>
+      <ion-select-option value="Biceps">Bíceps</ion-select-option>
+      <ion-select-option value="Triceps">Tríceps</ion-select-option>
+      <ion-select-option value="Pecho">Pecho</ion-select-option>
+      <ion-select-option value="Cardio">Cardio</ion-select-option>
+    </ion-select>
+    <div *ngIf="camposInvalidos.musculoPrincipal" class="campo-invalido">Este campo es obligatorio</div>
+  </ion-item>
 
-<ion-item>
-  <ion-label position="floating">Musculo</ion-label>
-  <ion-input [(ngModel)]="nuevoEjercicio.musculoPrincipal" name="musculoPrincipal"></ion-input>
-</ion-item>
+  <ion-item [class.invalid]="camposInvalidos.tipoPeso">
+    <ion-label position="floating">Tipo</ion-label>
+    <ion-select [(ngModel)]="nuevoEjercicio.tipoPeso" interface="popover" (ionChange)="validarCampo('tipoPeso')">
+      <ion-select-option value="barra">Barra</ion-select-option>
+      <ion-select-option value="mancuerna">Mancuerna</ion-select-option>
+      <ion-select-option value="máquina">Máquina</ion-select-option>
+      <ion-select-option value="peso corporal">Peso Corporal</ion-select-option>
+    </ion-select>
+    <div *ngIf="camposInvalidos.tipoPeso" class="campo-invalido">Este campo es obligatorio</div>
+  </ion-item>
 
-<ion-item>
-  <ion-label position="floating">Tipo</ion-label>
-  <ion-select [(ngModel)]="nuevoEjercicio.tipoPeso" name="tipoPeso">
-    <ion-select-option value="barra">Barra</ion-select-option>
-    <ion-select-option value="mancuerna">Mancuerna</ion-select-option>
-    <ion-select-option value="máquina">Máquina</ion-select-option>
-    <ion-select-option value="peso corporal">Peso Corporal</ion-select-option>
-    <ion-alert></ion-alert>
-  </ion-select>
-</ion-item>
+  <ion-item>
+    <ion-label position="floating">Descripción</ion-label>
+    <ion-input [(ngModel)]="nuevoEjercicio.descripcion" name="descripcion"></ion-input>
+  </ion-item>
 
-<ion-item>
-  <ion-label position="floating">Descripción</ion-label>
-  <ion-input [(ngModel)]="nuevoEjercicio.descripcion" name="descripcion"></ion-input>
-</ion-item>
-
-<ion-button expand="full" (click)="agregarEjercicio()">Agregar Ejercicio</ion-button>
+  <ion-button expand="block" color="primary" (click)="agregarEjercicio()">Agregar Ejercicio</ion-button>
+  <ion-button expand="block" color="medium" (click)="cerrarPopover()">Cancelar</ion-button>
+</div>

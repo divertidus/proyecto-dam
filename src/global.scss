@@ -35,3 +35,12 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+/* Agregar en el archivo global de estilos, como global.scss, o en styles.scss */
+::ng-deep .modal-ejercicio-compacto .modal-wrapper {
+    max-width: 400px;
+    max-height: 500px;
+    margin: auto;
+    border-radius: 12px;
+  }
