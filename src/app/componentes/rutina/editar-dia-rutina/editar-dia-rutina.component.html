@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content>
-  <!-- Mostrar la descripción del día y un botón para editarla -->
+  <!-- Descripción del Día y botón para editarla -->
   <div class="descripcion-container">
     <p class="descripcion-texto">
       <strong>Descripción del Día:</strong> {{ diaRutina.descripcion || 'Sin descripción' }}
@@ -15,23 +15,34 @@
     </ion-button>
   </div>
 
-  <div style="text-align: center; color: blue; padding: 10px;">
-    Ejercicios actuales: {{ diaRutina.ejercicios.length }}
-  </div>
+  <div class="ejercicios-contenedor">
+    <p class="ejercicios-header">Ejercicios actuales: {{ diaRutina.ejercicios.length }}</p>
 
-  <ion-list *ngIf="diaRutina.ejercicios && diaRutina.ejercicios.length > 0">
-    <ion-card *ngFor="let ejercicio of diaRutina.ejercicios">
-      <ion-card-header>
-        <ion-card-title>{{ ejercicio.nombreEjercicio }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p><strong>Series:</strong> {{ ejercicio.series }}</p>
-        <p><strong>Repeticiones:</strong> {{ ejercicio.repeticiones }}</p>
-        <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
-        <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
+    <ion-list *ngIf="diaRutina.ejercicios && diaRutina.ejercicios.length > 0">
+      <ion-card *ngFor="let ejercicio of diaRutina.ejercicios">
+        <ion-card-header (click)="toggleExpandirEjercicio(ejercicio.ejercicioId)" class="card-header-compact">
+          <div class="ejercicio-titulo">
+            <strong>{{ ejercicio.nombreEjercicio }}</strong> ({{ ejercicio.series }} x {{ ejercicio.repeticiones }})
+          </div>
+          <ion-icon [name]="estadoExpandido[ejercicio.ejercicioId] ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        </ion-card-header>
+        <ion-card-content *ngIf="estadoExpandido[ejercicio.ejercicioId]">
+          <p><strong>Series:</strong> {{ ejercicio.series }}</p>
+          <p><strong>Repeticiones:</strong> {{ ejercicio.repeticiones }}</p>
+          <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
+          <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>
+          <div class="botones-accion">
+            <ion-button fill="clear" color="medium" (click)="iniciarEdicionEjercicio(ejercicio); $event.stopPropagation()">
+              <ion-icon name="create"></ion-icon> Editar
+            </ion-button>
+            <ion-button fill="clear" color="danger" (click)="eliminarEjercicio(ejercicio); $event.stopPropagation()">
+              <ion-icon name="trash"></ion-icon> Eliminar
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </div>
 </ion-content>
 
 <ion-footer>

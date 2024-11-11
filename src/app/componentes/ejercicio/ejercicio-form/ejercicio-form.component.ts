@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ToastController, PopoverController, ModalController } from '@ionic/angular';
+import { Component, Input} from '@angular/core';
+import { PopoverController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
-import { IonLabel, IonItem, IonButton, IonAlert, IonCardContent } from "@ionic/angular/standalone";
+import { IonLabel, IonItem, IonButton } from "@ionic/angular/standalone";
 import { IonInput, IonSelectOption, IonSelect } from '@ionic/angular/standalone';
-import { NgFor, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 
 @Component({
@@ -12,8 +12,8 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   templateUrl: './ejercicio-form.component.html',
   styleUrls: ['./ejercicio-form.component.scss'],
   standalone: true,
-  imports: [IonCardContent, IonAlert, IonButton, IonItem,
-    IonLabel, FormsModule, IonInput, IonSelectOption, IonSelect, NgIf, NgFor],
+  imports: [  IonButton, IonItem,
+    IonLabel, FormsModule, IonInput, IonSelectOption, IonSelect, NgIf],
   providers: [ModalController, PopoverController]
 })
 export class EjercicioFormComponent {

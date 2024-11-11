@@ -1,0 +1,45 @@
+.form-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+ion-item {
+    margin: 8px 0;
+    --background: #f7f7f7;
+    --border-radius: 8px;
+    padding: 4px 8px;
+}
+
+ion-label {
+    font-weight: 500;
+    color: #555;
+}
+
+ion-input,
+ion-select {
+    font-size: 16px;
+    --padding-start: 8px;
+}
+
+.campo-invalido {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+    padding-left: 8px;
+}
+
+ion-item.invalid {
+    --highlight-color-focused: red;
+    --border-color: red;
+}
+
+ion-button {
+    margin-top: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+}

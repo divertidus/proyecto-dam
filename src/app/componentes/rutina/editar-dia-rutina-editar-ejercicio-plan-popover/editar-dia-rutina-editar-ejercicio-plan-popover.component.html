@@ -1,0 +1,37 @@
+<div class="form-container">
+  <ion-item [class.invalid]="camposInvalidos.series">
+    <ion-label position="floating">Series</ion-label>
+    <ion-input [(ngModel)]="ejercicioPlan.series" type="number" required (ionBlur)="validarCampo('series')"
+      (ionInput)="detectarCambios()"></ion-input>
+    <div *ngIf="camposInvalidos.series" class="campo-invalido">Número de series inválido</div>
+  </ion-item>
+
+  <ion-item [class.invalid]="camposInvalidos.repeticiones">
+    <ion-label position="floating">Repeticiones</ion-label>
+    <ion-input [(ngModel)]="ejercicioPlan.repeticiones" type="number" required (ionBlur)="validarCampo('repeticiones')"
+      (ionInput)="detectarCambios()"></ion-input>
+    <div *ngIf="camposInvalidos.repeticiones" class="campo-invalido">Número de repeticiones inválido</div>
+  </ion-item>
+
+  <ion-item [class.invalid]="camposInvalidos.tipoPeso">
+    <ion-label position="floating">Tipo de Peso</ion-label>
+    <ion-select [(ngModel)]="ejercicioPlan.tipoPeso" (ionChange)="validarCampo('tipoPeso'); detectarCambios()">
+      <ion-select-option value="Barra">Barra</ion-select-option>
+      <ion-select-option value="Mancuernas">Mancuernas</ion-select-option>
+      <ion-select-option value="Máquina">Máquina</ion-select-option>
+      <ion-select-option value="Peso Corporal">Peso Corporal</ion-select-option>
+    </ion-select>
+    <div *ngIf="camposInvalidos.tipoPeso" class="campo-invalido">Este campo es obligatorio</div>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Notas</ion-label>
+    <ion-input [(ngModel)]="ejercicioPlan.notas" (ionInput)="detectarCambios()"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" color="primary" (click)="guardarEjercicioPlan()"
+    [disabled]="!camposCompletos() || !formModificado">
+    Guardar Cambios
+  </ion-button>
+  <ion-button expand="block" color="medium" (click)="cerrarPopover()">Cancelar</ion-button>
+</div>

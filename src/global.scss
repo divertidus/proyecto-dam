@@ -43,3 +43,11 @@
     --border-radius: 12px;
     padding: 16px;
 }
+
+.popover-ejercicio-compacto {
+    --min-width: 90vw; /* Asegura un ancho mínimo de vista */
+    --max-width: 450px; /* Define un límite máximo */
+    --border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+}

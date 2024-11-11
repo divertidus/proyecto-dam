@@ -11,7 +11,7 @@ import { PopoverController } from '@ionic/angular';
   styleUrls: ['./ejercicio-ver-editar-popover.component.scss'],
   standalone: true,
   imports: [IonText, IonIcon, IonButtons, IonToolbar, IonTitle, IonHeader, IonButton, IonLabel, IonContent,
-    IonInput, IonItem, IonSelect, IonSelectOption, FormsModule],
+    IonItem, FormsModule],
   providers: []
 })
 export class EjercicioVerEditarPopoverComponent {

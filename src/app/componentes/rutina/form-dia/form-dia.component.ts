@@ -11,7 +11,7 @@ import {
   IonSearchbar, IonContent, IonGrid, IonRow,
   IonCol, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonToolbar, IonButton, IonInput,
-  IonList, IonIcon, IonPopover
+  IonList, IonIcon, IonPopover, IonCardSubtitle, IonModal
 } from '@ionic/angular/standalone';
 
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
