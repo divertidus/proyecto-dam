@@ -1,3 +1,4 @@
+/* editar-ejercicio-historial-modal.component.ts */
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { DiaEntrenamiento, EjercicioRealizado, SerieReal } from 'src/app/models/historial-entrenamiento';
@@ -12,15 +13,16 @@ import { DiaRutina } from 'src/app/models/rutina.model';
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { AuthService } from '../../../auth/auth.service';
+import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../../rutina/editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
 
 @Component({
   selector: 'app-editar-ejercicio-historia-modal',
   templateUrl: './editar-ejercicio-historial-modal.component.html',
   styleUrls: ['./editar-ejercicio-historial-modal.component.scss'],
-  imports: [IonAlert, IonCol, IonRow, IonGrid, IonSearchbar, IonFooter, IonCardContent, CommonModule, IonCardTitle,
-    IonCardHeader, IonCard, IonIcon, IonTextarea, IonInput, IonItem,
-    IonList, IonButton, IonButtons, IonTitle, NgIf, NgFor,
-    IonToolbar, IonCheckbox, IonLabel, IonContent, IonHeader, FormsModule],
+  imports: [IonAlert, IonSearchbar, IonFooter, IonCardContent, CommonModule, IonCardTitle,
+    IonCardHeader, IonCard, IonIcon, IonInput, IonItem,
+    IonButton, IonTitle, NgIf, NgFor,
+    IonToolbar, IonCheckbox, IonContent, IonHeader, FormsModule],
   providers: [AlertController, ModalController],
   standalone: true
 })
@@ -404,5 +406,25 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     };
 
     this.diaEntrenamientoBackup.ejerciciosRealizados.push(nuevoEjercicioRealizado);
+  }
+
+
+
+  async agregarEjercicioExtra() {
+    const modal = await this.modalController.create({
+      component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
+      cssClass: 'popover-ejercicio-compacto',
+    });
+
+    modal.onDidDismiss().then((result) => {
+      const ejercicioSeleccionado = result.data as EjercicioRealizado; // Ajustar tipo si es necesario
+      if (ejercicioSeleccionado) {
+        // Añadir el ejercicio seleccionado como un ejercicio extra
+        this.diaEntrenamientoBackup.ejerciciosRealizados.push(ejercicioSeleccionado);
+        console.log('Ejercicio extra añadido:', ejercicioSeleccionado);
+      }
+    });
+
+    await modal.present();
   }
 }

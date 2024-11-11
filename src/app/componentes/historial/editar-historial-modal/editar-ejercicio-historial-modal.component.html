@@ -1,3 +1,4 @@
+<!-- editar-ejercicio-historial-modal.component.html -->
 <ion-header>
   <ion-toolbar>
     <!-- Mostrar "Editando" y el día del entrenamiento + la fecha -->
@@ -8,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="content-adjusted">
+<ion-content class="content-adjusted" fullscreen>
   <ng-container *ngFor="let ejercicio of diaEntrenamientoBackup.ejerciciosRealizados; let i = index">
     <ion-card>
       <ion-card-header (click)="toggleEjercicio(i)">
@@ -99,12 +100,12 @@
   </ng-container>
 
   <!-- Barra de búsqueda para añadir un nuevo ejercicio realizado basado en un ejercicio existente -->
-  <ion-item>
+  <!-- <ion-item>
     <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
-  </ion-item>
+  </ion-item> -->
 
   <!-- Lista de ejercicios disponibles para añadir -->
-  <ion-grid>
+ <!--  <ion-grid>
     <ion-row>
       <ion-col size="6" *ngFor="let ejercicio of ejerciciosFiltrados">
         <ion-card (click)="agregarEjercicioRealizado(ejercicio)">
@@ -119,15 +120,18 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-</ion-content>
+</ion-content> -->
 
 
 
 
-<ion-footer>
+<ion-footer class="fixed-footer">
   <ion-toolbar>
+    <!-- Botón para añadir ejercicio extra -->
+    <ion-button expand="block" color="success" (click)="agregarEjercicioExtra()">
+      <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
+    </ion-button>
     <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
     <ion-button expand="full" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
-
   </ion-toolbar>
 </ion-footer>

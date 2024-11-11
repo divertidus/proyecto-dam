@@ -1,21 +1,28 @@
-/* Encabezado de selección de ejercicio */
-.encabezado-seleccion {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  color: #ffffff;
+ion-content {
+  padding-bottom: 80px;
+}
+
+.contenido-con-margen {
+  margin-bottom: 100px;
+}
+
+.fixed-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 /* Estilos de las tarjetas de ejercicios */
 .ejercicio-card {
   width: 100%;
-  height: 250px; /* Mantiene la altura consistente con otros componentes */
+  max-width: 160px; /* Limitar el ancho máximo para pantallas más grandes */
+  height: 250px; /* Altura fija para uniformidad */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  margin: 8px 0;
+  margin: 8px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
@@ -23,28 +30,28 @@
   overflow: hidden;
 }
 
-/* Estilo del título en la tarjeta */
+/* Título de la tarjeta con altura mínima */
 .titulo-ejercicio {
   font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
-  min-height: 40px; /* Asegura altura mínima uniforme */
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #222;
 }
 
-/* Imagen del ejercicio */
+/* Imagen en la tarjeta */
 .imagen-ejercicio {
-  width: 80px;
-  height: 80px;
-  object-fit: contain; /* Ajusta para mostrar toda la imagen sin cortes */
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   border-radius: 8px;
   margin: 8px 0;
 }
 
-/* Información del ejercicio (iconos y texto) */
+/* Información adicional de los ejercicios */
 .ejercicio-info {
   font-size: 13px;
   color: #444;
@@ -52,12 +59,62 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex-grow: 1; /* Hace que ocupe el espacio adicional */
+  flex-grow: 1;
   justify-content: center;
 }
 
-/* Espacio vertical reducido en la información del ejercicio */
 .ejercicio-info p {
-  margin: 2px 0; /* Reduce el espacio vertical entre líneas */
+  margin: 2px 0;
   font-weight: 500;
+}
+
+/* Icono para los ejercicios personalizados */
+.personalizado-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.3rem;
+  color: var(--ion-color-primary);
+}
+
+/* Botón flotante */
+.boton-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.descripcion-ejercicio {
+  font-size: 0.85rem;
+  color: var(--ion-color-dark);
+  margin: 4px 0;
+  text-align: center;
+  max-height: 60px;
+  overflow: auto;
+}
+
+.botones-acciones ion-button {
+  font-size: 1rem;
+  height: 28px;
+  width: 28px;
+  --border-radius: 50%;
+  margin: 0 4px;
+}
+
+.detalle-card-content {
+  padding: 8px 10px;
+}
+
+.detalle-contenido {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.tarjeta-seleccionada {
+  border: 2px solid var(--ion-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

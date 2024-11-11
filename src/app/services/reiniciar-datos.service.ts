@@ -182,8 +182,10 @@ export class ReiniciarDatosService {
       const rutinasExistentes = await this.rutinaService.obtenerRutinasPorUsuario(usuarioLogeado._id!);
       if (rutinasExistentes.length === 0) {
         const nuevaRutina: Rutina = {
+          _id: uuidv4(),
           entidad: 'rutina',
           nombre: 'Rutina 1',
+          descripcion:'Mi primera rutina',
           usuarioId: usuarioLogeado._id!,
           dias: diasRutina,
           timestamp: new Date().toISOString(),

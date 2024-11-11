@@ -18,7 +18,7 @@ import { HistorialService } from 'src/app/services/database/historial-entrenamie
   styleUrls: ['./dia-entrenamiento-card.component.scss'],
   standalone: true,
   providers: [AlertController, ModalController],
-  imports: [IonHeader, IonIcon, IonButton, IonLabel, IonItem, EditarEjercicioHistorialComponent, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
+  imports: [IonButton, IonLabel, IonItem, IonList, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonCard, NgIf, NgFor, CommonModule, FormsModule]
 })
 export class DiaEntrenamientoCardComponent {
   @Input() diaEntrenamiento: DiaEntrenamiento; // Entrenamiento actual
