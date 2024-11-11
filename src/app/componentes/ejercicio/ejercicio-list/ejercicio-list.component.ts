@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { Ejercicio } from '../../../models/ejercicio.model';
@@ -6,16 +6,16 @@ import { addIcons } from 'ionicons';
 import * as todosLosIconos from 'ionicons/icons'
 import {
   IonGrid, IonRow, IonCardHeader, IonCardTitle,
-  IonCardSubtitle, IonButton, IonIcon, IonCardContent,
-  IonCard, IonCol, IonFooter, IonToolbar, IonPopover,
-  IonItem, IonSearchbar, IonHeader, IonTitle, IonContent,
+  IonButton, IonIcon, IonCardContent,
+  IonCard, IonCol, IonToolbar, IonPopover,
+  IonItem, IonSearchbar, IonHeader, IonContent,
   IonFabButton, IonFab
 } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { FiltroEjercicioComponent, TipoPesoFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
-import { ModalController, PopoverController, AlertController } from '@ionic/angular';
+import { PopoverController, AlertController } from '@ionic/angular';
 import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
 import { EjercicioVerEditarPopoverComponent } from '../../ejercicio-ver-editar-popover/ejercicio-ver-editar-popover.component';
 @Component({
@@ -26,7 +26,7 @@ import { EjercicioVerEditarPopoverComponent } from '../../ejercicio-ver-editar-p
   imports: [IonFab, IonFabButton, IonContent, IonHeader, IonSearchbar, IonItem,
     IonPopover, IonToolbar, IonCol, IonCard, FormsModule,
     IonCardContent, IonIcon, IonButton, IonCardTitle,
-    IonCardHeader, IonRow, IonGrid, CommonModule, FiltroEjercicioComponent ]
+    IonCardHeader, IonRow, IonGrid, CommonModule, FiltroEjercicioComponent]
 })
 export class EjercicioListComponent implements OnInit {
 
@@ -40,11 +40,16 @@ export class EjercicioListComponent implements OnInit {
   ejerciciosFiltrados: Ejercicio[] = []; // Lista para la búsqueda y filtrado en tiempo real
   ejercicioSeleccionadoId: string | null = null; // ID del ejercicio actualmente "dado la vuelta"
 
+  isSmallScreen: boolean; // Nueva propiedad para detectar pantalla pequeña
+
+
+
   filtroTipoPeso: TipoPesoFiltro = {
     Barra: false,
     Mancuernas: false,
     Máquina: false,
     "Peso Corporal": false,
+
   };
 
   filtroMusculoPrincipal: { [key: string]: boolean } = {}; // Filtros de grupo muscular
@@ -53,6 +58,7 @@ export class EjercicioListComponent implements OnInit {
     private popoverController: PopoverController,
     private alertController: AlertController) {
     addIcons(todosLosIconos);
+    this.updateScreenSize(); // Inicializar el valor al cargar
   }
 
   ngOnInit() {
@@ -60,7 +66,19 @@ export class EjercicioListComponent implements OnInit {
     this.ejercicioService.ejercicios$.subscribe(ejercicios => {
       this.ejercicios = ejercicios;
       this.ejerciciosFiltrados = [...this.ejercicios]; // Inicialización de la lista filtrada
+
     });
+  }
+
+  // Detectar cambios en el tamaño de la ventana para actualizar isSmallScreen
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.updateScreenSize();
+  }
+
+  private updateScreenSize() {
+    // Definimos 768px como límite para una pantalla pequeña (mobile-first)
+    this.isSmallScreen = window.innerWidth < 768;
   }
 
   // Método para buscar ejercicios por texto

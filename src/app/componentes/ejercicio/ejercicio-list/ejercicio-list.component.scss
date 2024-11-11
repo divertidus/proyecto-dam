@@ -1,5 +1,5 @@
 ion-content {
-  padding-bottom: 80px; /* Ajusta este valor si necesitas más o menos espacio */
+  padding-bottom: 80px;
 }
 
 .contenido-con-margen {
@@ -14,7 +14,7 @@ ion-content {
 
 .ejercicio-card {
   width: 100%;
-  height: 250px;
+  height: 250px; /* Altura fija para uniformidad */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -25,17 +25,22 @@ ion-content {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
   text-align: center;
+  overflow: hidden;
 }
 
 .titulo-ejercicio {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
+  min-height: 40px; /* Ajuste de altura mínima para títulos */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .imagen-ejercicio {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   border-radius: 8px;
   margin: 8px 0;
@@ -48,10 +53,12 @@ ion-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex-grow: 1; /* Ocupar espacio extra para mantener uniformidad */
+  justify-content: center;
 }
 
 .ejercicio-info ion-icon {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
   margin-right: 4px;
 }
@@ -60,29 +67,29 @@ ion-content {
   position: absolute;
   top: 8px;
   right: 8px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: var(--ion-color-primary);
 }
 
 .boton-flotante {
   position: fixed;
-  bottom: 20px; /* Aumentamos la distancia desde el fondo */
+  bottom: 20px;
   right: 20px;
 }
 
 .descripcion-ejercicio {
-  font-size: 0.9rem; /* Reduce el tamaño de la fuente para evitar desplazamientos */
+  font-size: 0.85rem;
   color: var(--ion-color-dark);
   margin: 4px 0;
   text-align: center;
-  max-height: 80px; /* Limita la altura máxima */
-  overflow: auto; /* Añade desplazamiento si es necesario */
+  max-height: 60px;
+  overflow: auto;
 }
 
 .botones-acciones ion-button {
-  font-size: 1.2rem;
-  height: 30px;
-  width: 30px;
+  font-size: 1rem;
+  height: 28px;
+  width: 28px;
   --border-radius: 50%;
   margin: 0 4px;
 }

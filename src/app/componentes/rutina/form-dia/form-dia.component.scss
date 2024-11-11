@@ -1,10 +1,137 @@
-/* Estilo de los ejercicios seleccionados */
+/* Contenedor principal para el contenido */
+ion-content {
+  padding-bottom: 80px;
+}
+
+.contenido-con-margen {
+  margin-bottom: 100px;
+}
+
+/* Barra de búsqueda fija en la parte superior */
+.fixed-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Estilos de las tarjetas de ejercicios, asegurando uniformidad */
+.ejercicio-card {
+  width: 100%;
+  height: 250px; /* Altura fija para mantener uniformidad */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Estilo para el título de cada tarjeta */
+.titulo-ejercicio {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+  min-height: 40px; /* Altura mínima para mantener uniformidad */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Imagen de cada ejercicio dentro de la tarjeta */
+.imagen-ejercicio {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+/* Información del ejercicio (iconos y texto) */
+.ejercicio-info {
+  font-size: 13px;
+  color: #444;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1; /* Ocupa espacio adicional para uniformidad */
+  justify-content: center;
+}
+
+/* Icono en la información del ejercicio */
+.ejercicio-info ion-icon {
+  font-size: 14px;
+  color: #666;
+  margin-right: 4px;
+}
+
+/* Icono para ejercicios personalizados */
+.personalizado-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.3rem;
+  color: var(--ion-color-primary);
+}
+
+/* Botón flotante para agregar nuevo ejercicio */
+.boton-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Texto descriptivo del ejercicio */
+.descripcion-ejercicio {
+  font-size: 0.85rem;
+  color: var(--ion-color-dark);
+  margin: 4px 0;
+  text-align: center;
+  max-height: 60px;
+  overflow: auto;
+}
+
+/* Botones de edición y eliminación en la tarjeta */
+.botones-acciones ion-button {
+  font-size: 1rem;
+  height: 28px;
+  width: 28px;
+  --border-radius: 50%;
+  margin: 0 4px;
+}
+
+/* Contenedor para el contenido expandido de las tarjetas */
+.detalle-card-content {
+  padding: 8px 10px;
+}
+
+.detalle-contenido {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/* Efecto de selección en tarjeta */
+.tarjeta-seleccionada {
+  border: 2px solid var(--ion-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Estilos específicos para el contenedor de ejercicios seleccionados */
 .ejercicios-seleccionados-container ion-card-content {
   max-height: 40vh;
   overflow-y: auto;
 }
 
-/* Estilo de los headers de los ejercicios seleccionados */
+/* Estilos compactos para el header de ejercicios seleccionados */
 .header-compact {
   padding: 8px 12px;
 }
@@ -23,58 +150,7 @@
   align-items: center;
 }
 
-/* Estilo de las tarjetas de ejercicios */
-.ejercicio-card {
-  width: 100%;
-  height: 250px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  text-align: center;
-}
-
-.titulo-ejercicio {
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-.imagen-ejercicio {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  border-radius: 8px;
-  margin: 8px 0;
-}
-
-.ejercicio-info {
-  font-size: 13px;
-  color: #444;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ejercicio-info ion-icon {
-  font-size: 16px;
-  color: #666;
-  margin-right: 4px;
-}
-
-.personalizado-icon {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 1.5rem;
-  color: var(--ion-color-primary);
-}
-
+/* Contenedor y estilos para el footer fijo */
 .footer-fixed {
   position: fixed;
   bottom: 0;
@@ -98,6 +174,7 @@
   text-overflow: ellipsis;
 }
 
+/* Contenedor de contenido expandible para ejercicios seleccionados */
 .ejercicios-seleccionados-content {
   max-height: 40vh;
   overflow-y: auto;

@@ -1,3 +1,4 @@
+/* Encabezado de selección de ejercicio */
 .encabezado-seleccion {
   text-align: center;
   font-size: 18px;
@@ -5,44 +6,58 @@
   color: #ffffff;
 }
 
+/* Estilos de las tarjetas de ejercicios */
 .ejercicio-card {
-  height: 240px; // Ajuste de altura para evitar cortes
+  width: 100%;
+  height: 250px; /* Mantiene la altura consistente con otros componentes */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  margin: 6px;
+  padding: 10px;
+  margin: 8px 0;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.titulo-ejercicio {
-  font-size: 15px;
-  font-weight: bold;
-  margin: 4px 0;
+  box-sizing: border-box;
   text-align: center;
-  color: #222;
-  white-space: normal; // Permitir varias líneas si es necesario
+  overflow: hidden;
 }
 
+/* Estilo del título en la tarjeta */
+.titulo-ejercicio {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+  min-height: 40px; /* Asegura altura mínima uniforme */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #222;
+}
+
+/* Imagen del ejercicio */
+.imagen-ejercicio {
+  width: 80px;
+  height: 80px;
+  object-fit: contain; /* Ajusta para mostrar toda la imagen sin cortes */
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+/* Información del ejercicio (iconos y texto) */
 .ejercicio-info {
   font-size: 13px;
   color: #444;
   text-align: center;
-  line-height: 1.3;
-  margin-top: 4px; // Reducido para que ocupe menos espacio
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1; /* Hace que ocupe el espacio adicional */
+  justify-content: center;
 }
 
-.imagen-ejercicio {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 6px;
-}
-
+/* Espacio vertical reducido en la información del ejercicio */
 .ejercicio-info p {
-  margin: 2px 0; // Ajuste para reducir el espacio vertical
-  font-weight: 500; // Un poco más de peso para hacer el texto legible
+  margin: 2px 0; /* Reduce el espacio vertical entre líneas */
+  font-weight: 500;
 }

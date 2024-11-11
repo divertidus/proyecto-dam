@@ -206,42 +206,46 @@ export class Tab1Page implements OnInit, OnDestroy {
   async editarRutina(rutina: Rutina, event: Event) {
     event.stopPropagation(); // Evitar la propagación del clic
     const alert = await this.alertController.create({
-      header: 'Editar Rutina',
-      inputs: [
-        {
-          name: 'nombre',
-          type: 'text',
-          placeholder: 'Nuevo nombre de la rutina',
-          value: rutina.nombre
-        },
-        {
-          name: 'descripcion',
-          type: 'textarea',
-          placeholder: 'Descripción de la rutina',
-          value: rutina.descripcion || '' // Mostrar la descripción existente o una cadena vacía
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Guardar',
-          handler: async (data) => {
-            if (data.nombre && data.nombre.trim() !== '') {
-              rutina.nombre = data.nombre.trim();
-              rutina.descripcion = data.descripcion.trim(); // Actualizar la descripción también
-              await this.rutinaService.actualizarRutina(rutina);
-              console.log('Rutina actualizada con éxito');
-              this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar
+        header: 'Editar Rutina',
+        inputs: [
+            /* {
+                name: 'nombre',
+                type: 'text',
+                placeholder: 'Nuevo nombre de la rutina',
+                value: rutina.nombre
+            }, */
+            {
+                name: 'descripcion',
+                type: 'textarea',
+                placeholder: 'Descripción de la rutina',
+                value: rutina.descripcion || '' // Mostrar la descripción existente o una cadena vacía
             }
-          }
-        }
-      ]
+        ],
+        buttons: [
+            {
+                text: 'Cancelar',
+                role: 'cancel'
+            },
+            {
+                text: 'Guardar',
+                handler: async (data) => {
+                    // Verifica que los campos de nombre y descripcion no estén vacíos antes de asignar
+                    if (data.descripcion && data.descripcion.trim() !== '') {
+                        rutina.descripcion = data.descripcion.trim(); // Actualizar la descripción también
+                    }
+                    if (data.nombre && data.nombre.trim() !== '') {
+                        rutina.nombre = data.nombre.trim();
+                    }
+                    // Asegúrate de llamar a actualizar siempre
+                    await this.rutinaService.actualizarRutina(rutina);
+                    console.log('Rutina actualizada con éxito');
+                    this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar
+                }
+            }
+        ]
     });
     await alert.present();
-  }
+}
 
   async editarDiaRutina(rutina: Rutina, diaRutina: DiaRutina) {
     console.log('Click en editar Dia')
