@@ -1,44 +1,76 @@
-.footer-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px; /* Añadir un poco de padding horizontal */
-  }
-  
-  .footer-text {
-    font-size: 0.9em; /* Tamaño más pequeño para evitar el corte de texto */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Agregar "..." si el texto es demasiado largo */
-    flex-grow: 1; /* Permite que el texto use todo el espacio disponible */
-  }
-  
-  .guardar-btn {
-    margin-left: 10px;
-    flex-shrink: 0; /* Evita que el botón se encoja si el espacio es limitado */
-  }
+/* Estilo de los ejercicios seleccionados */
+.ejercicios-seleccionados-container ion-card-content {
+  max-height: 40vh;
+  overflow-y: auto;
+}
 
+/* Estilo de los headers de los ejercicios seleccionados */
+.header-compact {
+  padding: 8px 12px;
+}
 
-  
-  .ejercicios-seleccionados-container ion-card-content {
-    max-height: 40vh; /* Limita la altura del contenido para que no ocupe toda la pantalla */
-    overflow-y: auto; /* Habilita el scroll solo si el contenido excede el espacio */
-  }
-  
-  .header-compact {
-    padding: 8px 12px; /* Reduce el padding del header */
-  }
-  
-  .header-compact ion-card-title {
-    font-size: 1rem; /* Ajusta el tamaño de la fuente para que sea más compacto */
-    margin: 0; /* Elimina cualquier margen adicional */
-  }
-  
-  .header-compact ion-icon {
-    font-size: 1.2rem; /* Reduce ligeramente el tamaño del icono */
-  }
-  
-  .header-compact ion-row {
-    --ion-grid-padding: 0; /* Elimina el padding de la grid */
-    align-items: center; /* Centra verticalmente los elementos */
-  }
+.header-compact ion-card-title {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.header-compact ion-icon {
+  font-size: 1.2rem;
+}
+
+.header-compact ion-row {
+  --ion-grid-padding: 0;
+  align-items: center;
+}
+
+/* Estilo de las tarjetas de ejercicios */
+.ejercicio-card {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.titulo-ejercicio {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.imagen-ejercicio {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.ejercicio-info {
+  font-size: 13px;
+  color: #444;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ejercicio-info ion-icon {
+  font-size: 16px;
+  color: #666;
+  margin-right: 4px;
+}
+
+.personalizado-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.5rem;
+  color: var(--ion-color-primary);
+}

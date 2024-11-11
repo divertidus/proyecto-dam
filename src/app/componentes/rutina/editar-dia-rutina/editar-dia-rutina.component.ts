@@ -18,11 +18,11 @@ import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../editar-dia-ru
   templateUrl: './editar-dia-rutina.component.html',
   styleUrls: ['./editar-dia-rutina.component.scss'],
   standalone: true,
-  imports: [IonFooter, IonInput,
-    IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent,
-    IonItem, IonLabel, IonTextarea, IonList, IonSelect, IonSelectOption,
+  imports: [IonFooter,
+    IonHeader, IonToolbar, IonTitle, IonButton, IonContent,
+    IonList,
     FormsModule, NgIf, NgFor, IonCard, IonCardHeader, IonCardTitle,
-    IonCardContent, IonIcon, EditarDiaRutinaAgregarEjercicioSueltoComponent
+    IonCardContent, IonIcon
   ],
   providers: []
 })
@@ -70,17 +70,17 @@ export class EditarDiaRutinaComponent implements OnInit {
     const modal = await this.modalController.create({
       component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
     });
-  
+
     modal.onDidDismiss().then((result) => {
       const ejercicioSeleccionado = result.data as EjercicioPlan;
-      
+
       console.log('Ejercicio recibido en padre:', ejercicioSeleccionado); // <--- LOG aquí
-  
+
       if (ejercicioSeleccionado) {
         this.diaRutina.ejercicios.push(ejercicioSeleccionado);
       }
     });
-  
+
     await modal.present();
   }
 
@@ -158,6 +158,37 @@ export class EditarDiaRutinaComponent implements OnInit {
     });
 
     await alert.present(); // Muestra la alerta de confirmación
+  }
+
+  // Método para editar la descripción del día
+  async editarDescripcion() {
+    const alert = await this.alertController.create({
+      header: 'Editar Descripción del Día',
+      inputs: [
+        {
+          name: 'descripcion',
+          type: 'textarea',
+          placeholder: 'Ingresa una nueva descripción',
+          value: this.diaRutina.descripcion
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            if (data.descripcion && data.descripcion.trim() !== '') {
+              this.diaRutina.descripcion = data.descripcion.trim();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
 

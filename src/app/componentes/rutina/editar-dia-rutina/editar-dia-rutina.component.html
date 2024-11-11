@@ -5,10 +5,15 @@
 </ion-header>
 
 <ion-content>
-  <ion-item>
-    <ion-label position="stacked">Descripción del Día</ion-label>
-    <ion-textarea [(ngModel)]="diaRutina.descripcion"></ion-textarea>
-  </ion-item>
+  <!-- Mostrar la descripción del día y un botón para editarla -->
+  <div class="descripcion-container">
+    <p class="descripcion-texto">
+      <strong>Descripción del Día:</strong> {{ diaRutina.descripcion || 'Sin descripción' }}
+    </p>
+    <ion-button fill="clear" (click)="editarDescripcion()">
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-button>
+  </div>
 
   <div style="text-align: center; color: blue; padding: 10px;">
     Ejercicios actuales: {{ diaRutina.ejercicios.length }}

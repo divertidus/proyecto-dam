@@ -26,9 +26,9 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './vista-entreno.component.html',
   styleUrls: ['./vista-entreno.component.scss'],
   standalone: true,
-  imports: [IonContent, IonAlert, IonCol, IonRow, IonGrid, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
+  imports: [IonContent, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
     IonCardContent, IonCardTitle, IonCardHeader,
-    IonCard, IonTitle, IonToolbar, IonHeader, FormsModule, NgClass, NgFor, NgIf, IonCheckbox]
+    IonCard, FormsModule, NgClass, NgFor, NgIf, IonCheckbox]
 })
 export class VistaEntrenoComponent implements OnInit, OnChanges {
   [x: string]: any;

@@ -27,3 +27,21 @@ ion-card {
     margin: 3px 0;
     width: 48%; /* Esto hace que cada texto ocupe la mitad del ancho */
   }
+
+  .descripcion-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .descripcion-texto {
+    flex-grow: 1;
+    font-size: 1rem;
+    color: #444;
+  }
+  
+  ion-button {
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+  

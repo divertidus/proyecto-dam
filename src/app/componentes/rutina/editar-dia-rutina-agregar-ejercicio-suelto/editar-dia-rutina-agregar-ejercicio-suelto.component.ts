@@ -20,7 +20,7 @@ import { FiltroEjercicioComponent, TipoPesoFiltro, MusculoPrincipalFiltro } from
     IonContent, IonToolbar, IonHeader, IonCardTitle,
     IonCard, IonCardContent, IonCardHeader, IonCol,
     FormsModule, IonRow, IonGrid, IonSearchbar, IonItem,
-    NgFor, NgIf, FiltroEjercicioComponent],
+    NgFor, FiltroEjercicioComponent],
   standalone: true,
   providers: []
 })

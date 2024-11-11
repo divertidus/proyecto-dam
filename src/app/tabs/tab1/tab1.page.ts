@@ -23,9 +23,8 @@ import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
-     IonButton, CommonModule, FormsModule, NgFor, NgIf, UserFormComponent, FormDiaComponent,
-    UserListComponent, ToolbarLoggedComponent, FormsModule, EditarDiaRutinaComponent],
+  imports: [IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
+     IonButton, CommonModule, FormsModule, NgFor, NgIf,ToolbarLoggedComponent, FormsModule],
   providers: [ModalController, PopoverController]
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -90,32 +89,30 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation(); // Evitar la propagación del clic si es necesario
     }
-
+  
     try {
       const modal = await this.modalController.create({
         component: FormDiaComponent,
         componentProps: {
-          ejercicios: this.ejercicios, // Pasar la lista de ejercicios
-          diaExistente: null, // No pasamos día existente porque es para añadir un nuevo día
-          modo: 'crear', // Siempre será modo "crear" cuando estamos añadiendo un nuevo día
-          numeroDiasExistentes: rutina ? rutina.dias.length : 0 // Número de días existentes en la rutina
+          ejercicios: this.ejercicios, // Lista de ejercicios disponible
+          diaExistente: null, // No se pasa un día existente porque es para añadir un nuevo día
+          modo: 'crear', // Siempre es modo crear
+          numeroDiasExistentes: rutina ? rutina.dias.length : 0
         }
       });
-
+  
       await modal.present();
-
+  
       const { data } = await modal.onDidDismiss();
-
+  
       if (data && data.ejercicios.length > 0) {
         if (rutina) {
-          // Añadir el día a la rutina existente
           this.guardarNuevoDiaEnRutina(rutina, data);
         } else {
-          // Si no hay rutina, creamos una nueva y añadimos el día
           this.crearRutinaConDia(data);
         }
       } else {
-        console.log('No se añadió ningún día con ejercicios. No se creará la rutina.');
+        console.log('No se añadió ningún día con ejercicios.');
       }
     } catch (error) {
       console.error('Error al intentar abrir el modal:', error);
@@ -247,6 +244,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async editarDiaRutina(rutina: Rutina, diaRutina: DiaRutina) {
+    console.log('Click en editar Dia')
     const modal = await this.modalController.create({
       component: EditarDiaRutinaComponent,
       componentProps: {

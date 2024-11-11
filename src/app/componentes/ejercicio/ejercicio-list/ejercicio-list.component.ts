@@ -23,11 +23,10 @@ import { EjercicioVerEditarPopoverComponent } from '../../ejercicio-ver-editar-p
   templateUrl: './ejercicio-list.component.html',
   styleUrls: ['./ejercicio-list.component.scss'],
   standalone: true,
-  imports: [IonFab, IonFabButton, IonContent, IonTitle, IonHeader, IonSearchbar, IonItem,
-    IonPopover, IonToolbar, IonFooter, IonCol, IonCard, FormsModule,
-    IonCardContent, IonIcon, IonButton, IonCardSubtitle, IonCardTitle,
-    IonCardHeader, IonRow, IonGrid, CommonModule, FiltroEjercicioComponent,
-    EjercicioFormComponent]
+  imports: [IonFab, IonFabButton, IonContent, IonHeader, IonSearchbar, IonItem,
+    IonPopover, IonToolbar, IonCol, IonCard, FormsModule,
+    IonCardContent, IonIcon, IonButton, IonCardTitle,
+    IonCardHeader, IonRow, IonGrid, CommonModule, FiltroEjercicioComponent ]
 })
 export class EjercicioListComponent implements OnInit {
 

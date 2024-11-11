@@ -2,39 +2,52 @@
 
 <ion-content>
   <!-- Nombre del Día y Descripción -->
-  <ion-item>
+  <!--   <ion-item>
     <ion-label position="stacked">Nombre del Día</ion-label>
-    <ion-text>{{ nombreDia }}</ion-text>
-  </ion-item>
+    <ion-input [(ngModel)]="nombreDia" name="nombreDia" placeholder="Ej. Día 1 - Espalda y Bíceps"></ion-input>
+  </ion-item> -->
 
   <ion-item>
     <ion-label position="stacked">Descripción breve</ion-label>
-    <ion-input [(ngModel)]="descripcionDia" name="descripcion"></ion-input>
+    <ion-input placeholder="Introduce una descripcion breve" [(ngModel)]="descripcionDia"
+      name="descripcion"></ion-input>
   </ion-item>
 
-  <!-- Barra de búsqueda -->
-  <ion-item>
-    <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
-  </ion-item>
+  <!-- Barra de búsqueda y botón de filtro -->
+  <ion-toolbar color="light" class="fixed-toolbar">
+    <ion-item lines="none">
+      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+      <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
+        <ion-icon name="filter-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
 
-  <!-- Lista de ejercicios filtrados (superior) -->
-  <ion-grid>
-    <ion-row class="ion-align-items-stretch">
-      <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
-        <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
-          <ion-card-header>
-            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
-          </ion-card-header>
-
-          <ion-card-content>
-            <!-- Imagen del ejercicio -->
-            <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
-              alt="Imagen del ejercicio" class="imagen-ejercicio" />
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <!-- Lista de ejercicios filtrados (tarjetas) -->
+  <div class="contenido-con-margen">
+    <ion-grid>
+      <ion-row class="ion-align-items-stretch">
+        <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
+          <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
+            <!-- Vista principal de la tarjeta (imagen y detalles básicos) -->
+            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+              class="personalizado-icon"></ion-icon>
+            <ion-card-header>
+              <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+                class="imagen-ejercicio" />
+              <div class="ejercicio-info">
+                <p><ion-icon name="barbell-outline"></ion-icon> {{ ejercicio.tipoPeso }}</p>
+                <p><ion-icon name="body-outline"></ion-icon> {{ ejercicio.musculoPrincipal }}</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
 
 <!-- Sección de ejercicios seleccionados fija en la parte inferior -->
@@ -48,7 +61,7 @@
           <ion-col>
             <ion-card-title>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-card-title>
           </ion-col>
-          <ion-col size="auto">
+          <ion-col size="auto" *ngIf="ejerciciosEnRutina.length > 0">
             <ion-icon
               [name]="mostrarEjerciciosSeleccionados ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
           </ion-col>
@@ -66,14 +79,12 @@
             <p>Series {{ ejercicio.series }} x {{ ejercicio.repeticiones }} repeticiones</p>
             <p *ngIf="ejercicio.notas">Notas: {{ ejercicio.notas }}</p>
           </ion-label>
-          <ion-button fill="clear" color="medium" (click)="editarEjercicio(i)">
+          <ion-button fill="clear" color="medium" (click)="editarEjercicio(i); $event.stopPropagation()">
             <ion-icon name="create"></ion-icon>
           </ion-button>
-          <ion-modal></ion-modal>
-          <ion-button fill="clear" color="danger" (click)="eliminarEjercicio(i)">
+          <ion-button fill="clear" color="danger" (click)="eliminarEjercicio(i); $event.stopPropagation()">
             <ion-icon name="trash"></ion-icon>
           </ion-button>
-          <ion-alert></ion-alert>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -84,8 +95,14 @@
 <ion-footer>
   <ion-toolbar>
     <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
-    <ion-alert></ion-alert>
     <ion-button expand="full" color="success" (click)="guardar()">Guardar</ion-button>
-    <ion-alert></ion-alert>
   </ion-toolbar>
 </ion-footer>
+
+<ion-popover trigger="filtroPopoverTrigger" alignment="end">
+  <ng-template>
+    <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
+      (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
+    </app-filtro-ejercicio>
+  </ng-template>
+</ion-popover>

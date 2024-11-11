@@ -7,19 +7,28 @@ import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
 import { Subscription } from 'rxjs';
 import {
-  IonFooter, IonItem, IonLabel, IonText, IonSearchbar, IonContent, IonGrid, IonRow, IonCol,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonToolbar, IonButton, IonInput, IonList, IonIcon, IonAlert, IonModal
+  IonFooter, IonItem, IonLabel,
+  IonSearchbar, IonContent, IonGrid, IonRow,
+  IonCol, IonCard, IonCardHeader, IonCardTitle,
+  IonCardContent, IonToolbar, IonButton, IonInput,
+  IonList, IonIcon, IonPopover
 } from '@ionic/angular/standalone';
+
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { FiltroEjercicioComponent, TipoPesoFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
+
 
 @Component({
   selector: 'app-form-dia',
   templateUrl: './form-dia.component.html',
   styleUrls: ['./form-dia.component.scss'],
   standalone: true,
-  imports: [IonModal, IonAlert, IonIcon, IonList, IonButton, IonInput, IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
-    IonCard, IonCol, IonRow, IonGrid, IonContent, IonSearchbar, IonText,
-    IonLabel, IonItem, IonFooter, CommonModule, FormsModule, ToolbarModalesCancelarComponent]
+  imports: [IonIcon, IonList, IonButton, IonInput,
+    IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
+    IonCard, IonCol, IonRow, IonGrid, IonContent,
+    IonSearchbar, IonLabel, IonItem, IonFooter,
+    CommonModule, FormsModule, ToolbarModalesCancelarComponent,
+    IonPopover, FiltroEjercicioComponent]
 
 })
 export class FormDiaComponent implements OnInit {
@@ -36,6 +45,16 @@ export class FormDiaComponent implements OnInit {
   ejercicios: Ejercicio[] = []; // Lista de ejercicios obtenidos del servicio
   private ejerciciosSub: Subscription; // Para manejar la suscripción
 
+
+  // Definir `filtroTipoPeso` con el tipo específico y una inicialización correcta
+  filtroTipoPeso: TipoPesoFiltro = {
+    Barra: false,
+    Mancuernas: false,
+    Máquina: false,
+    "Peso Corporal": false,
+  };
+  filtroMusculoPrincipal: { [key: string]: boolean } = {}; // Filtros de grupo muscular
+
   constructor(
     private ejercicioService: EjercicioService,
     private alertController: AlertController,
@@ -43,8 +62,7 @@ export class FormDiaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //this.ejercicioService.cargarEjercicios() // O los cargo en el controlador del Ejercicios-service o aqui.
-    // Nos suscribimos al observable ejercicios$ que expone los ejercicios cargados
+    // Cargar ejercicios del servicio
     this.ejerciciosSub = this.ejercicioService.ejercicios$.subscribe(data => {
       this.ejercicios = data;
       this.ejerciciosFiltrados = [...this.ejercicios]; // Inicializa los ejercicios filtrados
@@ -64,18 +82,42 @@ export class FormDiaComponent implements OnInit {
   }
 
   // Filtrar los ejercicios cuando el usuario realiza una búsqueda
+  // Método para buscar ejercicios por texto
   buscarEjercicios(event: any) {
     const valorBusqueda = event.detail.value ? event.detail.value.toLowerCase() : '';
+    this.aplicarFiltros(valorBusqueda); // Aplicar el filtro de texto junto con los demás filtros
+  }
 
-    if (valorBusqueda === '') {
-      this.ejerciciosFiltrados = [...this.ejercicios]; // Restaura la lista original
-    } else {
-      this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio =>
-        ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
+  // Método que recibe los filtros desde FiltroEjercicioComponent
+  aplicarFiltrosDesdeFiltro(event: { tipoPeso: TipoPesoFiltro; musculoPrincipal: { [key: string]: boolean } }) {
+    this.filtroTipoPeso = event.tipoPeso;
+    this.filtroMusculoPrincipal = event.musculoPrincipal;
+    this.aplicarFiltros(); // Aplicar los filtros tras actualizar los valores
+  }
+
+  aplicarFiltros(valorBusqueda: string = '') {
+    // Filtrado similar al componente que funciona correctamente
+    this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio => {
+      // Filtrar por búsqueda de texto (nombre, descripción o grupo muscular)
+      const coincideBusqueda = ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
         (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-        (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda))
-      );
-    }
+        (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda));
+
+      // Verificar si hay algún filtro activo en `filtroTipoPeso`
+      const tipoPesoActivo = Object.values(this.filtroTipoPeso).some(valor => valor);
+      const tipoPesoSeleccionado = tipoPesoActivo ?
+        this.filtroTipoPeso[ejercicio.tipoPeso as keyof TipoPesoFiltro] : true;
+
+      // Verificar si hay algún filtro activo en `filtroMusculoPrincipal`
+      const musculoActivo = Object.values(this.filtroMusculoPrincipal).some(valor => valor);
+      const musculoSeleccionado = musculoActivo ?
+        this.filtroMusculoPrincipal[ejercicio.musculoPrincipal] : true;
+
+      // Combinar todos los criterios para determinar si el ejercicio pasa el filtro
+      return coincideBusqueda && tipoPesoSeleccionado && musculoSeleccionado;
+    });
+
+    console.log('Ejercicios después de aplicar filtros:', this.ejerciciosFiltrados);
   }
 
   async seleccionarEjercicio(ejercicio: Ejercicio) {

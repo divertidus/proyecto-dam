@@ -38,6 +38,7 @@
               <div class="dia-container">
                 <h3>{{ dia.diaNombre }} - {{ dia.descripcion }}</h3>
                 <ion-button (click)="editarDiaRutina(rutina, dia)">Editar Día</ion-button>
+                <ion-modal></ion-modal>
                 <ul>
                   <li *ngFor="let ejercicioPlan of dia.ejercicios">
                     {{ ejercicioPlan.nombreEjercicio }} - {{ ejercicioPlan.series }}x{{ ejercicioPlan.repeticiones }}
@@ -50,6 +51,7 @@
               <ion-button fill="outline" color="success" (click)="abrirFormularioDia(rutina)">
                 <ion-icon name="add-circle-outline"></ion-icon> Añadir otro Día
               </ion-button>
+              <ion-modal></ion-modal>
             </div>
           </div>
         </ion-card-content>

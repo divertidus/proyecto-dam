@@ -14,7 +14,7 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   templateUrl: './gestion-ejercicios.component.html',
   styleUrls: ['./gestion-ejercicios.component.scss'],
   standalone: true,
-  imports: [IonContent, NgFor, NgIf, FormsModule, EjercicioFormComponent, EjercicioListComponent],
+  imports: [FormsModule, EjercicioListComponent],
   providers: [ModalController, PopoverController]
 })
 export class GestionEjerciciosComponent implements OnInit {
