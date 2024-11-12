@@ -52,7 +52,8 @@
   margin-bottom: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: #f3f4f6;
+  padding: 2px;
+
 }
 
 /* Encabezado de la rutina diferenciado con fondo y menos espacio */
@@ -76,21 +77,29 @@
   margin-right: 5px;
 }
 
+/* Ajuste para el tamaño del texto de "Rutina de X días" */
 .rutina-dias {
-  font-size: 1em;
+  font-size: 1.1em;
+  /* Tamaño ligeramente mayor */
   color: #666;
 }
 
-.iconos-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* Aumentar el tamaño de los iconos de editar y eliminar */
+.iconos-header ion-icon {
+  /* Tamaño mayor para facilitar la interacción en dispositivos móviles */
+  cursor: pointer;
 }
 
-.icono-cambiar-nombre,
+/* Específico para el icono de edición */
+.icono-cambiar-nombre {
+  font-size: 2.0em;
+  color: #3a7df8;
+}
+
+/* Específico para el icono de eliminación */
 .icono-eliminar-rutina {
-  font-size: 1.4em;
-  cursor: pointer;
+  font-size: 2.2em;
+  color: #f34949;
 }
 
 .icono-cambiar-nombre {
@@ -124,8 +133,9 @@
 .dia-container {
   padding: 8px 10px;
   margin-bottom: 8px;
-  background-color: #ffffff;
+  background-color: #f3f4f6;
   border-left: 4px solid #3a7df8;
+
   border-radius: 4px;
 }
 
@@ -164,17 +174,18 @@
 }
 
 .anadir-dia-container {
-  padding: 8px;
-  background-color: #ffffff;
-  border-left: 4px solid #3a7df8;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.boton-anadir-dia {
+  
+  margin: 0 auto 8px auto;
+  /* Centrar el botón horizontalmente */
   border-radius: 4px;
 }
 
-.anadir-dia-container ion-button {
-  font-size: 1em;
-  font-weight: bold;
-  color: #3e8e41;
-}
 
 ul {
   padding-left: 16px;
