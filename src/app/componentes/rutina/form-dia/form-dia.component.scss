@@ -17,7 +17,8 @@ ion-content {
 /* Estilos de las tarjetas de ejercicios, asegurando uniformidad */
 .ejercicio-card {
   width: 100%;
-  height: 250px; /* Altura fija para mantener uniformidad */
+  height: 250px;
+  /* Altura fija para mantener uniformidad */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -36,7 +37,8 @@ ion-content {
   font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
-  min-height: 40px; /* Altura mínima para mantener uniformidad */
+  min-height: 40px;
+  /* Altura mínima para mantener uniformidad */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,7 +61,8 @@ ion-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex-grow: 1; /* Ocupa espacio adicional para uniformidad */
+  flex-grow: 1;
+  /* Ocupa espacio adicional para uniformidad */
   justify-content: center;
 }
 
@@ -181,4 +184,11 @@ ion-content {
   padding: 8px;
   background-color: var(--ion-color-light);
   border-top: 1px solid #ddd;
+}
+
+.linea-separacion {
+  border-top: 1px solid #dcdcdc;
+  /* Color y grosor de la línea de separación */
+  margin-top: -8px;
+  /* Ajusta la posición para que quede justo bajo la barra */
 }

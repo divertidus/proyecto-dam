@@ -8,7 +8,7 @@ import { IonList, IonItem, IonCheckbox, IonLabel, IonButton, PopoverController }
   templateUrl: './filtro-ejercicio.component.html',
   styleUrls: ['./filtro-ejercicio.component.scss'],
   standalone: true,
-  imports: [IonList, IonItem, IonCheckbox, IonLabel, IonButton, FormsModule]
+  imports: [IonList, IonItem, IonCheckbox, IonLabel, FormsModule]
 })
 export class FiltroEjercicioComponent {
 
@@ -29,12 +29,15 @@ export class FiltroEjercicioComponent {
     Espalda: false,
     Hombro: false,
     Pierna: false,
-    Biceps: false,
-    Triceps: false,
+    Bíceps: false,
+    Tríceps: false,
   };
 
 
-
+  emitirFiltros() {
+    // Emitir los filtros seleccionados cada vez que se actualiza un checkbox
+    this.aplicarFiltros.emit({ tipoPeso: this.filtroTipoPeso, musculoPrincipal: this.filtroMusculoPrincipal });
+  }
 
 
   async onAplicarFiltros() {
@@ -42,6 +45,8 @@ export class FiltroEjercicioComponent {
     await this.popoverController.dismiss();
   }
 }
+
+
 
 // Define un tipo específico para Tipo de Peso y Grupo Muscular
 export type TipoPesoFiltro = {

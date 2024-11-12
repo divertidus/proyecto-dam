@@ -44,6 +44,7 @@ export class FormDiaComponent implements OnInit {
   ejerciciosFiltrados: Ejercicio[] = []; // Para no modificar la lista original
   ejercicios: Ejercicio[] = []; // Lista de ejercicios obtenidos del servicio
   private ejerciciosSub: Subscription; // Para manejar la suscripción
+  tituloBarraSuperior: string = ''; // Propiedad no de solo lectura
 
 
   // Definir `filtroTipoPeso` con el tipo específico y una inicialización correcta
@@ -62,6 +63,14 @@ export class FormDiaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    // Número del día actual
+    const diaNumero = this.numeroDiasExistentes + 1;
+    this.nombreDia = `Día ${diaNumero}`;
+
+    // Establece el título en función del modo
+    this.tituloBarraSuperior = this.modo === 'crear' ? `Crear Día ${diaNumero}` : `Editar Día ${diaNumero}`;
+
     // Cargar ejercicios del servicio
     this.ejerciciosSub = this.ejercicioService.ejercicios$.subscribe(data => {
       this.ejercicios = data;
@@ -81,15 +90,19 @@ export class FormDiaComponent implements OnInit {
     this.descripcionDia = '';
   }
 
+  // Solicitar descripción mostrando el número del día en el mensaje
   async solicitarDescripcion(): Promise<void> {
+    const diaNumero = this.numeroDiasExistentes + 1;
+    const mensajePrincipal = `Ingresa una breve descripción para el día ${diaNumero} de la rutina.`;
+    const mensajeEjemplo = `(Por ejemplo: Pierna, Pecho y Tríceps, Libre, etc.)`;
     const alert = await this.alertController.create({
-      header: 'Descripción del Día',
-      message: 'Ingresa una breve descripción para el día (ej. Pierna, Pecho y Tríceps).',
+      header: `Descripción del Día ${diaNumero}`,
+      message: `${mensajePrincipal}${mensajeEjemplo}`, // Combinamos usando `<br>` aquí
       inputs: [
         {
           name: 'descripcion',
           type: 'text',
-          placeholder: 'Descripción del día',
+          placeholder: `Descripción del día ${diaNumero}`,
         },
       ],
       buttons: [
@@ -97,7 +110,7 @@ export class FormDiaComponent implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           handler: () => {
-            return false; // Para asegurar el retorno en todos los caminos
+            return false;
           }
         },
         {
@@ -122,8 +135,9 @@ export class FormDiaComponent implements OnInit {
     });
 
     await alert.present();
-    return; // Para asegurar el retorno
   }
+
+
 
   // Filtrar los ejercicios cuando el usuario realiza una búsqueda
   // Método para buscar ejercicios por texto

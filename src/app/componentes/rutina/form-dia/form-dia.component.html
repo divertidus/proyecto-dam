@@ -1,15 +1,26 @@
-<app-toolbar-modales-cancelar [titulo]="modo === 'crear' ? 'Crear Día' : 'Editar Día'"></app-toolbar-modales-cancelar>
+<app-toolbar-modales-cancelar [titulo]="tituloBarraSuperior"></app-toolbar-modales-cancelar>
 
 <ion-content>
-  <!-- Barra de búsqueda y botón de filtro -->
+  <!-- Barra de búsqueda con filtro y separación visual debajo -->
   <ion-toolbar color="light" class="fixed-toolbar">
     <ion-item lines="none">
       <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
       <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
         <ion-icon name="filter-outline"></ion-icon>
       </ion-button>
+      <ion-popover></ion-popover>
+      <ion-popover trigger="filtroPopoverTrigger" alignment="end">
+        <ng-template>
+          <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
+            (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
+          </app-filtro-ejercicio>
+        </ng-template>
+      </ion-popover>
     </ion-item>
   </ion-toolbar>
+
+  <!-- Línea de separación entre búsqueda y lista de ejercicios -->
+  <div class="linea-separacion"></div>
 
   <!-- Lista de ejercicios filtrados (tarjetas) -->
   <div class="contenido-con-margen">
@@ -17,12 +28,14 @@
       <ion-row class="ion-align-items-stretch">
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
           <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
-            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline" class="personalizado-icon"></ion-icon>
+            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+              class="personalizado-icon"></ion-icon>
             <ion-card-header>
               <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <img [src]="ejercicio.imagen || 'assets/imagenes/ejercicios/ejercicio-default.png'" class="imagen-ejercicio" />
+              <img [src]="ejercicio.imagen || 'assets/imagenes/ejercicios/ejercicio-default.png'"
+                class="imagen-ejercicio" />
               <div class="ejercicio-info">
                 <p><ion-icon name="barbell-outline"></ion-icon> {{ ejercicio.tipoPeso }}</p>
                 <p><ion-icon name="body-outline"></ion-icon> {{ ejercicio.musculoPrincipal }}</p>
@@ -38,20 +51,23 @@
 <!-- Ejercicios seleccionados -->
 <div class="ejercicios-seleccionados-container">
   <ion-card>
-    <ion-card-header (click)="toggleExpandirEjercicios()" [class.disabled]="ejerciciosEnRutina.length === 0" class="header-compact">
+    <ion-card-header (click)="toggleExpandirEjercicios()" [class.disabled]="ejerciciosEnRutina.length === 0"
+      class="header-compact">
       <ion-grid>
         <ion-row class="ion-align-items-center">
           <ion-col>
             <ion-card-title>Ejercicios seleccionados: {{ ejerciciosEnRutina.length }}</ion-card-title>
           </ion-col>
           <ion-col size="auto" *ngIf="ejerciciosEnRutina.length > 0">
-            <ion-icon [name]="mostrarEjerciciosSeleccionados ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
+            <ion-icon
+              [name]="mostrarEjerciciosSeleccionados ? 'chevron-down-outline' : 'chevron-up-outline'"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-header>
 
-    <ion-card-content *ngIf="mostrarEjerciciosSeleccionados && ejerciciosEnRutina.length > 0" style="max-height: 40vh; overflow-y: auto;">
+    <ion-card-content *ngIf="mostrarEjerciciosSeleccionados && ejerciciosEnRutina.length > 0"
+      style="max-height: 40vh; overflow-y: auto;">
       <ion-list>
         <ion-item *ngFor="let ejercicio of ejerciciosEnRutina; let i = index">
           <ion-label>
@@ -71,17 +87,10 @@
   </ion-card>
 </div>
 
-<!-- Footer con botones de Agregar Día y Cancelar -->
+<!-- Footer con solo botón de Agregar Día -->
 <ion-footer>
   <ion-toolbar>
-    <ion-button expand="full" color="danger" (click)="cancelarOperacion()">Cancelar</ion-button>
-    <ion-button expand="full" color="success" [disabled]="ejerciciosEnRutina.length === 0" (click)="solicitarDescripcion()">Agregar Día</ion-button>
+    <ion-button expand="full" color="success" [disabled]="ejerciciosEnRutina.length === 0"
+      (click)="solicitarDescripcion()">Agregar Día</ion-button>
   </ion-toolbar>
 </ion-footer>
-
-<ion-popover trigger="filtroPopoverTrigger" alignment="end">
-  <ng-template>
-    <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal" (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
-    </app-filtro-ejercicio>
-  </ng-template>
-</ion-popover>
