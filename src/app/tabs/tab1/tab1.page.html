@@ -1,11 +1,7 @@
-<!--ta1.page.  -->
-  <app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged>
-
+<app-toolbar-logged [titulo]="'Mis Rutinas'"></app-toolbar-logged>
 
 <ion-content>
-  <!-- <h2>Mis Rutinas:</h2>
- -->
-  <!-- Si no existen rutinas, mostrar un mensaje similar al de "sin entrenamientos" -->
+  <!-- Mensaje de "sin rutinas" -->
   <ion-card *ngIf="rutinas.length === 0" class="no-rutina-card">
     <ion-card-header>
       <ion-card-title>No tienes rutinas creadas</ion-card-title>
@@ -15,43 +11,65 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Mostrar la lista de rutinas si existen -->
+  <!-- Mostrar lista de rutinas si existen -->
   <ion-list *ngIf="rutinas.length > 0">
     <ng-container *ngFor="let rutina of rutinas">
       <ion-card class="rutina-card">
-        <ion-card-header (click)="toggleExpandirRutina(rutina)">
-          <div class="header-rutina">
-            <ion-card-title>{{ rutina.nombre }}</ion-card-title>
+        <!-- Encabezado de la rutina diferenciado con color y menos espacio -->
+        <div class="header-rutina" (click)="toggleExpandirRutina(rutina)">
+          <div class="header-content">
+            <ion-card-title class="rutina-nombre">{{ rutina.nombre }}</ion-card-title>
+            <ion-card-subtitle class="rutina-dias">Rutina de {{ rutina.dias.length }} días</ion-card-subtitle>
             <div class="iconos-header">
               <ion-icon name="pencil-outline" (click)="editarRutina(rutina, $event)"
-                class="icono-cambiar-nombre"></ion-icon>
+                class="icono-cambiar-nombre"></ion-icon><ion-modal></ion-modal>
               <ion-icon name="close-outline" (click)="eliminarRutina(rutina, $event)"
-                class="icono-eliminar-rutina"></ion-icon>
+                class="icono-eliminar-rutina"></ion-icon><ion-modal></ion-modal>
             </div>
           </div>
-          <ion-card-subtitle>{{ rutina.dias.length }} días en esta rutina</ion-card-subtitle>
-          <ion-card-subtitle *ngIf="rutina.descripcion">{{ rutina.descripcion }}</ion-card-subtitle>
-          <ion-card-subtitle *ngIf="!rutina.descripcion">Sin descripción</ion-card-subtitle>
-        </ion-card-header>
+          <div class="descripcion-rutina">
+            <ion-card-subtitle>{{ rutina.descripcion || 'Sin descripción' }}</ion-card-subtitle>
+            <ion-icon [name]="rutinaExpandida === rutina._id ? 'chevron-up-outline' : 'chevron-down-outline'"
+              class="icono-expandir"></ion-icon>
+          </div>
+        </div>
 
+        <!-- Contenedor de días en la rutina solo visible si está expandida -->
         <ion-card-content *ngIf="rutinaExpandida === rutina._id">
           <div class="dias-container">
             <ng-container *ngFor="let dia of rutina.dias">
+              <!-- Contenedor de cada día -->
               <div class="dia-container">
-                <h3>{{ dia.diaNombre }} - {{ dia.descripcion }}</h3>
-                <ion-button (click)="editarDiaRutina(rutina, dia)">Editar Día</ion-button>
-                <ion-modal></ion-modal>
-                <ul>
-                  <li *ngFor="let ejercicioPlan of dia.ejercicios">
-                    {{ ejercicioPlan.nombreEjercicio }} - {{ ejercicioPlan.series }}x{{ ejercicioPlan.repeticiones }}
-                  </li>
-                </ul>
+                <div class="dia-header" (click)="toggleExpandirDia(dia)">
+                  <h3 class="dia-nombre">{{ dia.diaNombre }}</h3>
+                  <span class="dia-descripcion">{{ dia.descripcion }}</span>
+                  <ion-icon [name]="diaExpandido === dia._id ? 'chevron-up-outline' : 'chevron-down-outline'"
+                    class="icono-expandir-dia"></ion-icon>
+                </div>
+
+                <!-- Lista de ejercicios visible solo si el día está expandido -->
+                <div *ngIf="diaExpandido === dia._id">
+                  <ul>
+                    <li *ngFor="let ejercicioPlan of dia.ejercicios">
+                      {{ ejercicioPlan.nombreEjercicio }} - {{ ejercicioPlan.series }}x{{ ejercicioPlan.repeticiones }}
+                    </li>
+                  </ul>
+
+                  <!-- Botones de acción: EDITAR y BORRAR -->
+                  <div class="dia-acciones">
+                    <ion-button fill="clear" color="primary" (click)="editarDiaRutina(rutina, dia)">EDITAR</ion-button>
+                    <ion-modal></ion-modal>
+                    <ion-button fill="clear" color="danger" (click)="eliminarDia(dia)">BORRAR</ion-button>
+                    <ion-modal></ion-modal>
+                  </div>
+                </div>
               </div>
             </ng-container>
 
-            <div *ngIf="rutina.dias.length > 0" class="anadir-dia-container">
-              <ion-button fill="outline" color="success" (click)="abrirFormularioDia(rutina)">
-                <ion-icon name="add-circle-outline"></ion-icon> Añadir otro Día
+            <!-- Botón para añadir día en estilo similar a los días -->
+            <div class="anadir-dia-container">
+              <ion-button expand="block" fill="outline" color="success" (click)="abrirFormularioDia(rutina)">
+                <ion-icon name="add-circle-outline"></ion-icon> AÑADIR DÍA
               </ion-button>
               <ion-modal></ion-modal>
             </div>
@@ -61,8 +79,11 @@
     </ng-container>
   </ion-list>
 
-  <!-- Botón para añadir una nueva rutina con el mismo estilo que "Comenzar a entrenar" -->
-  <ion-button expand="block" size="large" class="boton-crear-nueva" (click)="crearNuevaRutina()">
-    <ion-icon name="add-circle-outline"></ion-icon> Añadir Nueva Rutina
-  </ion-button>
+  <!-- Botón para añadir una nueva rutina en estilo similar al de la rutina -->
+  <ion-card class="boton-crear-nueva-card">
+    <ion-button expand="block" size="large" class="boton-crear-nueva" (click)="crearNuevaRutina()">
+      <ion-icon name="add-circle-outline"></ion-icon> AÑADIR NUEVA RUTINA
+    </ion-button>
+    <ion-modal></ion-modal>
+  </ion-card>
 </ion-content>

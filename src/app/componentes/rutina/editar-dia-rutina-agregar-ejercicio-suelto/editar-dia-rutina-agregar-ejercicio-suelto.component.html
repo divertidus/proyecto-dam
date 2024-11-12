@@ -12,6 +12,14 @@
       <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
         <ion-icon name="filter-outline"></ion-icon>
       </ion-button>
+      <ion-popover></ion-popover>
+      <ion-popover trigger="filtroPopoverTrigger" alignment="end">
+        <ng-template>
+          <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
+            (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
+          </app-filtro-ejercicio>
+        </ng-template>
+      </ion-popover>
     </ion-item>
   </ion-toolbar>
 </ion-header>
@@ -45,11 +53,3 @@
     <ion-button expand="full" color="danger" (click)="cerrarModal()">Cancelar</ion-button>
   </ion-toolbar>
 </ion-footer>
-
-<ion-popover trigger="filtroPopoverTrigger" alignment="end">
-  <ng-template>
-    <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
-      (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
-    </app-filtro-ejercicio>
-  </ng-template>
-</ion-popover>

@@ -36,6 +36,8 @@ export class Tab1Page implements OnInit, OnDestroy {
   rutinas: Rutina[] = [];
   ejercicios: Ejercicio[] = []; // Lista de todos los ejercicios
   rutinaExpandida: string | null = null; // Propiedad para controlar cuál rutina está expandida
+  diaExpandido: string | null = null; // Nueva variable de control para el día expandido
+
 
   private rutinaSubscription: Subscription;
   private usuarioSubscription: Subscription;
@@ -177,7 +179,6 @@ export class Tab1Page implements OnInit, OnDestroy {
   toggleExpandirRutina(rutina: Rutina) {
     this.rutinaExpandida = this.rutinaExpandida === rutina._id ? null : rutina._id;
   }
-
   // Eliminar rutina con confirmación
   async eliminarRutina(rutina: Rutina, event: Event) {
     event.stopPropagation(); // Evitar que el clic se propague y active otros elementos
@@ -247,6 +248,17 @@ export class Tab1Page implements OnInit, OnDestroy {
     await alert.present();
   }
 
+  // Método para alternar si un día está expandido o colapsado
+  toggleExpandirDia(diaRutina: DiaRutina) {
+    // Al hacer clic en un día, alterna su estado expandido
+    this.diaExpandido = this.diaExpandido === diaRutina._id ? null : diaRutina._id;
+  }
+
+
+  async eliminarDia(diaRutina: DiaRutina) {
+    console.log('Se pulsa eliminar y TODO elimnar el dia: ', diaRutina)
+  }
+
   async editarDiaRutina(rutina: Rutina, diaRutina: DiaRutina) {
     console.log('Click en editar Día');
 
@@ -260,4 +272,6 @@ export class Tab1Page implements OnInit, OnDestroy {
 
     await modal.present();
   }
+
+
 }

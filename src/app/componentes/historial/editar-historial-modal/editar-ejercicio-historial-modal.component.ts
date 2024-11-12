@@ -1,8 +1,7 @@
-/* editar-ejercicio-historial-modal.component.ts */
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { DiaEntrenamiento, EjercicioRealizado, SerieReal } from 'src/app/models/historial-entrenamiento';
-import { IonHeader, IonContent, IonLabel, IonCheckbox, IonToolbar, IonTitle, IonButtons, IonButton, IonList, IonItem, IonInput, IonTextarea, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFooter, IonSearchbar, IonGrid, IonRow, IonCol, IonAlert } from '@ionic/angular/standalone';
+import { IonHeader, IonContent, IonLabel, IonCheckbox, IonToolbar, IonTitle, IonButtons, IonButton, IonList, IonItem, IonInput, IonTextarea, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonFooter, IonSearchbar, IonGrid, IonRow, IonCol, IonAlert, IonModal } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,8 +18,8 @@ import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../../rutina/edi
   selector: 'app-editar-ejercicio-historia-modal',
   templateUrl: './editar-ejercicio-historial-modal.component.html',
   styleUrls: ['./editar-ejercicio-historial-modal.component.scss'],
-  imports: [IonAlert, IonSearchbar, IonFooter, IonCardContent, CommonModule, IonCardTitle,
-    IonCardHeader, IonCard, IonIcon, IonInput, IonItem,
+  imports: [IonAlert, IonFooter, IonCardContent, CommonModule, IonCardTitle,
+    IonCardHeader, IonCard, IonIcon, IonInput,
     IonButton, IonTitle, NgIf, NgFor,
     IonToolbar, IonCheckbox, IonContent, IonHeader, FormsModule],
   providers: [AlertController, ModalController],

@@ -22,8 +22,7 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
   imports: [IonButtons, IonFooter,
     IonHeader, IonToolbar, IonTitle, IonButton, IonContent,
     IonList, FormsModule, NgIf, NgFor, IonCard, IonCardHeader,
-    IonCardContent, IonIcon, IonLabel
-  ],
+    IonCardContent, IonIcon],
   providers: []
 })
 export class EditarDiaRutinaComponent implements OnInit {
@@ -68,25 +67,25 @@ export class EditarDiaRutinaComponent implements OnInit {
   }
 
   // Actualizar cambiosRealizados cuando se edita un ejercicio
-async iniciarEdicionEjercicio(ejercicioPlan: EjercicioPlan) {
-  this.ejercicioOriginal = { ...ejercicioPlan }; // Copia original para comparar después
-  const popover = await this.popoverController.create({
-    component: EditarDiaRutinaEditarEjercicioPlanPopoverComponent,
-    componentProps: { ejercicioPlan: { ...ejercicioPlan } },
-    cssClass: 'popover-ejercicio-compacto',
-    translucent: true,
-  });
-  await popover.present();
+  async iniciarEdicionEjercicio(ejercicioPlan: EjercicioPlan) {
+    this.ejercicioOriginal = { ...ejercicioPlan }; // Copia original para comparar después
+    const popover = await this.popoverController.create({
+      component: EditarDiaRutinaEditarEjercicioPlanPopoverComponent,
+      componentProps: { ejercicioPlan: { ...ejercicioPlan } },
+      cssClass: 'popover-ejercicio-compacto',
+      translucent: true,
+    });
+    await popover.present();
 
-  const { data: ejercicioActualizado } = await popover.onDidDismiss();
-  if (ejercicioActualizado) {
-    const index = this.diaRutina.ejercicios.findIndex(e => e.ejercicioId === ejercicioPlan.ejercicioId);
-    if (index !== -1) {
-      this.diaRutina.ejercicios[index] = ejercicioActualizado;
-      this.cambiosRealizados = true; // Marcar cambios al editar
+    const { data: ejercicioActualizado } = await popover.onDidDismiss();
+    if (ejercicioActualizado) {
+      const index = this.diaRutina.ejercicios.findIndex(e => e.ejercicioId === ejercicioPlan.ejercicioId);
+      if (index !== -1) {
+        this.diaRutina.ejercicios[index] = ejercicioActualizado;
+        this.cambiosRealizados = true; // Marcar cambios al editar
+      }
     }
   }
-}
 
   // Confirmar cambios en la edición de un ejercicio
   confirmarEdicionEjercicio() {
@@ -104,27 +103,27 @@ async iniciarEdicionEjercicio(ejercicioPlan: EjercicioPlan) {
     return JSON.stringify(this.ejercicioOriginal) !== JSON.stringify(this.ejercicioEnEdicion);
   }
 
- // Actualizar cambiosRealizados cuando se elimina un ejercicio
-eliminarEjercicio(ejercicio: EjercicioPlan) {
-  this.diaRutina.ejercicios = this.diaRutina.ejercicios.filter(e => e !== ejercicio);
-  this.cambiosRealizados = true; // Marcar cambios al eliminar
-}
+  // Actualizar cambiosRealizados cuando se elimina un ejercicio
+  eliminarEjercicio(ejercicio: EjercicioPlan) {
+    this.diaRutina.ejercicios = this.diaRutina.ejercicios.filter(e => e !== ejercicio);
+    this.cambiosRealizados = true; // Marcar cambios al eliminar
+  }
 
   // Actualizar cambiosRealizados cuando se agrega un ejercicio suelto
-async agregarEjercicioSuelto() {
-  const modal = await this.modalController.create({
-    component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
-    cssClass: 'popover-ejercicio-compacto',
-  });
-  modal.onDidDismiss().then((result) => {
-    const ejercicioSeleccionado = result.data as EjercicioPlan;
-    if (ejercicioSeleccionado) {
-      this.diaRutina.ejercicios.push(ejercicioSeleccionado);
-      this.cambiosRealizados = true; // Marcar cambios al agregar
-    }
-  });
-  await modal.present();
-}
+  async agregarEjercicioSuelto() {
+    const modal = await this.modalController.create({
+      component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
+      cssClass: 'popover-ejercicio-compacto',
+    });
+    modal.onDidDismiss().then((result) => {
+      const ejercicioSeleccionado = result.data as EjercicioPlan;
+      if (ejercicioSeleccionado) {
+        this.diaRutina.ejercicios.push(ejercicioSeleccionado);
+        this.cambiosRealizados = true; // Marcar cambios al agregar
+      }
+    });
+    await modal.present();
+  }
 
   // Guardar cambios en el día de la rutina y devolver el día actualizado
   async guardarCambios() {
@@ -222,5 +221,5 @@ async agregarEjercicioSuelto() {
     await alert.present();
   }
 
-  
+
 }
