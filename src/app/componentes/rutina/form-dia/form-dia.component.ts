@@ -93,8 +93,8 @@ export class FormDiaComponent implements OnInit {
   // Solicitar descripción mostrando el número del día en el mensaje
   async solicitarDescripcion(): Promise<void> {
     const diaNumero = this.numeroDiasExistentes + 1;
-    const mensajePrincipal = `Ingresa una breve descripción para el día ${diaNumero} de la rutina.`;
-    const mensajeEjemplo = `(Por ejemplo: Pierna, Pecho y Tríceps, Libre, etc.)`;
+    const mensajePrincipal = `Ingresa una breve descripción para el día ${diaNumero} de la rutina.    `;
+    const mensajeEjemplo = ` (Por ejemplo: Pierna, Pecho y Tríceps, Libre, etc.)`;
     const alert = await this.alertController.create({
       header: `Descripción del Día ${diaNumero}`,
       message: `${mensajePrincipal}${mensajeEjemplo}`, // Combinamos usando `<br>` aquí

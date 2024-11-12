@@ -39,12 +39,18 @@ ion-card {
   font-weight: bold;
   color: #333;
   cursor: pointer;
-  min-height: 40px; // Compactar altura de la cabecera
 }
 
+.anadir-ejercicio-container {
+  padding: 10px;
+  text-align: center;
+}
 .ejercicio-titulo {
   font-weight: bold;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 ion-card-content {

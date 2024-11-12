@@ -6,7 +6,7 @@ import {
   IonHeader, IonTitle, IonToolbar,
   IonButton, IonContent,
   IonList, IonCard, IonCardHeader,
-  IonCardTitle, IonCardContent, IonIcon, IonFooter, IonLabel, IonItem
+  IonCardTitle, IonCardContent, IonIcon, IonFooter, IonLabel, IonItem, IonButtons
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
@@ -19,11 +19,10 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
   templateUrl: './editar-dia-rutina.component.html',
   styleUrls: ['./editar-dia-rutina.component.scss'],
   standalone: true,
-  imports: [IonFooter,
+  imports: [IonButtons, IonFooter,
     IonHeader, IonToolbar, IonTitle, IonButton, IonContent,
-    IonList,
-    FormsModule, NgIf, NgFor, IonCard, IonCardHeader,
-    IonCardContent, IonIcon
+    IonList, FormsModule, NgIf, NgFor, IonCard, IonCardHeader,
+    IonCardContent, IonIcon, IonLabel
   ],
   providers: []
 })
@@ -33,6 +32,9 @@ export class EditarDiaRutinaComponent implements OnInit {
   @Input() rutinaId: string; // Recibe el ID de la rutina para actualizar el día
   ejercicioEnEdicion: EjercicioPlan | null = null; // Para manejar la edición de ejercicios
   estadoExpandido: { [key: string]: boolean } = {}; // Objeto para almacenar el estado de expansión
+  cambiosRealizados: boolean = false; // Almacena si hay cambios
+  ejercicioOriginal: EjercicioPlan | null = null; // Almacena el ejercicio antes de editar
+
 
 
   constructor(
@@ -50,31 +52,41 @@ export class EditarDiaRutinaComponent implements OnInit {
     });
   }
 
-  // Alterna el estado expandido de un ejercicio
   toggleExpandirEjercicio(ejercicioId: string) {
-    this.estadoExpandido[ejercicioId] = !this.estadoExpandido[ejercicioId];
+    // Si la tarjeta seleccionada ya está desplegada, simplemente la plegamos
+    if (this.estadoExpandido[ejercicioId]) {
+      this.estadoExpandido[ejercicioId] = false; // Plegar la tarjeta seleccionada
+    } else {
+      // Plegar todas las tarjetas
+      Object.keys(this.estadoExpandido).forEach(id => {
+        this.estadoExpandido[id] = false;
+      });
+      // Desplegar solo la tarjeta seleccionada
+      this.estadoExpandido[ejercicioId] = true;
+    }
+    // No marcamos cambios como realizados si solo se está desplegando o plegando tarjetas
   }
 
-  // Método para abrir el popover de edición de EjercicioPlan
-  async iniciarEdicionEjercicio(ejercicioPlan: EjercicioPlan) {
-    console.log('El ejercicioPlan que se pasa es: ', ejercicioPlan);
+  // Actualizar cambiosRealizados cuando se edita un ejercicio
+async iniciarEdicionEjercicio(ejercicioPlan: EjercicioPlan) {
+  this.ejercicioOriginal = { ...ejercicioPlan }; // Copia original para comparar después
+  const popover = await this.popoverController.create({
+    component: EditarDiaRutinaEditarEjercicioPlanPopoverComponent,
+    componentProps: { ejercicioPlan: { ...ejercicioPlan } },
+    cssClass: 'popover-ejercicio-compacto',
+    translucent: true,
+  });
+  await popover.present();
 
-    const popover = await this.popoverController.create({
-      component: EditarDiaRutinaEditarEjercicioPlanPopoverComponent,
-      componentProps: { ejercicioPlan: { ...ejercicioPlan } },
-      cssClass: 'popover-ejercicio-compacto', // Asegúrate de aplicar esta clase
-      translucent: true,
-    });
-    await popover.present();
-
-    const { data: ejercicioActualizado } = await popover.onDidDismiss();
-    if (ejercicioActualizado) {
-      const index = this.diaRutina.ejercicios.findIndex(e => e.ejercicioId === ejercicioPlan.ejercicioId);
-      if (index !== -1) {
-        this.diaRutina.ejercicios[index] = ejercicioActualizado;
-      }
+  const { data: ejercicioActualizado } = await popover.onDidDismiss();
+  if (ejercicioActualizado) {
+    const index = this.diaRutina.ejercicios.findIndex(e => e.ejercicioId === ejercicioPlan.ejercicioId);
+    if (index !== -1) {
+      this.diaRutina.ejercicios[index] = ejercicioActualizado;
+      this.cambiosRealizados = true; // Marcar cambios al editar
     }
   }
+}
 
   // Confirmar cambios en la edición de un ejercicio
   confirmarEdicionEjercicio() {
@@ -87,51 +99,51 @@ export class EditarDiaRutinaComponent implements OnInit {
     }
   }
 
-  // Eliminar un ejercicio del día
-  eliminarEjercicio(ejercicio: EjercicioPlan) {
-    this.diaRutina.ejercicios = this.diaRutina.ejercicios.filter(e => e !== ejercicio);
-    console.log("Ejercicio eliminado:", ejercicio);
+  // Método para verificar si se hicieron cambios reales
+  verificarCambios(): boolean {
+    return JSON.stringify(this.ejercicioOriginal) !== JSON.stringify(this.ejercicioEnEdicion);
   }
 
-  // Métodos adicionales de control para agregar, guardar y cancelar cambios en el día
-  async agregarEjercicioSuelto() {
-    const modal = await this.modalController.create({
-      component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
-      cssClass: 'popover-ejercicio-compacto',
-    });
+ // Actualizar cambiosRealizados cuando se elimina un ejercicio
+eliminarEjercicio(ejercicio: EjercicioPlan) {
+  this.diaRutina.ejercicios = this.diaRutina.ejercicios.filter(e => e !== ejercicio);
+  this.cambiosRealizados = true; // Marcar cambios al eliminar
+}
 
-    modal.onDidDismiss().then((result) => {
-      const ejercicioSeleccionado = result.data as EjercicioPlan;
-      if (ejercicioSeleccionado) {
-        this.diaRutina.ejercicios.push(ejercicioSeleccionado);
-      }
-    });
-
-    await modal.present();
-  }
+  // Actualizar cambiosRealizados cuando se agrega un ejercicio suelto
+async agregarEjercicioSuelto() {
+  const modal = await this.modalController.create({
+    component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
+    cssClass: 'popover-ejercicio-compacto',
+  });
+  modal.onDidDismiss().then((result) => {
+    const ejercicioSeleccionado = result.data as EjercicioPlan;
+    if (ejercicioSeleccionado) {
+      this.diaRutina.ejercicios.push(ejercicioSeleccionado);
+      this.cambiosRealizados = true; // Marcar cambios al agregar
+    }
+  });
+  await modal.present();
+}
 
   // Guardar cambios en el día de la rutina y devolver el día actualizado
   async guardarCambios() {
-    console.log('Guardando cambios en el día de rutina:', this.diaRutina);
-    try {
-      // Llama a actualizarDiaEnRutina en el RutinaService para guardar solo el día modificado
-      await this.rutinaService.actualizarDiaEnRutina(this.rutinaId, this.diaRutina);
-      console.log('Día de rutina actualizado exitosamente.');
-      this.modalController.dismiss(this.diaRutina);
-    } catch (error) {
-      console.error('Error al actualizar el día de rutina:', error);
+    if (this.cambiosRealizados) { // Verifica que hay cambios
+      try {
+        await this.rutinaService.actualizarDiaEnRutina(this.rutinaId, this.diaRutina);
+        this.modalController.dismiss(this.diaRutina);
+        this.cambiosRealizados = false; // Restablecer tras guardar
+        console.log('Día de rutina actualizado exitosamente.');
+      } catch (error) {
+        console.error('Error al actualizar el día de rutina:', error);
+      }
     }
   }
 
-  async cancelar() {
-    console.log("Modal cancelado sin guardar cambios.");
-    await this.modalController.dismiss();
-  }
-
-  async confirmarGuardar() {
+  async confirmarGuardarCambios() {
     const alert = await this.alertController.create({
-      header: 'Confirmar Guardado',
-      message: '¿Deseas guardar los cambios?',
+      header: 'Guardar Cambios',
+      message: '¿Estás seguro de que deseas guardar los cambios realizados?',
       buttons: [
         {
           text: 'Cancelar',
@@ -140,7 +152,7 @@ export class EditarDiaRutinaComponent implements OnInit {
         {
           text: 'Guardar',
           handler: () => {
-            this.guardarCambios();
+            this.guardarCambios(); // Llama al método de guardado real
           },
         },
       ],
@@ -148,7 +160,17 @@ export class EditarDiaRutinaComponent implements OnInit {
     await alert.present();
   }
 
+  async cancelar() {
+    console.log("Modal cancelado sin guardar cambios.");
+    await this.modalController.dismiss();
+  }
+
   async confirmarCancelarEdicion() {
+    if (!this.cambiosRealizados) {
+      await this.modalController.dismiss();
+      return;
+    }
+
     const alert = await this.alertController.create({
       header: 'Cancelar edición',
       message: '¿Estás seguro de que deseas cancelar sin guardar los cambios?',
@@ -199,4 +221,6 @@ export class EditarDiaRutinaComponent implements OnInit {
 
     await alert.present();
   }
+
+  
 }

@@ -1,7 +1,10 @@
 <!-- editar-dia-rutina.component.html -->
 <ion-header>
   <ion-toolbar>
-    <ion-title>Editar Día de Entreno - {{ diaRutina.diaNombre }}</ion-title>
+    <ion-title>Editar {{ diaRutina.diaNombre }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -20,20 +23,22 @@
     <p class="ejercicios-header">Ejercicios actuales: {{ diaRutina.ejercicios.length }}</p>
 
     <ion-list *ngIf="diaRutina.ejercicios && diaRutina.ejercicios.length > 0">
-      <ion-card *ngFor="let ejercicio of diaRutina.ejercicios">
+      <ion-card *ngFor="let ejercicio of diaRutina.ejercicios; let i = index">
         <ion-card-header (click)="toggleExpandirEjercicio(ejercicio.ejercicioId)" class="card-header-compact">
           <div class="ejercicio-titulo">
-            <strong>{{ ejercicio.nombreEjercicio }}</strong> ({{ ejercicio.series }} x {{ ejercicio.repeticiones }})
+            <strong>{{ i + 1 }}. {{ ejercicio.nombreEjercicio }} ({{ ejercicio.series }} x {{ ejercicio.repeticiones
+              }})</strong>
           </div>
-          <ion-icon [name]="estadoExpandido[ejercicio.ejercicioId] ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+          <ion-icon
+            [name]="estadoExpandido[ejercicio.ejercicioId] ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
         </ion-card-header>
         <ion-card-content *ngIf="estadoExpandido[ejercicio.ejercicioId]">
-          <p><strong>Series:</strong> {{ ejercicio.series }}</p>
-          <p><strong>Repeticiones:</strong> {{ ejercicio.repeticiones }}</p>
+          <p><strong>Series y Repeticiones:</strong> {{ ejercicio.series }} x {{ ejercicio.repeticiones }}</p>
           <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
           <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>
           <div class="botones-accion">
-            <ion-button fill="clear" color="medium" (click)="iniciarEdicionEjercicio(ejercicio); $event.stopPropagation()">
+            <ion-button fill="clear" color="medium"
+              (click)="iniciarEdicionEjercicio(ejercicio); $event.stopPropagation()">
               <ion-icon name="create"></ion-icon> Editar
             </ion-button>
             <ion-button fill="clear" color="danger" (click)="eliminarEjercicio(ejercicio); $event.stopPropagation()">
@@ -43,15 +48,18 @@
         </ion-card-content>
       </ion-card>
     </ion-list>
+    <div class="anadir-ejercicio-container">
+      <ion-button expand="block" fill="outline" (click)="agregarEjercicioSuelto()">
+        <ion-icon name="add-circle-outline"></ion-icon> Agregar Nuevo Ejercicio
+      </ion-button>
+    </div>
   </div>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
-    <ion-button expand="block" color="success" (click)="agregarEjercicioSuelto()">
-      <ion-icon name="add-circle-outline"></ion-icon> Agregar Nuevo Ejercicio
+    <ion-button expand="block" color="success" (click)="confirmarGuardarCambios()" [disabled]="!cambiosRealizados">
+      Guardar Cambios
     </ion-button>
-    <ion-button expand="block" (click)="guardarCambios()">Guardar Cambios</ion-button>
-    <ion-button expand="block" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
   </ion-toolbar>
 </ion-footer>

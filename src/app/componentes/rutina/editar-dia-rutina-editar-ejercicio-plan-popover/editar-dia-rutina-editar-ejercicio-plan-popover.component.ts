@@ -32,17 +32,21 @@ export class EditarDiaRutinaEditarEjercicioPlanPopoverComponent implements OnIni
   };
 
   formModificado = false;
+  private ejercicioPlanOriginal: EjercicioPlan;
+
 
   constructor(private popoverController: PopoverController) { }
 
   ngOnInit(): void {
     console.log('Soy el mensajito del OnInit del popover que no va. Se recibio el ejercicioPlan?', this.ejercicioPlan);
 
+    // Almacena una copia del estado original del ejercicio para comparar
+    this.ejercicioPlanOriginal = { ...this.ejercicioPlan };
 
-    // Inicializar tipoPeso si está vacío
-    if (!this.ejercicioPlan.tipoPeso) {
-      this.ejercicioPlan.tipoPeso = 'Barra'; // O el valor por defecto que prefieras
-    }
+    /*   // Inicializar tipoPeso si está vacío
+      if (!this.ejercicioPlan.tipoPeso) {
+        this.ejercicioPlan.tipoPeso = 'Barra'; // O el valor por defecto que prefieras
+      } */
 
 
   }
@@ -57,7 +61,8 @@ export class EditarDiaRutinaEditarEjercicioPlanPopoverComponent implements OnIni
   }
 
   detectarCambios() {
-    this.formModificado = true;
+    // Marca el formulario como modificado solo si hay diferencias con el estado original
+    this.formModificado = JSON.stringify(this.ejercicioPlan) !== JSON.stringify(this.ejercicioPlanOriginal);
   }
 
   camposCompletos(): boolean {
