@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
 import { EditarDiaRutinaEditarEjercicioPlanPopoverComponent } from '../editar-dia-rutina-editar-ejercicio-plan-popover/editar-dia-rutina-editar-ejercicio-plan-popover.component';
+import { RutinaService } from 'src/app/services/database/rutina.service';
 
 @Component({
   selector: 'app-editar-dia-rutina',
@@ -29,11 +30,13 @@ import { EditarDiaRutinaEditarEjercicioPlanPopoverComponent } from '../editar-di
 export class EditarDiaRutinaComponent implements OnInit {
 
   @Input() diaRutina: DiaRutina;
+  @Input() rutinaId: string; // Recibe el ID de la rutina para actualizar el día
   ejercicioEnEdicion: EjercicioPlan | null = null; // Para manejar la edición de ejercicios
   estadoExpandido: { [key: string]: boolean } = {}; // Objeto para almacenar el estado de expansión
 
 
   constructor(
+    private rutinaService: RutinaService,
     private modalController: ModalController,
     private alertController: AlertController,
     private popoverController: PopoverController
@@ -107,19 +110,24 @@ export class EditarDiaRutinaComponent implements OnInit {
     await modal.present();
   }
 
-  // Guardar cambios
-  guardarCambios() {
-    console.log('Ejercicios en diaRutina al guardar:', this.diaRutina.ejercicios);
-    this.modalController.dismiss(this.diaRutina);
+  // Guardar cambios en el día de la rutina y devolver el día actualizado
+  async guardarCambios() {
+    console.log('Guardando cambios en el día de rutina:', this.diaRutina);
+    try {
+      // Llama a actualizarDiaEnRutina en el RutinaService para guardar solo el día modificado
+      await this.rutinaService.actualizarDiaEnRutina(this.rutinaId, this.diaRutina);
+      console.log('Día de rutina actualizado exitosamente.');
+      this.modalController.dismiss(this.diaRutina);
+    } catch (error) {
+      console.error('Error al actualizar el día de rutina:', error);
+    }
   }
 
-  // Cancelar cambios
   async cancelar() {
     console.log("Modal cancelado sin guardar cambios.");
     await this.modalController.dismiss();
   }
 
-  // Confirmación antes de guardar
   async confirmarGuardar() {
     const alert = await this.alertController.create({
       header: 'Confirmar Guardado',
@@ -140,7 +148,6 @@ export class EditarDiaRutinaComponent implements OnInit {
     await alert.present();
   }
 
-  // Confirmación antes de cancelar
   async confirmarCancelarEdicion() {
     const alert = await this.alertController.create({
       header: 'Cancelar edición',
@@ -163,7 +170,6 @@ export class EditarDiaRutinaComponent implements OnInit {
     await alert.present();
   }
 
-  // Método para editar la descripción del día
   async editarDescripcion() {
     const alert = await this.alertController.create({
       header: 'Editar Descripción del Día',
@@ -193,5 +199,4 @@ export class EditarDiaRutinaComponent implements OnInit {
 
     await alert.present();
   }
-
 }

@@ -15,8 +15,9 @@ export class RutinaService {
     this.baseDatos = this.databaseService.obtenerBaseDatos();
     console.log("RutinaService - baseDatos inicializado:", this.baseDatos);
     this.cargarRutinas();
-}
+  }
 
+  /*************  METODOS PARA RUTINA  *******************/
   // Método para agregar una nueva rutina
   async agregarRutina(nuevaRutina: Rutina) {
     try {
@@ -175,4 +176,61 @@ export class RutinaService {
       throw err;
     }
   }
+
+
+  /*************  METODOS PARA DIA RUTINA  *******************/
+
+  // Método para agregar un nuevo día a una rutina específica
+  async agregarDiaARutina(rutinaId: string, nuevoDia: DiaRutina) {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId);
+      rutina.dias.push(nuevoDia);
+      return this.actualizarRutina(rutina); // Guardar la rutina actualizada
+    } catch (err) {
+      console.error('Error al agregar un nuevo día a la rutina:', err);
+      throw err;
+    }
+  }
+
+  // Método para obtener un día específico por su _id dentro de una rutina
+  async obtenerDiaPorId(rutinaId: string, diaId: string): Promise<DiaRutina | undefined> {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId);
+      return rutina.dias.find(dia => dia._id === diaId);
+    } catch (err) {
+      console.error('Error al obtener el día por ID:', err);
+      throw err;
+    }
+  }
+
+  // Método para actualizar un día específico dentro de una rutina
+  async actualizarDiaEnRutina(rutinaId: string, diaActualizado: DiaRutina) {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId);
+      const index = rutina.dias.findIndex(dia => dia._id === diaActualizado._id);
+      if (index !== -1) {
+        rutina.dias[index] = diaActualizado;
+        return this.actualizarRutina(rutina); // Guardar la rutina completa
+      } else {
+        throw new Error('Día no encontrado en la rutina');
+      }
+    } catch (err) {
+      console.error('Error al actualizar el día en la rutina:', err);
+      throw err;
+    }
+  }
+
+  // Método para eliminar un día específico de una rutina
+  async eliminarDiaDeRutina(rutinaId: string, diaId: string) {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId);
+      rutina.dias = rutina.dias.filter(dia => dia._id !== diaId); // Eliminar el día específico
+      return this.actualizarRutina(rutina); // Guardar la rutina completa sin el día eliminado
+    } catch (err) {
+      console.error('Error al eliminar el día de la rutina:', err);
+      throw err;
+    }
+  }
+
+
 }

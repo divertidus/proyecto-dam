@@ -151,6 +151,7 @@ export class ReiniciarDatosService {
 
       const diasRutina: DiaRutina[] = [
         {
+          _id: uuidv4(),
           diaNombre: 'Día 1',
           descripcion: 'Espalda y bíceps',
           ejercicios: [
@@ -160,6 +161,7 @@ export class ReiniciarDatosService {
           ]
         },
         {
+          _id: uuidv4(),
           diaNombre: 'Día 2',
           descripcion: 'Pecho y tríceps',
           ejercicios: [
@@ -169,6 +171,7 @@ export class ReiniciarDatosService {
           ]
         },
         {
+          _id: uuidv4(),
           diaNombre: 'Día 3',
           descripcion: 'Pierna y hombro',
           ejercicios: [

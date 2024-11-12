@@ -1,9 +1,8 @@
+/* tab1.page.ts */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlertController, PopoverController } from '@ionic/angular';
-import { UserFormComponent } from "../../componentes/usuario/user-form/user-form.component";
-import { UserListComponent } from "../../componentes/usuario/user-list/user-list.component";
 import { AuthService } from '../../auth/auth.service';
 import { Usuario } from '../../models/usuario.model';
 import { ModalController } from '@ionic/angular';
@@ -16,7 +15,7 @@ import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtit
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-rutina/editar-dia-rutina.component';
-
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-tab1',
@@ -24,7 +23,7 @@ import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
   imports: [IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
-     IonButton, CommonModule, FormsModule, NgFor, NgIf,ToolbarLoggedComponent, FormsModule],
+    IonButton, CommonModule, FormsModule, NgFor, NgIf, ToolbarLoggedComponent, FormsModule],
   providers: [ModalController, PopoverController]
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -89,7 +88,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation(); // Evitar la propagación del clic si es necesario
     }
-  
+
     try {
       const modal = await this.modalController.create({
         component: FormDiaComponent,
@@ -100,11 +99,11 @@ export class Tab1Page implements OnInit, OnDestroy {
           numeroDiasExistentes: rutina ? rutina.dias.length : 0
         }
       });
-  
+
       await modal.present();
-  
+
       const { data } = await modal.onDidDismiss();
-  
+
       if (data && data.ejercicios.length > 0) {
         if (rutina) {
           this.guardarNuevoDiaEnRutina(rutina, data);
@@ -123,6 +122,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   crearRutinaConDia(dia: DiaRutina) {
     const numeroRutina = this.rutinas.length + 1; // Definir el número de la nueva rutina
     const nuevaRutina: Rutina = {
+      _id: uuidv4(), // Generar un _id único con uuidv4()
       nombre: `Rutina ${numeroRutina}`,
       dias: [dia], // Añadir el día creado a la nueva rutina
       usuarioId: this.usuarioLogeado?._id || '',
@@ -130,8 +130,8 @@ export class Tab1Page implements OnInit, OnDestroy {
       timestamp: new Date().toISOString()
     };
 
-    this.rutinaService.agregarRutina(nuevaRutina).then(response => {
-      nuevaRutina._id = response.id; // Guardar el ID generado
+    // Agregar la rutina y refrescar la lista tras confirmación de éxito
+    this.rutinaService.agregarRutina(nuevaRutina).then(() => {
       this.rutinas.push(nuevaRutina); // Añadir la rutina a la lista local
       console.log('Nueva rutina creada con éxito');
       this.rutinaService.cargarRutinas(); // Refrescar las rutinas
@@ -206,67 +206,58 @@ export class Tab1Page implements OnInit, OnDestroy {
   async editarRutina(rutina: Rutina, event: Event) {
     event.stopPropagation(); // Evitar la propagación del clic
     const alert = await this.alertController.create({
-        header: 'Editar Rutina',
-        inputs: [
-            /* {
-                name: 'nombre',
-                type: 'text',
-                placeholder: 'Nuevo nombre de la rutina',
-                value: rutina.nombre
-            }, */
-            {
-                name: 'descripcion',
-                type: 'textarea',
-                placeholder: 'Descripción de la rutina',
-                value: rutina.descripcion || '' // Mostrar la descripción existente o una cadena vacía
+      header: 'Editar Rutina',
+      inputs: [
+        /* {
+            name: 'nombre',
+            type: 'text',
+            placeholder: 'Nuevo nombre de la rutina',
+            value: rutina.nombre
+        }, */
+        {
+          name: 'descripcion',
+          type: 'textarea',
+          placeholder: 'Descripción de la rutina',
+          value: rutina.descripcion || '' // Mostrar la descripción existente o una cadena vacía
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Guardar',
+          handler: async (data) => {
+            // Verifica que los campos de nombre y descripcion no estén vacíos antes de asignar
+            if (data.descripcion && data.descripcion.trim() !== '') {
+              rutina.descripcion = data.descripcion.trim(); // Actualizar la descripción también
             }
-        ],
-        buttons: [
-            {
-                text: 'Cancelar',
-                role: 'cancel'
-            },
-            {
-                text: 'Guardar',
-                handler: async (data) => {
-                    // Verifica que los campos de nombre y descripcion no estén vacíos antes de asignar
-                    if (data.descripcion && data.descripcion.trim() !== '') {
-                        rutina.descripcion = data.descripcion.trim(); // Actualizar la descripción también
-                    }
-                    if (data.nombre && data.nombre.trim() !== '') {
-                        rutina.nombre = data.nombre.trim();
-                    }
-                    // Asegúrate de llamar a actualizar siempre
-                    await this.rutinaService.actualizarRutina(rutina);
-                    console.log('Rutina actualizada con éxito');
-                    this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar
-                }
+            if (data.nombre && data.nombre.trim() !== '') {
+              rutina.nombre = data.nombre.trim();
             }
-        ]
+            // Asegúrate de llamar a actualizar siempre
+            await this.rutinaService.actualizarRutina(rutina);
+            console.log('Rutina actualizada con éxito');
+            this.rutinaService.cargarRutinas(); // Recargar la lista de rutinas después de actualizar
+          }
+        }
+      ]
     });
     await alert.present();
-}
+  }
 
   async editarDiaRutina(rutina: Rutina, diaRutina: DiaRutina) {
-    console.log('Click en editar Dia')
+    console.log('Click en editar Día');
+
     const modal = await this.modalController.create({
       component: EditarDiaRutinaComponent,
       componentProps: {
-        diaRutina: JSON.parse(JSON.stringify(diaRutina)) // Enviamos una copia para evitar mutaciones directas
+        diaRutina: JSON.parse(JSON.stringify(diaRutina)), // Pasar solo el día a editar como copia profunda
+        rutinaId: rutina._id // Pasar el ID de la rutina
       }
     });
 
     await modal.present();
-    const { data } = await modal.onDidDismiss();
-
-    if (data) {
-      const index = rutina.dias.findIndex(dia => dia._id === diaRutina._id);
-      if (index !== -1) {
-        rutina.dias[index] = { ...data };
-        this.rutinaService.actualizarRutina(rutina).then(() => {
-          console.log('Rutina actualizada con el día editado');
-        });
-      }
-    }
   }
 }

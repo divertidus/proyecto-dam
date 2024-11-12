@@ -16,7 +16,7 @@ import {
 
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { FiltroEjercicioComponent, TipoPesoFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
-
+import { v4 as uuidv4 } from 'uuid'; // Si deseas usar una biblioteca como uuid
 
 @Component({
   selector: 'app-form-dia',
@@ -239,6 +239,7 @@ export class FormDiaComponent implements OnInit {
       } */
 
     const nuevoDia: DiaRutina = {
+      _id: uuidv4(), // Genera un ID único para el día
       diaNombre: this.nombreDia,
       ejercicios: this.ejerciciosEnRutina,
       descripcion: this.descripcionDia // Guarda la descripción proporcionada por el usuario
