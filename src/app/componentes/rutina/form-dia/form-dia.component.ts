@@ -23,7 +23,7 @@ import { v4 as uuidv4 } from 'uuid'; // Si deseas usar una biblioteca como uuid
   templateUrl: './form-dia.component.html',
   styleUrls: ['./form-dia.component.scss'],
   standalone: true,
-  imports: [IonIcon, IonList, IonButton, IonInput,
+  imports: [IonIcon, IonList, IonButton,
     IonToolbar, IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, IonCol, IonRow, IonGrid, IonContent,
     IonSearchbar, IonLabel, IonItem, IonFooter,
@@ -79,6 +79,50 @@ export class FormDiaComponent implements OnInit {
     }
 
     this.descripcionDia = '';
+  }
+
+  async solicitarDescripcion(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Descripción del Día',
+      message: 'Ingresa una breve descripción para el día (ej. Pierna, Pecho y Tríceps).',
+      inputs: [
+        {
+          name: 'descripcion',
+          type: 'text',
+          placeholder: 'Descripción del día',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            return false; // Para asegurar el retorno en todos los caminos
+          }
+        },
+        {
+          text: 'Guardar',
+          handler: (data) => {
+            if (data.descripcion && data.descripcion.trim() !== '') {
+              this.guardar(data.descripcion.trim());
+              return true;
+            } else {
+              this.alertController
+                .create({
+                  header: 'Error',
+                  message: 'Por favor, ingresa una descripción válida.',
+                  buttons: ['Aceptar'],
+                })
+                .then((alert) => alert.present());
+              return false;
+            }
+          }
+        },
+      ],
+    });
+
+    await alert.present();
+    return; // Para asegurar el retorno
   }
 
   // Filtrar los ejercicios cuando el usuario realiza una búsqueda
@@ -207,50 +251,61 @@ export class FormDiaComponent implements OnInit {
     this.ejerciciosEnRutina.push(ejercicioPlan); // Añadir el ejercicio a la rutina
   }
 
-  guardar() {
-    // Verificar si se ingresó una descripción
+  guardar(descripcion?: string) {
+    if (descripcion) {
+      this.descripcionDia = descripcion;
+    }
+    // Procede con el guardado del día usando this.descripcionDia
     if (!this.descripcionDia || this.descripcionDia.trim() === '') {
-      // Mostrar una alerta si la descripción está vacía
       this.alertController.create({
         header: 'Error',
-        message: 'Por favor, ingrese una descripción para el día.',
+        message: 'Por favor, ingresa una descripción para el día.',
         buttons: ['Aceptar']
       }).then(alert => alert.present());
-
-      return; // Detener el guardado hasta que se ingrese la descripción
+      return;
     }
-
-    // Verificar si se seleccionó al menos un ejercicio
     if (this.ejerciciosEnRutina.length === 0) {
-      // Mostrar una alerta si no hay ejercicios seleccionados
       this.alertController.create({
         header: 'Error',
-        message: 'Por favor, seleccione al menos un ejercicio para el día.',
+        message: 'Por favor, selecciona al menos un ejercicio para el día.',
         buttons: ['Aceptar']
       }).then(alert => alert.present());
-
-      return; // Detener el guardado hasta que se seleccione un ejercicio
+      return;
     }
-
-    /*   // Si el nombre del día no se especifica, asignamos un nombre automático basado en el número de días existentes en la rutina
-      if (!this.nombreDia || this.nombreDia.trim() === '') {
-        const diaIndex = this.diaExistente ? this.diaExistente.ejercicios.length : 0; // Obtiene el número de días ya existentes
-        this.nombreDia = `Día ${diaIndex + 1}`; // Asigna el nombre como "Día X", donde X es el siguiente número disponible
-      } */
-
     const nuevoDia: DiaRutina = {
-      _id: uuidv4(), // Genera un ID único para el día
+      _id: uuidv4(),
       diaNombre: this.nombreDia,
       ejercicios: this.ejerciciosEnRutina,
-      descripcion: this.descripcionDia // Guarda la descripción proporcionada por el usuario
+      descripcion: this.descripcionDia
     };
-
-    this.modalController.dismiss(nuevoDia); // Enviar los datos de vuelta al componente padre
+    this.modalController.dismiss(nuevoDia);
   }
 
   // Cancelar la operación de creación o edición
-  cancelarOperacion() {
-    this.modalController.dismiss(); // Simplemente cierra el modal sin enviar datos
+  async cancelarOperacion() {
+    if (this.ejerciciosEnRutina.length > 0) {
+      const alert = await this.alertController.create({
+        header: 'Cancelar creación de día',
+        message: '¿Seguro que desea cancelar la creación de un día? Se perderán los ejercicios seleccionados.',
+        buttons: [
+          {
+            text: 'No',
+            role: 'cancel',
+          },
+          {
+            text: 'Sí',
+            handler: () => {
+              this.modalController.dismiss();
+            },
+          },
+        ],
+      });
+
+      await alert.present();
+    } else {
+      // Si no hay ejercicios seleccionados, simplemente cerrar el modal
+      this.modalController.dismiss();
+    }
   }
 
   // Método para eliminar un ejercicio de la lista
