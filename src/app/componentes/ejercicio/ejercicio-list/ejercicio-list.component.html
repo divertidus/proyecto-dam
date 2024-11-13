@@ -52,27 +52,31 @@
               <ion-card-header>
                 <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
               </ion-card-header>
-              <ion-card-content class="detalle-card-content">
-                <div class="detalle-contenido">
-                  <p class="descripcion-ejercicio">{{ ejercicio.descripcion || 'Sin descripción' }}</p>
-                  <div *ngIf="ejercicio.ejercicioPersonalizado" class="botones-acciones">
-                    <ion-button
-                      color="primary"
-                      fill="clear"
-                      (click)="editarEjercicio(ejercicio); $event.stopPropagation()"
-                    >
-                      <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-                    </ion-button>
-                    <ion-button
-                      color="danger"
-                      fill="clear"
-                      (click)="confirmarEliminar(ejercicio); $event.stopPropagation()"
-                    >
-                      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-                    </ion-button>
-                  </div>
-                </div>
-              </ion-card-content>
+              <ion-card-content
+  class="detalle-card-content"
+  [ngClass]="{'personalizado': ejercicio.ejercicioPersonalizado}"
+>
+  <div class="detalle-contenido" [ngClass]="{'personalizado': ejercicio.ejercicioPersonalizado}">
+    <p class="descripcion-ejercicio">{{ ejercicio.descripcion || 'Sin descripción' }}</p>
+    <div *ngIf="ejercicio.ejercicioPersonalizado" class="botones-acciones">
+      <ion-button
+        color="primary"
+        fill="clear"
+        (click)="editarEjercicio(ejercicio); $event.stopPropagation()"
+      >
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        color="danger"
+        fill="clear"
+        (click)="confirmarEliminar(ejercicio); $event.stopPropagation()"
+      >
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-card-content>
+
             </ng-template>
           </ion-card>
         </ion-col>

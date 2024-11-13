@@ -26,138 +26,143 @@ export class ReiniciarDatosService {
     private authService: AuthService
   ) { }
 
-  // Método principal que verifica e inicializa los datos en la base de datos
+  diasRutina: DiaRutina[] = [];
+  usuarioPruebas: Usuario
+  ejerciciosPorDefecto: Ejercicio[] = [];
+
+  // Verifica si la base de datos está vacía e inicializa los datos en el orden especificado
   async verificarYInicializarDatos(): Promise<void> {
     const baseDatosVacia = await this.comprobarBaseDatosVacia();
 
     if (baseDatosVacia) {
       console.log('No se encontraron datos en la base de datos. Cargando datos iniciales.');
-      await this.inicializarUsuario();    // Inicializa el usuario
-      await this.inicializarEjercicios(); // Inicializa los ejercicios
-      await this.inicializarRutina();     // Inicializa las rutinas
-      await this.inicializarHistorial();  // Inicializa el historial
+
+      // 1. Crear usuario
+      await this.inicializarUsuario();
+
+      // 2. Crear ejercicios
+      await this.inicializarEjercicios();
+
+      // 3. Crear rutina
+      await this.inicializarRutina();
+
+      // 4. Crear historial
+      await this.inicializarHistorial();
+
+      console.log("Datos iniciales cargados correctamente.");
     } else {
       console.log('Datos ya existentes en la base de datos. No se cargarán los datos iniciales.');
     }
-
-    this.authService.autoLoginPrimerUsuario(); // Inicia sesión automáticamente con el primer usuario
   }
 
-  // Método para comprobar si la base de datos está completamente vacía
-  private async comprobarBaseDatosVacia(): Promise<boolean> {
-    try {
-      const usuarios = await this.usuarioService.obtenerUsuarios();
-      const ejercicios = await this.ejercicioService.obtenerEjercicios();
-      const rutinas = await this.rutinaService.obtenerRutinasPorUsuario("usuarioId");
-      const historiales = await this.historialService.obtenerHistorialesPorUsuario("usuarioId");
-
-      // Retorna true si todas las colecciones están vacías
-      return usuarios.length === 0 && ejercicios.length === 0 && rutinas.length === 0 && historiales.length === 0;
-    } catch (error) {
-      console.error('Error al comprobar la base de datos:', error);
-      return false; // En caso de error, asumimos que no hay datos para evitar recargar
-    }
-  }
-
-  // Método para reiniciar directamente la base de datos e inicializar los datos nuevos
+  // Elimina todos los documentos de la base de datos y reinicia la inicialización
   async reiniciarYInicializarDatos(): Promise<void> {
     try {
-      // Borrar todos los documentos de la base de datos
       await this.databaseService.eliminarTodosLosDocumentos();
-
-      // Inicializar los datos sin verificar si existen
       await this.inicializarUsuario();
       await this.inicializarEjercicios();
       await this.inicializarRutina();
       await this.inicializarHistorial();
-
-      // Iniciar sesión automáticamente con el primer usuario
       this.authService.autoLoginPrimerUsuario();
-
     } catch (error) {
       console.error('Error al reiniciar e inicializar la base de datos:', error);
     }
   }
 
-  // Inicializar el usuario si no existe
-  async inicializarUsuario() {
+  // Comprueba si la base de datos está vacía
+  private async comprobarBaseDatosVacia(): Promise<boolean> {
+    try {
+      const usuarios = await this.usuarioService.obtenerUsuarios();
+      const ejercicios = await this.ejercicioService.obtenerEjercicios();
+
+      return usuarios.length === 0 && ejercicios.length === 0;
+    } catch (error) {
+      console.error('Error al comprobar la base de datos:', error);
+      return false;
+    }
+  }
+
+
+  async inicializarUsuario(): Promise<Usuario | null> {
     try {
       const usuariosExistentes = await this.usuarioService.obtenerUsuarios();
       if (usuariosExistentes.length === 0) {
         const nuevoUsuario: Usuario = {
+          _id: uuidv4(),
           entidad: 'usuario',
           nombre: 'AutoUsuario',
           email: 'auto@pruebas.com',
           timestamp: new Date().toISOString(),
         };
         await this.usuarioService.agregarUsuario(nuevoUsuario);
-        console.log('Usuario inicializado correctamente:', nuevoUsuario.nombre);
+        console.log('Usuario inicializado correctamente:', nuevoUsuario);
+        this.usuarioPruebas = nuevoUsuario; // Asegurarse de asignarlo aquí.
+        return nuevoUsuario;
       } else {
-        console.log('Usuarios ya existentes.');
+        console.log('Usuarios ya existentes:', usuariosExistentes);
+        this.usuarioPruebas = usuariosExistentes[0]; // Asegurarse de asignarlo aquí también.
+        return usuariosExistentes[0];
       }
     } catch (error) {
       console.error('Error al inicializar el usuario:', error);
+      return null;
     }
   }
 
   // Inicializar ejercicios si no existen
-  async inicializarEjercicios(): Promise<{ [key: string]: string }> {
-    const ejercicios: Ejercicio[] = [
-      { entidad: 'ejercicio', nombre: 'Jalón de Espalda', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio de tracción vertical para trabajar la espalda alta y dorsales.' },
-      { entidad: 'ejercicio', nombre: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: true, descripcion: 'Ejercicio de tracción horizontal para fortalecer la espalda media y baja.' },
-      { entidad: 'ejercicio', nombre: 'Jalón Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio para trabajar los dorsales y la espalda alta con agarre cerrado.' },
-      { entidad: 'ejercicio', nombre: 'Martillo', tipoPeso: 'Mancuernas', musculoPrincipal: 'Bíceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los bíceps y antebrazos, ideal para fortalecer los brazos.' },
-      { entidad: 'ejercicio', nombre: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo del pecho, especialmente la parte media y baja del pectoral.' },
-      { entidad: 'ejercicio', nombre: 'Máquina Aperturas', tipoPeso: 'Máquina', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para aislar los pectorales, enfocado en el estiramiento y contracción del músculo.' },
-      { entidad: 'ejercicio', nombre: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', musculoPrincipal: 'Tríceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio compuesto para trabajar tríceps, pecho y hombros, utilizando el peso corporal.' },
-      { entidad: 'ejercicio', nombre: 'Sentadillas Multipower', tipoPeso: 'Barra', musculoPrincipal: 'Pierna', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo de piernas, especialmente cuadríceps y glúteos, en la máquina multipower.' },
-      { entidad: 'ejercicio', nombre: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', musculoPrincipal: 'Hombro', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los hombros, enfocado en el deltoides lateral.' },
-      { entidad: 'ejercicio', nombre: 'Prensa de Piernas', tipoPeso: 'Máquina', musculoPrincipal: 'Pierna', ejercicioPersonalizado: true, descripcion: 'Ejercicio de empuje para trabajar piernas, principalmente cuadríceps y glúteos.' },
-    ];
+  async inicializarEjercicios(): Promise<void> {
+    // Solo inicializa los ejercicios si aún no están cargados
+    if (this.ejerciciosPorDefecto.length === 0) {
+      const ejerciciosPorDefecto: Ejercicio[] = [
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Jalón de Espalda', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio de tracción vertical para trabajar la espalda alta y dorsales.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: true, descripcion: 'Ejercicio de tracción horizontal para fortalecer la espalda media y baja.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Jalón Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio para trabajar los dorsales y la espalda alta con agarre cerrado.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Martillo', tipoPeso: 'Mancuernas', musculoPrincipal: 'Bíceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los bíceps y antebrazos, ideal para fortalecer los brazos.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo del pecho, especialmente la parte media y baja del pectoral.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Máquina Aperturas', tipoPeso: 'Máquina', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para aislar los pectorales, enfocado en el estiramiento y contracción del músculo.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', musculoPrincipal: 'Tríceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio compuesto para trabajar tríceps, pecho y hombros, utilizando el peso corporal.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Sentadillas Multipower', tipoPeso: 'Barra', musculoPrincipal: 'Pierna', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo de piernas, especialmente cuadríceps y glúteos, en la máquina multipower.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', musculoPrincipal: 'Hombro', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los hombros, enfocado en el deltoides lateral.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Prensa de Piernas', tipoPeso: 'Máquina', musculoPrincipal: 'Pierna', ejercicioPersonalizado: true, descripcion: 'Ejercicio de empuje para trabajar piernas, principalmente cuadríceps y glúteos.' },
+      ];
 
-    const ejerciciosMap: { [key: string]: string } = {};
-
-    try {
-      const ejerciciosExistentes = await this.ejercicioService.obtenerEjercicios();
-      if (ejerciciosExistentes.length === 0) {
-        for (const ejercicio of ejercicios) {
-          const response = await this.ejercicioService.agregarEjercicio(ejercicio);
-          ejerciciosMap[ejercicio.nombre] = response.id;
-          // console.log(`Ejercicio ${ejercicio.nombre} añadido correctamente con ID: ${response.id}`);
+      try {
+        const ejerciciosExistentes = await this.ejercicioService.obtenerEjercicios();
+        if (ejerciciosExistentes.length === 0) {
+          for (const ejercicio of ejerciciosPorDefecto) {
+            await this.ejercicioService.agregarEjercicio(ejercicio);
+          }
+          console.log('Ejercicios inicializados correctamente:', ejerciciosPorDefecto);
+          this.ejerciciosPorDefecto = ejerciciosPorDefecto;
+        } else {
+          console.log('Ejercicios ya existen en la base de datos.');
+          this.ejerciciosPorDefecto = ejerciciosExistentes;
         }
-      } else {
-        ejerciciosExistentes.forEach(e => {
-          ejerciciosMap[e.nombre] = e._id!;
-        });
-        console.log('Ejercicios ya existen en la base de datos.');
+      } catch (error) {
+        console.error('Error al añadir ejercicios:', error);
       }
-    } catch (error) {
-      console.error('Error al añadir ejercicios:', error);
     }
-
-    return ejerciciosMap;
   }
 
   // Inicializar rutina si no existe
   async inicializarRutina() {
+    console.log('Entrando en inicializar Rutina')
+    if (!this.usuarioPruebas) {  // Cambiar a this.usuarioPruebas
+      console.log('mensaje de inicializarRutina porque if (!this.usuarioPruebas) es ', !this.usuarioPruebas)
+      return;
+    }
+
     try {
-      const usuarios = await this.usuarioService.obtenerUsuarios();
-      if (usuarios.length === 0) {
-        return;
-      }
-      const usuarioLogeado = usuarios[0];
-
-      const ejerciciosMap = await this.inicializarEjercicios();
-
+      const ejercicios = await this.inicializarEjercicios();
       const diasRutina: DiaRutina[] = [
         {
           _id: uuidv4(),
           diaNombre: 'Día 1',
           descripcion: 'Espalda y bíceps',
           ejercicios: [
-            { ejercicioId: ejerciciosMap['Jalón de Espalda'], nombreEjercicio: 'Jalón de Espalda', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Remo Cerrado (Cuernos)'], nombreEjercicio: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Martillo'], nombreEjercicio: 'Martillo', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Jalón de Espalda')!._id!, nombreEjercicio: 'Jalón de Espalda', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Remo Cerrado (Cuernos)')!._id!, nombreEjercicio: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Martillo')!._id!, nombreEjercicio: 'Martillo', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
           ]
         },
         {
@@ -165,9 +170,9 @@ export class ReiniciarDatosService {
           diaNombre: 'Día 2',
           descripcion: 'Pecho y tríceps',
           ejercicios: [
-            { ejercicioId: ejerciciosMap['Press Banco Tumbado'], nombreEjercicio: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Máquina Aperturas'], nombreEjercicio: 'Máquina Aperturas', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Fondos en Paralelas'], nombreEjercicio: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Press Banco Tumbado')!._id!, nombreEjercicio: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Máquina Aperturas')!._id!, nombreEjercicio: 'Máquina Aperturas', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Fondos en Paralelas')!._id!, nombreEjercicio: 'Fondos en Paralelas', tipoPeso: 'Peso Corporal', series: 4, repeticiones: 10 },
           ]
         },
         {
@@ -175,26 +180,36 @@ export class ReiniciarDatosService {
           diaNombre: 'Día 3',
           descripcion: 'Pierna y hombro',
           ejercicios: [
-            { ejercicioId: ejerciciosMap['Sentadillas Multipower'], nombreEjercicio: 'Sentadillas Multipower', tipoPeso: 'Barra', series: 4, repeticiones: 10 },
-            { ejercicioId: ejerciciosMap['Elevaciones Laterales'], nombreEjercicio: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', series: 4, repeticiones: 12 },
-            { ejercicioId: ejerciciosMap['Prensa de Piernas'], nombreEjercicio: 'Prensa de Piernas', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Sentadillas Multipower')!._id!, nombreEjercicio: 'Sentadillas Multipower', tipoPeso: 'Barra', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Elevaciones Laterales')!._id!, nombreEjercicio: 'Elevaciones Laterales', tipoPeso: 'Mancuernas', series: 4, repeticiones: 12 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Prensa de Piernas')!._id!, nombreEjercicio: 'Prensa de Piernas', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
           ]
         }
       ];
 
-      const rutinasExistentes = await this.rutinaService.obtenerRutinasPorUsuario(usuarioLogeado._id!);
+      // Validar que todos los `ejercicioId` estén correctamente asignados
+      diasRutina.forEach(dia => {
+        dia.ejercicios.forEach(e => {
+          if (!e.ejercicioId) {
+            console.error(`ID no encontrado para el ejercicio: ${e.nombreEjercicio}`);
+          }
+        });
+      });
+
+      const rutinasExistentes = await this.rutinaService.obtenerRutinasPorUsuario(this.usuarioPruebas._id!);
       if (rutinasExistentes.length === 0) {
         const nuevaRutina: Rutina = {
           _id: uuidv4(),
           entidad: 'rutina',
           nombre: 'Rutina 1',
-          descripcion:'Mi primera rutina',
-          usuarioId: usuarioLogeado._id!,
+          descripcion: 'Mi primera rutina',
+          usuarioId: this.usuarioPruebas._id,
           dias: diasRutina,
           timestamp: new Date().toISOString(),
         };
         await this.rutinaService.agregarRutina(nuevaRutina);
-        console.log('Rutina añadida con éxito');
+        console.log('Inicializar Rutina -> Rutina añadida con éxito', nuevaRutina);
+        console.log('Inicializar Rutina -> Para el usuario con ID', this.usuarioPruebas._id);
       } else {
         console.log('Ya existen rutinas en la base de datos.');
       }
@@ -204,22 +219,42 @@ export class ReiniciarDatosService {
   }
 
   // Inicializar historial de entrenamiento con nueve sesiones en días diferentes
-  async inicializarHistorial() {
+  async inicializarHistorial(): Promise<void> {
+    console.log('InicializarHistorial -> Entrando en inicializarHistorial');
+    if (!this.usuarioPruebas) {  // Cambiar a this.usuarioPruebas
+      console.error('InicializarHistorial -> Error: usuarioLogeado no está definido.');
+      return;
+    }
     try {
+      // Aseguramos que usuarioLogeado está definido
       const usuarios = await this.usuarioService.obtenerUsuarios();
-      if (usuarios.length === 0) return;
-      const usuarioLogeado = usuarios[0];
+      if (usuarios.length === 0) {
+        console.log('InicializarHistorial -> usuarios.length === 0 asi que que return', usuarios.length === 0)
+        return;
+      }
 
+
+
+      console.log('InicializarHistorial -> Usuario logeado: ', this.usuarioPruebas)
+
+      // Obtenemos la rutina asociada al usuario
+      const rutinas = await this.rutinaService.obtenerRutinasPorUsuario(this.usuarioPruebas._id!);
+      if (rutinas.length === 0) {
+        console.log('InicializarHistorial -> No se encontró ninguna rutina para el usuario.', this.usuarioPruebas._id);
+        return;
+      }
+      this.diasRutina = rutinas[0].dias;
+
+      // Obtenemos los ejercicios y mapeamos los nombres a sus IDs
       const ejerciciosExistentes = await this.ejercicioService.obtenerEjercicios();
-
-      // Mapear los nombres de los ejercicios a los IDs reales obtenidos de la base de datos
       const ejerciciosPredefinidos = ejerciciosExistentes.reduce((map, ejercicio) => {
-        map[ejercicio.nombre] = ejercicio._id;
+        map[ejercicio.nombre] = ejercicio._id!;
         return map;
       }, {} as { [nombre: string]: string });
 
-      if (!ejerciciosPredefinidos) {
-        console.error('No se encontraron ejercicios predefinidos.');
+      // Comprobamos si tenemos ejercicios disponibles
+      if (Object.keys(ejerciciosPredefinidos).length === 0) {
+        console.error('InicializarHistorial -> No se encontraron ejercicios predefinidos.');
         return;
       }
 
@@ -558,30 +593,47 @@ export class ReiniciarDatosService {
         }
       ];
 
+
+
       // Generamos los días de entrenamiento con fechas asignadas
       const diasEntrenamientos = [
-        { fechaEntrenamiento: '2024-10-01', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y bíceps', ejercicioRealizado: dia1Entrenamiento1 },
-        { fechaEntrenamiento: '2024-10-02', diaRutinaId: 'Día 2', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento1 },
-        { fechaEntrenamiento: '2024-10-03', diaRutinaId: 'Día 3', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento1 },
-        { fechaEntrenamiento: '2024-10-04', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento2 },
-        { fechaEntrenamiento: '2024-10-05', diaRutinaId: 'Día 3', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento2 }, // Sin series en un ejercicio
-        { fechaEntrenamiento: '2024-10-06', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 },
-        { fechaEntrenamiento: '2024-10-07', diaRutinaId: 'Día 2', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento2 },
-        { fechaEntrenamiento: '2024-10-08', diaRutinaId: 'Día 3', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento3 },
-        { fechaEntrenamiento: '2024-10-09', diaRutinaId: 'Día 1', nombreRutinaEntrenamiento: 'Rutina 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
+        {
+          _id: uuidv4(),
+          fechaEntrenamiento: '2024-10-01',
+          diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?._id,
+          nombreRutinaEntrenamiento: 'Rutina 1',
+          diaEntrenamientoNombre: 'Día 1',
+          descripcion: 'Espalda y bíceps',
+          ejercicioRealizado: dia1Entrenamiento1
+        },
+        {
+          _id: uuidv4(),
+          fechaEntrenamiento: '2024-10-02',
+          diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?._id,
+          nombreRutinaEntrenamiento: 'Rutina 1',
+          diaEntrenamientoNombre: 'Día 2',
+          descripcion: 'Pecho y tríceps',
+          ejercicioRealizado: dia2Entrenamiento1
+        },
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-03', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento1 },
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-04', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento2 },
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-05', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento2 }, // Sin series en un ejercicio
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-06', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 },
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-07', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 2', descripcion: 'Pecho y tríceps', ejercicioRealizado: dia2Entrenamiento2 },
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-08', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 3', descripcion: 'Hombro y pierna', ejercicioRealizado: dia3Entrenamiento3 },
+        { _id: uuidv4(), fechaEntrenamiento: '2024-10-09', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
       ];
 
       // Obtener todos los historiales del usuario logeado
-      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(usuarioLogeado._id!);
+      const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioPruebas._id!);
 
       let historial: HistorialEntrenamiento;
-
       if (historialesExistentes.length > 0) {
         historial = historialesExistentes[0];
       } else {
         historial = {
           entidad: 'historialEntrenamiento',
-          usuarioId: usuarioLogeado._id!,
+          usuarioId: this.usuarioPruebas._id!,
           entrenamientos: []
         };
       }
@@ -597,18 +649,24 @@ export class ReiniciarDatosService {
           const nuevoDiaEntrenamiento: DiaEntrenamiento = {
             _id: uuidv4(),
             fechaEntrenamiento: diaEntrenamiento.fechaEntrenamiento,
-            diaRutinaId: diaEntrenamiento.diaRutinaId,
+            diaRutinaId: diaEntrenamiento.diaRutinaId!,
             nombreRutinaEntrenamiento: diaEntrenamiento.nombreRutinaEntrenamiento,
+            diaEntrenamientoNombre: diaEntrenamiento.diaEntrenamientoNombre,
             descripcion: diaEntrenamiento.descripcion,
             ejerciciosRealizados: diaEntrenamiento.ejercicioRealizado
           };
 
           historial.entrenamientos.push(nuevoDiaEntrenamiento);
+
         }
       }
 
-      // Actualizar el historial existente
+
+
       await this.historialService.agregarHistorial(historial);
+      const historialesConfirmados = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioPruebas._id!);
+      console.log('Historiales confirmados tras inicialización:', historialesConfirmados);
+
       console.log('Historial de entrenamientos actualizado correctamente.');
     } catch (error) {
       console.error('Error al actualizar el historial de entrenamientos:', error);

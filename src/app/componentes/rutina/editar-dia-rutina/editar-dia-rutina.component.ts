@@ -13,6 +13,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
 import { EditarDiaRutinaEditarEjercicioPlanPopoverComponent } from '../editar-dia-rutina-editar-ejercicio-plan-popover/editar-dia-rutina-editar-ejercicio-plan-popover.component';
 import { RutinaService } from 'src/app/services/database/rutina.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-editar-dia-rutina',
@@ -115,11 +116,14 @@ export class EditarDiaRutinaComponent implements OnInit {
       component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
       cssClass: 'popover-ejercicio-compacto',
     });
+
     modal.onDidDismiss().then((result) => {
       const ejercicioSeleccionado = result.data as EjercicioPlan;
       if (ejercicioSeleccionado) {
+        // Asigna un _id único si no existe
+        ejercicioSeleccionado._id = ejercicioSeleccionado._id;
         this.diaRutina.ejercicios.push(ejercicioSeleccionado);
-        this.cambiosRealizados = true; // Marcar cambios al agregar
+        this.cambiosRealizados = true; // Marca cambios al agregar
       }
     });
     await modal.present();

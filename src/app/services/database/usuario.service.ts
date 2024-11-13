@@ -30,6 +30,7 @@ export class UsuarioService {
     try {
       // Agregamos el nuevo usuario a la base de datos
       const respuesta = await this.baseDatos.post({
+        _id:usuario._id,
         entidad: 'usuario',
         nombre: usuario.nombre, // Nombre del usuario
         email: usuario.email, // Correo del usuario

@@ -35,6 +35,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   @Input() rutinaId: string | null = null;
   @Input() diaRutinaId: string | null = null;
+  @Input() diaRutinaNombre: string | null = null;
   @Input() descripcion: string | null = null;
 
 
@@ -51,13 +52,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   private inicioEntrenamiento: Date | null = null; // Hora de inicio del entrenamiento
 
   constructor(
-    private route: ActivatedRoute,
     private rutinaService: RutinaService,
     private ejercicioService: EjercicioService, // Servicio que te permite cargar los datos de la rutina
     private alertController: AlertController, // Para crear alertas
     private historialService: HistorialService,
     private authService: AuthService,
-    private router: Router,
     private entrenamientoEstadoService: EntrenamientoEstadoService,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
@@ -71,7 +70,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       });
 
       if (this.rutinaId && this.diaRutinaId) {
-        this.cargarDiaRutinaPorNombre(this.rutinaId, this.diaRutinaId);
+        this.cargarDiaRutinaPorId(this.rutinaId, this.diaRutinaId);
       }
     }
   }
@@ -86,20 +85,38 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         console.error('No hay usuario logueado.');
       }
     });
+
+    console.log('Rutina ID en app-vista-entreno:', this.rutinaId);
+    console.log('Día Rutina ID en app-vista-entreno:', this.diaRutinaId);
+    console.log('Descripción en app-vista-entreno:', this.descripcion);
   }
 
-  async cargarDiaRutinaPorNombre(rutinaId: string, diaNombre: string) {
+  async cargarDiaRutinaPorId(rutinaId: string, diaRutinaId: string) {
+    console.log('cargarDiaRutinaPorId -> RutinaiD: ', rutinaId);
+    console.log('cargarDiaRutinaPorId -> diaRutinaId: ', diaRutinaId);
+
     try {
-      const { rutina, diaRutina } = await this.cargarRutina(rutinaId, diaNombre);
+      // Intentamos cargar la rutina con el ID proporcionado
+      const resultadoCarga = await this.cargarRutina(rutinaId, diaRutinaId);
+      console.log('cargarDiaRutinaPorId -> Resultado de cargarRutina:', resultadoCarga);
+
+      // Verificamos que se hayan cargado la rutina y el día
+      const { rutina, diaRutina } = resultadoCarga;
+      console.log('cargarDiaRutinaPorId -> Rutina obtenida:', rutina);
+      console.log('cargarDiaRutinaPorId -> Día de rutina obtenido:', diaRutina);
 
       if (rutina && diaRutina) {
         console.log('Rutina cargada:', rutina);
         console.log('Día de rutina cargado:', diaRutina);
 
+        // Configuramos el nombre de la rutina para el entrenamiento
         this.nombreRutinaEntrenamiento = rutina.nombre;
+
+        // Creamos los ejercicios asociados al día de rutina
         this.ejercicios = await Promise.all(diaRutina.ejercicios.map(ej => this.crearEjercicio(ej)));
         this.totalEjercicios = this.ejercicios.length;
 
+        // Ajustamos el peso en las series si falta
         this.ejercicios.forEach(ejercicio => {
           ejercicio.seriesReal.forEach(serie => {
             if (!serie.peso) {
@@ -108,19 +125,25 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
           });
         });
 
+        // Actualizamos el estado de ejercicios completados
         this.actualizarEjerciciosCompletados();
+
+        console.log('cargarDiaRutinaPorId -> Ejercicios cargados correctamente:', this.ejercicios);
       } else {
-        console.error(`No se encontró el día de rutina ${diaNombre} en la rutina con ID ${rutinaId}`);
+        console.error(`No se encontró el día de rutina con ID ${diaRutinaId} en la rutina con ID ${rutinaId}`);
+        console.log('cargarDiaRutinaPorId -> Valores faltantes:', {
+          rutinaExistente: !!rutina,
+          diaRutinaExistente: !!diaRutina,
+        });
       }
     } catch (error) {
       console.error('Error al cargar el día de la rutina:', error);
     }
   }
 
-  // Método para cargar la rutina y el día de la rutina
-  private async cargarRutina(rutinaId: string, diaNombre: string) {
+  private async cargarRutina(rutinaId: string, diaRutinaId: string) {
     const rutina = await this.rutinaService.obtenerRutinaPorId(rutinaId);
-    const diaRutina = await this.rutinaService.obtenerDiaRutinaPorNombre(rutinaId, diaNombre);
+    const diaRutina = rutina?.dias.find(dia => dia._id === diaRutinaId); // Busca el día específico por ID
     return { rutina, diaRutina };
   }
 
@@ -146,19 +169,17 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     };
   }
 
-  // Método para crear cada ejercicio con sus series y valores anteriores
   private async crearEjercicio(ej: EjercicioPlan) {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ej.ejercicioId);
     const ultimoEjercicio = this.usuarioId ? await this.obtenerUltimoEjercicioRealizado(this.usuarioId, ej.ejercicioId) : null;
 
-    // Generar series según el número de series y repeticiones del nuevo modelo
     const seriesReal: SerieReal[] = Array.from({ length: ej.series }).map((_, index) => {
       return {
         _id: uuidv4(),
         numeroSerie: index + 1,
         repeticiones: ej.repeticiones,
         repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
-        peso: ultimoEjercicio?.series[index]?.peso ?? 0, // Cambiar de `||` a `??` para diferenciar peso 0 y null
+        peso: ultimoEjercicio?.series[index]?.peso ?? 0, // Diferencia entre peso 0 y null
         pesoAnterior: ultimoEjercicio?.series[index]?.peso || null,
         alFallo: false,
         conAyuda: false,
@@ -299,6 +320,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       fechaEntrenamiento: this.inicioEntrenamiento?.toISOString() || new Date().toISOString(),
       nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento || 'Rutina sin nombre',
       diaRutinaId: this.diaRutinaId!,
+      diaEntrenamientoNombre: this.diaRutinaNombre,
       descripcion: this.descripcion || '',
       tiempoEmpleado: tiempoEmpleadoMinutos, // Tiempo empleado en minutos
       ejerciciosRealizados: this.ejercicios.map(ej => {
@@ -546,7 +568,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   }
 
   private actualizarEjerciciosCompletados() {
-    // Contar solo los ejercicios donde seriesCompletadas es igual a seriesTotal
     this.ejerciciosCompletados = this.ejercicios.filter(ej => ej.seriesCompletadas >= ej.seriesTotal).length;
     this.totalEjercicios = this.ejercicios.length;
   }

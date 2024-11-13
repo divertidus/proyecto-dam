@@ -33,6 +33,7 @@ export class EjercicioService {
     try {
       // Agregamos el ejercicio a la base de datos usando las propiedades del objeto `Ejercicio`
       const respuesta = await this.baseDatos.post({
+        _id:nuevoEjercicio._id,
         entidad: 'ejercicio',
         nombre: nuevoEjercicio.nombre, // Nombre del ejercicio
         descripcion: nuevoEjercicio.descripcion, // Descripción opcional del ejercicio
@@ -95,9 +96,9 @@ export class EjercicioService {
   }
 
   // Método para obtener un ejercicio específico por su ID
-  async obtenerEjercicioPorId(id: string): Promise<Ejercicio> {
+  async obtenerEjercicioPorId(idEjercicio: string): Promise<Ejercicio> {
     try {
-      const resultado = await this.baseDatos.get(id); // Obtener el documento por ID
+      const resultado = await this.baseDatos.get(idEjercicio); // Obtener el documento por ID
       //  console.log('Ejercicio.Service -> Obtenido ejercicio por ID:', resultado);
       return resultado; // Retornar el ejercicio encontrado
     } catch (error) {

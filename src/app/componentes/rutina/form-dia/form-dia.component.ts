@@ -254,10 +254,12 @@ export class FormDiaComponent implements OnInit {
   // Agregar un ejercicio con los detalles ingresados
   agregarEjercicio(ejercicio: Ejercicio, series: number, repeticiones: number, notas: string) {
     const ejercicioPlan: EjercicioPlan = {
+      _id: uuidv4(),
       ejercicioId: ejercicio._id!,
       nombreEjercicio: ejercicio.nombre,
       series: series, // Crea las series con el número de repeticiones
       repeticiones: repeticiones,
+      tipoPeso:ejercicio.tipoPeso,
       notas: notas || '',
 
     };

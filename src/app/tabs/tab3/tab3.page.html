@@ -4,7 +4,7 @@
 <ion-content>
     <ng-container *ngIf="entrenamientoEnProgreso; else startContent">
         <app-vista-entreno *ngIf="entrenamientoEnProgreso" [rutinaId]="entrenamientoDetalles?.rutinaId"
-            [diaRutinaId]="entrenamientoDetalles?.diaRutinaId" [descripcion]="entrenamientoDetalles?.descripcion">
+            [diaRutinaId]="entrenamientoDetalles?.diaRutinaId" [diaRutinaNombre]="entrenamientoDetalles?.diaRutinaNombre" [descripcion]="entrenamientoDetalles?.descripcion">
         </app-vista-entreno>
     </ng-container>
 

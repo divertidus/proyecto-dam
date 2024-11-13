@@ -17,7 +17,7 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './seleccionar-usuario.page.html',
   styleUrls: ['./seleccionar-usuario.page.scss'],
   standalone: true,
-  imports: [IonAvatar, IonIcon, IonAlert, IonSpinner, IonButton, IonFooter, IonContent, IonHeader,
+  imports: [IonAlert, IonSpinner, IonButton, IonFooter, IonContent, IonHeader,
     IonTitle, IonToolbar, CommonModule, FormsModule, UserListComponent],
   providers: [AlertController]
 })

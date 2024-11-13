@@ -16,7 +16,7 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
   templateUrl: './ultimo-entreno.component.html',
   styleUrls: ['./ultimo-entreno.component.scss'],
   standalone: true,
-  imports: [IonCardContent, FormsModule, IonCardTitle, IonCardHeader, IonCard, NgIf, NgFor, CommonModule, DiaEntrenamientoCardComponent],
+  imports: [IonCardContent, FormsModule, IonCardTitle, IonCardHeader, IonCard, NgIf, CommonModule, DiaEntrenamientoCardComponent],
   providers: [ModalController, PopoverController]
 })
 export class UltimoEntrenoComponent implements OnInit {

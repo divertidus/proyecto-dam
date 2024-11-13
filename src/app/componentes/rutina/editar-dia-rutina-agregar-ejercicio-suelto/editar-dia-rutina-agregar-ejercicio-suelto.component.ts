@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
 import { FiltroEjercicioComponent, TipoPesoFiltro, MusculoPrincipalFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-editar-dia-rutina-agregar-ejercicio-suelto',
@@ -90,6 +91,7 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
               return false;
             }
             const ejercicioPlan: EjercicioPlan = {
+              _id: uuidv4(),
               ejercicioId: ejercicio._id!,
               nombreEjercicio: ejercicio.nombre,
               series: +data.series,

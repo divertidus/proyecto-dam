@@ -13,7 +13,7 @@ export class RutinaService {
 
   constructor(private databaseService: DatabaseService) {
     this.baseDatos = this.databaseService.obtenerBaseDatos();
-    console.log("RutinaService - baseDatos inicializado:", this.baseDatos);
+    console.log("RUTINA SERVICE -> RutinaService - baseDatos inicializado:", this.baseDatos);
     this.cargarRutinas();
   }
 
@@ -36,12 +36,14 @@ export class RutinaService {
   }
 
   // Método para obtener todas las rutinas de un usuario específico
-  async obtenerRutinasPorUsuario(usuarioId: string) {
+  async obtenerRutinasPorUsuario(usuarioId: string): Promise<Rutina[]> {
+    console.log("RUTINA SERVICE -> Obteniendo rutinas para usuarioId:", usuarioId); // <-- Añade este console.log aquí
     try {
       const result = await this.baseDatos.find({
         selector: { entidad: 'rutina', usuarioId }
       });
-      //  console.log('RUTINA.SERVICE -> Obtenidas rutinas')
+      console.log('RUTINA.SERVICE -> Obtenidas rutinas para usuarioId:', usuarioId)
+      console.log('RUTINA.SERVICE -> Las rutinas:', result.docs)
       return result.docs;
     } catch (err) {
       //  console.error('RUTINA.SERVICE -> Error al obtener rutinas:', err);
@@ -78,7 +80,7 @@ export class RutinaService {
     }
   }
 
-  // Método para obtener un día específico de una rutina por su nombre
+  /* // Método para obtener un día específico de una rutina por su nombre
   async obtenerDiaRutinaPorNombre(rutinaId: string, diaNombre: string): Promise<DiaRutina> {
     try {
       const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
@@ -92,6 +94,22 @@ export class RutinaService {
       console.error('Error al obtener el día de la rutina por nombre:', err);
       throw err;
     }
+  } */
+
+  // Método para obtener un día específico de una rutina por su ID
+  async obtenerDiaRutinaPorId(rutinaId: string, diaRutinaId: string): Promise<DiaRutina> {
+    try {
+      const rutina = await this.obtenerRutinaPorId(rutinaId); // Obtener la rutina completa
+      const diaRutina = rutina.dias.find((dia: DiaRutina) => dia._id === diaRutinaId); // Busca por _id
+      if (diaRutina) {
+        return diaRutina; // Retorna el día de la rutina que coincide con el ID
+      } else {
+        throw new Error('RUTINA SERVICE -> Día no encontrado en la rutina');
+      }
+    } catch (err) {
+      console.error(' RUTINA SERVICE -> Error al obtener el día de la rutina por ID:', err);
+      throw err;
+    }
   }
 
   // Método para obtener un día específico de una rutina por el índice del día
@@ -101,10 +119,10 @@ export class RutinaService {
       if (rutina.dias && rutina.dias[diaIndex]) {
         return rutina.dias[diaIndex]; // Retornamos el día de la rutina correspondiente al índice
       } else {
-        throw new Error('Día no encontrado en la rutina');
+        throw new Error('RUTINA SERVICE -> Día no encontrado en la rutina');
       }
     } catch (err) {
-      console.error('Error al obtener el día de la rutina:', err);
+      console.error('RUTINA SERVICE -> Error al obtener el día de la rutina:', err);
       throw err;
     }
   }

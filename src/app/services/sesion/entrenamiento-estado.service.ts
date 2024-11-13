@@ -6,6 +6,7 @@ interface EntrenamientoState {
   rutinaId?: string;
   diaRutinaId?: string;
   descripcion?: string;
+  diaRutinaNombre?:string;
 }
 
 @Injectable({
@@ -20,12 +21,13 @@ export class EntrenamientoEstadoService {
     console.log('Estado inicial del entrenamiento:', this.entrenamientoState.value);
   }
 
-  comenzarEntrenamiento(rutinaId: string, diaRutinaId: string, descripcion: string) {
+  comenzarEntrenamiento(rutinaId: string, diaRutinaId: string, descripcion: string, diaRutinaNombre:string) {
     const newState: EntrenamientoState = {
       enProgreso: true,
       rutinaId,
       diaRutinaId,
-      descripcion
+      descripcion,
+      diaRutinaNombre,
     };
     console.log('Intentando iniciar entrenamiento con datos:', newState);
 

@@ -56,22 +56,19 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.usuarioSubscription = this.authService.usuarioLogeado$.subscribe(usuario => {
       this.usuarioLogeado = usuario;
       if (this.usuarioLogeado) {
-        // Cargar las rutinas cada vez que cambia el usuario logueado
+        console.log("Usuario logueado en Tab1Page:", this.usuarioLogeado); // Verifica el usuario cargado
         this.rutinaService.cargarRutinas();
-        // Cargar los ejercicios para tener los nombres disponibles
         this.cargarEjercicios();
       } else {
-        // Si no hay usuario logueado, vaciar la lista de rutinas
         this.rutinas = [];
       }
     });
 
     // Suscribirse a cambios en las rutinas almacenadas
     this.rutinaSubscription = this.rutinaService.rutinas$.subscribe(rutinas => {
-      // Filtrar solo las rutinas del usuario logueado
       if (this.usuarioLogeado) {
         this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
-        this.ordenarRutinas(); // Ordenar las rutinas después de filtrarlas
+        console.log("Rutinas filtradas para usuario Tab1Page :", this.rutinas); this.ordenarRutinas();
       } else {
         this.rutinas = [];
       }
@@ -125,17 +122,18 @@ export class Tab1Page implements OnInit, OnDestroy {
     const numeroRutina = this.rutinas.length + 1; // Definir el número de la nueva rutina
     const nuevaRutina: Rutina = {
       _id: uuidv4(), // Generar un _id único con uuidv4()
-      nombre: `Rutina ${numeroRutina}`,
-      dias: [dia], // Añadir el día creado a la nueva rutina
-      usuarioId: this.usuarioLogeado?._id || '',
       entidad: 'rutina',
+      nombre: `Rutina ${numeroRutina}`,
+      usuarioId: this.usuarioLogeado?._id || '',
+      descripcion:'',
+      dias: [dia], // Añadir el día creado a la nueva rutina
       timestamp: new Date().toISOString()
     };
 
     // Agregar la rutina y refrescar la lista tras confirmación de éxito
     this.rutinaService.agregarRutina(nuevaRutina).then(() => {
-      this.rutinas.push(nuevaRutina); // Añadir la rutina a la lista local
-      console.log('Nueva rutina creada con éxito');
+      this.rutinas = [...this.rutinas, nuevaRutina];
+      console.log('Nueva rutina creada y añadida a la lista local');
       this.rutinaService.cargarRutinas(); // Refrescar las rutinas
     });
   }

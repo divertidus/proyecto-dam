@@ -13,6 +13,7 @@ export interface HistorialEntrenamiento {
 export interface DiaEntrenamiento {
   _id?: string;
   fechaEntrenamiento: string;
+  diaEntrenamientoNombre:string;
   diaRutinaId: string;
   nombreRutinaEntrenamiento: string;
   descripcion: string;

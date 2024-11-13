@@ -14,7 +14,8 @@ ion-content {
 
 .ejercicio-card {
   width: 100%;
-  height: 250px; /* Altura fija para uniformidad */
+  height: 250px;
+  /* Altura fija para uniformidad */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -32,7 +33,8 @@ ion-content {
   font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
-  min-height: 40px; /* Ajuste de altura mínima para títulos */
+  min-height: 40px;
+  /* Ajuste de altura mínima para títulos */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +55,8 @@ ion-content {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex-grow: 1; /* Ocupar espacio extra para mantener uniformidad */
+  flex-grow: 1;
+  /* Ocupar espacio extra para mantener uniformidad */
   justify-content: center;
 }
 
@@ -80,9 +83,10 @@ ion-content {
 .descripcion-ejercicio {
   font-size: 0.85rem;
   color: var(--ion-color-dark);
-  margin: 4px 0;
+  margin: 8px 0;
+  /* Mayor margen superior para mejor distribución */
   text-align: center;
-  max-height: 60px;
+  max-height: 80px;
   overflow: auto;
 }
 
@@ -101,9 +105,18 @@ ion-content {
 .detalle-contenido {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  /* Centramos el contenido verticalmente cuando no hay botones */
   height: 100%;
 }
+
+
+.detalle-contenido {
+  &.personalizado {
+    justify-content: space-between;
+  }
+}
+
 
 .tarjeta-seleccionada {
   border: 2px solid var(--ion-color-primary);

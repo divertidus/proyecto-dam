@@ -21,7 +21,7 @@ import { VistaEntrenoComponent } from "../../componentes/shared/vista-entreno/vi
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonModal, IonButton, IonContent, NgIf, NgFor, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent, VistaEntrenoComponent],
+  imports: [IonAlert, IonButton, IonContent, NgIf, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent, VistaEntrenoComponent],
   providers: [ModalController, PopoverController]
 })
 export class Tab3Page implements OnInit {
@@ -30,7 +30,7 @@ export class Tab3Page implements OnInit {
   ultimoEntrenamiento: DiaEntrenamiento | null = null; // Guardar el último entrenamiento
 
   entrenamientoEnProgreso = false;
-  entrenamientoDetalles: { rutinaId: string; diaRutinaId: string; descripcion: string } | null = null;
+  entrenamientoDetalles: { rutinaId: string; diaRutinaId: string; descripcion: string; diaRutinaNombre: string } | null = null;
 
   constructor(
     private authService: AuthService,
@@ -61,7 +61,8 @@ export class Tab3Page implements OnInit {
           this.entrenamientoDetalles = {
             rutinaId: estadoEntrenamiento.rutinaId!,
             diaRutinaId: estadoEntrenamiento.diaRutinaId!,
-            descripcion: estadoEntrenamiento.descripcion
+            descripcion: estadoEntrenamiento.descripcion,
+            diaRutinaNombre: estadoEntrenamiento.diaRutinaNombre
           };
         }
 
@@ -72,7 +73,8 @@ export class Tab3Page implements OnInit {
             this.entrenamientoDetalles = {
               rutinaId: estado.rutinaId!,
               diaRutinaId: estado.diaRutinaId!,
-              descripcion: estado.descripcion
+              descripcion: estado.descripcion,
+              diaRutinaNombre: estado.diaRutinaNombre
             };
             console.log("Datos recibidos en Tab3Page para VistaEntrenoComponent:", this.entrenamientoDetalles);
           } else {
@@ -91,22 +93,26 @@ export class Tab3Page implements OnInit {
   }
 
   async onComenzarButtonClick() {
+    console.log("onComenzarButtonClick -> Comenzando entrenamiento");
     await this.cargarUltimoEntrenamiento();
 
     if (!this.usuarioLogeado || this.rutinas.length === 0) {
-      console.error('No hay usuario logueado o no hay rutinas disponibles.');
+      console.error("onComenzarButtonClick -> No hay usuario logueado o no hay rutinas disponibles.");
       return;
     }
 
     if (this.rutinas.length === 1) {
       const rutina: Rutina = this.rutinas[0];
+      console.log("onComenzarButtonClick -> Seleccionada única rutina:", rutina);
       this.sugerirProximoDia(rutina);
     } else {
+      console.log("onComenzarButtonClick -> Mostrando selector de rutina");
       await this.mostrarSelectorDeRutina();
     }
   }
 
   async mostrarSelectorDeRutina() {
+    console.log("mostrarSelectorDeRutina -> Mostrando rutinas para selección");
     const alert = await this.alertController.create({
       header: 'Selecciona una rutina',
       inputs: this.rutinas.map((rutina, index) => ({
@@ -123,6 +129,7 @@ export class Tab3Page implements OnInit {
         {
           text: 'Aceptar',
           handler: (rutinaSeleccionada: Rutina) => {
+            console.log("mostrarSelectorDeRutina -> Rutina seleccionada:", rutinaSeleccionada);
             this.sugerirProximoDia(rutinaSeleccionada);
           },
         },
@@ -133,6 +140,7 @@ export class Tab3Page implements OnInit {
   }
 
   async sugerirProximoDia(rutina: Rutina) {
+    console.log("sugerirProximoDia -> Evaluando próximo día para rutina:", rutina);
     const siguienteDia = this.obtenerProximoDia(rutina);
 
     const alert = await this.alertController.create({
@@ -152,22 +160,25 @@ export class Tab3Page implements OnInit {
         {
           text: 'Aceptar',
           handler: (diaSeleccionado: DiaRutina) => {
+            console.log("sugerirProximoDia -> Día seleccionado:", diaSeleccionado);
+
             if (rutina && diaSeleccionado) {
-              console.log('Datos para iniciar entrenamiento:', {
+              console.log('sugerirProximoDia -> Datos para iniciar entrenamiento:', {
                 rutinaId: rutina._id,
-                diaRutinaId: diaSeleccionado.diaNombre,
+                diaRutinaId: diaSeleccionado._id,
                 descripcion: diaSeleccionado.descripcion
               });
 
-              // Enviar los datos al estado global
               this.entrenamientoEstadoService.comenzarEntrenamiento(
                 rutina._id,
-                diaSeleccionado.diaNombre,
-                diaSeleccionado.descripcion
+                diaSeleccionado._id!,
+                diaSeleccionado.descripcion,
+                diaSeleccionado.diaNombre
               );
-
-              // Confirmación en consola de que la información se envió
-              console.log("Estado actualizado para el entrenamiento en progreso:", this.entrenamientoEstadoService.obtenerEstadoActual());
+              console.log("sugerirProximoDia -> Entrenamiento comenzado:", {
+                rutinaId: rutina._id,
+                diaRutinaId: diaSeleccionado._id
+              });
             }
           },
         },
@@ -178,22 +189,35 @@ export class Tab3Page implements OnInit {
   }
 
   obtenerProximoDia(rutina: Rutina): DiaRutina {
+    console.log("obtenerProximoDia -> Rutina evaluada:", rutina);
+
     if (!this.ultimoEntrenamiento) {
+      console.log("obtenerProximoDia -> No hay último entrenamiento, seleccionando primer día.");
       return rutina.dias[0];
     }
 
     const indiceUltimoDia = rutina.dias.findIndex(d => d.diaNombre === this.ultimoEntrenamiento?.diaRutinaId);
+    console.log("obtenerProximoDia -> Índice último día:", indiceUltimoDia);
+
     return indiceUltimoDia === -1 || indiceUltimoDia === rutina.dias.length - 1
       ? rutina.dias[0]
       : rutina.dias[indiceUltimoDia + 1];
   }
 
   async cargarUltimoEntrenamiento() {
+    console.log("cargarUltimoEntrenamiento -> Cargando último entrenamiento");
+
     try {
-      if (!this.usuarioLogeado) return;
+      if (!this.usuarioLogeado) {
+        console.log("cargarUltimoEntrenamiento -> No hay usuario logueado");
+        return;
+      }
 
       const historiales = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioLogeado._id!);
+      console.log("cargarUltimoEntrenamiento -> Historiales obtenidos:", historiales);
+
       if (historiales.length === 0) {
+        console.log("cargarUltimoEntrenamiento -> No hay historiales disponibles.");
         this.ultimoEntrenamiento = null;
         return;
       }
@@ -201,10 +225,11 @@ export class Tab3Page implements OnInit {
       const entrenamientosOrdenados = historiales.flatMap(h => h.entrenamientos).sort(
         (a, b) => new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
       );
+
       this.ultimoEntrenamiento = entrenamientosOrdenados[0];
+      console.log("cargarUltimoEntrenamiento -> Último entrenamiento cargado:", this.ultimoEntrenamiento);
     } catch (error) {
-      console.error('Error al cargar el último entrenamiento:', error);
+      console.error("cargarUltimoEntrenamiento -> Error al cargar el último entrenamiento:", error);
     }
   }
 }
-
