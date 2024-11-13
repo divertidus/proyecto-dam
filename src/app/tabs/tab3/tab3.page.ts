@@ -190,15 +190,17 @@ export class Tab3Page implements OnInit {
 
   obtenerProximoDia(rutina: Rutina): DiaRutina {
     console.log("obtenerProximoDia -> Rutina evaluada:", rutina);
-
+  
     if (!this.ultimoEntrenamiento) {
       console.log("obtenerProximoDia -> No hay último entrenamiento, seleccionando primer día.");
       return rutina.dias[0];
     }
-
-    const indiceUltimoDia = rutina.dias.findIndex(d => d.diaNombre === this.ultimoEntrenamiento?.diaRutinaId);
+  
+    // Buscar el índice del día de la última sesión usando _id en lugar de diaNombre
+    const indiceUltimoDia = rutina.dias.findIndex(d => d._id === this.ultimoEntrenamiento?.diaRutinaId);
     console.log("obtenerProximoDia -> Índice último día:", indiceUltimoDia);
-
+  
+    // Retornar el siguiente día, o el primero si ya está en el último día
     return indiceUltimoDia === -1 || indiceUltimoDia === rutina.dias.length - 1
       ? rutina.dias[0]
       : rutina.dias[indiceUltimoDia + 1];

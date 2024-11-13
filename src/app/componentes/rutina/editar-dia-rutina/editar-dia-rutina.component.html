@@ -1,4 +1,3 @@
-<!-- editar-dia-rutina.component.html -->
 <ion-header>
   <ion-toolbar>
     <ion-title>Editar {{ diaRutina.diaNombre }}</ion-title>
@@ -24,15 +23,14 @@
 
     <ion-list *ngIf="diaRutina.ejercicios && diaRutina.ejercicios.length > 0">
       <ion-card *ngFor="let ejercicio of diaRutina.ejercicios; let i = index">
-        <ion-card-header (click)="toggleExpandirEjercicio(ejercicio.ejercicioId)" class="card-header-compact">
+        <ion-card-header (click)="toggleExpandirEjercicio(ejercicio._id)" class="card-header-compact">
           <div class="ejercicio-titulo">
-            <strong>{{ i + 1 }}. {{ ejercicio.nombreEjercicio }} ({{ ejercicio.series }} x {{ ejercicio.repeticiones
-              }})</strong>
+            <strong>{{ i + 1 }}. {{ ejercicio.nombreEjercicio }} ({{ ejercicio.series }} x {{ ejercicio.repeticiones }})</strong>
           </div>
           <ion-icon
-            [name]="estadoExpandido[ejercicio.ejercicioId] ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+            [name]="estadoExpandido[ejercicio._id] ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
         </ion-card-header>
-        <ion-card-content *ngIf="estadoExpandido[ejercicio.ejercicioId]">
+        <ion-card-content *ngIf="estadoExpandido[ejercicio._id]">
           <p><strong>Series y Repeticiones:</strong> {{ ejercicio.series }} x {{ ejercicio.repeticiones }}</p>
           <p><strong>Tipo de Peso:</strong> {{ ejercicio.tipoPeso || 'No especificado' }}</p>
           <p><strong>Notas:</strong> {{ ejercicio.notas || 'Sin notas' }}</p>

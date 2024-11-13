@@ -52,17 +52,17 @@ export class EditarDiaRutinaComponent implements OnInit {
     });
   }
 
-  toggleExpandirEjercicio(ejercicioId: string) {
+  toggleExpandirEjercicio(_id: string) {
     // Si la tarjeta seleccionada ya está desplegada, simplemente la plegamos
-    if (this.estadoExpandido[ejercicioId]) {
-      this.estadoExpandido[ejercicioId] = false; // Plegar la tarjeta seleccionada
+    if (this.estadoExpandido[_id]) {
+      this.estadoExpandido[_id] = false; // Plegar la tarjeta seleccionada
     } else {
       // Plegar todas las tarjetas
       Object.keys(this.estadoExpandido).forEach(id => {
         this.estadoExpandido[id] = false;
       });
       // Desplegar solo la tarjeta seleccionada
-      this.estadoExpandido[ejercicioId] = true;
+      this.estadoExpandido[_id] = true;
     }
     // No marcamos cambios como realizados si solo se está desplegando o plegando tarjetas
   }
