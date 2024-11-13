@@ -1,47 +1,76 @@
-/* user-form.component.scss */
+/* Avatar seleccionado en la vista inicial */
+.avatar-seleccionado {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0; /* Añade espacio arriba y abajo */
+}
 
-/* Tarjeta del formulario */
-ion-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* Imagen del avatar seleccionada, aumentada */
+.avatar-imagen-seleccionado {
+    width: 150px; /* Tamaño más grande */
+    height: 150px;
+    border-radius: 50%;
+}
+
+/* Icono de editar superpuesto */
+.icono-editar {
+    position: absolute;
+    bottom: 0px; /* Superpone un poco el icono en la imagen */
+    right: 0px;
+    font-size: 24px;
     background-color: #ffffff;
+    border-radius: 50%;
+    padding: 4px;
+    color: #007bff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-ion-card-header {
-    background-color: #3e8e41;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding: 15px;
-    text-align: center;
+/* Contenedor del Swiper */
+.avatar-galeria {
+    width: 100%;
+    max-width: 220px;
+    
+    margin: 30px auto 20px; /* Añade más espacio en la parte superior */
 }
 
-ion-card-title {
-    color: #ffffff;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-/* Contenido de la tarjeta */
-ion-card-content {
-    padding: 20px;
-}
-
-ion-item {
-    --background: #f9f9f9;
-    border-radius: 8px;
-    margin-bottom: 12px;
-}
-
-/* Etiquetas de los campos */
-ion-label {
-    color: #4a4a4a;
-}
-
-/* Botón de "Guardar Usuario" */
-ion-button {
-    background-color: #3e8e41;
-    color: #ffffff;
-    font-weight: bold;
+/* Configuración de cuadrícula con elementos centrados */
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    grid-template-rows: repeat(2, 1fr); /* 2 filas */
+    gap: 10px;
     margin-top: 20px;
-    --border-radius: 8px;
+    justify-items: center;
+    align-items: center;
+}
+
+/* Estilo de las imágenes de los avatares */
+.avatar-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: block;
+}
+
+/* Efecto de resaltado sin cambiar el tamaño del avatar seleccionado */
+.avatar-item.selected {
+    box-shadow: 0 0 0 2px #007bff;
+    border-radius: 50%;
+}
+
+/* Centrar y espaciar los botones de acción */
+.botones-accion {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px; /* Añade un poco de espacio arriba de los botones */
+}
+
+.botones-accion ion-button {
+    flex: 1;
+    max-width: 100px;
+    text-align: center;
 }

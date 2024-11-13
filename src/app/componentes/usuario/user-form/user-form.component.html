@@ -1,24 +1,52 @@
-<!-- componentes/user-form/user-form.component.html -->
 <ion-card>
-  <ion-card-header>
-    <ion-card-title>Nuevo Usuario</ion-card-title>
-  </ion-card-header>
 
   <ion-card-content>
+    <!-- Campo de Nombre -->
     <ion-item>
       <ion-label position="floating">Nombre</ion-label>
-      <ion-input [(ngModel)]="nombre" type="text" name="nombre"></ion-input>
+      <ion-input [(ngModel)]="nombre" type="text" name="nombre" required></ion-input>
     </ion-item>
 
+    <!-- Campo de Email -->
     <ion-item>
       <ion-label position="floating">Email</ion-label>
-      <ion-input [(ngModel)]="email" type="email" name="email"></ion-input>
+      <ion-input [(ngModel)]="email" type="email" name="email" required></ion-input>
     </ion-item>
 
-    <ion-button expand="block" (click)="guardarUsuario()" class="ion-margin-top">
+    <!-- Avatar Seleccionado con ícono de editar superpuesto -->
+    <div *ngIf="!modoSeleccionAvanzado" class="avatar-seleccionado">
+      <img [src]="avatarActual" alt="Avatar Seleccionado" class="avatar-imagen-seleccionado" />
+      <!-- Icono de editar superpuesto -->
+      <ion-icon name="create-outline" class="icono-editar" (click)="activarModoSeleccion()"></ion-icon>
+    </div>
+
+    <!-- Galería de selección de avatares con Swiper -->
+    <div class="swiper" #swiperContainer *ngIf="modoSeleccionAvanzado">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let avatarPagina of avatarPaginas">
+          <div class="avatar-grid">
+            <div *ngFor="let avatar of avatarPagina; let i = index" class="avatar-item"
+              [class.selected]="avatares.indexOf(avatar) === avatarSeleccionadoIndex"
+              (click)="seleccionarAvatar(avatares.indexOf(avatar))">
+              <img [src]="avatar" alt="Avatar" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de Cancelar y Aceptar para el modo selección -->
+    <!-- Botones de Cancelar y Aceptar para el modo selección -->
+    <!-- Botones de Cancelar y Aceptar para el modo selección -->
+    <div class="botones-accion" *ngIf="modoSeleccionAvanzado">
+      <ion-button color="danger" (click)="cancelarSeleccion()">Cancelar</ion-button>
+      <ion-button color="primary" [disabled]="avatarSeleccionadoIndex === null"
+        (click)="confirmarSeleccion()">Aceptar</ion-button>
+    </div>
+
+    <!-- Botón de Guardar Usuario (oculto durante la selección de avatar) -->
+    <ion-button *ngIf="!modoSeleccionAvanzado" expand="block" (click)="guardarUsuario()" class="ion-margin-top">
       Guardar Usuario
     </ion-button>
-
-
   </ion-card-content>
 </ion-card>

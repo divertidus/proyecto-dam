@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton } from '@ionic/angular/standalone';
 import { UserFormComponent } from "../../componentes/usuario/user-form/user-form.component";
 import { Router } from '@angular/router';
+import { ElegirAvatarComponent } from "../../componentes/usuario/elegir-avatar/elegir-avatar.component";
 
 
 @Component({

@@ -1,0 +1,29 @@
+<ion-content>
+  <!-- Vista del avatar seleccionado inicialmente -->
+  <div *ngIf="!modoSeleccionAvanzado" class="avatar-seleccionado">
+    <img [src]="avatarActual" alt="Avatar Seleccionado" />
+    <ion-button expand="block" (click)="activarModoSeleccion()">Cambiar Avatar</ion-button>
+  </div>
+
+  <!-- Galería de selección de avatares con paginación -->
+  <div *ngIf="modoSeleccionAvanzado" class="avatar-galeria">
+    <div class="avatar-grid">
+      <div *ngFor="let avatar of avataresPaginaActual; let i = index" class="avatar-item"
+        [class.selected]="i + (paginaActual * avataresPorPagina) === avatarSeleccionadoIndex"
+        (click)="seleccionarAvatar(i + (paginaActual * avataresPorPagina))">
+        <img [src]="avatar" alt="Avatar {{ i + 1 }}" />
+      </div>
+    </div>
+
+    <!-- Botones para cambiar página y confirmar selección -->
+    <div class="paginacion-controles">
+      <ion-button fill="clear" [disabled]="paginaActual === 0" (click)="paginaAnterior()">Anterior</ion-button>
+      <ion-button fill="clear" [disabled]="paginaActual === totalPaginas - 1"
+        (click)="paginaSiguiente()">Siguiente</ion-button>
+    </div>
+
+    <ion-button expand="block" color="danger" (click)="cancelarSeleccion()">Cancelar</ion-button>
+    <ion-button expand="block" color="primary" [disabled]="avatarSeleccionadoIndex === null"
+      (click)="confirmarSeleccion()">Aceptar</ion-button>
+  </div>
+</ion-content>

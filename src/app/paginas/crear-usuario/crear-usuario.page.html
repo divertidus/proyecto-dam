@@ -1,7 +1,6 @@
-<!-- paginas/crear-usuario/crear-usuario.page.html -->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>crear-usuario</ion-title>
+    <ion-title>Crear usuario</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
@@ -9,10 +8,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!--  Llamada al componente para nuevo usuario -->
-  <!--  Ese (eventoUsuarioAñadido)="handleUserAdded() se corresponde con el 
-      @Output() eventoUsuarioAñadido = new EventEmitter<void>(); del app-user-form
-      que se activa cuando en ese componente se llama al emit del userAdded
-      En este caso cuando se guarda un nuevo elemento. -->
+  <!-- Componente para nuevo usuario, que a su vez incluye el componente de avatar -->
   <app-user-form (eventoUsuarioAñadido)="manejadorUsuarioAdded()"></app-user-form>
 </ion-content>

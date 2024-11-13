@@ -1,0 +1,43 @@
+.avatar-seleccionado {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .avatar-seleccionado img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+  }
+  
+  .avatar-galeria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 20px;
+  }
+  
+  .avatar-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: border 0.3s;
+  }
+  
+  .avatar-item.selected img {
+    border: 3px solid #3880ff;
+  }
+  
+  .paginacion-controles {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+  }
+  
