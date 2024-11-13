@@ -274,9 +274,9 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
+          ejercicioPlanId: ejerciciosPredefinidos['Remo Cerrado (Cuernos)'],
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
+          nombreEjercicioRealizado: 'Remo Cerrado (Cuernos)',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, peso: 50 },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, peso: 50 },
@@ -287,9 +287,9 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
+          ejercicioPlanId: ejerciciosPredefinidos['Martillo'],
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Martillo (Mancuernas)',
+          nombreEjercicioRealizado: 'Martillo',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 8, peso: 20 },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 8, peso: 20 },
@@ -303,9 +303,9 @@ export class ReiniciarDatosService {
 
       const dia2Entrenamiento1 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'],
+          ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado'],
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
+          nombreEjercicioRealizado: 'Press Banco Tumbado',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, peso: 60 },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, peso: 60 },
