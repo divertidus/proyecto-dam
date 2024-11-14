@@ -168,7 +168,10 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   private async crearEjercicioRealizado(ejercicioPlan: EjercicioPlan, rutinaId: string) {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ejercicioPlan.ejercicioId);
-    const ultimoEjercicio = this.usuarioId ? await this.historialService.obtenerUltimoEjercicioRealizado(this.usuarioId, ejercicioPlan.ejercicioId, rutinaId) : null;
+    const ultimoEjercicio = this.usuarioId ? await this.historialService.obtenerUltimoEjercicioRealizado(this.usuarioId,
+      ejercicioPlan.ejercicioId,
+      rutinaId,
+      this.diaRutinaId) : null;
 
     const seriesReal: SerieReal[] = Array.from({ length: ejercicioPlan.series }).map((_, index) => {
       return {
@@ -314,7 +317,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
     const nuevoDiaEntrenamiento: DiaEntrenamiento = {
       _id: uuidv4(),
-      rutinaId:this.rutinaId,
+      rutinaId: this.rutinaId,
       fechaEntrenamiento: this.inicioEntrenamiento?.toISOString() || new Date().toISOString(),
       nombreRutinaEntrenamiento: this.nombreRutinaEntrenamiento || 'Rutina sin nombre',
       diaRutinaId: this.diaRutinaId!,
@@ -488,25 +491,25 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   marcarSerieCompletada(ejercicioRealizadoIndex: number, serieRealIndex: number) {
     console.log(`Método marcarSerieCompletada llamado para ejercicio ${ejercicioRealizadoIndex}, serie ${serieRealIndex}`);
-  
+
     const ejercicioRealizado = this.ejerciciosRealizados[ejercicioRealizadoIndex];
     const serieReal = ejercicioRealizado.seriesReal[serieRealIndex];
-  
+
     // Validar que los campos necesarios estén completos y mostrar un mensaje de alerta en caso de error
     if (!serieReal.repeticiones || serieReal.peso === undefined || serieReal.peso <= 0) {
       console.warn("La serie necesita repeticiones y peso definidos para completarse.");
       return;
     }
-  
+
     // Marcar la serie como completada y bloquear su edición
     serieReal.completado = true;
     serieReal.enEdicion = false;
-  
+
     // Si es la siguiente serie en la secuencia, incrementa el contador de series completadas
     if (serieRealIndex === ejercicioRealizado.seriesCompletadas) {
       ejercicioRealizado.seriesCompletadas++;
     }
-  
+
     // Si todas las series están completadas, marca el ejercicio como completado y ciérralo
     if (ejercicioRealizado.seriesCompletadas === ejercicioRealizado.seriesTotal) {
       ejercicioRealizado.completado = true;
@@ -515,7 +518,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     } else {
       console.log(`Ejercicio ${ejercicioRealizadoIndex} aún abierto. Estado de 'abierto':`, ejercicioRealizado.abierto);
     }
-  
+
     // **Actualizar el peso de la siguiente serie** si es la siguiente en la secuencia
     if (serieRealIndex + 1 < ejercicioRealizado.seriesReal.length) {
       const siguienteSerieReal = ejercicioRealizado.seriesReal[serieRealIndex + 1];
@@ -524,14 +527,14 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         console.log(`Peso de la serie ${serieRealIndex + 1} actualizado a ${serieReal.peso} kg`);
       }
     }
-  
+
     // Forzar la detección de cambios para asegurar que el HTML refleje el estado actualizado
     this.changeDetectorRef.detectChanges();
   }
-  
+
   editarSerie(ejercicioRealizadoIndex: number, serieRealIndex: number) {
     const serieReal = this.ejerciciosRealizados[ejercicioRealizadoIndex].seriesReal[serieRealIndex];
-  
+
     if (serieReal.completado) {
       // Habilitar la edición
       serieReal.enEdicion = true;
@@ -545,11 +548,11 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       };
     }
     serieReal.completado = false;
-  
+
     // Asegurar que ejerciciosCompletados se actualice
     this.actualizarEjerciciosCompletados();
   }
-  
+
   toggleEjercicio(index: number) {
     // Cerrar todos los ejercicios menos el seleccionado
     this.ejerciciosRealizados.forEach((ejercicioRealizado, i) => {
@@ -557,20 +560,20 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         ejercicioRealizado.abierto = false;
       }
     });
-  
+
     // Alternar el estado abierto/cerrado del ejercicio seleccionado sin importar su estado de completado
     this.ejerciciosRealizados[index].abierto = !this.ejerciciosRealizados[index].abierto;
   }
-  
+
   private actualizarEjerciciosCompletados() {
     this.ejerciciosCompletados = this.ejerciciosRealizados.filter(ejercicioRealizado => ejercicioRealizado.seriesCompletadas >= ejercicioRealizado.seriesTotal).length;
     this.totalEjercicios = this.ejerciciosRealizados.length;
   }
-  
+
   anadirSerieExtra(ejercicioRealizadoIndex: number) {
     const ejercicioRealizado = this.ejerciciosRealizados[ejercicioRealizadoIndex];
     const ultimaSerieReal = ejercicioRealizado.seriesReal[ejercicioRealizado.seriesReal.length - 1];
-  
+
     const nuevaSerieReal: SerieReal = {
       _id: uuidv4(),
       numeroSerie: ejercicioRealizado.seriesReal.length + 1,
@@ -582,14 +585,14 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       enEdicion: true,  // La nueva serie estará en edición
       notas: 'Serie extra'
     };
-  
+
     // Añadir la serie extra al array `seriesReal` sin afectar `seriesTotal`
     ejercicioRealizado.seriesReal.push(nuevaSerieReal);
-  
+
     // Actualizar el estado general de ejercicios completados
     this.actualizarEjerciciosCompletados();
   }
-  
+
   async confirmarEliminarUltimaSerie(ejercicioRealizadoIndex: number) {
     const alert = await this.alertController.create({
       header: 'Eliminar Serie',
@@ -609,14 +612,14 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     });
     await alert.present();
   }
-  
+
   eliminarUltimaSerie(ejercicioRealizadoIndex: number) {
     const ejercicioRealizado = this.ejerciciosRealizados[ejercicioRealizadoIndex];
-  
+
     // Solo permite eliminar si hay series extras
     if (ejercicioRealizado.seriesReal.length > ejercicioRealizado.seriesTotal) {
       ejercicioRealizado.seriesReal.pop(); // Elimina la última serie
-  
+
       // Decrementa el contador de series completadas si la serie eliminada estaba completa
       if (ejercicioRealizado.seriesCompletadas > ejercicioRealizado.seriesTotal) {
         ejercicioRealizado.seriesCompletadas--;
@@ -624,7 +627,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       }
     }
   }
-  
+
   mostrarBotonAnadirSerieExtra(ejercicioRealizadoIndex: number): boolean {
     const ejercicioRealizado = this.ejerciciosRealizados[ejercicioRealizadoIndex];
     return ejercicioRealizado.seriesReal.every(serieReal => !serieReal.enEdicion);

@@ -116,27 +116,27 @@ export class HistorialService {
 
   /////////////////////////  OTROS HISTORIAL   //////////////////////////////////
 
-  async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioPlanId: string, rutinaId: string): Promise<EjercicioRealizado | null> {
+  async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioPlanId: string, rutinaId: string, diaRutinaId: string): Promise<EjercicioRealizado | null> {
     try {
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
-  
+
       if (historiales.length === 0) return null;
-  
+
       // Aplanar todos los entrenamientos y ordenar por fecha
       const todosLosEntrenamientos = historiales
         .flatMap(historial => historial.entrenamientos)
         .sort((a, b) =>
           new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
         );
-  
-      // Buscar el ejercicioRealizado más reciente con el ejercicioPlanId y rutinaId dados
+
+      // Buscar el ejercicioRealizado más reciente con el ejercicioPlanId, rutinaId, y diaRutinaId dados
       for (const diaEntrenamiento of todosLosEntrenamientos) {
-        // Comprobar que el diaEntrenamiento pertenece a la misma rutina
-        if (diaEntrenamiento.rutinaId === rutinaId) {
+        // Comprobar que el diaEntrenamiento pertenece a la misma rutina y día
+        if (diaEntrenamiento.rutinaId === rutinaId && diaEntrenamiento.diaRutinaId === diaRutinaId) {
           const ejercicioRealizadoEncontrado = diaEntrenamiento.ejerciciosRealizados.find(
             (ejercicioRealizado) => ejercicioRealizado.ejercicioPlanId === ejercicioPlanId
           );
-  
+
           if (ejercicioRealizadoEncontrado) {
             console.log('Detalles del ejercicioRealizado encontrado:', {
               ejercicioPlanId: ejercicioRealizadoEncontrado.ejercicioPlanId,
@@ -148,14 +148,15 @@ export class HistorialService {
           }
         }
       }
-  
+
       return null; // No se encontró el ejercicio en el historial
     } catch (error) {
       console.error('Error al obtener el último ejercicioRealizado:', error);
       return null;
     }
   }
-  
+
+
 
   ///////////////////////// SERIES /////////////////////////// 
 
