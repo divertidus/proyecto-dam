@@ -74,6 +74,6 @@ export class UltimoEntrenoComponent implements OnInit {
     );
 
     this.ultimoEntrenamiento = todosLosEntrenamientos[0];
-    console.log('Último entrenamiento actualizado:', this.ultimoEntrenamiento);
+    // console.log('Último entrenamiento actualizado:', this.ultimoEntrenamiento);
   }
 }

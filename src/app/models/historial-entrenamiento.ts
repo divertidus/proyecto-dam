@@ -12,6 +12,7 @@ export interface HistorialEntrenamiento {
 // Modelo de Día de Entrenamiento (Registro Real)
 export interface DiaEntrenamiento {
   _id?: string;
+  rutinaId:string;
   fechaEntrenamiento: string;
   diaEntrenamientoNombre:string;
   diaRutinaId: string;

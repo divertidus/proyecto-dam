@@ -1,13 +1,13 @@
 <ion-content class="content-adjusted" fullscreen="true">
   <ion-list class="exercise-list-custom">
-    <ion-item *ngFor="let ejercicio of ejercicios; let i = index" lines="none">
+    <ion-item *ngFor="let ejercicioRealizado of ejerciciosRealizados; let i = index" lines="none">
       <ion-card class="exercise-card-custom"
-        [ngClass]="{'exercise-card-completed': ejercicio.seriesCompletadas >= ejercicio.seriesTotal}">
+        [ngClass]="{'exercise-card-completed': ejercicioRealizado.seriesCompletadas >= ejercicioRealizado.seriesTotal}">
         <ion-card-header (click)="toggleEjercicio(i)">
           <ion-card-title class="exercise-header">
-            <span class="exercise-title">{{ ejercicio.nombreEjercicio }}</span>
+            <span class="exercise-title">{{ ejercicioRealizado.nombreEjercicio }}</span>
             <span class="progress-container">
-              <span class="progress-indicator">{{ ejercicio.seriesCompletadas }} / {{ ejercicio.seriesTotal }}</span>
+              <span class="progress-indicator">{{ ejercicioRealizado.seriesCompletadas }} / {{ ejercicioRealizado.seriesTotal }}</span>
               <ion-icon name="create-outline" (click)="abrirNotas(i); $event.stopPropagation()"
                 class="edit-icon"></ion-icon>
             </span>
@@ -15,29 +15,29 @@
         </ion-card-header>
 
         <!-- Mover el contenido de la nota dentro de la sección desplegada -->
-        <ion-card-content *ngIf="ejercicio.abierto">
+        <ion-card-content *ngIf="ejercicioRealizado.abierto">
           <div class="exercise-container">
 
             <!-- Nota del ejercicio antes de comenzar las series -->
-            <p *ngIf="ejercicio.notas" class="exercise-note">Nota: {{ ejercicio.notas }}</p>
+            <p *ngIf="ejercicioRealizado.notas" class="exercise-note">Nota: {{ ejercicioRealizado.notas }}</p>
 
             <!--  <p *ngIf="ejercicio.anteriorVezEjercicioID">
               ID del ejercicio anterior: {{ ejercicio.anteriorVezEjercicioID }}
             </p> -->
 
-            <ng-container *ngFor="let serie of ejercicio.seriesReal; let j = index">
-              <div *ngIf="j <= ejercicio.seriesCompletadas">
+            <ng-container *ngFor="let serie of ejercicioRealizado.seriesReal; let j = index">
+              <div *ngIf="j <= ejercicioRealizado.seriesCompletadas">
                 <div class="exercise-row">
                   <span class="series-number">S{{ j + 1 }}.</span>
                   <ion-input type="number" [(ngModel)]="serie.repeticiones" class="reps-input" placeholder="10"
                     [disabled]="!serie.enEdicion"></ion-input>
 
                   <div class="weight-control">
-                    <button class="control-button minus" (click)="decrementarPeso(ejercicio, j)"
+                    <button class="control-button minus" (click)="decrementarPeso(ejercicioRealizado, j)"
                       [disabled]="!serie.enEdicion">-</button>
                     <ion-input type="number" [(ngModel)]="serie.peso" class="weight-input"
                       [placeholder]="serie.pesoAnterior?.toString() || '0'" [disabled]="!serie.enEdicion"></ion-input>
-                    <button class="control-button plus" (click)="incrementarPeso(ejercicio, j)"
+                    <button class="control-button plus" (click)="incrementarPeso(ejercicioRealizado, j)"
                       [disabled]="!serie.enEdicion">+</button>
                     <span *ngIf="serie.pesoAnterior" class="weight-label">({{ serie.pesoAnterior }} kg)</span>
                     <!-- Botón de notas solo visible en modo edición -->
@@ -52,7 +52,7 @@
                     </ion-button>
                     <!-- Icono de cubo de basura visible solo en la última serie extra -->
                     <ion-icon
-                      *ngIf="j === ejercicio.seriesReal.length - 1 && ejercicio.seriesReal.length > ejercicio.seriesTotal"
+                      *ngIf="j === ejercicioRealizado.seriesReal.length - 1 && ejercicioRealizado.seriesReal.length > ejercicioRealizado.seriesTotal"
                       name="trash-outline" class="delete-icon delete-right" (click)="confirmarEliminarUltimaSerie(i)">
                     </ion-icon>
                   </div>

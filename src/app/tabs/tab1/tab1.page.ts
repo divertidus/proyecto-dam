@@ -68,7 +68,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.rutinaSubscription = this.rutinaService.rutinas$.subscribe(rutinas => {
       if (this.usuarioLogeado) {
         this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
-        console.log("Rutinas filtradas para usuario Tab1Page :", this.rutinas); this.ordenarRutinas();
+      //  console.log("Rutinas filtradas para usuario Tab1Page :", this.rutinas); this.ordenarRutinas();
       } else {
         this.rutinas = [];
       }

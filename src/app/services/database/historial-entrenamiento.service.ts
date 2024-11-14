@@ -22,6 +22,7 @@ export class HistorialService {
 
   }
 
+  ///////////////////////// HISTORIAL /////////////////////////// 
 
   // Agregar o actualizar un historial de entrenamiento
   async agregarHistorial(historial: HistorialEntrenamiento): Promise<void> {
@@ -47,15 +48,7 @@ export class HistorialService {
     }
   }
 
-  // Método para emitir los historiales actualizados
-  private async emitirHistorialActualizado(usuarioId: string): Promise<void> {
-    const historialesActualizados = await this.obtenerHistorialesPorUsuario(usuarioId);
-    this.historialSubject.next([...historialesActualizados]);
-    console.log('Historiales emitidos en BehaviorSubject:', historialesActualizados);
-  }
-
   // Método para obtener todos los historiales de un usuario
-  // Obtener todos los historiales de un usuario
   async obtenerHistorialesPorUsuario(usuarioId: string): Promise<HistorialEntrenamiento[]> {
     try {
       const result = await this.baseDatos.find({
@@ -114,146 +107,55 @@ export class HistorialService {
     }
   }
 
-  // Obtener el último entrenamiento de un usuario
-  async obtenerUltimoEntrenamientoPorUsuario(usuarioId: string): Promise<DiaEntrenamiento | null> {
+  // Método para emitir los historiales actualizados
+  private async emitirHistorialActualizado(usuarioId: string): Promise<void> {
+    const historialesActualizados = await this.obtenerHistorialesPorUsuario(usuarioId);
+    this.historialSubject.next([...historialesActualizados]);
+    console.log('Historiales emitidos en BehaviorSubject:', historialesActualizados);
+  }
+
+  /////////////////////////  OTROS HISTORIAL   //////////////////////////////////
+
+  async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioPlanId: string, rutinaId: string): Promise<EjercicioRealizado | null> {
     try {
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
+  
       if (historiales.length === 0) return null;
-
-      historiales.sort(
-        (a, b) =>
-          new Date(b.entrenamientos[b.entrenamientos.length - 1].fechaEntrenamiento).getTime() -
-          new Date(a.entrenamientos[a.entrenamientos.length - 1].fechaEntrenamiento).getTime()
-      );
-
-      return historiales[0].entrenamientos[historiales[0].entrenamientos.length - 1] || null;
-    } catch (error) {
-      console.error('Error al obtener el último entrenamiento:', error);
-      return null;
-    }
-  }
-
-  // Obtener el último peso registrado de un ejercicio para un usuario
-  async obtenerUltimoPesoEjercicio(usuarioId: string, ejercicioId: string): Promise<number | null> {
-    try {
-      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
-
-      historiales.sort((a, b) =>
-        new Date(b.entrenamientos[0].fechaEntrenamiento).getTime() -
-        new Date(a.entrenamientos[0].fechaEntrenamiento).getTime()
-      );
-
-      for (const historial of historiales) {
-        for (const diaEntrenamiento of historial.entrenamientos) {
-          for (const ejercicioRealizado of diaEntrenamiento.ejerciciosRealizados) {
-            if (ejercicioRealizado.ejercicioPlanId === ejercicioId) {
-              const serieConPeso = ejercicioRealizado.series.find(serie => serie.peso !== undefined && serie.peso !== null);
-              if (serieConPeso) return serieConPeso.peso;
-            }
-          }
-        }
-      }
-
-      return null;
-    } catch (error) {
-      console.error('Error al obtener el último peso del ejercicio:', error);
-      return null;
-    }
-  }
-
-  // Función para obtener el peso anterior de un ejercicio específico para un usuario y rutina dados
-  async obtenerPesoAnterior(ejercicio: EjercicioRealizado, usuarioId: string, rutinaId: string): Promise<number[] | null> {
-    if (ejercicio.anteriorVezEjercicioID) {
-      try {
-        // Busca el ejercicio realizado previamente en base al ID referenciado y el usuario/rutina correspondientes
-        const entrenamientoAnterior = await this.baseDatos.find({
-          selector: {
-            _id: ejercicio.anteriorVezEjercicioID,
-            usuarioId: usuarioId,
-            rutinaId: rutinaId,
-            entidad: 'historialEntrenamiento'
-          }
-        });
-
-        if (entrenamientoAnterior.docs.length > 0 && entrenamientoAnterior.docs[0].series) {
-          return entrenamientoAnterior.docs[0].series.map((serie: any) => serie.peso); // Array de pesos anteriores
-        }
-      } catch (error) {
-        console.error('Error al obtener el peso anterior:', error);
-      }
-    }
-    return null; // Si no hay peso anterior registrado o no se encuentra el documento
-  }
-
-  // Método para actualizar pesos posteriores después de modificar una serie anterior
-  async actualizarPesosPosteriores(ejercicioId: string, usuarioId: string, nuevoPeso: number) {
-    try {
-      // Encuentra todas las sesiones posteriores que dependen del `anteriorVezEjercicioID` actualizado
-      const entrenamientosPosteriores = await this.baseDatos.find({
-        selector: {
-          entidad: 'historialEntrenamiento',
-          usuarioId: usuarioId,
-          'entrenamientos.ejercicios.ejercicioId': ejercicioId
-        }
-      });
-
-      for (const entrenamiento of entrenamientosPosteriores.docs) {
-        for (const diaEntrenamiento of entrenamiento.entrenamientos) {
-          for (const ejercicio of diaEntrenamiento.ejercicios) {
-            if (ejercicio.ejercicioId === ejercicioId && ejercicio.anteriorVezEjercicioID) {
-              // Actualizar el `pesoAnterior` de cada serie en la sesión posterior
-              ejercicio.series.forEach((serie: SerieReal) => {
-                serie.pesoAnterior = nuevoPeso;
-              });
-
-              // Guardar los cambios en la base de datos
-              await this.baseDatos.put(entrenamiento);
-              console.log(`Actualizado el peso anterior en entrenamiento posterior: ${entrenamiento._id}`);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error al actualizar pesos en entrenamientos posteriores:', error);
-    }
-  }
-
-  async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
-    try {
-      const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
-
-      if (historiales.length === 0) return null;
-
+  
       // Aplanar todos los entrenamientos y ordenar por fecha
       const todosLosEntrenamientos = historiales
         .flatMap(historial => historial.entrenamientos)
         .sort((a, b) =>
           new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
         );
-
-      // Buscar el ejercicio más reciente con el ejercicioId dado
+  
+      // Buscar el ejercicioRealizado más reciente con el ejercicioPlanId y rutinaId dados
       for (const diaEntrenamiento of todosLosEntrenamientos) {
-        const ejercicioRealizado = diaEntrenamiento.ejerciciosRealizados.find(
-          ejercicio => ejercicio.ejercicioPlanId === ejercicioId
-        );
-
-        if (ejercicioRealizado) {
-          console.log('Detalles del ejercicio encontrado:', {
-            ejercicioPlanId: ejercicioRealizado.ejercicioPlanId,
-            id: ejercicioRealizado._id,
-            nombre: ejercicioRealizado.nombreEjercicioRealizado,
-            series: ejercicioRealizado.series
-          });
-          return ejercicioRealizado; // Retorna el primer ejercicio encontrado en orden cronológico inverso
+        // Comprobar que el diaEntrenamiento pertenece a la misma rutina
+        if (diaEntrenamiento.rutinaId === rutinaId) {
+          const ejercicioRealizadoEncontrado = diaEntrenamiento.ejerciciosRealizados.find(
+            (ejercicioRealizado) => ejercicioRealizado.ejercicioPlanId === ejercicioPlanId
+          );
+  
+          if (ejercicioRealizadoEncontrado) {
+            console.log('Detalles del ejercicioRealizado encontrado:', {
+              ejercicioPlanId: ejercicioRealizadoEncontrado.ejercicioPlanId,
+              id: ejercicioRealizadoEncontrado._id,
+              nombre: ejercicioRealizadoEncontrado.nombreEjercicioRealizado,
+              series: ejercicioRealizadoEncontrado.series
+            });
+            return ejercicioRealizadoEncontrado; // Retorna el primer ejercicioRealizado encontrado en orden cronológico inverso
+          }
         }
       }
-
+  
       return null; // No se encontró el ejercicio en el historial
     } catch (error) {
-      console.error('Error al obtener el último ejercicio realizado:', error);
+      console.error('Error al obtener el último ejercicioRealizado:', error);
       return null;
     }
   }
+  
 
   ///////////////////////// SERIES /////////////////////////// 
 

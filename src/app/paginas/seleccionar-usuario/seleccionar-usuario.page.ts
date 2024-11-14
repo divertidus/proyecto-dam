@@ -35,9 +35,9 @@ export class SeleccionarUsuarioPage implements OnInit {
     private reiniciarDatosService: ReiniciarDatosService,
     private alertController: AlertController
   ) {
-    console.log('Instancia de DatabaseService:', this.databaseService);
+   // console.log('Instancia de DatabaseService:', this.databaseService);
     if (typeof this.databaseService.obtenerBaseDatos === 'function') {
-      console.log('Método obtenerBaseDatos existe');
+     // console.log('Método obtenerBaseDatos existe');
     } else {
       console.error('Método obtenerBaseDatos no existe o no es una función');
     }

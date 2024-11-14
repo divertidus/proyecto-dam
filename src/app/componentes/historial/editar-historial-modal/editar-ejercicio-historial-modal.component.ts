@@ -199,11 +199,6 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     }
   }
 
-  // Método para obtener el último ejercicio realizado por el usuario y capturar el `pesoAnterior` correcto
-  private async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioId: string): Promise<EjercicioRealizado | null> {
-    return await this.historialService.obtenerUltimoEjercicioRealizado(usuarioId, ejercicioId);
-  }
-
   // Método adaptado para crear las series y capturar `pesoAnterior` de la última sesión previa
   private crearSerieReal(serie: SerieReal, ultimoEjercicio: EjercicioRealizado | null, index: number, esExtra: boolean): SerieReal {
     return {

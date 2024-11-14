@@ -95,7 +95,7 @@ export class ReiniciarDatosService {
           timestamp: new Date().toISOString(),
         };
         await this.usuarioService.agregarUsuario(nuevoUsuario);
-        console.log('Usuario inicializado correctamente:', nuevoUsuario);
+      //  console.log('Usuario inicializado correctamente:', nuevoUsuario);
         this.usuarioPruebas = nuevoUsuario; // Asegurarse de asignarlo aquí.
         return nuevoUsuario;
       } else {
@@ -648,6 +648,7 @@ export class ReiniciarDatosService {
         if (!diaExistente) {
           const nuevoDiaEntrenamiento: DiaEntrenamiento = {
             _id: uuidv4(),
+            rutinaId: rutinas.find(rutina => rutina.nombre === 'Rutina 1')?._id,
             fechaEntrenamiento: diaEntrenamiento.fechaEntrenamiento,
             diaRutinaId: diaEntrenamiento.diaRutinaId!,
             nombreRutinaEntrenamiento: diaEntrenamiento.nombreRutinaEntrenamiento,

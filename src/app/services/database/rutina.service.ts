@@ -37,7 +37,7 @@ export class RutinaService {
 
   // Método para obtener todas las rutinas de un usuario específico
   async obtenerRutinasPorUsuario(usuarioId: string): Promise<Rutina[]> {
-    console.log("RUTINA SERVICE -> Obteniendo rutinas para usuarioId:", usuarioId); // <-- Añade este console.log aquí
+   // console.log("RUTINA SERVICE -> Obteniendo rutinas para usuarioId:", usuarioId); // <-- Añade este console.log aquí
     try {
       const result = await this.baseDatos.find({
         selector: { entidad: 'rutina', usuarioId }
