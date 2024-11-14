@@ -118,6 +118,8 @@ export class HistorialService {
 
   async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioPlanId: string, rutinaId: string, diaRutinaId: string): Promise<EjercicioRealizado | null> {
     try {
+
+      console.log('Soy el obtenerUltimoEjercicioRealizado y recibo el id de supoouestamente ejercicioPlanId:  ', ejercicioPlanId)
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
 
       if (historiales.length === 0) return null;

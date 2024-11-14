@@ -95,7 +95,7 @@ export class ReiniciarDatosService {
           timestamp: new Date().toISOString(),
         };
         await this.usuarioService.agregarUsuario(nuevoUsuario);
-      //  console.log('Usuario inicializado correctamente:', nuevoUsuario);
+        //  console.log('Usuario inicializado correctamente:', nuevoUsuario);
         this.usuarioPruebas = nuevoUsuario; // Asegurarse de asignarlo aquí.
         return nuevoUsuario;
       } else {
@@ -115,7 +115,7 @@ export class ReiniciarDatosService {
     if (this.ejerciciosPorDefecto.length === 0) {
       const ejerciciosPorDefecto: Ejercicio[] = [
         { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Jalón de Espalda', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio de tracción vertical para trabajar la espalda alta y dorsales.' },
-        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: true, descripcion: 'Ejercicio de tracción horizontal para fortalecer la espalda media y baja.' },
+        { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Remo Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: true, descripcion: 'Ejercicio de tracción horizontal para fortalecer la espalda media y baja.' },
         { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Jalón Cerrado', tipoPeso: 'Máquina', musculoPrincipal: 'Espalda', ejercicioPersonalizado: false, descripcion: 'Ejercicio para trabajar los dorsales y la espalda alta con agarre cerrado.' },
         { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Martillo', tipoPeso: 'Mancuernas', musculoPrincipal: 'Bíceps', ejercicioPersonalizado: false, descripcion: 'Ejercicio de aislamiento para los bíceps y antebrazos, ideal para fortalecer los brazos.' },
         { entidad: 'ejercicio', _id: uuidv4(), nombre: 'Press Banco Tumbado', tipoPeso: 'Mancuernas', musculoPrincipal: 'Pecho', ejercicioPersonalizado: false, descripcion: 'Ejercicio para el desarrollo del pecho, especialmente la parte media y baja del pectoral.' },
@@ -153,7 +153,7 @@ export class ReiniciarDatosService {
     }
 
     try {
-      const ejercicios = await this.inicializarEjercicios();
+
       const diasRutina: DiaRutina[] = [
         {
           _id: uuidv4(),
@@ -161,7 +161,7 @@ export class ReiniciarDatosService {
           descripcion: 'Espalda y bíceps',
           ejercicios: [
             { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Jalón de Espalda')!._id!, nombreEjercicio: 'Jalón de Espalda', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
-            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Remo Cerrado (Cuernos)')!._id!, nombreEjercicio: 'Remo Cerrado (Cuernos)', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
+            { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Remo Cerrado')!._id!, nombreEjercicio: 'Remo Cerrado', tipoPeso: 'Máquina', series: 4, repeticiones: 10 },
             { _id: uuidv4(), ejercicioId: this.ejerciciosPorDefecto.find(e => e.nombre === 'Martillo')!._id!, nombreEjercicio: 'Martillo', tipoPeso: 'Mancuernas', series: 4, repeticiones: 10 },
           ]
         },
@@ -197,6 +197,7 @@ export class ReiniciarDatosService {
       });
 
       const rutinasExistentes = await this.rutinaService.obtenerRutinasPorUsuario(this.usuarioPruebas._id!);
+
       if (rutinasExistentes.length === 0) {
         const nuevaRutina: Rutina = {
           _id: uuidv4(),
@@ -204,68 +205,76 @@ export class ReiniciarDatosService {
           nombre: 'Rutina 1',
           descripcion: 'Mi primera rutina',
           usuarioId: this.usuarioPruebas._id,
-          dias: diasRutina,
+          dias: diasRutina,  // Añade los días con los ejercicios aquí.
           timestamp: new Date().toISOString(),
         };
         await this.rutinaService.agregarRutina(nuevaRutina);
-        console.log('Inicializar Rutina -> Rutina añadida con éxito', nuevaRutina);
-        console.log('Inicializar Rutina -> Para el usuario con ID', this.usuarioPruebas._id);
+
+        console.log('Inicializar Rutina -> Rutina añadida con éxito:', nuevaRutina);
       } else {
         console.log('Ya existen rutinas en la base de datos.');
       }
+
+      // Asegura que los días de rutina estén actualizados con los IDs correctos
+      const rutinaActualizada = await this.rutinaService.obtenerRutinasPorUsuario(this.usuarioPruebas._id!);
+      this.diasRutina = rutinaActualizada[0].dias; // Se asegura de que los días tengan los IDs correctos
+
     } catch (error) {
       console.error('Error al añadir la rutina:', error);
     }
   }
 
   // Inicializar historial de entrenamiento con nueve sesiones en días diferentes
-  async inicializarHistorial(): Promise<void> {
+  async inicializarHistorial() {
     console.log('InicializarHistorial -> Entrando en inicializarHistorial');
-    if (!this.usuarioPruebas) {  // Cambiar a this.usuarioPruebas
-      console.error('InicializarHistorial -> Error: usuarioLogeado no está definido.');
+    if (!this.usuarioPruebas || !this.usuarioPruebas._id) {
+      console.error('InicializarHistorial -> Error: usuarioPruebas no está definido o no tiene _id.');
       return;
     }
+
     try {
-      // Aseguramos que usuarioLogeado está definido
       const usuarios = await this.usuarioService.obtenerUsuarios();
-      if (usuarios.length === 0) {
-        console.log('InicializarHistorial -> usuarios.length === 0 asi que que return', usuarios.length === 0)
-        return;
-      }
+      if (usuarios.length === 0) return;
 
-
-
-      console.log('InicializarHistorial -> Usuario logeado: ', this.usuarioPruebas)
-
-      // Obtenemos la rutina asociada al usuario
       const rutinas = await this.rutinaService.obtenerRutinasPorUsuario(this.usuarioPruebas._id!);
-      if (rutinas.length === 0) {
-        console.log('InicializarHistorial -> No se encontró ninguna rutina para el usuario.', this.usuarioPruebas._id);
-        return;
-      }
+      if (rutinas.length === 0) return;
+
       this.diasRutina = rutinas[0].dias;
 
       // Obtenemos los ejercicios y mapeamos los nombres a sus IDs
+      // Mapeo de ejercicios a IDs
       const ejerciciosExistentes = await this.ejercicioService.obtenerEjercicios();
       const ejerciciosPredefinidos = ejerciciosExistentes.reduce((map, ejercicio) => {
-        map[ejercicio.nombre] = ejercicio._id!;
+        if (ejercicio._id) {
+          map[ejercicio.nombre] = ejercicio._id;
+        }
         return map;
       }, {} as { [nombre: string]: string });
 
-      // Comprobamos si tenemos ejercicios disponibles
       if (Object.keys(ejerciciosPredefinidos).length === 0) {
         console.error('InicializarHistorial -> No se encontraron ejercicios predefinidos.');
         return;
       }
-
+      console.log('INICIALIZAR HISTORIAL -> justo antes de empezar a meter dias ', this.diasRutina)
       // Días de entrenamientos con información del peso anterior manualmente asignada
       const dia1Entrenamiento1 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
+          // Primero, verifica si encuentra el día correctamente
+          ejercicioPlanId: (() => {
+            const dia = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
+            console.log('DEBUG -> Día encontrado para "Día 1":', dia);
+
+            // Luego, verifica si encuentra el ejercicio dentro del día
+            const ejercicio = dia?.ejercicios.find(e => e.nombreEjercicio === 'Jalón de Espalda');
+            console.log('DEBUG -> Ejercicio encontrado para "Jalón de Espalda" en "Día 1":', ejercicio);
+
+            // Si ambos son correctos, debería tener un _id, de lo contrario dará undefined
+            return ejercicio ? ejercicio._id : undefined;
+          })(),
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
-            { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, peso: 60, },
+            { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, peso: 60 },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, peso: 65 },
             { _id: uuidv4(), numeroSerie: 3, repeticiones: 8, peso: 70 },
             { _id: uuidv4(), numeroSerie: 4, repeticiones: 8, peso: 70 }
@@ -274,9 +283,9 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Remo Cerrado (Cuernos)'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?.ejercicios.find(e => e.nombreEjercicio === 'Remo Cerrado')!._id,
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Remo Cerrado (Cuernos)',
+          nombreEjercicioRealizado: 'Remo Cerrado',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, peso: 50 },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, peso: 50 },
@@ -287,7 +296,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Martillo'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?.ejercicios.find(e => e.nombreEjercicio === 'Martillo')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Martillo',
           series: [
@@ -300,10 +309,11 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         }
       ];
+      console.log('DEBUG DE dia1Entrenamiento1 - ', dia1Entrenamiento1)
 
       const dia2Entrenamiento1 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?.ejercicios.find(e => e.nombreEjercicio === 'Press Banco Tumbado')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Press Banco Tumbado',
           series: [
@@ -316,8 +326,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Máquina Aperturas'],
-          _id: uuidv4(),
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?.ejercicios.find(e => e.nombreEjercicio === 'Máquina Aperturas')!._id,
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 12, peso: 40 },
@@ -329,7 +338,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Fondos en Paralelas'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?.ejercicios.find(e => e.nombreEjercicio === 'Fondos en Paralelas')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
@@ -343,9 +352,11 @@ export class ReiniciarDatosService {
         }
       ];
 
+      console.log('DEBUG DE dia2Entrenamiento1 - ', dia2Entrenamiento1)
+
       const dia3Entrenamiento1 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Sentadillas Multipower')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
@@ -358,7 +369,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Elevaciones Laterales')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
@@ -371,7 +382,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Prensa de Piernas')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
@@ -385,10 +396,40 @@ export class ReiniciarDatosService {
         }
       ];
 
+      console.log('DEBUG DE dia3Entrenamiento1 - ', dia3Entrenamiento1)
+
       // Segunda ronda (usamos el peso anterior donde corresponde)
+      // Depuración para la segunda ronda
+      console.log('INICIALIZAR HISTORIAL -> Iniciando segunda ronda de entrenamientos para "Día 1"');
+
       const dia1Entrenamiento2 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
+          // Depuración para verificar que se obtenga correctamente el `ejercicioPlanId`
+          ejercicioPlanId: (() => {
+            // Paso 1: Buscar el día 'Día 1'
+            const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
+            console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
+
+            if (!diaEncontrado) {
+              console.warn('WARNING -> No se encontró "Día 1" en diasRutina durante la segunda ronda');
+              return undefined;
+            }
+
+            // Paso 2: Buscar el ejercicio 'Jalón de Espalda' en el día encontrado
+            const ejercicioEncontrado = diaEncontrado.ejercicios.find(e => e.nombreEjercicio === 'Jalón de Espalda');
+            console.log('DEBUG -> Ejercicio encontrado para "Jalón de Espalda" en "Día 1" (segunda ronda):', ejercicioEncontrado);
+
+            if (!ejercicioEncontrado) {
+              console.warn('WARNING -> No se encontró el ejercicio "Jalón de Espalda" en "Día 1" (segunda ronda)');
+              return undefined;
+            }
+
+            // Paso 3: Retornar el `_id` del ejercicio si todo está correcto
+            console.log('DEBUG -> _id del ejercicio "Jalón de Espalda" en segunda ronda:', ejercicioEncontrado._id);
+            return ejercicioEncontrado._id;
+          })(),
+
+          // Otros campos del ejercicio
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
@@ -401,9 +442,32 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
+          // Depuración para verificar que se obtenga correctamente el `ejercicioPlanId`
+          ejercicioPlanId: (() => {
+            // Paso 1: Buscar el día 'Día 1'
+            const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
+            console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
+
+            if (!diaEncontrado) {
+              console.warn('WARNING -> No se encontró "Día 1" en diasRutina durante la segunda ronda');
+              return undefined;
+            }
+
+            // Paso 2: Buscar el ejercicio 'Remo Cerrado' en el día encontrado
+            const ejercicioEncontrado = diaEncontrado.ejercicios.find(e => e.nombreEjercicio === 'Remo Cerrado');
+            console.log('DEBUG -> Ejercicio encontrado para "Remo Cerrado" en "Día 1" (segunda ronda):', ejercicioEncontrado);
+
+            if (!ejercicioEncontrado) {
+              console.warn('WARNING -> No se encontró el ejercicio "Remo Cerrado" en "Día 1" (segunda ronda)');
+              return undefined;
+            }
+
+            // Paso 3: Retornar el `_id` del ejercicio si todo está correcto
+            console.log('DEBUG -> _id del ejercicio "Remo Cerrado" en segunda ronda:', ejercicioEncontrado._id);
+            return ejercicioEncontrado._id;
+          })(),
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
+          nombreEjercicioRealizado: 'Remo Cerrado',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 87, pesoAnterior: 85, alfallo: false, dolor: true, ayuda: false },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 89, pesoAnterior: 87, alfallo: false, dolor: true, ayuda: false },
@@ -414,9 +478,32 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
+           // Depuración para verificar que se obtenga correctamente el `ejercicioPlanId`
+           ejercicioPlanId: (() => {
+            // Paso 1: Buscar el día 'Día 1'
+            const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
+            console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
+
+            if (!diaEncontrado) {
+              console.warn('WARNING -> No se encontró "Día 1" en diasRutina durante la segunda ronda');
+              return undefined;
+            }
+
+            // Paso 2: Buscar el ejercicio 'Martillo' en el día encontrado
+            const ejercicioEncontrado = diaEncontrado.ejercicios.find(e => e.nombreEjercicio === 'Martillo');
+            console.log('DEBUG -> Ejercicio encontrado para "Martillo" en "Día 1" (segunda ronda):', ejercicioEncontrado);
+
+            if (!ejercicioEncontrado) {
+              console.warn('WARNING -> No se encontró el ejercicio "Martillo" en "Día 1" (segunda ronda)');
+              return undefined;
+            }
+
+            // Paso 3: Retornar el `_id` del ejercicio si todo está correcto
+            console.log('DEBUG -> _id del ejercicio "Martillo" en segunda ronda:', ejercicioEncontrado._id);
+            return ejercicioEncontrado._id;
+          })(),
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Martillo (Mancuernas)',
+          nombreEjercicioRealizado: 'Martillo',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 22, pesoAnterior: 20, alfallo: false, dolor: true, ayuda: false },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: true },
@@ -428,10 +515,12 @@ export class ReiniciarDatosService {
         }
       ];
 
+      console.log('DEBUG DE dia1Entrenamiento2 - ', dia1Entrenamiento2)
+
+
       const dia3Entrenamiento2 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
-          _id: uuidv4(),
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Sentadillas Multipower')!._id,
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 105, pesoAnterior: 100, alfallo: false, dolor: true, ayuda: false },
@@ -443,8 +532,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
-          _id: uuidv4(),
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Elevaciones Laterales')!._id,
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
 
@@ -453,7 +541,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         }, // No se registran seriees para este ejercicio
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Prensa de Piernas')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
@@ -467,9 +555,12 @@ export class ReiniciarDatosService {
         }
       ];
 
+      console.log('DEBUG DE dia3Entrenamiento2 - ', dia3Entrenamiento2)
+
       const dia1Entrenamiento3 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Jalón de Espalda'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?.ejercicios.find(e => e.nombreEjercicio === 'Jalón de Espalda')!._id,
+
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Jalón de Espalda',
           series: [
@@ -482,9 +573,9 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Remo Agarre Cerrado (Cuernos)'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?.ejercicios.find(e => e.nombreEjercicio === 'Remo Cerrado')!._id,
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Remo Agarre Cerrado (Cuernos)',
+          nombreEjercicioRealizado: 'Remo Cerrado',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 90, pesoAnterior: 87, alfallo: true, dolor: false, ayuda: false },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 92, pesoAnterior: 90, alfallo: false, dolor: false, ayuda: false },
@@ -495,9 +586,8 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Martillo (Mancuernas)'],
-          _id: uuidv4(),
-          nombreEjercicioRealizado: 'Martillo (Mancuernas)',
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?.ejercicios.find(e => e.nombreEjercicio === 'Martillo')!._id,
+          nombreEjercicioRealizado: 'Martillo',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 8, repeticionesAnterior: 10, peso: 24, pesoAnterior: 22, alfallo: false, dolor: true, ayuda: false },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 8, repeticionesAnterior: 10, peso: 26, pesoAnterior: 24, alfallo: true, dolor: true, ayuda: true },
@@ -509,11 +599,14 @@ export class ReiniciarDatosService {
         }
       ];
 
+      console.log('DEBUG DE dia1Entrenamiento3 - ', dia1Entrenamiento3)
+
       const dia2Entrenamiento2 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Press Banco Tumbado (Mancuernas)'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?.ejercicios.find(e => e.nombreEjercicio === 'Press Banco Tumbado')!._id,
           _id: uuidv4(),
-          nombreEjercicioRealizado: 'Press Banco Tumbado (Mancuernas)',
+
+          nombreEjercicioRealizado: 'Press Banco Tumbado',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 10, repeticionesAnterior: 10, peso: 65, pesoAnterior: 60, alfallo: false, dolor: true, ayuda: false },
             { _id: uuidv4(), numeroSerie: 2, repeticiones: 10, repeticionesAnterior: 10, peso: 67, pesoAnterior: 65, alfallo: false, dolor: true, ayuda: false },
@@ -524,7 +617,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Máquina Aperturas'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?.ejercicios.find(e => e.nombreEjercicio === 'Máquina Aperturas')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Máquina Aperturas',
           series: [
@@ -537,7 +630,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Fondos en Paralelas'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 2')?.ejercicios.find(e => e.nombreEjercicio === 'Fondos en Paralelas')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Fondos en Paralelas',
           series: [
@@ -550,10 +643,11 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         }
       ];
+      console.log('DEBUG DE dia2Entrenamiento2 - ', dia2Entrenamiento2)
 
       const dia3Entrenamiento3 = [
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Sentadillas Multipower'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Sentadillas Multipower')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Sentadillas Multipower',
           series: [
@@ -566,8 +660,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Elevaciones Laterales'],
-          _id: uuidv4(),
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Elevaciones Laterales')!._id,
           nombreEjercicioRealizado: 'Elevaciones Laterales',
           series: [
             { _id: uuidv4(), numeroSerie: 1, repeticiones: 12, repeticionesAnterior: 10, peso: 12, pesoAnterior: 10, alfallo: false, dolor: true, ayuda: true },
@@ -579,7 +672,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-          ejercicioPlanId: ejerciciosPredefinidos['Prensa de Piernas'],
+          ejercicioPlanId: this.diasRutina.find(dia => dia.diaNombre === 'Día 3')?.ejercicios.find(e => e.nombreEjercicio === 'Prensa de Piernas')!._id,
           _id: uuidv4(),
           nombreEjercicioRealizado: 'Prensa de Piernas',
           series: [
@@ -593,6 +686,7 @@ export class ReiniciarDatosService {
         }
       ];
 
+      console.log('DEBUG DE dia3Entrenamiento3 - ', dia3Entrenamiento3)
 
 
       // Generamos los días de entrenamiento con fechas asignadas
@@ -624,6 +718,8 @@ export class ReiniciarDatosService {
         { _id: uuidv4(), fechaEntrenamiento: '2024-10-09', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
       ];
 
+      console.log('DEBUG DE DIASENTRENAMIENTOS - ', diasEntrenamientos)
+
       // Obtener todos los historiales del usuario logeado
       const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioPruebas._id!);
 
@@ -632,6 +728,7 @@ export class ReiniciarDatosService {
         historial = historialesExistentes[0];
       } else {
         historial = {
+
           entidad: 'historialEntrenamiento',
           usuarioId: this.usuarioPruebas._id!,
           entrenamientos: []

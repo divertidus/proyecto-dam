@@ -168,10 +168,14 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   private async crearEjercicioRealizado(ejercicioPlan: EjercicioPlan, rutinaId: string) {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ejercicioPlan.ejercicioId);
-    const ultimoEjercicio = this.usuarioId ? await this.historialService.obtenerUltimoEjercicioRealizado(this.usuarioId,
-      ejercicioPlan.ejercicioId,
+
+    // Aquí pasamos ejercicioPlan._id en lugar de ejercicioPlan.ejercicioId
+    const ultimoEjercicio = this.usuarioId ? await this.historialService.obtenerUltimoEjercicioRealizado(
+      this.usuarioId,
+      ejercicioPlan._id,  // Cambiado a ejercicioPlan._id
       rutinaId,
-      this.diaRutinaId) : null;
+      this.diaRutinaId
+    ) : null;
 
     const seriesReal: SerieReal[] = Array.from({ length: ejercicioPlan.series }).map((_, index) => {
       return {
@@ -190,7 +194,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     });
 
     return {
-      ejercicioPlanId: ejercicioPlan.ejercicioId,
+      ejercicioPlanId: ejercicioPlan._id,  // Asegúrate de que esto sea ejercicioPlan._id
       nombreEjercicio: ejercicioDetalles.nombre,
       seriesReal,
       seriesCompletadas: 0,
@@ -200,7 +204,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       notas: '',
       anteriorVezEjercicioID: ultimoEjercicio?._id || null
     };
-  }
+}
 
 
   // Método para abrir el alert para agregar notas a una serie específica

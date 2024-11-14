@@ -42,8 +42,8 @@ export class RutinaService {
       const result = await this.baseDatos.find({
         selector: { entidad: 'rutina', usuarioId }
       });
-      console.log('RUTINA.SERVICE -> Obtenidas rutinas para usuarioId:', usuarioId)
-      console.log('RUTINA.SERVICE -> Las rutinas:', result.docs)
+     // console.log('RUTINA.SERVICE -> Obtenidas rutinas para usuarioId:', usuarioId)
+    //    console.log('RUTINA.SERVICE -> Las rutinas:', result.docs)
       return result.docs;
     } catch (err) {
       //  console.error('RUTINA.SERVICE -> Error al obtener rutinas:', err);
