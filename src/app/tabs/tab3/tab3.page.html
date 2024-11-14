@@ -10,9 +10,12 @@
 
     <ng-template #startContent>
         <app-ultimo-entreno></app-ultimo-entreno>
-        <ion-button class="boton-comenzar" (click)="onComenzarButtonClick()" expand="block">
-            Comenzar a entrenar
-        </ion-button>
+        <div class="comenzar-entrenamiento-container">
+            <ion-button class="boton-comenzar" (click)="onComenzarButtonClick()" expand="block">
+                <ion-icon name="play-outline" slot="start"></ion-icon>
+                Comenzar a entrenar
+            </ion-button>
+        </div>
         <ion-alert></ion-alert>
     </ng-template>
 </ion-content>

@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
 import { FiltroEjercicioComponent, TipoPesoFiltro, MusculoPrincipalFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
 import { v4 as uuidv4 } from 'uuid';
+import { EjercicioRealizado } from 'src/app/models/historial-entrenamiento';
 
 @Component({
   selector: 'app-editar-dia-rutina-agregar-ejercicio-suelto',
@@ -73,7 +74,6 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
     console.log('Ejercicios después de filtrar:', this.ejerciciosFiltrados); // Confirmación de datos filtrados
   }
 
-  // Método para seleccionar un ejercicio y pedir sus detalles
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({
       header: `Agregar ${ejercicio.nombre}`,
@@ -88,29 +88,36 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
           text: 'Agregar',
           handler: (data) => {
             if (!data.series || !data.repeticiones) {
-              return false;
+              return false; // Evita crear planes con valores vacíos
             }
+
+            // Crear EjercicioPlan
             const ejercicioPlan: EjercicioPlan = {
-              _id: uuidv4(),
-              ejercicioId: ejercicio._id!,
+              _id: uuidv4(),               // ID único para el plan
+              ejercicioId: ejercicio._id!, // ID base del ejercicio
               nombreEjercicio: ejercicio.nombre,
-              series: +data.series,
-              repeticiones: +data.repeticiones,
+              series: data.series,         // Series planeadas
+              repeticiones: data.repeticiones,
               notas: data.notas || '',
-              tipoPeso: ejercicio.tipoPeso,
+              tipoPeso: ejercicio.tipoPeso
             };
 
-            console.log('Ejercicio seleccionado en hijo:', ejercicioPlan); // <--- LOG aquí
+            console.log('EjercicioPlan creado:', ejercicioPlan);
 
-            // Emitimos el ejercicio al cerrar el modal
+            // Emitir EjercicioPlan al padre
             this.modalController.dismiss(ejercicioPlan);
             return true;
           },
         },
       ],
     });
+
     await alert.present();
   }
+
+
+
+
 
   cerrarModal() {
     this.modalController.dismiss();

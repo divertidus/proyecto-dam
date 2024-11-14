@@ -1,31 +1,42 @@
-<!-- editar-ejercicio-historial-modal.component.html -->
 <ion-header>
   <ion-toolbar>
-    <!-- Mostrar "Editando" y el día del entrenamiento + la fecha -->
     <ion-title>
-      Editando - {{ diaEntrenamientoBackup.descripcion }} ({{ diaEntrenamientoBackup.fechaEntrenamiento |
-      date: 'dd/MM/yyyy' }})
+      Editando - {{ diaEntrenamientoBackup.descripcion }} ({{ diaEntrenamientoBackup.fechaEntrenamiento | date:
+      'dd/MM/yyyy' }})
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="content-adjusted" fullscreen>
   <ng-container *ngFor="let ejercicio of diaEntrenamientoBackup.ejerciciosRealizados; let i = index">
-    <ion-card>
-      <ion-card-header (click)="toggleEjercicio(i)">
+    <ion-card class="exercise-card-custom">
+      <ion-card-header (click)="toggleEjercicio(i)" class="exercise-header-custom">
         <ion-card-title class="exercise-header">
-          <span class="exercise-title">{{ ejercicio.nombreEjercicioRealizado }}</span>
-          <span class="progress-indicator">{{ ejercicio.seriesCompletadas || 0 }} / {{ ejercicio.seriesTotal }}</span>
-          <ion-icon name="create-outline" (click)="abrirNotasEjercicio(i); $event.stopPropagation()"
-            class="edit-icon"></ion-icon>
+          <div class="exercise-header-content">
+            <!-- Título del ejercicio -->
+            <span class="exercise-title">{{ ejercicio.nombreEjercicioRealizado || 'Ejercicio Sin Nombre' }}</span>
+
+            <!-- Contador de series -->
+            <span class="progress-indicator small-text">{{ ejercicio.seriesCompletadas || 0 }} / {{
+              ejercicio.seriesTotal || 1 }}</span>
+
+            <!-- Icono para abrir notas de ejercicio -->
+            <ion-icon name="document-text-outline" class="icono-notas"
+              (click)="abrirNotasEjercicio(i); $event.stopPropagation()"></ion-icon>
+
+            <!-- Icono de papelera en rojo para eliminar el ejercicio -->
+            <ion-icon name="trash-outline" color="danger" class="icono-papelera"
+              (click)="confirmarEliminarEjercicio(i); $event.stopPropagation()"></ion-icon>
+          </div>
         </ion-card-title>
       </ion-card-header>
 
       <ion-card-content *ngIf="ejercicioAbiertoIndex === i">
         <div class="exercise-container">
-          <p *ngIf="ejercicio.notas" class="exercise-note">
-            Nota del ejercicio: {{ ejercicio.notas }}
-          </p>
+          <!-- Descripción del ejercicio, si existe -->
+          <ion-button expand="block" fill="solid" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">
+            <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
+        </ion-button>
 
           <!-- Series del Ejercicio -->
           <ng-container *ngFor="let serie of ejercicio.series; let j = index">
@@ -35,7 +46,6 @@
                 [disabled]="!serie.enEdicion">
               </ion-input>
 
-              <!-- Control de peso con botones para incrementar/decrementar -->
               <div class="weight-control">
                 <button class="control-button minus" (click)="decrementarPeso(serie)"
                   [disabled]="!serie.enEdicion">-</button>
@@ -46,10 +56,9 @@
                   [disabled]="!serie.enEdicion">+</button>
                 <span *ngIf="serie.pesoAnterior" class="weight-label">({{ serie.pesoAnterior }} kg)</span>
 
-                <ion-icon *ngIf="serie.enEdicion" name="create-outline" class="note-icon"
-                  (click)="abrirNotasSerie(i, j)">
-                </ion-icon>
-                <ion-alert></ion-alert>
+                <!-- Icono para notas de la serie -->
+                <ion-icon *ngIf="serie.enEdicion" name="clipboard-outline" class="note-icon"
+                  (click)="abrirNotasSerie(i, j)"></ion-icon>
               </div>
 
               <div class="action-buttons">
@@ -62,7 +71,6 @@
               <ion-icon *ngIf="j === ejercicio.series.length - 1" name="trash-outline" class="delete-icon delete-right"
                 (click)="confirmarEliminarSerie(i, j)">
               </ion-icon>
-              <ion-alert></ion-alert>
             </div>
 
             <!-- Checkbox para opciones adicionales (al fallo, dolor, con ayuda) -->
@@ -84,6 +92,7 @@
               </label>
             </div>
 
+            <!-- Nota de la serie -->
             <div *ngIf="serie.notas" class="note-display">
               <span>Nota de la serie: {{ serie.notas }}</span>
             </div>
@@ -93,44 +102,25 @@
             (click)="confirmarAnadirSerie(i)">
             Añadir Serie Extra
           </ion-button>
-          <ion-alert></ion-alert>
         </div>
       </ion-card-content>
     </ion-card>
   </ng-container>
 
-  <!-- Barra de búsqueda para añadir un nuevo ejercicio realizado basado en un ejercicio existente -->
-  <!-- <ion-item>
-    <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
-  </ion-item> -->
-
-  <!-- Lista de ejercicios disponibles para añadir -->
- <!--  <ion-grid>
-    <ion-row>
-      <ion-col size="6" *ngFor="let ejercicio of ejerciciosFiltrados">
-        <ion-card (click)="agregarEjercicioRealizado(ejercicio)">
-          <ion-card-header>
-            <ion-card-title>{{ ejercicio.nombre }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <img [src]="ejercicio.imagen || 'assets/imagenes/ejercicios/ejercicio-default.png'"
-              alt="Imagen del ejercicio" class="imagen-ejercicio" />
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content> -->
-
-
+  <!-- Botón para añadir ejercicio extra -->
+  <ion-card class="boton-anadir-ejercicio-card">
+    <ion-button expand="block" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">
+      <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
+    </ion-button>
+  </ion-card>
+</ion-content>
 
 
 <ion-footer class="fixed-footer">
   <ion-toolbar>
-    <!-- Botón para añadir ejercicio extra -->
-    <ion-button expand="block" color="success" (click)="agregarEjercicioExtra()">
+   <!--  <ion-button expand="block" color="success" (click)="agregarEjercicioExtra()">
       <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
-    </ion-button>
+    </ion-button> -->
     <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>
     <ion-button expand="full" color="danger" (click)="confirmarCancelarEdicion()">Cancelar</ion-button>
   </ion-toolbar>

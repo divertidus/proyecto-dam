@@ -1,24 +1,24 @@
-/* entrenamiento.component.scss */
-
-/* Estilos generales del contenido de entrenamiento */
-ion-content {
-    padding: 16px;
-    background-color: #f4f4f9;
-}
-
-/* Botón para comenzar el entrenamiento */
 .boton-comenzar {
-    font-size: 1.2em;
-    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff; /* Azul moderno */
     color: #fff;
-    --background: #3e8e41;
-    --border-radius: 8px;
-}
-
-.app-vista-entreno {
-    margin-top: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    background-color: #fff;
-}
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .boton-comenzar:hover {
+    background-color: #0056b3; /* Tono más oscuro en hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .boton-comenzar ion-icon {
+    margin-right: 0.5rem;
+    font-size: 1.5rem;
+  }

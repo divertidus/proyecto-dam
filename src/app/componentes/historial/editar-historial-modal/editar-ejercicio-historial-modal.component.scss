@@ -18,17 +18,20 @@
     border-radius: 8px;
 }
 
-/* Header compacto y diferenciado */
 .exercise-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0.4rem 0.8rem;
-    /* Reduce el padding */
     background-color: #f0f0f0;
-    /* Color tenue para distinguirlo del contenido */
     border-bottom: 1px solid #ddd;
     border-radius: 8px 8px 0 0;
+}
+
+.exercise-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .exercise-title {
@@ -41,21 +44,31 @@
     flex: 1;
 }
 
-.progress-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
+.progress-indicator {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0 12px;
 }
 
-.edit-icon,
-.note-icon {
-    font-size: 1.2rem;
+.icono-notas {
+    font-size: 1.4rem;
     color: #007bff;
+    margin-right: 12px;
     cursor: pointer;
 }
 
-/* Contenido de cada serie */
+.icono-papelera {
+    font-size: 1.4rem;
+    color: #ff4444;
+    cursor: pointer;
+}
+
+.exercise-description {
+    color: #555;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+}
+
 .exercise-container {
     padding: 0.5rem;
     background-color: #f9f9f9;
@@ -79,7 +92,6 @@
     text-align: right;
 }
 
-/* Inputs de repeticiones y peso */
 .reps-input,
 .weight-input {
     width: 50px;
@@ -97,7 +109,6 @@
     min-width: 45px;
 }
 
-/* Botones de control de peso */
 .weight-control {
     display: flex;
     align-items: center;
@@ -126,17 +137,13 @@
     }
 }
 
-/* Icono de eliminar alineado a la derecha de la fila */
 .delete-icon.delete-right {
     margin-left: auto;
     color: #ff4444;
     font-size: 1.2rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
 }
 
-/* Botones de acción */
 .action-buttons {
     display: flex;
     gap: 4px;
@@ -157,7 +164,6 @@
     }
 }
 
-/* Checkbox de opciones */
 .checkbox-row {
     display: flex;
     justify-content: center;
@@ -180,7 +186,6 @@
     align-items: center;
 }
 
-/* Eliminar flechas de inputs numéricos */
 ion-input {
 
     &::-webkit-outer-spin-button,
@@ -191,12 +196,41 @@ ion-input {
 }
 
 .content-adjusted {
-    padding-bottom: 60px; // Deja espacio para el footer en la parte inferior
-  }
-  
-  .fixed-footer {
+    padding-bottom: 60px;
+}
+
+.fixed-footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    z-index: 10; // Para asegurarse de que esté en la parte superior de otros elementos
-  }
+    z-index: 10;
+}
+
+/* Estilos del botón "Añadir Ejercicio Extra" */
+.boton-anadir-ejercicio-card {
+    display: flex;
+    justify-content: center;
+    margin: 12px auto;
+    max-width: 300px;
+
+    
+
+
+}
+
+.boton-anadir-ejercicio {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #333;
+    /* Color de texto en gris */
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    --background: #f0f0f0;
+    /* Fondo del botón */
+    --border-radius: 8px;
+    --ion-color-base: #333;
+    /* Ajuste del color base para evitar azul */
+}

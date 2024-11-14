@@ -1,4 +1,3 @@
-/* tab3.page.ts */
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -9,19 +8,21 @@ import { DiaRutina, Rutina } from 'src/app/models/rutina.model';
 import { Router } from '@angular/router';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamiento } from 'src/app/models/historial-entrenamiento';
-import { IonContent, IonButton, IonModal, IonAlert } from "@ionic/angular/standalone";
+import { IonContent, IonButton, IonModal, IonAlert, IonIcon } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EntrenamientoEstadoService } from 'src/app/services/sesion/entrenamiento-estado.service';
 import { VistaEntrenoComponent } from "../../componentes/shared/vista-entreno/vista-entreno.component";
+import { addIcons } from 'ionicons';
+import * as todosLosIconos from 'ionicons/icons'
 
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.page.html',
   styleUrls: ['./tab3.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonButton, IonContent, NgIf, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent, VistaEntrenoComponent],
+  imports: [IonIcon, IonAlert, IonButton, IonContent, NgIf, CommonModule, UltimoEntrenoComponent, FormsModule, ToolbarLoggedComponent, VistaEntrenoComponent],
   providers: [ModalController, PopoverController]
 })
 export class Tab3Page implements OnInit {
@@ -39,7 +40,7 @@ export class Tab3Page implements OnInit {
     private alertController: AlertController,
     private entrenamientoEstadoService: EntrenamientoEstadoService,
     private router: Router
-  ) { }
+  ) { addIcons(todosLosIconos) }
 
   async ngOnInit(): Promise<void> {
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
@@ -190,16 +191,16 @@ export class Tab3Page implements OnInit {
 
   obtenerProximoDia(rutina: Rutina): DiaRutina {
     console.log("obtenerProximoDia -> Rutina evaluada:", rutina);
-  
+
     if (!this.ultimoEntrenamiento) {
       console.log("obtenerProximoDia -> No hay último entrenamiento, seleccionando primer día.");
       return rutina.dias[0];
     }
-  
+
     // Buscar el índice del día de la última sesión usando _id en lugar de diaNombre
     const indiceUltimoDia = rutina.dias.findIndex(d => d._id === this.ultimoEntrenamiento?.diaRutinaId);
     console.log("obtenerProximoDia -> Índice último día:", indiceUltimoDia);
-  
+
     // Retornar el siguiente día, o el primero si ya está en el último día
     return indiceUltimoDia === -1 || indiceUltimoDia === rutina.dias.length - 1
       ? rutina.dias[0]
