@@ -43,6 +43,7 @@ export class UserFormComponent {
     this.cargarAvatares();
     this.avatarSeleccionadoIndex = Math.floor(Math.random() * this.avatares.length);
     this.avatarActual = this.avatares[this.avatarSeleccionadoIndex];
+    this.avatarSeleccionado = this.avatarActual; // Asegura que el avatar aleatorio se seleccione por defecto
     this.dividirAvataresEnPaginas(); // Llamar aquí después de cargar los avatares
   }
 
@@ -109,6 +110,11 @@ export class UserFormComponent {
   async guardarUsuario(): Promise<void> {
     if (this.validarFormulario()) {
       try {
+        // Asegura que `avatarSeleccionado` tenga el valor de `avatarActual` si no se ha cambiado
+        if (!this.avatarSeleccionado) {
+          this.avatarSeleccionado = this.avatarActual;
+        }
+
         const nuevoUsuario: Usuario = {
           entidad: 'usuario',
           nombre: this.nombre,

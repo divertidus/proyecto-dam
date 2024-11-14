@@ -478,8 +478,8 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         },
         {
-           // Depuración para verificar que se obtenga correctamente el `ejercicioPlanId`
-           ejercicioPlanId: (() => {
+          // Depuración para verificar que se obtenga correctamente el `ejercicioPlanId`
+          ejercicioPlanId: (() => {
             // Paso 1: Buscar el día 'Día 1'
             const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
             console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
