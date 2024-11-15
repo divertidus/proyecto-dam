@@ -19,6 +19,8 @@ import { PopoverController, AlertController } from '@ionic/angular';
 import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
 import { EjercicioVerEditarPopoverComponent } from '../../ejercicio-ver-editar-popover/ejercicio-ver-editar-popover.component';
 import { ToastController } from '@ionic/angular/standalone';
+import { groupBy } from 'lodash'; // Puedes usar lodash para simplificar el agrupamiento
+
 @Component({
   selector: 'app-ejercicio-list',
   templateUrl: './ejercicio-list.component.html',
@@ -42,7 +44,7 @@ export class EjercicioListComponent implements OnInit {
   ejercicioSeleccionadoId: string | null = null; // ID del ejercicio actualmente "dado la vuelta"
 
   isSmallScreen: boolean; // Nueva propiedad para detectar pantalla pequeña
-
+  ejerciciosAgrupados: { [key: string]: Ejercicio[] } = {}; // Nueva propiedad para almacenar ejercicios agrupados
 
 
   filtroTipoPeso: TipoPesoFiltro = {
@@ -67,8 +69,21 @@ export class EjercicioListComponent implements OnInit {
     // Cargar ejercicios iniciales y suscribirse para actualizaciones
     this.ejercicioService.ejercicios$.subscribe(ejercicios => {
       this.ejercicios = ejercicios;
-      this.ejerciciosFiltrados = [...this.ejercicios]; // Inicialización de la lista filtrada
+      this.aplicarFiltros();
 
+      // Orden alfabético por defecto
+      this.ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+      // Agrupar ejercicios por grupo muscular
+      this.ejerciciosAgrupados = groupBy(this.ejercicios, 'musculoPrincipal');
+
+      // Ordenar alfabéticamente los ejercicios dentro de cada grupo
+      Object.keys(this.ejerciciosAgrupados).forEach(grupo => {
+        this.ejerciciosAgrupados[grupo].sort((a, b) => a.nombre.localeCompare(b.nombre));
+      });
+
+      // Inicialización de la lista filtrada (sin filtros aplicados al inicio)
+      this.ejerciciosFiltrados = [...this.ejercicios];
     });
   }
 
@@ -97,30 +112,30 @@ export class EjercicioListComponent implements OnInit {
   }
 
   aplicarFiltros(valorBusqueda: string = '') {
-    // Filtrado similar al segundo componente, aplicando los mismos principios
     this.ejerciciosFiltrados = this.ejercicios.filter(ejercicio => {
+      // Filtrado por texto
       const coincideBusqueda = ejercicio.nombre.toLowerCase().includes(valorBusqueda) ||
-        (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda)) ||
-        (ejercicio.musculoPrincipal && ejercicio.musculoPrincipal.toLowerCase().includes(valorBusqueda));
+        (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(valorBusqueda));
 
-      // Verificar si hay algún filtro activo en `filtroTipoPeso`
+      // Filtrado por tipo de peso
       const tipoPesoActivo = Object.values(this.filtroTipoPeso).some(valor => valor);
       const tipoPesoSeleccionado = tipoPesoActivo ?
         this.filtroTipoPeso[ejercicio.tipoPeso as keyof TipoPesoFiltro] : true;
 
-      // Verificar si hay algún filtro activo en `filtroMusculoPrincipal`
+      // Filtrado por grupo muscular
       const musculoActivo = Object.values(this.filtroMusculoPrincipal).some(valor => valor);
       const musculoSeleccionado = musculoActivo ?
         this.filtroMusculoPrincipal[ejercicio.musculoPrincipal] : true;
 
-      // Combinar todos los criterios para determinar si el ejercicio pasa el filtro
       return coincideBusqueda && tipoPesoSeleccionado && musculoSeleccionado;
     });
 
-    console.log('Ejercicios después de aplicar filtros:', this.ejerciciosFiltrados);
+    // Agrupar los ejercicios filtrados
+    this.ejerciciosAgrupados = this.agruparEjerciciosPorMusculo(this.ejerciciosFiltrados);
   }
 
 
+  // Método para mostrar un mensaje Toast cuando se crea un ejercicio
   async abrirFormularioEjercicio() {
     const popover = await this.popoverController.create({
       component: EjercicioFormComponent,
@@ -130,7 +145,7 @@ export class EjercicioListComponent implements OnInit {
 
     popover.onDidDismiss().then(async (result) => {
       if (result.data) {
-        // Llamamos al método para actualizar la lista
+        // Actualizar lista de ejercicios tras la creación de uno nuevo
         this.actualizarListaEjercicios();
 
         // Mostramos el Toast de confirmación
@@ -150,7 +165,14 @@ export class EjercicioListComponent implements OnInit {
   private actualizarListaEjercicios() {
     // Refrescar los ejercicios en caso de cambios
     this.ejercicioService.ejercicios$.subscribe((ejercicios) => {
-      this.ejerciciosFiltrados = ejercicios;
+      this.ejercicios = ejercicios;
+      // Re-aplicar el orden y el agrupamiento
+      this.ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      this.ejerciciosAgrupados = groupBy(this.ejercicios, 'musculoPrincipal');
+      Object.keys(this.ejerciciosAgrupados).forEach(grupo => {
+        this.ejerciciosAgrupados[grupo].sort((a, b) => a.nombre.localeCompare(b.nombre));
+      });
+      this.ejerciciosFiltrados = [...this.ejercicios];
     });
   }
 
@@ -238,5 +260,17 @@ export class EjercicioListComponent implements OnInit {
     });
 
     await alert.present();
+  }
+
+  // Función para agrupar ejercicios por grupo muscular
+  private agruparEjerciciosPorMusculo(ejercicios: Ejercicio[]): { [key: string]: Ejercicio[] } {
+    return ejercicios.reduce((grupos, ejercicio) => {
+      const grupo = ejercicio.musculoPrincipal || 'Otros';
+      if (!grupos[grupo]) {
+        grupos[grupo] = [];
+      }
+      grupos[grupo].push(ejercicio);
+      return grupos;
+    }, {});
   }
 }

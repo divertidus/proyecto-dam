@@ -12,6 +12,20 @@ ion-content {
   z-index: 10;
 }
 
+ion-toolbar {
+  --border-width: 0px;
+  --border-color: transparent;
+  --box-shadow: none;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+ion-header {
+  --ion-border-color: transparent; /* Personaliza el color del borde del header */
+  --ion-border-width: 0px; /* Asegura que el ancho sea 0 */
+  border: none !important; /* Fuerza la eliminación del borde */
+}
+
 .ejercicio-card {
   width: 100%;
   height: 250px;
@@ -123,4 +137,50 @@ ion-content {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transform: scale(1.02);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.no-resultados-container {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 1.2rem;
+  color: var(--ion-color-medium);
+}
+
+/* Título de cada categoría (grupo muscular) */
+.titulo-categoria {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ion-color-primary);
+  /* Utiliza el color principal de la app */
+  margin: 0px 0 10px;
+  /* Espaciado superior e inferior */
+  border-bottom: 2px solid var(--ion-color-medium);
+  /* Línea decorativa debajo */
+  padding-bottom: 5px;
+}
+
+/* Estilos para los mensajes de "sin resultados" o "sin ejercicios" */
+ion-card {
+  margin: 20px 16px;
+  /* Espaciado consistente */
+  padding: 20px;
+  /* Padding generoso */
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  color: #6b6b6b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+ion-card-title {
+  font-weight: 600;
+  color: #3b3b3b;
+  margin-bottom: 12px;
+}
+
+ion-card-content {
+  font-size: 0.9em;
+  color: #4a4a4a;
+  line-height: 1.5;
 }
