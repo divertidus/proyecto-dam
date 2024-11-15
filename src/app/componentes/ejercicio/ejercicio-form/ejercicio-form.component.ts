@@ -6,6 +6,7 @@ import { IonLabel, IonItem, IonButton } from "@ionic/angular/standalone";
 import { IonInput, IonSelectOption, IonSelect } from '@ionic/angular/standalone';
 import { NgIf } from '@angular/common';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-ejercicio-form',
@@ -64,12 +65,11 @@ export class EjercicioFormComponent {
 
   async guardarEjercicio() {
     if (this.validarEjercicio() && this.formModificado) {
-      if (this.modoEdicion) {
-        await this.ejercicioService.actualizarEjercicio(this.ejercicio);
-      } else {
-        await this.ejercicioService.agregarEjercicio(this.ejercicio);
+      if (!this.ejercicio._id) {
+        this.ejercicio._id = uuidv4(); // Generar un _id único para el ejercicio
       }
-      this.popoverController.dismiss(this.ejercicio);
+      await this.ejercicioService.agregarEjercicio(this.ejercicio); // Guardar el ejercicio en la base de datos
+      this.popoverController.dismiss(this.ejercicio); // Retornar el ejercicio creado, incluyendo su _id
     } else {
       console.log('Faltan campos por completar.');
     }

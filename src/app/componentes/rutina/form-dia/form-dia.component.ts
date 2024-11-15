@@ -196,58 +196,48 @@ export class FormDiaComponent implements OnInit {
           name: 'series',
           type: 'number',
           placeholder: 'Número de Series',
-          min: 1
+          min: 1,
         },
         {
           name: 'repeticiones',
           type: 'number',
           placeholder: 'Repeticiones por Serie',
-          min: 1
+          min: 1,
         },
         {
           name: 'notas',
           type: 'textarea',
-          placeholder: 'Notas adicionales (opcional)'
-        }
+          placeholder: 'Notas adicionales (opcional)',
+        },
       ],
       buttons: [
         {
           text: 'Cancelar',
           role: 'cancel',
-          handler: () => {
-            console.log('Operación cancelada'); // Podrías retornar 'false' o simplemente dejar el log.
-            return false; // Devolvemos 'false' para indicar que no se hizo nada.
-          }
         },
         {
           text: 'Agregar',
           handler: (data) => {
-            // Validamos y agregamos el ejercicio
             if (!data.series || !data.repeticiones || data.series <= 0 || data.repeticiones <= 0) {
               console.error('Datos incompletos o incorrectos al agregar ejercicio');
-              // Mostrar mensaje de error al usuario
-              this.alertController.create({
-                header: 'Error',
-                message: 'Por favor, asegúrate de ingresar un número válido de series y repeticiones.',
-                buttons: ['Aceptar']
-              }).then(alert => alert.present());
-
-              return false; // Devolvemos 'false' si los datos no son válidos.
+              this.alertController
+                .create({
+                  header: 'Error',
+                  message: 'Por favor, asegúrate de ingresar un número válido de series y repeticiones.',
+                  buttons: ['Aceptar'],
+                })
+                .then((alert) => alert.present());
+              return false;
             }
-
-            this.agregarEjercicio(
-              ejercicio,
-              parseInt(data.series),
-              parseInt(data.repeticiones),
-              data.notas
-            );
-
-            return true; // Retornamos 'true' para indicar que se agregó el ejercicio correctamente.
-          }
-        }
-      ]
+  
+            // Agregar el ejercicio al día como EjercicioPlan
+            this.agregarEjercicio(ejercicio, parseInt(data.series), parseInt(data.repeticiones), data.notas);
+            return true;
+          },
+        },
+      ],
     });
-
+  
     await alert.present();
   }
 
@@ -405,18 +395,21 @@ export class FormDiaComponent implements OnInit {
       cssClass: 'popover-ejercicio-compacto',
       backdropDismiss: true,
     });
-
+  
     await popover.present();
-
+  
     const { data } = await popover.onDidDismiss();
-    if (data) {
+    if (data && data._id) {
       console.log('Ejercicio creado desde FormDia:', data);
-      // Agrega el nuevo ejercicio a la lista general de ejercicios
+  
+      // Agregar el ejercicio recién creado a la lista general de ejercicios
       this.ejercicios.push(data);
-      this.ejerciciosFiltrados = [...this.ejercicios]; // Actualiza la lista filtrada
-
-      // Llama a `seleccionarEjercicio` para iniciar el flujo de selección automáticamente
-      this.seleccionarEjercicio(data);
+      this.ejerciciosFiltrados = [...this.ejercicios]; // Actualizar la lista filtrada
+  
+      // Crear automáticamente un EjercicioPlan con el _id del nuevo ejercicio
+      this.seleccionarEjercicio(data); // Pasar el ejercicio creado al flujo de selección
+    } else {
+      console.log('No se creó ningún ejercicio.');
     }
   }
 }
