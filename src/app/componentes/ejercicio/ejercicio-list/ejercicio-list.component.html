@@ -15,26 +15,18 @@
       <ion-row class="ion-align-items-stretch">
         <!-- Se ajusta el tamaño de las columnas para pantallas pequeñas -->
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
-          <ion-card
-            class="ejercicio-card"
-            [ngClass]="{'compact-view': isSmallScreen, 'expanded-view': !isSmallScreen}"
-            (click)="toggleDetalle(ejercicio._id)"
-          >
+          <ion-card class="ejercicio-card" [ngClass]="{'compact-view': isSmallScreen, 'expanded-view': !isSmallScreen}"
+            (click)="toggleDetalle(ejercicio._id)">
             <!-- Vista principal de la tarjeta (imagen y detalles básicos) -->
             <ng-container *ngIf="ejercicioSeleccionadoId !== ejercicio._id; else detalleTemplate">
-              <ion-icon
-                *ngIf="ejercicio.ejercicioPersonalizado"
-                name="person-circle-outline"
-                class="personalizado-icon"
-              ></ion-icon>
+              <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+                class="personalizado-icon"></ion-icon>
               <ion-card-header>
                 <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <img
-                  [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
-                  class="imagen-ejercicio"
-                />
+                <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
+                  class="imagen-ejercicio" />
                 <div class="ejercicio-info">
                   <p><ion-icon name="barbell-outline"></ion-icon> {{ ejercicio.tipoPeso }}</p>
                   <p><ion-icon name="body-outline"></ion-icon> {{ ejercicio.musculoPrincipal }}</p>
@@ -44,38 +36,27 @@
 
             <!-- Vista detallada (al hacer clic, muestra descripción y botones) -->
             <ng-template #detalleTemplate>
-              <ion-icon
-                *ngIf="ejercicio.ejercicioPersonalizado"
-                name="person-circle-outline"
-                class="personalizado-icon"
-              ></ion-icon>
+              <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+                class="personalizado-icon"></ion-icon>
               <ion-card-header>
                 <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
               </ion-card-header>
-              <ion-card-content
-  class="detalle-card-content"
-  [ngClass]="{'personalizado': ejercicio.ejercicioPersonalizado}"
->
-  <div class="detalle-contenido" [ngClass]="{'personalizado': ejercicio.ejercicioPersonalizado}">
-    <p class="descripcion-ejercicio">{{ ejercicio.descripcion || 'Sin descripción' }}</p>
-    <div *ngIf="ejercicio.ejercicioPersonalizado" class="botones-acciones">
-      <ion-button
-        color="primary"
-        fill="clear"
-        (click)="editarEjercicio(ejercicio); $event.stopPropagation()"
-      >
-        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-      </ion-button>
-      <ion-button
-        color="danger"
-        fill="clear"
-        (click)="confirmarEliminar(ejercicio); $event.stopPropagation()"
-      >
-        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-      </ion-button>
-    </div>
-  </div>
-</ion-card-content>
+              <ion-card-content class="detalle-card-content"
+                [ngClass]="{'personalizado': ejercicio.ejercicioPersonalizado}">
+                <div class="detalle-contenido" [ngClass]="{'personalizado': ejercicio.ejercicioPersonalizado}">
+                  <p class="descripcion-ejercicio">{{ ejercicio.descripcion || 'Sin descripción' }}</p>
+                  <div *ngIf="ejercicio.ejercicioPersonalizado" class="botones-acciones">
+                    <ion-button color="primary" fill="clear"
+                      (click)="editarEjercicio(ejercicio); $event.stopPropagation()">
+                      <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                    </ion-button>
+                    <ion-button color="danger" fill="clear"
+                      (click)="confirmarEliminar(ejercicio); $event.stopPropagation()">
+                      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+                </div>
+              </ion-card-content>
 
             </ng-template>
           </ion-card>
@@ -93,11 +74,8 @@
 
 <ion-popover trigger="filtroPopoverTrigger" alignment="end">
   <ng-template>
-    <app-filtro-ejercicio
-      [filtroTipoPeso]="filtroTipoPeso"
-      [filtroMusculoPrincipal]="filtroMusculoPrincipal"
-      (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)"
-    >
+    <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
+      (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
     </app-filtro-ejercicio>
   </ng-template>
 </ion-popover>

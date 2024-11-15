@@ -2,6 +2,7 @@
 <!-- <h2>Último Entreno</h2> -->
 
 <!-- Usamos el componente DiaEntrenamientoCard con comparacion -->
+<h3 *ngIf="ultimoEntrenamiento">Último Entreno Realizado</h3>
 <app-dia-entrenamiento-card *ngIf="ultimoEntrenamiento" [diaEntrenamiento]="ultimoEntrenamiento"
   [expandido]="expandido" [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)"
   (toggleExpand)="toggleEntrenamiento()" [index]="0"></app-dia-entrenamiento-card>

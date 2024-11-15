@@ -18,7 +18,6 @@ ion-content {
 .ejercicio-card {
   width: 100%;
   height: 250px;
-  /* Altura fija para mantener uniformidad */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -38,7 +37,6 @@ ion-content {
   font-weight: bold;
   text-align: center;
   min-height: 40px;
-  /* Altura mínima para mantener uniformidad */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +60,6 @@ ion-content {
   flex-direction: column;
   gap: 4px;
   flex-grow: 1;
-  /* Ocupa espacio adicional para uniformidad */
   justify-content: center;
 }
 
@@ -188,7 +185,51 @@ ion-content {
 
 .linea-separacion {
   border-top: 1px solid #dcdcdc;
-  /* Color y grosor de la línea de separación */
   margin-top: -8px;
-  /* Ajusta la posición para que quede justo bajo la barra */
+}
+
+/* Estilos específicos para la tarjeta "Crear Ejercicio" */
+.crear-ejercicio-card {
+  background-color: #f0f0f0;
+  border: 1px solid #dcdcdc;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #444;
+}
+
+.crear-ejercicio-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Icono grande y centrado exclusivamente para la tarjeta "Crear Ejercicio" */
+.icono-crear-ejercicio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100px; /* Ajusta la altura para centrar mejor */
+  margin-top: -10px; /* Ajuste para subir el icono */
+}
+
+.icono-crear-ejercicio ion-icon {
+  font-size: 70px; /* Tamaño del icono */
+  color: #444; /* Color gris oscuro */
+}
+
+/* Texto en la tarjeta "Crear Ejercicio" */
+.crear-ejercicio-card .titulo-ejercicio {
+  color: #444;
+  font-weight: bold;
+  font-size: 1rem;
+  padding-bottom: 10px;
+}
+
+.ejercicio-info {
+  margin-bottom: 15px; /* Más espacio debajo del texto "¡Créalo!" */
+}
+
+.fixed-toolbar {
+  border-bottom: none;
+  box-shadow: none; /* Elimina cualquier sombra que genere línea */
 }

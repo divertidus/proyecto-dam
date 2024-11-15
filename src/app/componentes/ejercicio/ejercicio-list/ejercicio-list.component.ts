@@ -18,6 +18,7 @@ import { FiltroEjercicioComponent, TipoPesoFiltro } from '../../filtros/filtro-e
 import { PopoverController, AlertController } from '@ionic/angular';
 import { EjercicioFormComponent } from '../ejercicio-form/ejercicio-form.component';
 import { EjercicioVerEditarPopoverComponent } from '../../ejercicio-ver-editar-popover/ejercicio-ver-editar-popover.component';
+import { ToastController } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-ejercicio-list',
   templateUrl: './ejercicio-list.component.html',
@@ -56,7 +57,8 @@ export class EjercicioListComponent implements OnInit {
 
   constructor(private ejercicioService: EjercicioService,
     private popoverController: PopoverController,
-    private alertController: AlertController) {
+    private alertController: AlertController,
+    private toastController: ToastController) {
     addIcons(todosLosIconos);
     this.updateScreenSize(); // Inicializar el valor al cargar
   }
@@ -126,10 +128,19 @@ export class EjercicioListComponent implements OnInit {
       backdropDismiss: true,
     });
 
-    popover.onDidDismiss().then((result) => {
+    popover.onDidDismiss().then(async (result) => {
       if (result.data) {
         // Llamamos al método para actualizar la lista
         this.actualizarListaEjercicios();
+
+        // Mostramos el Toast de confirmación
+        const toast = await this.toastController.create({
+          message: 'Ejercicio creado correctamente',
+          duration: 2000, // Duración en milisegundos (2 segundos)
+          color: 'success', // Color de éxito (opcional)
+          position: 'bottom' // Posición del Toast
+        });
+        await toast.present();
       }
     });
 

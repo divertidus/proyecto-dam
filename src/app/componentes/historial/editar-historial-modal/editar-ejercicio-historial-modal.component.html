@@ -34,9 +34,7 @@
       <ion-card-content *ngIf="ejercicioAbiertoIndex === i">
         <div class="exercise-container">
           <!-- Descripción del ejercicio, si existe -->
-          <ion-button expand="block" fill="solid" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">
-            <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
-        </ion-button>
+
 
           <!-- Series del Ejercicio -->
           <ng-container *ngFor="let serie of ejercicio.series; let j = index">
@@ -108,17 +106,18 @@
   </ng-container>
 
   <!-- Botón para añadir ejercicio extra -->
-  <ion-card class="boton-anadir-ejercicio-card">
-    <ion-button expand="block" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">
+  <!-- Cambia ion-card por un div para eliminar estilos de borde no deseados -->
+  <div class="boton-anadir-ejercicio-card">
+    <ion-button expand="block" fill="solid" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">
       <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
     </ion-button>
-  </ion-card>
+  </div>
 </ion-content>
 
 
 <ion-footer class="fixed-footer">
   <ion-toolbar>
-   <!--  <ion-button expand="block" color="success" (click)="agregarEjercicioExtra()">
+    <!--  <ion-button expand="block" color="success" (click)="agregarEjercicioExtra()">
       <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
     </ion-button> -->
     <ion-button expand="full" (click)="guardarCambios()">Guardar Cambios</ion-button>

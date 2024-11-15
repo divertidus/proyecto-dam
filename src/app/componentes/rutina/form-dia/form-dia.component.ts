@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan, DiaRutina } from 'src/app/models/rutina.model';
 import { ToolbarModalesCancelarComponent } from "../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component";
@@ -14,9 +14,12 @@ import {
   IonList, IonIcon, IonPopover, IonCardSubtitle, IonModal
 } from '@ionic/angular/standalone';
 
+
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { FiltroEjercicioComponent, TipoPesoFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
 import { v4 as uuidv4 } from 'uuid'; // Si deseas usar una biblioteca como uuid
+import { EjercicioListComponent } from '../../ejercicio/ejercicio-list/ejercicio-list.component';
+import { EjercicioFormComponent } from '../../ejercicio/ejercicio-form/ejercicio-form.component';
 
 @Component({
   selector: 'app-form-dia',
@@ -28,7 +31,7 @@ import { v4 as uuidv4 } from 'uuid'; // Si deseas usar una biblioteca como uuid
     IonCard, IonCol, IonRow, IonGrid, IonContent,
     IonSearchbar, IonLabel, IonItem, IonFooter,
     CommonModule, FormsModule, ToolbarModalesCancelarComponent,
-    IonPopover, FiltroEjercicioComponent]
+    IonPopover, FiltroEjercicioComponent, EjercicioListComponent]
 
 })
 export class FormDiaComponent implements OnInit {
@@ -59,7 +62,8 @@ export class FormDiaComponent implements OnInit {
   constructor(
     private ejercicioService: EjercicioService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private popoverController: PopoverController
   ) { }
 
   ngOnInit() {
@@ -72,9 +76,9 @@ export class FormDiaComponent implements OnInit {
     this.tituloBarraSuperior = this.modo === 'crear' ? `Crear Día ${diaNumero}` : `Editar Día ${diaNumero}`;
 
     // Cargar ejercicios del servicio
-    this.ejerciciosSub = this.ejercicioService.ejercicios$.subscribe(data => {
+    this.ejerciciosSub = this.ejercicioService.ejercicios$.subscribe((data) => {
       this.ejercicios = data;
-      this.ejerciciosFiltrados = [...this.ejercicios]; // Inicializa los ejercicios filtrados
+      this.ejerciciosFiltrados = [...this.ejercicios];
     });
 
     if (this.modo === 'editar') {
@@ -88,6 +92,12 @@ export class FormDiaComponent implements OnInit {
     }
 
     this.descripcionDia = '';
+  }
+
+  ngOnDestroy() {
+    if (this.ejerciciosSub) {
+      this.ejerciciosSub.unsubscribe();
+    }
   }
 
   // Solicitar descripción mostrando el número del día en el mensaje
@@ -259,7 +269,7 @@ export class FormDiaComponent implements OnInit {
       nombreEjercicio: ejercicio.nombre,
       series: series, // Crea las series con el número de repeticiones
       repeticiones: repeticiones,
-      tipoPeso:ejercicio.tipoPeso,
+      tipoPeso: ejercicio.tipoPeso,
       notas: notas || '',
 
     };
@@ -387,5 +397,26 @@ export class FormDiaComponent implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async crearNuevoEjercicio() {
+    const popover = await this.popoverController.create({
+      component: EjercicioFormComponent,
+      cssClass: 'popover-ejercicio-compacto',
+      backdropDismiss: true,
+    });
+
+    await popover.present();
+
+    const { data } = await popover.onDidDismiss();
+    if (data) {
+      console.log('Ejercicio creado desde FormDia:', data);
+      // Agrega el nuevo ejercicio a la lista general de ejercicios
+      this.ejercicios.push(data);
+      this.ejerciciosFiltrados = [...this.ejercicios]; // Actualiza la lista filtrada
+
+      // Llama a `seleccionarEjercicio` para iniciar el flujo de selección automáticamente
+      this.seleccionarEjercicio(data);
+    }
   }
 }

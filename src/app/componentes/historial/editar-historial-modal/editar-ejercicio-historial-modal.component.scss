@@ -206,31 +206,44 @@ ion-input {
     z-index: 10;
 }
 
-/* Estilos del botón "Añadir Ejercicio Extra" */
+/* Eliminar el fondo, borde, sombra y padding del ion-card */
 .boton-anadir-ejercicio-card {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin: 12px auto;
     max-width: 300px;
-
-    
-
-
+    background: none;
+    padding: 0;
+    border: none;
+    box-shadow: none;
 }
 
+/* Estilo para el botón "Añadir Ejercicio Extra" */
 .boton-anadir-ejercicio {
+    width: 100%;
+    max-width: 280px; /* Limita el tamaño máximo del botón */
     font-size: 1.1em;
-    font-weight: 500;
-    color: #333;
-    /* Color de texto en gris */
-    padding: 8px 16px;
+    font-weight: bold;
+    color: #3b3b3b; /* Color de texto similar a las rutinas */
+    --background: #f3f4f6; /* Fondo gris similar al de las tarjetas de rutina */
+    --border-radius: 8px; /* Bordes redondeados */
+    padding: 12px 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    width: auto;
-    --background: #f0f0f0;
-    /* Fondo del botón */
-    --border-radius: 8px;
-    --ion-color-base: #333;
-    /* Ajuste del color base para evitar azul */
+    justify-content: center;
+    gap: 6px;
+    border: none !important; /* Asegura que no haya borde */
+    box-shadow: none !important; /* Asegura que no haya sombra */
+    --ion-color-base: transparent; /* Elimina cualquier color base */
+    transition: background-color 0.3s ease;
+}
+
+.boton-anadir-ejercicio ion-icon {
+    color: #3b3b3b; /* Color del icono igual al texto */
+    font-size: 1.3em;
+}
+
+.boton-anadir-ejercicio:hover {
+    --background: #f9f9f9; /* Cambia el fondo a un gris más claro al hacer hover */
 }

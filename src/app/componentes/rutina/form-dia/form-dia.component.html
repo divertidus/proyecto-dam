@@ -2,9 +2,9 @@
 
 <ion-content>
   <!-- Barra de búsqueda con filtro y separación visual debajo -->
-  <ion-toolbar color="light" class="fixed-toolbar">
+  <ion-toolbar color="light" class="fixed-toolbar ion-no-border">
     <ion-item lines="none">
-      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..." shape="round"></ion-searchbar>
       <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
         <ion-icon name="filter-outline"></ion-icon>
       </ion-button>
@@ -26,6 +26,8 @@
   <div class="contenido-con-margen">
     <ion-grid>
       <ion-row class="ion-align-items-stretch">
+
+        <!-- Tarjetas de ejercicios existentes -->
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
           <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
             <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
@@ -43,6 +45,27 @@
             </ion-card-content>
           </ion-card>
         </ion-col>
+
+        <!-- Tarjeta de "Crear Nuevo Ejercicio" -->
+        <ion-col size="6" size-md="4">
+          <ion-card class="ejercicio-card crear-ejercicio-card" (click)="crearNuevoEjercicio()">
+            <ion-card-header>
+              <ion-card-title class="titulo-ejercicio">
+                ¿No encuentras un ejercicio?
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <!-- Icono grande centrado usando la nueva clase -->
+              <div class="icono-crear-ejercicio">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </div>
+              <div class="ejercicio-info">
+                <p>¡Créalo!</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
       </ion-row>
     </ion-grid>
   </div>

@@ -1,24 +1,33 @@
+.comenzar-entrenamiento-container {
+  margin: 20px 16px; /* Igual al margen de la tarjeta no-entrenamiento-card */
+  text-align: center; /* Centra el contenido en el eje horizontal */
+  display: flex;
+  justify-content: center; /* Asegura que el botón esté centrado horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente (si hay más altura en el contenedor) */
+}
+
 .boton-comenzar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #007bff; /* Azul moderno */
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: 600;
-    padding: 1rem 2rem;
-    border-radius: 0.5rem;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .boton-comenzar:hover {
-    background-color: #0056b3; /* Tono más oscuro en hover */
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-  }
-  
-  .boton-comenzar ion-icon {
-    margin-right: 0.5rem;
-    font-size: 1.5rem;
-  }
+  width: 80%; /* Define el ancho relativo del botón */
+  max-width: 320px; /* Opcional: limita el tamaño máximo del botón */
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #3b3b3b; /* Color de texto similar a las rutinas */
+  --background: #f3f4f6; /* Gris similar al fondo de la tarjeta de rutina */
+  --border-radius: 8px;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.boton-comenzar:hover {
+  background-color: #f9f9f9;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.boton-comenzar ion-icon {
+  margin-right: 0.5rem;
+  font-size: 1.5rem;
+}
+
