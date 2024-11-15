@@ -6,8 +6,17 @@
     padding: 20px;
     width: 100%;
     max-width: 600px;
-    margin: 20px auto 0; /* Aumenta el margen superior */
-  }
+    margin: 20px auto 0;
+}
+
+/* Centrar la tarjeta "Crear Nuevo" cuando no hay usuarios */
+.no-usuarios {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    /* Centra verticalmente en la pantalla */
+}
 
 /* Tarjeta de usuario y de crear nuevo usuario con altura fija */
 .usuario-card {
@@ -22,9 +31,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 150px; /* Altura mínima uniforme para todas las tarjetas */
+    min-height: 150px;
     height: 150px;
-  }
+}
 
 .usuario-card:hover {
     transform: scale(1.05);
@@ -37,7 +46,7 @@
     height: 60px;
     border-radius: 50%;
     overflow: hidden;
-    margin-bottom: 8px; /* Ajuste del espaciado con el nombre */
+    margin-bottom: 8px;
 }
 
 .avatar img {
@@ -51,13 +60,13 @@
     font-size: 1em;
     font-weight: bold;
     color: #333;
-    margin: 4px 0; /* Reduce el margen para disminuir la distancia con el email */
+    margin: 4px 0;
 }
 
 .email {
     font-size: 0.85em;
     color: #616161;
-    margin-top: 2px; /* Reduce el margen superior para disminuir el espacio */
+    margin-top: 2px;
 }
 
 /* Tarjeta especial para crear un nuevo usuario */
@@ -65,7 +74,7 @@
     background-color: #e0f7fa;
     color: #00796b;
     font-weight: bold;
-    min-height: 150px; /* Asegura que también tenga la misma altura */
+    min-height: 150px;
     height: 150px;
 }
 
@@ -79,4 +88,14 @@
 .nuevo-usuario p {
     margin-top: 5px;
     color: #00796b;
+}
+
+/* Centrar horizontalmente cuando no hay usuarios */
+.no-usuarios {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* Mantener la alineación superior */
+    padding-top: 20px;
+    /* Opcional: añadir un pequeño margen superior */
 }

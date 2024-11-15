@@ -19,7 +19,7 @@
   </div>
 
   <!-- Mostrar la lista de usuarios cuando la carga ha terminado y existen usuarios -->
-  <app-user-list *ngIf="!isLoading && usuarios.length > 0" [usuarios]="usuarios"></app-user-list>
+  <app-user-list [usuarios]="usuarios"></app-user-list>
 </ion-content>
 
 <!-- Botón adicional para reiniciar la base de datos -->
