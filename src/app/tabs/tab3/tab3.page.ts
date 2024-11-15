@@ -96,12 +96,29 @@ export class Tab3Page implements OnInit {
   async onComenzarButtonClick() {
     console.log("onComenzarButtonClick -> Comenzando entrenamiento");
     await this.cargarUltimoEntrenamiento();
-
+  
     if (!this.usuarioLogeado || this.rutinas.length === 0) {
       console.error("onComenzarButtonClick -> No hay usuario logueado o no hay rutinas disponibles.");
+  
+      // Mostrar alerta y redirigir a la pestaña de rutinas (tab1) si no hay rutinas
+      const alert = await this.alertController.create({
+        header: 'Sin Rutinas',
+        message: 'No tienes rutinas creadas. Por favor, crea una rutina antes de comenzar un entrenamiento.',
+        buttons: [
+          {
+            text: 'Aceptar',
+            handler: () => {
+              // Redirigir a la pestaña de rutinas (tab1)
+              this.router.navigate(['/tabs/tab1']);
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
       return;
     }
-
+  
     if (this.rutinas.length === 1) {
       const rutina: Rutina = this.rutinas[0];
       console.log("onComenzarButtonClick -> Seleccionada única rutina:", rutina);

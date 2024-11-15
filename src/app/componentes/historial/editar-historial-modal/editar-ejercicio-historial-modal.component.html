@@ -34,7 +34,7 @@
       <ion-card-content *ngIf="ejercicioAbiertoIndex === i">
         <div class="exercise-container">
           <!-- Descripción del ejercicio, si existe -->
-
+          <p *ngIf="ejercicio.notas">Nota del ejercicio: {{ ejercicio.notas }}</p>
 
           <!-- Series del Ejercicio -->
           <ng-container *ngFor="let serie of ejercicio.series; let j = index">
