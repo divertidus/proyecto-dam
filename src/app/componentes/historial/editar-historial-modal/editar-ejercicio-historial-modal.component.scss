@@ -1,15 +1,18 @@
+/* General Styles */
 .exercise-list-custom {
     background: transparent;
     padding: 0.5rem;
+}
 
-    ion-item {
-        --background: transparent;
-        --padding-start: 0;
-        --padding-end: 0;
-        --inner-padding-end: 0;
+ion-input {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 }
 
+/* Card Styles */
 .exercise-card-custom {
     width: 100%;
     margin: 8px 0;
@@ -18,6 +21,7 @@
     border-radius: 8px;
 }
 
+/* Header Styles */
 .exercise-header {
     display: flex;
     align-items: center;
@@ -32,6 +36,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    gap: 16px; /* Aumenta el espacio entre elementos dentro del encabezado */
 }
 
 .exercise-title {
@@ -47,14 +52,29 @@
 .progress-indicator {
     font-size: 0.8rem;
     color: #666;
-    margin: 0 12px;
+    margin-right: 8px; /* Añade más espacio entre el indicador y el siguiente icono */
+}
+
+/* Icon Styles */
+.icon-buttons {
+    display: flex;
+    justify-content: flex-end; /* Alinea todo a la derecha */
+    align-items: center; /* Centra verticalmente */
+    gap: 8px; /* Espaciado entre iconos */
+    flex: 1; /* Asegura que ocupe todo el espacio disponible */
+}
+
+.serie-icono {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
 }
 
 .icono-notas {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: #007bff;
-    margin-right: 12px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 .icono-papelera {
@@ -63,18 +83,26 @@
     cursor: pointer;
 }
 
+.delete-icon.delete-right {
+    margin-left: auto; /* Asegura que la papelera esté contra la derecha */
+    color: #ff4444;
+}
+
+/* Description Styles */
 .exercise-description {
     color: #555;
     font-size: 0.85rem;
     padding: 4px 8px;
 }
 
+/* Container Styles */
 .exercise-container {
     padding: 0.5rem;
     background-color: #f9f9f9;
     border-radius: 0 0 8px 8px;
 }
 
+/* Row Styles */
 .exercise-row {
     display: flex;
     align-items: center;
@@ -92,7 +120,17 @@
     text-align: right;
 }
 
-.reps-input,
+/* Input Styles */
+.reps-input {
+    width: 40px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: white;
+}
+
 .weight-input {
     width: 50px;
     height: 32px;
@@ -103,67 +141,54 @@
     background: white;
 }
 
-.weight-label {
-    color: #ff4444;
-    font-size: 0.8rem;
-    min-width: 45px;
-}
-
+/* Weight Control Styles */
 .weight-control {
     display: flex;
     align-items: center;
     gap: 4px;
-
-    .control-button {
-        width: 28px;
-        height: 28px;
-        background-color: #f0f0f0;
-        border-radius: 4px;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #666;
-        cursor: pointer;
-
-        &:hover:not(:disabled) {
-            background: #e0e0e0;
-        }
-
-        &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-    }
 }
 
-.delete-icon.delete-right {
-    margin-left: auto;
-    color: #ff4444;
-    font-size: 1.2rem;
+.control-button {
+    width: 28px;
+    height: 28px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
     cursor: pointer;
 }
 
+.control-button:hover:not(:disabled) {
+    background: #e0e0e0;
+}
+
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button Styles */
 .action-buttons {
     display: flex;
     gap: 4px;
-
-    ion-button {
-        --padding-start: 8px;
-        --padding-end: 8px;
-        height: 32px;
-        margin: 0;
-
-        &.ok-button {
-            --color: #2196F3;
-        }
-
-        &:disabled {
-            opacity: 0.5;
-        }
-    }
 }
 
+ion-button.ok-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    height: 32px;
+    margin: 0;
+    --color: #2196F3;
+}
+
+ion-button.ok-button:disabled {
+    opacity: 0.5;
+}
+
+/* Checkbox Styles */
 .checkbox-row {
     display: flex;
     justify-content: center;
@@ -179,26 +204,7 @@
     color: #666;
 }
 
-.centered-checkboxes {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    align-items: center;
-}
-
-ion-input {
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-}
-
-.content-adjusted {
-    padding-bottom: 60px;
-}
-
+/* Footer Styles */
 .fixed-footer {
     position: fixed;
     bottom: 0;
@@ -206,7 +212,7 @@ ion-input {
     z-index: 10;
 }
 
-/* Eliminar el fondo, borde, sombra y padding del ion-card */
+/* Add Button Styles */
 .boton-anadir-ejercicio-card {
     display: flex;
     justify-content: center;
@@ -219,53 +225,67 @@ ion-input {
     box-shadow: none;
 }
 
-/* Estilo para el botón "Añadir Ejercicio Extra" */
 .boton-anadir-ejercicio {
     width: 100%;
-    max-width: 280px; /* Limita el tamaño máximo del botón */
+    max-width: 280px;
     font-size: 1.1em;
     font-weight: bold;
-    color: #3b3b3b; /* Color de texto similar a las rutinas */
-    --background: #f3f4f6; /* Fondo gris similar al de las tarjetas de rutina */
-    --border-radius: 8px; /* Bordes redondeados */
+    color: #3b3b3b;
+    --background: #f3f4f6;
+    --border-radius: 8px;
     padding: 12px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    border: none !important; /* Asegura que no haya borde */
-    box-shadow: none !important; /* Asegura que no haya sombra */
-    --ion-color-base: transparent; /* Elimina cualquier color base */
+    border: none !important;
+    box-shadow: none !important;
+    --ion-color-base: transparent;
     transition: background-color 0.3s ease;
 }
 
 .boton-anadir-ejercicio ion-icon {
-    color: #3b3b3b; /* Color del icono igual al texto */
+    color: #3b3b3b;
     font-size: 1.3em;
 }
 
 .boton-anadir-ejercicio:hover {
-    --background: #f9f9f9; /* Cambia el fondo a un gris más claro al hacer hover */
+    --background: #f9f9f9;
 }
 
+/* Info Header Styles */
 .info-dia-header {
     text-align: center;
     margin-bottom: 16px;
     padding: 12px;
-    background-color: #f9f9f9; /* Fondo claro para resaltar */
-    border-bottom: 1px solid #ddd; /* Línea divisoria */
-  }
-  
-  .info-dia-title {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.info-dia-title {
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
     margin: 16px 0;
     color: #333;
-  }
-  
-  .info-dia-subtitle {
+}
+
+.info-dia-subtitle {
     font-size: 0.9rem;
     color: #666;
     margin: 0;
-  }
+}
+
+/* Note Styles */
+.series-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 40px;
+    margin-top: -8px;
+}
+
+/* Enlarged Button */
+.enlarged-ok-button {
+    font-size: 0.95rem;
+    padding: 4px 10px;
+}
