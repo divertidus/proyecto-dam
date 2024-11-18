@@ -1,18 +1,12 @@
-<!-- editar-dia-rutina-agregar-ejercicio-suelto.component.html -->
 <ion-header>
-  <!-- Barra de encabezado de selección de ejercicio -->
-  <ion-toolbar color="primary">
-    <ion-title class="encabezado-seleccion">Selecciona Ejercicio</ion-title>
-  </ion-toolbar>
-
-  <!-- Barra de búsqueda y botón de filtro -->
-  <ion-toolbar>
+  <!-- Barra superior de selección de ejercicio -->
+  <ion-toolbar color="light" class="fixed-toolbar">
     <ion-item lines="none">
-      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."></ion-searchbar>
+      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."
+        shape="round"></ion-searchbar>
       <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
         <ion-icon name="filter-outline"></ion-icon>
       </ion-button>
-      <ion-popover></ion-popover>
       <ion-popover trigger="filtroPopoverTrigger" alignment="end">
         <ng-template>
           <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
@@ -25,28 +19,52 @@
 </ion-header>
 
 <ion-content>
-  <div style="height: 100%; overflow-y: auto;">
+  <div class="contenido-con-margen">
     <ion-grid>
       <ion-row class="ion-align-items-stretch">
+
+        <!-- Tarjetas de ejercicios existentes -->
         <ion-col size="6" size-md="4" *ngFor="let ejercicio of ejerciciosFiltrados">
           <ion-card class="ejercicio-card" (click)="seleccionarEjercicio(ejercicio)">
+            <ion-icon *ngIf="ejercicio.ejercicioPersonalizado" name="person-circle-outline"
+              class="personalizado-icon"></ion-icon>
             <ion-card-header>
               <ion-card-title class="titulo-ejercicio">{{ ejercicio.nombre }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <img [src]="ejercicio.imagen ? ejercicio.imagen : 'assets/imagenes/ejercicios/ejercicio-default.png'"
-                alt="Imagen del ejercicio" class="imagen-ejercicio" />
+              <img [src]="ejercicio.imagen || 'assets/imagenes/ejercicios/ejercicio-default.png'"
+                class="imagen-ejercicio" />
               <div class="ejercicio-info">
-                <p>{{ ejercicio.tipoPeso }}</p>
-                <p>{{ ejercicio.musculoPrincipal }}</p>
+                <p><ion-icon name="barbell-outline"></ion-icon> {{ ejercicio.tipoPeso }}</p>
+                <p><ion-icon name="body-outline"></ion-icon> {{ ejercicio.musculoPrincipal }}</p>
               </div>
             </ion-card-content>
           </ion-card>
         </ion-col>
+
+        <!-- Tarjeta de "Crear Nuevo Ejercicio" -->
+        <ion-col size="6" size-md="4">
+          <ion-card class="ejercicio-card crear-ejercicio-card" (click)="crearNuevoEjercicio()">
+            <ion-popover></ion-popover>
+            <ion-card-header>
+              <ion-card-title class="titulo-ejercicio">¿No encuentras un ejercicio?</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="icono-crear-ejercicio">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </div>
+              <div class="ejercicio-info">
+                <p>¡Créalo!</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
       </ion-row>
     </ion-grid>
   </div>
 </ion-content>
+
 
 <ion-footer>
   <ion-toolbar>

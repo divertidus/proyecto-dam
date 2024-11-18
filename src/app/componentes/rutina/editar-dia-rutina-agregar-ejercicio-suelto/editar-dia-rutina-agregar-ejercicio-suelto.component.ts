@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioPlan } from 'src/app/models/rutina.model';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import {
   IonItem, IonSearchbar, IonGrid, IonRow, IonCol, IonCardHeader,
-  IonCardContent, IonCard, IonCardTitle, IonHeader, IonToolbar, IonContent, IonButton, IonFooter, IonIcon, IonPopover, IonTitle
+  IonCardContent, IonCard, IonCardTitle, IonHeader, IonToolbar, IonContent, IonButton, IonFooter, IonIcon, IonPopover, IonTitle, IonModal
 } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -13,16 +13,17 @@ import { NgFor, NgIf } from '@angular/common';
 import { FiltroEjercicioComponent, TipoPesoFiltro, MusculoPrincipalFiltro } from '../../filtros/filtro-ejercicio/filtro-ejercicio.component';
 import { v4 as uuidv4 } from 'uuid';
 import { EjercicioRealizado } from 'src/app/models/historial-entrenamiento';
+import { EjercicioFormComponent } from '../../ejercicio/ejercicio-form/ejercicio-form.component';
 
 @Component({
   selector: 'app-editar-dia-rutina-agregar-ejercicio-suelto',
   templateUrl: './editar-dia-rutina-agregar-ejercicio-suelto.component.html',
   styleUrls: ['./editar-dia-rutina-agregar-ejercicio-suelto.component.scss'],
-  imports: [IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
+  imports: [IonModal, IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
     IonContent, IonToolbar, IonHeader, IonCardTitle,
     IonCard, IonCardContent, IonCardHeader, IonCol,
     FormsModule, IonRow, IonGrid, IonSearchbar, IonItem,
-    NgFor, FiltroEjercicioComponent],
+    NgFor, FiltroEjercicioComponent, EjercicioFormComponent],
   standalone: true,
   providers: []
 })
@@ -47,7 +48,8 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
   constructor(
     private ejercicioService: EjercicioService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private popoverController: PopoverController,
   ) { }
 
   ngOnInit() {
@@ -178,6 +180,41 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
     });
 
     console.log('Lista de ejercicios después de aplicar filtros:', this.ejerciciosFiltrados); // Resultado final
+  }
+  async crearNuevoEjercicio() {
+    const popover = await this.popoverController.create({
+      component: EjercicioFormComponent,
+      cssClass: 'popover-ejercicio-compacto',
+      backdropDismiss: true,
+      mode: 'md', // Puedes ajustar a 'ios' si estás en iOS
+      showBackdrop: true,
+    });
+  
+    popover.onDidDismiss().then(async (result) => {
+      if (result.data) {
+        console.log('Ejercicio creado desde EditarDiaRutinaAgregarEjercicioSuelto:', result.data);
+  
+        // Actualizar lista de ejercicios
+        await this.actualizarListaEjercicios();
+  
+        // Emitir el nuevo ejercicio al componente padre
+        this.seleccionarEjercicio(result.data);
+      } else {
+        console.log('No se creó ningún ejercicio.');
+      }
+    });
+  
+    await popover.present();
+  }
+  
+  private async actualizarListaEjercicios() {
+    // Refrescar la lista de ejercicios desde el servicio
+    const ejercicios = await this.ejercicioService.obtenerEjercicios();
+    this.ejercicios = ejercicios;
+  
+    // Ordenar y actualizar lista filtrada
+    this.ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    this.ejerciciosFiltrados = [...this.ejercicios];
   }
 
 }

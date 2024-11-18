@@ -395,25 +395,34 @@ export class FormDiaComponent implements OnInit {
       component: EjercicioFormComponent,
       cssClass: 'popover-ejercicio-compacto',
       backdropDismiss: true,
-      mode: 'ios', // Fuerza el modo iOS
+      mode: 'md', // Puedes ajustar a 'ios' si estás en iOS
       showBackdrop: true,
-      animated: true, // Habilita animaciones
     });
-
+  
+    popover.onDidDismiss().then(async (result) => {
+      if (result.data) {
+        console.log('Ejercicio creado desde EditarDiaRutinaAgregarEjercicioSuelto:', result.data);
+  
+        // Actualizar lista de ejercicios
+        await this.actualizarListaEjercicios();
+  
+        // Emitir el nuevo ejercicio al componente padre
+        this.seleccionarEjercicio(result.data);
+      } else {
+        console.log('No se creó ningún ejercicio.');
+      }
+    });
+  
     await popover.present();
-
-    const { data } = await popover.onDidDismiss();
-    if (data && data._id) {
-      console.log('Ejercicio creado desde FormDia:', data);
-
-      // Agregar el ejercicio recién creado a la lista general de ejercicios
-      this.ejercicios.push(data);
-      this.ejerciciosFiltrados = [...this.ejercicios]; // Actualizar la lista filtrada
-
-      // Crear automáticamente un EjercicioPlan con el _id del nuevo ejercicio
-      this.seleccionarEjercicio(data); // Pasar el ejercicio creado al flujo de selección
-    } else {
-      console.log('No se creó ningún ejercicio.');
-    }
+  }
+  
+  private async actualizarListaEjercicios() {
+    // Refrescar la lista de ejercicios desde el servicio
+    const ejercicios = await this.ejercicioService.obtenerEjercicios();
+    this.ejercicios = ejercicios;
+  
+    // Ordenar y actualizar lista filtrada
+    this.ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    this.ejerciciosFiltrados = [...this.ejercicios];
   }
 }
