@@ -1,9 +1,19 @@
 <ion-header>
-  <!-- Barra superior de selección de ejercicio -->
-  <ion-toolbar color="light" class="fixed-toolbar">
+  <!-- Toolbar principal con título y botón de cancelar -->
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="cerrarModal()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-title>
+      Añadir Ejercicio Extra
+    </ion-title>
+  </ion-toolbar>
+
+  <!-- Toolbar secundario con buscador -->
+  <ion-toolbar>
     <ion-item lines="none">
-      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..."
-        shape="round"></ion-searchbar>
+      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..." shape="round">
+      </ion-searchbar>
       <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
         <ion-icon name="filter-outline"></ion-icon>
       </ion-button>
@@ -45,7 +55,6 @@
         <!-- Tarjeta de "Crear Nuevo Ejercicio" -->
         <ion-col size="6" size-md="4">
           <ion-card class="ejercicio-card crear-ejercicio-card" (click)="crearNuevoEjercicio()">
-            <ion-popover></ion-popover>
             <ion-card-header>
               <ion-card-title class="titulo-ejercicio">¿No encuentras un ejercicio?</ion-card-title>
             </ion-card-header>
@@ -65,9 +74,6 @@
   </div>
 </ion-content>
 
-
 <ion-footer>
-  <ion-toolbar>
-    <ion-button expand="full" color="danger" (click)="cerrarModal()">Cancelar</ion-button>
-  </ion-toolbar>
+  <!-- Footer opcional: puedes eliminarlo si no necesitas botones adicionales -->
 </ion-footer>

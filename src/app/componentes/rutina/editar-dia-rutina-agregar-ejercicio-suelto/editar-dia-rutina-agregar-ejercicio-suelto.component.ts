@@ -5,8 +5,7 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import {
   IonItem, IonSearchbar, IonGrid, IonRow, IonCol, IonCardHeader,
-  IonCardContent, IonCard, IonCardTitle, IonHeader, IonToolbar, IonContent, IonButton, IonFooter, IonIcon, IonPopover, IonTitle, IonModal
-} from "@ionic/angular/standalone";
+  IonCardContent, IonCard, IonCardTitle, IonHeader, IonToolbar, IonContent, IonButton, IonFooter, IonIcon, IonPopover, IonTitle, IonModal, IonButtons } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
@@ -19,7 +18,7 @@ import { EjercicioFormComponent } from '../../ejercicio/ejercicio-form/ejercicio
   selector: 'app-editar-dia-rutina-agregar-ejercicio-suelto',
   templateUrl: './editar-dia-rutina-agregar-ejercicio-suelto.component.html',
   styleUrls: ['./editar-dia-rutina-agregar-ejercicio-suelto.component.scss'],
-  imports: [IonModal, IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
+  imports: [IonButtons, IonModal, IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
     IonContent, IonToolbar, IonHeader, IonCardTitle,
     IonCard, IonCardContent, IonCardHeader, IonCol,
     FormsModule, IonRow, IonGrid, IonSearchbar, IonItem,
