@@ -190,3 +190,38 @@ ion-card-content {
   color: #4a4a4a;
   line-height: 1.5;
 }
+
+/* Título de cada categoría (grupo muscular) */
+.titulo-categoria {
+  display: flex;
+  justify-content: space-between; /* Para separar el grupo y la cantidad */
+  align-items: center; /* Alinear elementos verticalmente */
+  text-align: left;
+  font-size: 1.2rem; /* Tamaño del grupo muscular */
+  font-weight: bold;
+  color: var(--ion-color-primary); /* Color principal de la app */
+  margin: 10px 0; /* Espaciado superior e inferior */
+  border-bottom: 1px solid var(--ion-color-light); /* Línea decorativa */
+  padding: 8px 10px; /* Espaciado interno */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el título */
+}
+
+/* Estilo para la cantidad de ejercicios */
+.titulo-categoria .cantidad-ejercicios {
+  font-size: 0.9rem; /* Tamaño más pequeño */
+  font-weight: 500; /* Peso más ligero */
+  color: var(--ion-color-medium); /* Color más discreto */
+  margin-left: 10px;
+}
+
+/* Icono de despliegue */
+.titulo-categoria ion-icon {
+  font-size: 1rem; /* Ajusta el tamaño del icono */
+  color: var(--ion-color-dark); /* Color oscuro para mejor contraste */
+  margin-left: 8px;
+  transition: transform 0.2s ease; /* Animación suave */
+}
+
+.titulo-categoria[aria-expanded="true"] ion-icon {
+  transform: rotate(180deg); /* Rotación para indicar que está desplegado */
+}

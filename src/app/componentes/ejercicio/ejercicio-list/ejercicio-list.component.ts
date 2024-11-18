@@ -45,6 +45,8 @@ export class EjercicioListComponent implements OnInit {
 
   isSmallScreen: boolean; // Nueva propiedad para detectar pantalla pequeña
   ejerciciosAgrupados: { [key: string]: Ejercicio[] } = {}; // Nueva propiedad para almacenar ejercicios agrupados
+  estadoGrupo: { [key: string]: boolean } = {};
+
 
 
   filtroTipoPeso: TipoPesoFiltro = {
@@ -76,6 +78,11 @@ export class EjercicioListComponent implements OnInit {
 
       // Agrupar ejercicios por grupo muscular
       this.ejerciciosAgrupados = groupBy(this.ejercicios, 'musculoPrincipal');
+
+      // Inicializar estado desplegable de cada grupo como cerrado
+      Object.keys(this.ejerciciosAgrupados).forEach(grupo => {
+        this.estadoGrupo[grupo] = false; // Por defecto, los grupos están cerrados
+      });
 
       // Ordenar alfabéticamente los ejercicios dentro de cada grupo
       Object.keys(this.ejerciciosAgrupados).forEach(grupo => {
@@ -132,6 +139,17 @@ export class EjercicioListComponent implements OnInit {
 
     // Agrupar los ejercicios filtrados
     this.ejerciciosAgrupados = this.agruparEjerciciosPorMusculo(this.ejerciciosFiltrados);
+
+    // Ajustar estados de los grupos según los filtros
+    Object.keys(this.ejerciciosAgrupados).forEach(grupo => {
+      if (!(grupo in this.estadoGrupo)) {
+        this.estadoGrupo[grupo] = false;
+      }
+    });
+  }
+
+  toggleGrupo(grupo: string) {
+    this.estadoGrupo[grupo] = !this.estadoGrupo[grupo];
   }
 
 
@@ -145,12 +163,12 @@ export class EjercicioListComponent implements OnInit {
       showBackdrop: true,
       animated: true, // Habilita animaciones
     });
-  
+
     popover.onDidDismiss().then(async (result) => {
       if (result.data) {
         // Actualizar lista de ejercicios tras la creación de uno nuevo
         this.actualizarListaEjercicios();
-  
+
         // Mostramos el Toast de confirmación
         const toast = await this.toastController.create({
           message: 'Ejercicio creado correctamente',
@@ -161,7 +179,7 @@ export class EjercicioListComponent implements OnInit {
         await toast.present();
       }
     });
-  
+
     await popover.present();
   }
 
