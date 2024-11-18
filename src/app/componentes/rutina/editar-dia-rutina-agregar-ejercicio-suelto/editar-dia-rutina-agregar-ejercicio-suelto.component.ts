@@ -22,7 +22,7 @@ import { EjercicioFormComponent } from '../../ejercicio/ejercicio-form/ejercicio
     IonContent, IonToolbar, IonHeader, IonCardTitle,
     IonCard, IonCardContent, IonCardHeader, IonCol,
     FormsModule, IonRow, IonGrid, IonSearchbar, IonItem,
-    NgFor, FiltroEjercicioComponent, EjercicioFormComponent],
+    NgFor, FiltroEjercicioComponent, EjercicioFormComponent,NgIf],
   standalone: true,
   providers: []
 })
@@ -89,34 +89,33 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
         {
           text: 'Agregar',
           handler: (data) => {
+            console.log('Datos ingresados:', data);
             if (!data.series || !data.repeticiones) {
-              return false; // Evita crear planes con valores vacíos
+              console.warn('Series o repeticiones no válidas');
+              return false;
             }
-
-            // Crear EjercicioPlan
+  
             const ejercicioPlan: EjercicioPlan = {
-              _id: uuidv4(),               // ID único para el plan
-              ejercicioId: ejercicio._id!, // ID base del ejercicio
+              _id: uuidv4(),
+              ejercicioId: ejercicio._id!,
               nombreEjercicio: ejercicio.nombre,
-              series: data.series,         // Series planeadas
+              series: data.series,
               repeticiones: data.repeticiones,
               notas: data.notas || '',
-              tipoPeso: ejercicio.tipoPeso
+              tipoPeso: ejercicio.tipoPeso,
             };
-
+  
             console.log('EjercicioPlan creado:', ejercicioPlan);
-
-            // Emitir EjercicioPlan al padre
+  
             this.modalController.dismiss(ejercicioPlan);
             return true;
           },
         },
       ],
     });
-
+  
     await alert.present();
   }
-
 
 
 

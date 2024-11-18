@@ -7,31 +7,39 @@
           <ion-card-title class="exercise-header">
             <span class="exercise-title">{{ ejercicioRealizado.nombreEjercicio }}</span>
             <span class="progress-container">
-              <span class="progress-indicator">{{ ejercicioRealizado.seriesCompletadas }} / {{ ejercicioRealizado.seriesTotal }}</span>
-              <ion-icon name="create-outline" (click)="abrirNotas(i); $event.stopPropagation()"
+              <span class="progress-indicator">{{ ejercicioRealizado.seriesCompletadas }} / {{
+                ejercicioRealizado.seriesTotal }}</span>
+              <ion-icon name="document-text-outline" (click)="abrirNotas(i); $event.stopPropagation()"
                 class="edit-icon"></ion-icon>
             </span>
           </ion-card-title>
         </ion-card-header>
 
-        <!-- Mover el contenido de la nota dentro de la sección desplegada -->
         <ion-card-content *ngIf="ejercicioRealizado.abierto">
           <div class="exercise-container">
 
-            <!-- Nota del ejercicio antes de comenzar las series -->
-            <p *ngIf="ejercicioRealizado.notas" class="exercise-note">Nota: {{ ejercicioRealizado.notas }}</p>
+            <!-- Nota del ejercicio -->
+            <p *ngIf="ejercicioRealizado.notas" class="exercise-note">Nota Ejercicio: {{ ejercicioRealizado.notas }}</p>
 
-            <!--  <p *ngIf="ejercicio.anteriorVezEjercicioID">
-              ID del ejercicio anterior: {{ ejercicio.anteriorVezEjercicioID }}
-            </p> -->
+            <!-- Encabezado (S, Reps, Kg) -->
+            <div class="series-header">
+              <span class="series-header-number">S</span>
+              <span class="series-header-reps">Reps</span>
+              <span class="series-header-peso">Kg</span>
+            </div>
 
+            <!-- Series progresivas -->
             <ng-container *ngFor="let serie of ejercicioRealizado.seriesReal; let j = index">
               <div *ngIf="j <= ejercicioRealizado.seriesCompletadas">
                 <div class="exercise-row">
-                  <span class="series-number">S{{ j + 1 }}.</span>
+                  <!-- Número de serie -->
+                  <span class="series-number">{{ j + 1 }}.</span>
+
+                  <!-- Repeticiones -->
                   <ion-input type="number" [(ngModel)]="serie.repeticiones" class="reps-input" placeholder="10"
                     [disabled]="!serie.enEdicion"></ion-input>
 
+                  <!-- Peso con etiqueta pesoAnterior -->
                   <div class="weight-control">
                     <button class="control-button minus" (click)="decrementarPeso(ejercicioRealizado, j)"
                       [disabled]="!serie.enEdicion">-</button>
@@ -39,18 +47,21 @@
                       [placeholder]="serie.pesoAnterior?.toString() || '0'" [disabled]="!serie.enEdicion"></ion-input>
                     <button class="control-button plus" (click)="incrementarPeso(ejercicioRealizado, j)"
                       [disabled]="!serie.enEdicion">+</button>
-                    <span *ngIf="serie.pesoAnterior" class="weight-label">({{ serie.pesoAnterior }} kg)</span>
-                    <!-- Botón de notas solo visible en modo edición -->
-                    <ion-icon *ngIf="serie.enEdicion" name="create-outline" class="note-icon"
-                      (click)="abrirNotasSerie(i, j)"></ion-icon>
+                    <span *ngIf="serie.pesoAnterior" class="peso-anterior">({{ serie.pesoAnterior }})</span>
                   </div>
 
+
+                  <!-- Botones de acción -->
                   <div class="action-buttons">
                     <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button"
                       [disabled]="serie.enEdicion && serie.peso === 0">
                       {{ serie.enEdicion ? 'OK' : 'EDIT' }}
                     </ion-button>
-                    <!-- Icono de cubo de basura visible solo en la última serie extra -->
+                  </div>
+                  <div class="icon-buttons">
+                    <!-- Botón para notas solo si está en edición -->
+                    <ion-icon *ngIf="serie.enEdicion" name="document-text-outline" class="note-icon"
+                      (click)="abrirNotasSerie(i, j)"></ion-icon>
                     <ion-icon
                       *ngIf="j === ejercicioRealizado.seriesReal.length - 1 && ejercicioRealizado.seriesReal.length > ejercicioRealizado.seriesTotal"
                       name="trash-outline" class="delete-icon delete-right" (click)="confirmarEliminarUltimaSerie(i)">
@@ -58,6 +69,7 @@
                   </div>
                 </div>
 
+                <!-- Checkbox para opciones adicionales (al fallo, dolor, con ayuda) -->
                 <div class="checkbox-row centered-checkboxes">
                   <label class="checkbox-label">
                     <ion-checkbox mode="ios" [(ngModel)]="serie.alFallo" [disabled]="!serie.enEdicion"
@@ -75,22 +87,42 @@
                     <span>Ayuda</span>
                   </label>
                 </div>
-
+                
+                <!-- Mostrar nota debajo de la serie -->
                 <div *ngIf="serie.notas" class="note-display">
-                  <span>Nota: {{ serie.notas }}</span>
+                  <span>Nota Serie: {{ serie.notas }}</span>
                 </div>
               </div>
             </ng-container>
-            <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline"
-              (click)="anadirSerieExtra(i)">
-              Añadir Serie Extra
-            </ion-button>
+         
+
+          <!-- Botón para añadir serie extra -->
+          <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline"
+            (click)="anadirSerieExtra(i)">
+            Añadir Serie Extra
+          </ion-button>
           </div>
         </ion-card-content>
+
       </ion-card>
+
     </ion-item>
   </ion-list>
+
+
+
+
+
+  <!-- Botón para añadir ejercicio extra -->
+  <div class="boton-anadir-ejercicio-card">
+    <ion-button expand="block" fill="solid" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">
+      <ion-icon name="add-circle-outline"></ion-icon> Añadir Ejercicio Extra
+    </ion-button>
+    <ion-modal></ion-modal>
+  </div>
 </ion-content>
+
+
 
 
 <ion-footer class="footer-fixed">

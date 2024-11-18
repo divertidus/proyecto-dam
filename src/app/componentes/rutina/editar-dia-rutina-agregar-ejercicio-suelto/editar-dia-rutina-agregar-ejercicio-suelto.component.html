@@ -1,6 +1,6 @@
 <ion-header>
   <!-- Toolbar principal con título y botón de cancelar -->
-  <ion-toolbar>
+  <ion-toolbar >
     <ion-buttons slot="end">
       <ion-button color="danger" (click)="cerrarModal()">Cancelar</ion-button>
     </ion-buttons>
@@ -10,9 +10,9 @@
   </ion-toolbar>
 
   <!-- Toolbar secundario con buscador -->
-  <ion-toolbar>
+  <ion-toolbar >
     <ion-item lines="none">
-      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..." shape="round">
+      <ion-searchbar (ionInput)="buscarEjercicios($event)" placeholder="Buscar ejercicios..." shape="round" >
       </ion-searchbar>
       <ion-button id="filtroPopoverTrigger" fill="clear" slot="end">
         <ion-icon name="filter-outline"></ion-icon>
@@ -22,6 +22,7 @@
           <app-filtro-ejercicio [filtroTipoPeso]="filtroTipoPeso" [filtroMusculoPrincipal]="filtroMusculoPrincipal"
             (aplicarFiltros)="aplicarFiltrosDesdeFiltro($event)">
           </app-filtro-ejercicio>
+          <ion-popover></ion-popover>
         </ng-template>
       </ion-popover>
     </ion-item>

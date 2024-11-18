@@ -13,8 +13,8 @@
   <!-- Información del día que se está editando -->
   <div class="info-dia-header">
     <h2 class="info-dia-title">
-      {{ diaEntrenamientoBackup.diaEntrenamientoNombre || 'X' }}: {{ diaEntrenamientoBackup.descripcion || 'Sin
-      descripción' }}
+      {{ diaEntrenamientoBackup.diaEntrenamientoNombre
+      || 'X' }}: {{ diaEntrenamientoBackup.descripcion || 'Sin descripción' }}
     </h2>
     <p class="info-dia-subtitle">Fecha: {{ diaEntrenamientoBackup.fechaEntrenamiento | date: 'dd/MM/yyyy' }}</p>
   </div>
@@ -38,7 +38,9 @@
 
       <ion-card-content *ngIf="ejercicioAbiertoIndex === i">
         <div class="exercise-container">
-          <p *ngIf="ejercicio.notas">Nota del ejercicio: {{ ejercicio.notas }}</p>
+
+          <!-- Nota del ejercicio -->
+          <p *ngIf="ejercicio.notas" class="exercise-note">Nota ejercicio: {{ ejercicio.notas }}</p>
 
           <!-- Cabecera fija para Reps y Peso -->
           <div class="series-header">
@@ -47,12 +49,15 @@
             <span class="series-header-peso">Kg</span>
             <span class="series-header-actions"></span>
           </div>
-
+          <!-- Series progresivas -->
           <ng-container *ngFor="let serie of ejercicio.series; let j = index">
             <div class="exercise-row">
               <span class="series-number">{{ j + 1 }}.</span>
+
+              <!-- Repeticiones -->
               <ion-input type="number" [(ngModel)]="serie.repeticiones" class="reps-input" placeholder="Reps"
                 [disabled]="!serie.enEdicion"></ion-input>
+
               <div class="weight-control">
                 <button class="control-button minus" (click)="decrementarPeso(serie)"
                   [disabled]="!serie.enEdicion">-</button>
@@ -61,6 +66,7 @@
                 <button class="control-button plus" (click)="incrementarPeso(serie)"
                   [disabled]="!serie.enEdicion">+</button>
               </div>
+
               <div class="action-buttons">
                 <ion-button fill="clear" size="small" (click)="toggleEditarSerie(i, j)" class="ok-button">
                   {{ serie.enEdicion ? 'OK' : 'EDIT' }}
@@ -106,6 +112,8 @@
     </ion-card>
   </ng-container>
 
+
+  
   <!-- Botón para añadir ejercicio extra -->
   <div class="boton-anadir-ejercicio-card">
     <ion-button expand="block" fill="solid" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">

@@ -2,9 +2,9 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { DiaRutina, EjercicioPlan } from 'src/app/models/rutina.model';
-import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert, IonContent } from '@ionic/angular/standalone';
+import { IonInput, IonCheckbox, IonGrid, IonRow, IonCol, IonAlert, IonContent, IonModal } from '@ionic/angular/standalone';
 import {
   IonHeader, IonToolbar, IonTitle, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonList, IonItem, IonIcon, IonFooter, IonButton
@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { EntrenamientoEstadoService } from 'src/app/services/sesion/entrenamiento-estado.service';
 import { NgClass } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
+import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../../rutina/editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
 
 
 
@@ -26,7 +27,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './vista-entreno.component.html',
   styleUrls: ['./vista-entreno.component.scss'],
   standalone: true,
-  imports: [IonContent, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
+  imports: [IonModal, IonContent, IonButton, IonFooter, IonInput, IonIcon, IonItem, IonList,
     IonCardContent, IonCardTitle, IonCardHeader,
     IonCard, FormsModule, NgClass, NgFor, NgIf, IonCheckbox]
 })
@@ -58,7 +59,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     private historialService: HistorialService,
     private authService: AuthService,
     private entrenamientoEstadoService: EntrenamientoEstadoService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private modalController: ModalController
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -149,23 +151,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     return { rutina, diaRutina };
   }
 
-  // Método para crear las series con valores anteriores
-  private crearSerieReal(serie: SerieReal, ultimoEjercicio: EjercicioRealizado | null, index: number): SerieReal {
-    return {
-      _id: uuidv4(),
-      numeroSerie: serie.numeroSerie,
-      repeticiones: serie.repeticiones,
-      repeticionesAnterior: ultimoEjercicio?.series[index]?.repeticiones || null,
-      peso: ultimoEjercicio?.series[index]?.peso || 0,
-      pesoAnterior: ultimoEjercicio?.series[index]?.peso || null,
-      alFallo: false,
-      conAyuda: false,
-      dolor: false,
-      enEdicion: true,
-      notas: ''
-    };
-  }
-
   private async crearEjercicioRealizado(ejercicioPlan: EjercicioPlan, rutinaId: string) {
     const ejercicioDetalles = await this.ejercicioService.obtenerEjercicioPorId(ejercicioPlan.ejercicioId);
 
@@ -204,7 +189,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       notas: '',
       anteriorVezEjercicioID: ultimoEjercicio?._id || null
     };
-}
+  }
 
 
   // Método para abrir el alert para agregar notas a una serie específica
@@ -686,5 +671,43 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     this.ejerciciosCompletados = 0;
     this.totalEjercicios = this.ejerciciosRealizados.length;
     console.log('Estado del entrenamiento reiniciado');
+  }
+
+  async agregarEjercicioRealizadoDesdePlan(ejercicioPlan: EjercicioPlan) {
+    console.log('Datos del EjercicioPlan:', ejercicioPlan);
+
+    const ejercicioRealizado = await this.crearEjercicioRealizado(ejercicioPlan, this.rutinaId!);
+    console.log('EjercicioRealizado creado con lógica reutilizada:', ejercicioRealizado);
+
+    // Agregar el nuevo ejercicio al array de ejercicios realizados
+    this.ejerciciosRealizados.push(ejercicioRealizado);
+
+    console.log('Estado actualizado de ejerciciosRealizados:', this.ejerciciosRealizados);
+    this.actualizarEjerciciosCompletados();
+
+    // Forzar la detección de cambios
+    this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * Método para abrir el modal de añadir ejercicio extra
+   */
+  async agregarEjercicioExtra() {
+    const modal = await this.modalController.create({
+      component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
+    });
+
+    modal.onDidDismiss().then((result) => {
+      console.log('Resultado del modal:', result);
+      if (result.data) {
+        const ejercicioPlan = result.data as EjercicioPlan;
+        console.log('EjercicioPlan recibido:', ejercicioPlan);
+        this.agregarEjercicioRealizadoDesdePlan(ejercicioPlan);
+      } else {
+        console.log('No se seleccionó ningún ejercicio.');
+      }
+    });
+
+    await modal.present();
   }
 }
