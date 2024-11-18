@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="content-adjusted" fullscreen>
+<ion-content>
   <!-- Información del día que se está editando -->
   <div class="info-dia-header">
     <h2 class="info-dia-title">
@@ -37,12 +37,20 @@
       </ion-card-header>
 
       <ion-card-content *ngIf="ejercicioAbiertoIndex === i">
-        <!-- Contenido de las series y acciones -->
         <div class="exercise-container">
           <p *ngIf="ejercicio.notas">Nota del ejercicio: {{ ejercicio.notas }}</p>
+
+          <!-- Cabecera fija para Reps y Peso -->
+          <div class="series-header">
+            <span class="series-header-number">S</span>
+            <span class="series-header-reps">Reps</span>
+            <span class="series-header-peso">Kg</span>
+            <span class="series-header-actions"></span>
+          </div>
+
           <ng-container *ngFor="let serie of ejercicio.series; let j = index">
             <div class="exercise-row">
-              <span class="series-number">S{{ j + 1 }}.</span>
+              <span class="series-number">{{ j + 1 }}.</span>
               <ion-input type="number" [(ngModel)]="serie.repeticiones" class="reps-input" placeholder="Reps"
                 [disabled]="!serie.enEdicion"></ion-input>
               <div class="weight-control">
@@ -94,6 +102,7 @@
         <ion-button *ngIf="mostrarBotonAnadirSerie(ejercicio)" expand="block" fill="outline"
           (click)="confirmarAnadirSerie(i)">Añadir Serie Extra</ion-button>
       </ion-card-content>
+
     </ion-card>
   </ng-container>
 

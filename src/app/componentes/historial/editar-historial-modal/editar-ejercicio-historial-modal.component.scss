@@ -114,30 +114,30 @@ ion-input {
 }
 
 .series-number {
-    width: 24px;
+    width: 24px; /* Igual que series-header-number */
     color: #666;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-align: right;
 }
 
 /* Input Styles */
 .reps-input {
-    width: 40px;
+    width: 40px; /* Igual que series-header-reps */
     height: 32px;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     background: white;
 }
 
 .weight-input {
-    width: 50px;
+    width: 50px; /* Igual que series-header-peso */
     height: 32px;
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     background: white;
 }
 
@@ -146,6 +146,7 @@ ion-input {
     display: flex;
     align-items: center;
     gap: 4px;
+    position: relative;
 }
 
 .control-button {
@@ -288,4 +289,45 @@ ion-button.ok-button:disabled {
 .enlarged-ok-button {
     font-size: 0.95rem;
     padding: 4px 10px;
+}
+
+/* SERIES HEADER */
+.series-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px; /* Ajustado para alinear perfectamente */
+    padding: 0.4rem 0.5rem; /* Igual que exercise-row */
+    font-size: 0.85rem; /* Tamaño consistente */
+    font-weight: bold;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 4px; /* Separación con las filas */
+    height: 32px; /* Alineación vertical uniforme */
+}
+
+.series-header-number {
+    width: 24px; /* Igual que series-number */
+    text-align: center; /* Centrado */
+    line-height: 32px; /* Alineación vertical */
+}
+
+.series-header-reps {
+    width: 40px; /* Igual que reps-input */
+    text-align: center;
+    line-height: 32px;
+}
+
+.series-header-peso {
+    width: 60px; /* Mantén el ancho consistente con el campo de peso */
+    text-align: center;
+    margin-left: 28px; /* Ajusta el texto para alinearse mejor con el input */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.series-header-actions {
+    flex-grow: 1; /* Se adapta al espacio sobrante */
+    text-align: right;
 }
