@@ -439,7 +439,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   async agregarEjercicioExtra() {
     const modal = await this.modalController.create({
       component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
-      cssClass: 'popover-ejercicio-compacto',
+      /* cssClass: 'popover-ejercicio-compacto', */
     });
 
     modal.onDidDismiss().then((result) => {

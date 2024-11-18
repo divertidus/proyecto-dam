@@ -74,7 +74,10 @@ export class EditarDiaRutinaComponent implements OnInit {
       component: EditarDiaRutinaEditarEjercicioPlanPopoverComponent,
       componentProps: { ejercicioPlan: { ...ejercicioPlan } },
       cssClass: 'popover-ejercicio-compacto',
-      translucent: true,
+      backdropDismiss: true,
+      mode: 'md', // Fuerza el modo iOS
+      showBackdrop: true,
+      animated: true, // Habilita animaciones
     });
     await popover.present();
 
@@ -114,7 +117,7 @@ export class EditarDiaRutinaComponent implements OnInit {
   async agregarEjercicioSuelto() {
     const modal = await this.modalController.create({
       component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
-      cssClass: 'popover-ejercicio-compacto',
+      /* cssClass: 'popover-ejercicio-compacto', */
     });
 
     modal.onDidDismiss().then((result) => {

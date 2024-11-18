@@ -40,16 +40,13 @@
 
 
 .popover-ejercicio-compacto {
-    --min-width: 90vw; /* Cambia este valor según lo que necesites */
-    --max-width: 450px; /* Define un límite máximo para pantallas más grandes */
+    --min-width: 90vw; /* Ancho mínimo para pantallas pequeñas */
+    --max-width: 450px; /* Ancho máximo */
     --border-radius: 12px;
     padding: 16px;
-}
 
-.popover-ejercicio-compacto {
-    --min-width: 90vw; /* Asegura un ancho mínimo de vista */
-    --max-width: 450px; /* Define un límite máximo */
-    --border-radius: 12px;
-    padding: 16px;
-    box-sizing: border-box;
+    /* Ajustes específicos para iOS */
+    @media all and (-webkit-touch-callout: none) {
+        border: 4px solid red; /* Visibilidad de prueba */
+    }
 }

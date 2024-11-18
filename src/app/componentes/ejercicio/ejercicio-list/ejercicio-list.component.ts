@@ -141,24 +141,27 @@ export class EjercicioListComponent implements OnInit {
       component: EjercicioFormComponent,
       cssClass: 'popover-ejercicio-compacto',
       backdropDismiss: true,
+      mode: 'md', // Fuerza el modo android
+      showBackdrop: true,
+      animated: true, // Habilita animaciones
     });
-
+  
     popover.onDidDismiss().then(async (result) => {
       if (result.data) {
         // Actualizar lista de ejercicios tras la creación de uno nuevo
         this.actualizarListaEjercicios();
-
+  
         // Mostramos el Toast de confirmación
         const toast = await this.toastController.create({
           message: 'Ejercicio creado correctamente',
           duration: 2000, // Duración en milisegundos (2 segundos)
           color: 'success', // Color de éxito (opcional)
-          position: 'bottom' // Posición del Toast
+          position: 'bottom', // Posición del Toast
         });
         await toast.present();
       }
     });
-
+  
     await popover.present();
   }
 
@@ -183,6 +186,9 @@ export class EjercicioListComponent implements OnInit {
       componentProps: { ejercicio: { ...ejercicio } }, // Pasar una copia del ejercicio
       cssClass: 'popover-ejercicio-compacto',
       backdropDismiss: true,
+      mode: 'md', // Fuerza el modo android
+      showBackdrop: true,
+      animated: true, // Habilita animaciones
     });
 
     popover.onDidDismiss().then((result) => {
@@ -217,7 +223,11 @@ export class EjercicioListComponent implements OnInit {
         ejercicio: { ...ejercicio }, // Pasamos una copia del ejercicio para editar
         modoEdicion: true
       },
-      cssClass: 'popover-ejercicio-compacto'
+      cssClass: 'popover-ejercicio-compacto',
+      backdropDismiss: true,
+      mode: 'md', // Fuerza el modo android
+      showBackdrop: true,
+      animated: true, // Habilita animaciones
     });
 
     popover.onDidDismiss().then((result) => {

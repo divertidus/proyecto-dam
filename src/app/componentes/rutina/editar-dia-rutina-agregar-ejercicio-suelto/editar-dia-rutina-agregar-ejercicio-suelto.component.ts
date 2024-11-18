@@ -77,6 +77,7 @@ export class EditarDiaRutinaAgregarEjercicioSueltoComponent implements OnInit {
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({
       header: `Agregar ${ejercicio.nombre}`,
+      backdropDismiss: false,
       inputs: [
         { name: 'series', type: 'number', placeholder: 'Número de Series', min: 1 },
         { name: 'repeticiones', type: 'number', placeholder: 'Repeticiones', min: 1 },

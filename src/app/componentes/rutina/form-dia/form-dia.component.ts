@@ -191,6 +191,7 @@ export class FormDiaComponent implements OnInit {
   async seleccionarEjercicio(ejercicio: Ejercicio) {
     const alert = await this.alertController.create({
       header: `Detalles de: ${ejercicio.nombre}`,
+      backdropDismiss: false,
       inputs: [
         {
           name: 'series',
@@ -229,7 +230,7 @@ export class FormDiaComponent implements OnInit {
                 .then((alert) => alert.present());
               return false;
             }
-  
+
             // Agregar el ejercicio al día como EjercicioPlan
             this.agregarEjercicio(ejercicio, parseInt(data.series), parseInt(data.repeticiones), data.notas);
             return true;
@@ -237,7 +238,7 @@ export class FormDiaComponent implements OnInit {
         },
       ],
     });
-  
+
     await alert.present();
   }
 
@@ -394,18 +395,21 @@ export class FormDiaComponent implements OnInit {
       component: EjercicioFormComponent,
       cssClass: 'popover-ejercicio-compacto',
       backdropDismiss: true,
+      mode: 'ios', // Fuerza el modo iOS
+      showBackdrop: true,
+      animated: true, // Habilita animaciones
     });
-  
+
     await popover.present();
-  
+
     const { data } = await popover.onDidDismiss();
     if (data && data._id) {
       console.log('Ejercicio creado desde FormDia:', data);
-  
+
       // Agregar el ejercicio recién creado a la lista general de ejercicios
       this.ejercicios.push(data);
       this.ejerciciosFiltrados = [...this.ejercicios]; // Actualizar la lista filtrada
-  
+
       // Crear automáticamente un EjercicioPlan con el _id del nuevo ejercicio
       this.seleccionarEjercicio(data); // Pasar el ejercicio creado al flujo de selección
     } else {
