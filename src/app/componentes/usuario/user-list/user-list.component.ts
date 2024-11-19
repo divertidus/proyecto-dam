@@ -11,7 +11,7 @@ import { IonList, IonListHeader, IonLabel, IonItem, IonAvatar, IonCard, IonCardH
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
   standalone: true,
-  imports: [IonIcon, IonTitle, IonToolbar, IonHeader, IonContent, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonAvatar, IonItem, IonLabel, IonListHeader, IonList, FormsModule, CommonModule]
+  imports: [IonAvatar,FormsModule, CommonModule]
 })
 export class UserListComponent implements OnInit {
 

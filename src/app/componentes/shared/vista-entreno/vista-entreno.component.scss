@@ -90,13 +90,13 @@
 .series-header-peso {
   width: 60px;
   text-align: center;
-  margin-left: 20px; /* Ajustado para alinear con la columna de inputs */
+  margin-left: 28px; /* Ajustado para alinear con la columna de inputs */
   line-height: 32px;
 }
 
 /* Contenedor de las series */
 .exercise-container {
-  padding: 0.5rem;
+  padding: 0.2rem;
   background-color: #f9f9f9;
   border-radius: 0 0 8px 8px;
 }
@@ -118,15 +118,24 @@
   text-align: right;
 }
 
-/* Inputs de Reps y Peso */
-.reps-input,
-.weight-input {
-  width: 50px;
+/* Input Styles */
+.reps-input {
+  width: 40px; /* Igual que series-header-reps */
   height: 32px;
   text-align: center;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  background: white;
+}
+
+.weight-input {
+  width: 50px; /* Igual que series-header-peso */
+  height: 32px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
   background: white;
 }
 
@@ -189,38 +198,38 @@ ion-button.ok-button:disabled {
   opacity: 0.5;
 }
 
-.delete-icon.delete-right {
-  margin-left: auto;
-  color: #ff4444;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
 
-/* Fila de checkboxes */
+
 .checkbox-row {
   display: flex;
-  justify-content: space-around; /* Ajusta el espaciado horizontal */
-  gap: 10px; /* Reduce el espacio entre elementos */
-  align-items: center; /* Centra verticalmente los checkboxes y el texto */
-  padding: 4px 0; /* Reduce el relleno vertical */
+  justify-content: center; /* Centra horizontalmente */
+  gap: 20px; /* Mantén el espaciado horizontal entre elementos */
+  padding: 0; /* Rellena ligeramente, casi sin separación vertical */
+  margin: 0; /* Elimina márgenes superiores e inferiores */
+  line-height: 1; /* Asegura que no se añada espacio extra */
 }
 
-/* Etiquetas de checkbox */
+/* Ajusta los checkboxes y texto */
 .checkbox-label {
   display: flex;
-  align-items: center; /* Alinea verticalmente el texto con el checkbox */
-  gap: 4px; /* Espaciado entre el checkbox y el texto */
-  font-size: 0.8rem; /* Ajusta el tamaño del texto */
-  color: #666;
-  line-height: 1; /* Reduce el espacio adicional entre líneas */
+  align-items: center; /* Alinea verticalmente */
+  gap: 4px; /* Espaciado mínimo entre el checkbox y el texto */
+  font-size: 0.85rem; /* Tamaño consistente del texto */
+  color: #666; /* Mantén el color */
+  margin: 0; /* Elimina márgenes adicionales */
+}
+/* Tamaño de los checkboxes */
+ion-checkbox {
+  --size: 18px; /* Reduce ligeramente el tamaño */
+  --border-radius: 4px; /* Mantén bordes redondeados */
+  --background: white; /* Fondo blanco */
+  --checkmark-color: #007bff; /* Azul para el checkmark */
 }
 
-/* Checkboxes */
-ion-checkbox {
-  --size: 16px; /* Reduce el tamaño del checkbox */
-  --border-radius: 4px; /* Mantén bordes redondeados pequeños */
+/* Opcional: Reducir opacidad de los checkboxes deshabilitados */
+ion-checkbox:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Footer */
@@ -320,3 +329,35 @@ ion-button[expand="block"] {
 .boton-anadir-ejercicio:hover {
   --background: #f9f9f9; /* Fondo ligeramente más claro al pasar el cursor */
 }
+
+
+/* Estilos para los iconos */
+.serie-icono {
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.icono-notas {
+  font-size: 1.2rem;
+  color: #007bff;
+  cursor: pointer;
+  margin-left: auto; /* Alinea automáticamente si es necesario */
+}
+
+.delete-icon.delete-right {
+  margin-left: auto; /* Asegura que la papelera esté contra la derecha */
+  color: #ff4444;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Icon Styles */
+.icon-buttons {
+  display: flex;
+  justify-content: flex-end; /* Alinea todo a la derecha */
+  align-items: center; /* Centra verticalmente */
+  gap: 8px; /* Espaciado entre iconos */
+  flex: 1; /* Asegura que ocupe todo el espacio disponible */
+}
+

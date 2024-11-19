@@ -119,7 +119,7 @@ export class HistorialService {
   async obtenerUltimoEjercicioRealizado(usuarioId: string, ejercicioPlanId: string, rutinaId: string, diaRutinaId: string): Promise<EjercicioRealizado | null> {
     try {
 
-      console.log('Soy el obtenerUltimoEjercicioRealizado y recibo el id de supoouestamente ejercicioPlanId:  ', ejercicioPlanId)
+      //console.log('Soy el obtenerUltimoEjercicioRealizado y recibo el id de supoouestamente ejercicioPlanId:  ', ejercicioPlanId)
       const historiales = await this.obtenerHistorialesPorUsuario(usuarioId);
 
       if (historiales.length === 0) return null;
@@ -140,12 +140,13 @@ export class HistorialService {
           );
 
           if (ejercicioRealizadoEncontrado) {
-            console.log('Detalles del ejercicioRealizado encontrado:', {
-              ejercicioPlanId: ejercicioRealizadoEncontrado.ejercicioPlanId,
-              id: ejercicioRealizadoEncontrado._id,
-              nombre: ejercicioRealizadoEncontrado.nombreEjercicioRealizado,
-              series: ejercicioRealizadoEncontrado.series
-            });
+            /*   console.log('Detalles del ejercicioRealizado encontrado:',
+                {
+                  ejercicioPlanId: ejercicioRealizadoEncontrado.ejercicioPlanId,
+                  id: ejercicioRealizadoEncontrado._id,
+                  nombre: ejercicioRealizadoEncontrado.nombreEjercicioRealizado,
+                  series: ejercicioRealizadoEncontrado.series
+                }); */
             return ejercicioRealizadoEncontrado; // Retorna el primer ejercicioRealizado encontrado en orden cronológico inverso
           }
         }

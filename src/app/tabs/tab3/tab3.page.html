@@ -1,23 +1,24 @@
 <app-toolbar-logged
-    [titulo]="entrenamientoEnProgreso ? 'Entrenamiento en curso' : 'Entrenamiento'"></app-toolbar-logged>
+  [titulo]="entrenamientoEnProgreso ? 'Entrenamiento en curso' : 'Entrenamiento'">
+</app-toolbar-logged>
 
 <ion-content>
-    <ng-container *ngIf="entrenamientoEnProgreso; else startContent">
-        <app-vista-entreno *ngIf="entrenamientoEnProgreso" [rutinaId]="entrenamientoDetalles?.rutinaId"
-            [diaRutinaId]="entrenamientoDetalles?.diaRutinaId"
-            [diaRutinaNombre]="entrenamientoDetalles?.diaRutinaNombre"
-            [descripcion]="entrenamientoDetalles?.descripcion">
-        </app-vista-entreno>
-    </ng-container>
+  <ng-container *ngIf="entrenamientoEnProgreso; else startContent">
+    <app-vista-entreno *ngIf="entrenamientoEnProgreso" [rutinaId]="entrenamientoDetalles?.rutinaId"
+        [diaRutinaId]="entrenamientoDetalles?.diaRutinaId"
+        [diaRutinaNombre]="entrenamientoDetalles?.diaRutinaNombre"
+        [descripcion]="entrenamientoDetalles?.descripcion">
+    </app-vista-entreno>
+  </ng-container>
 
-    <ng-template #startContent>
-        <app-ultimo-entreno></app-ultimo-entreno>
-        <div class="comenzar-entrenamiento-container">
-            <ion-button class="boton-comenzar" (click)="onComenzarButtonClick()" expand="block">
-                <ion-icon name="play-outline" slot="start"></ion-icon>
-                Comenzar a entrenar
-            </ion-button>
-        </div>
-        <ion-alert></ion-alert>
-    </ng-template>
+  <ng-template #startContent>
+    <app-ultimo-entreno></app-ultimo-entreno>
+    <div class="comenzar-entrenamiento-container">
+      <ion-button class="boton-comenzar" (click)="onComenzarButtonClick()" expand="block">
+        <ion-icon name="play-outline" slot="start"></ion-icon>
+        Comenzar a entrenar
+      </ion-button>
+    </div>
+    <ion-alert></ion-alert>
+  </ng-template>
 </ion-content>

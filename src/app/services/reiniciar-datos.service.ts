@@ -262,11 +262,11 @@ export class ReiniciarDatosService {
           // Primero, verifica si encuentra el día correctamente
           ejercicioPlanId: (() => {
             const dia = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
-            console.log('DEBUG -> Día encontrado para "Día 1":', dia);
+          //  // console.log('DEBUG -> Día encontrado para "Día 1":', dia);
 
             // Luego, verifica si encuentra el ejercicio dentro del día
             const ejercicio = dia?.ejercicios.find(e => e.nombreEjercicio === 'Jalón de Espalda');
-            console.log('DEBUG -> Ejercicio encontrado para "Jalón de Espalda" en "Día 1":', ejercicio);
+          //  // console.log('DEBUG -> Ejercicio encontrado para "Jalón de Espalda" en "Día 1":', ejercicio);
 
             // Si ambos son correctos, debería tener un _id, de lo contrario dará undefined
             return ejercicio ? ejercicio._id : undefined;
@@ -309,7 +309,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         }
       ];
-      console.log('DEBUG DE dia1Entrenamiento1 - ', dia1Entrenamiento1)
+      // console.log('DEBUG DE dia1Entrenamiento1 - ', dia1Entrenamiento1)
 
       const dia2Entrenamiento1 = [
         {
@@ -352,7 +352,7 @@ export class ReiniciarDatosService {
         }
       ];
 
-      console.log('DEBUG DE dia2Entrenamiento1 - ', dia2Entrenamiento1)
+      // console.log('DEBUG DE dia2Entrenamiento1 - ', dia2Entrenamiento1)
 
       const dia3Entrenamiento1 = [
         {
@@ -396,7 +396,7 @@ export class ReiniciarDatosService {
         }
       ];
 
-      console.log('DEBUG DE dia3Entrenamiento1 - ', dia3Entrenamiento1)
+      // console.log('DEBUG DE dia3Entrenamiento1 - ', dia3Entrenamiento1)
 
       // Segunda ronda (usamos el peso anterior donde corresponde)
       // Depuración para la segunda ronda
@@ -408,7 +408,7 @@ export class ReiniciarDatosService {
           ejercicioPlanId: (() => {
             // Paso 1: Buscar el día 'Día 1'
             const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
-            console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
+            // console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
 
             if (!diaEncontrado) {
               console.warn('WARNING -> No se encontró "Día 1" en diasRutina durante la segunda ronda');
@@ -417,7 +417,7 @@ export class ReiniciarDatosService {
 
             // Paso 2: Buscar el ejercicio 'Jalón de Espalda' en el día encontrado
             const ejercicioEncontrado = diaEncontrado.ejercicios.find(e => e.nombreEjercicio === 'Jalón de Espalda');
-            console.log('DEBUG -> Ejercicio encontrado para "Jalón de Espalda" en "Día 1" (segunda ronda):', ejercicioEncontrado);
+            // console.log('DEBUG -> Ejercicio encontrado para "Jalón de Espalda" en "Día 1" (segunda ronda):', ejercicioEncontrado);
 
             if (!ejercicioEncontrado) {
               console.warn('WARNING -> No se encontró el ejercicio "Jalón de Espalda" en "Día 1" (segunda ronda)');
@@ -425,7 +425,7 @@ export class ReiniciarDatosService {
             }
 
             // Paso 3: Retornar el `_id` del ejercicio si todo está correcto
-            console.log('DEBUG -> _id del ejercicio "Jalón de Espalda" en segunda ronda:', ejercicioEncontrado._id);
+            // console.log('DEBUG -> _id del ejercicio "Jalón de Espalda" en segunda ronda:', ejercicioEncontrado._id);
             return ejercicioEncontrado._id;
           })(),
 
@@ -446,7 +446,7 @@ export class ReiniciarDatosService {
           ejercicioPlanId: (() => {
             // Paso 1: Buscar el día 'Día 1'
             const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
-            console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
+            // console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
 
             if (!diaEncontrado) {
               console.warn('WARNING -> No se encontró "Día 1" en diasRutina durante la segunda ronda');
@@ -455,7 +455,7 @@ export class ReiniciarDatosService {
 
             // Paso 2: Buscar el ejercicio 'Remo Cerrado' en el día encontrado
             const ejercicioEncontrado = diaEncontrado.ejercicios.find(e => e.nombreEjercicio === 'Remo Cerrado');
-            console.log('DEBUG -> Ejercicio encontrado para "Remo Cerrado" en "Día 1" (segunda ronda):', ejercicioEncontrado);
+            // console.log('DEBUG -> Ejercicio encontrado para "Remo Cerrado" en "Día 1" (segunda ronda):', ejercicioEncontrado);
 
             if (!ejercicioEncontrado) {
               console.warn('WARNING -> No se encontró el ejercicio "Remo Cerrado" en "Día 1" (segunda ronda)');
@@ -463,7 +463,7 @@ export class ReiniciarDatosService {
             }
 
             // Paso 3: Retornar el `_id` del ejercicio si todo está correcto
-            console.log('DEBUG -> _id del ejercicio "Remo Cerrado" en segunda ronda:', ejercicioEncontrado._id);
+            // console.log('DEBUG -> _id del ejercicio "Remo Cerrado" en segunda ronda:', ejercicioEncontrado._id);
             return ejercicioEncontrado._id;
           })(),
           _id: uuidv4(),
@@ -482,7 +482,7 @@ export class ReiniciarDatosService {
           ejercicioPlanId: (() => {
             // Paso 1: Buscar el día 'Día 1'
             const diaEncontrado = this.diasRutina.find(dia => dia.diaNombre === 'Día 1');
-            console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
+            // console.log('DEBUG -> Día encontrado para "Día 1" en segunda ronda:', diaEncontrado);
 
             if (!diaEncontrado) {
               console.warn('WARNING -> No se encontró "Día 1" en diasRutina durante la segunda ronda');
@@ -491,7 +491,7 @@ export class ReiniciarDatosService {
 
             // Paso 2: Buscar el ejercicio 'Martillo' en el día encontrado
             const ejercicioEncontrado = diaEncontrado.ejercicios.find(e => e.nombreEjercicio === 'Martillo');
-            console.log('DEBUG -> Ejercicio encontrado para "Martillo" en "Día 1" (segunda ronda):', ejercicioEncontrado);
+            // console.log('DEBUG -> Ejercicio encontrado para "Martillo" en "Día 1" (segunda ronda):', ejercicioEncontrado);
 
             if (!ejercicioEncontrado) {
               console.warn('WARNING -> No se encontró el ejercicio "Martillo" en "Día 1" (segunda ronda)');
@@ -499,7 +499,7 @@ export class ReiniciarDatosService {
             }
 
             // Paso 3: Retornar el `_id` del ejercicio si todo está correcto
-            console.log('DEBUG -> _id del ejercicio "Martillo" en segunda ronda:', ejercicioEncontrado._id);
+            // console.log('DEBUG -> _id del ejercicio "Martillo" en segunda ronda:', ejercicioEncontrado._id);
             return ejercicioEncontrado._id;
           })(),
           _id: uuidv4(),
@@ -515,7 +515,7 @@ export class ReiniciarDatosService {
         }
       ];
 
-      console.log('DEBUG DE dia1Entrenamiento2 - ', dia1Entrenamiento2)
+      // console.log('DEBUG DE dia1Entrenamiento2 - ', dia1Entrenamiento2)
 
 
       const dia3Entrenamiento2 = [
@@ -555,7 +555,7 @@ export class ReiniciarDatosService {
         }
       ];
 
-      console.log('DEBUG DE dia3Entrenamiento2 - ', dia3Entrenamiento2)
+      // console.log('DEBUG DE dia3Entrenamiento2 - ', dia3Entrenamiento2)
 
       const dia1Entrenamiento3 = [
         {
@@ -599,7 +599,7 @@ export class ReiniciarDatosService {
         }
       ];
 
-      console.log('DEBUG DE dia1Entrenamiento3 - ', dia1Entrenamiento3)
+      // console.log('DEBUG DE dia1Entrenamiento3 - ', dia1Entrenamiento3)
 
       const dia2Entrenamiento2 = [
         {
@@ -643,7 +643,7 @@ export class ReiniciarDatosService {
           seriesTotal: 4
         }
       ];
-      console.log('DEBUG DE dia2Entrenamiento2 - ', dia2Entrenamiento2)
+      // console.log('DEBUG DE dia2Entrenamiento2 - ', dia2Entrenamiento2)
 
       const dia3Entrenamiento3 = [
         {
@@ -686,7 +686,7 @@ export class ReiniciarDatosService {
         }
       ];
 
-      console.log('DEBUG DE dia3Entrenamiento3 - ', dia3Entrenamiento3)
+      // console.log('DEBUG DE dia3Entrenamiento3 - ', dia3Entrenamiento3)
 
 
       // Generamos los días de entrenamiento con fechas asignadas
@@ -718,7 +718,7 @@ export class ReiniciarDatosService {
         { _id: uuidv4(), fechaEntrenamiento: '2024-10-09', diaRutinaId: this.diasRutina.find(dia => dia.diaNombre === 'Día 1')?._id, nombreRutinaEntrenamiento: 'Rutina 1', diaEntrenamientoNombre: 'Día 1', descripcion: 'Espalda y Bíceps', ejercicioRealizado: dia1Entrenamiento3 }
       ];
 
-      console.log('DEBUG DE DIASENTRENAMIENTOS - ', diasEntrenamientos)
+      // console.log('DEBUG DE DIASENTRENAMIENTOS - ', diasEntrenamientos)
 
       // Obtener todos los historiales del usuario logeado
       const historialesExistentes = await this.historialService.obtenerHistorialesPorUsuario(this.usuarioPruebas._id!);

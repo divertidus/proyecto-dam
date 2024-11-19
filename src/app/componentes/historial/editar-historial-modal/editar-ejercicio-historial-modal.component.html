@@ -28,10 +28,12 @@
             <span class="exercise-title">{{ ejercicio.nombreEjercicioRealizado || 'Ejercicio Sin Nombre' }}</span>
             <span class="progress-indicator small-text">{{ ejercicio.seriesCompletadas || 0 }} / {{
               ejercicio.seriesTotal || 1 }}</span>
-            <ion-icon name="document-text-outline" class="icono-notas ejercicio-icono"
-              (click)="abrirNotasEjercicio(i); $event.stopPropagation()"></ion-icon>
-            <ion-icon name="trash-outline" color="danger" class="icono-papelera ejercicio-icono"
-              (click)="confirmarEliminarEjercicio(i); $event.stopPropagation()"></ion-icon>
+            <div class="icon-buttons">
+              <ion-icon name="document-text-outline" class="icono-notas ejercicio-icono"
+                (click)="abrirNotasEjercicio(i); $event.stopPropagation()"></ion-icon>
+              <ion-icon name="trash-outline" color="danger" class="icono-papelera ejercicio-icono"
+                (click)="confirmarEliminarEjercicio(i); $event.stopPropagation()"></ion-icon>
+            </div>
           </div>
         </ion-card-title>
       </ion-card-header>
@@ -104,6 +106,7 @@
               <p>Nota: {{ serie.notas }}</p>
             </div>
           </ng-container>
+
         </div>
         <ion-button *ngIf="mostrarBotonAnadirSerie(ejercicio)" expand="block" fill="outline"
           (click)="confirmarAnadirSerie(i)">Añadir Serie Extra</ion-button>
@@ -113,7 +116,7 @@
   </ng-container>
 
 
-  
+
   <!-- Botón para añadir ejercicio extra -->
   <div class="boton-anadir-ejercicio-card">
     <ion-button expand="block" fill="solid" (click)="agregarEjercicioExtra()" class="boton-anadir-ejercicio">

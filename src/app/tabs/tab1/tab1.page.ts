@@ -16,6 +16,8 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-rutina/editar-dia-rutina.component';
 import { v4 as uuidv4 } from 'uuid';
+import { EntrenamientoEnCursoService } from 'src/app/services/sesion/entrenamiento-en-curso.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -48,30 +50,43 @@ export class Tab1Page implements OnInit, OnDestroy {
     private rutinaService: RutinaService,
     private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios   
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private entrenamientoEnCursoService: EntrenamientoEnCursoService,
+    private router: Router // Añade el router aquí
+
+
   ) { }
 
   ngOnInit() {
-    // Suscribirse a cambios del usuario logueado
-    this.usuarioSubscription = this.authService.usuarioLogeado$.subscribe(usuario => {
-      this.usuarioLogeado = usuario;
-      if (this.usuarioLogeado) {
-        console.log("Usuario logueado en Tab1Page:", this.usuarioLogeado); // Verifica el usuario cargado
-        this.rutinaService.cargarRutinas();
-        this.cargarEjercicios();
-      } else {
-        this.rutinas = [];
+    this.usuarioSubscription = this.authService.usuarioLogeado$.subscribe(async (usuario) => {
+      if (usuario !== this.usuarioLogeado) { // Solo actuar si hay un cambio de usuario
+        this.usuarioLogeado = usuario;
+
+        if (this.usuarioLogeado) {
+          console.log("Usuario logueado en Tab1Page:", this.usuarioLogeado);
+
+          // Cargar rutinas y ejercicios
+          this.rutinaService.cargarRutinas();
+          this.cargarEjercicios();
+
+          // Verificar entrenamiento en curso
+          await this.entrenamientoEnCursoService.verificarYMostrarEntrenamientoPendiente(
+            this.alertController,
+            this.router
+          );
+        } else {
+          // Si no hay usuario logueado, limpiar datos
+          this.rutinas = [];
+          this.ejercicios = [];
+        }
       }
     });
 
-    // Suscribirse a cambios en las rutinas almacenadas
-    this.rutinaSubscription = this.rutinaService.rutinas$.subscribe(rutinas => {
-      if (this.usuarioLogeado) {
-        this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
-      //  console.log("Rutinas filtradas para usuario Tab1Page :", this.rutinas); this.ordenarRutinas();
-      } else {
-        this.rutinas = [];
-      }
+    this.rutinaSubscription = this.rutinaService.rutinas$.subscribe((rutinas) => {
+      this.rutinas = this.usuarioLogeado
+        ? rutinas.filter((rutina) => rutina.usuarioId === this.usuarioLogeado?._id)
+        : [];
+      this.ordenarRutinas();
     });
   }
 
@@ -125,7 +140,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       entidad: 'rutina',
       nombre: `Rutina ${numeroRutina}`,
       usuarioId: this.usuarioLogeado?._id || '',
-      descripcion:'',
+      descripcion: '',
       dias: [dia], // Añadir el día creado a la nueva rutina
       timestamp: new Date().toISOString()
     };

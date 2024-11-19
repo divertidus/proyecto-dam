@@ -15,10 +15,10 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { v4 as uuidv4 } from 'uuid';
-import { EntrenamientoEstadoService } from 'src/app/services/sesion/entrenamiento-estado.service';
 import { NgClass } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../../rutina/editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
+import { EntrenamientoEnCursoService } from 'src/app/services/sesion/entrenamiento-en-curso.service';
 
 
 
@@ -47,7 +47,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   // Variables de conteo
   ejerciciosCompletados = 0;
   totalEjercicios = 0;
-  entrenamientoEnProgreso: boolean = false;
   entrenamientoDetalles: { rutinaId: string; diaRutinaId: string; descripcion: string } | null = null;
 
   private inicioEntrenamiento: Date | null = null; // Hora de inicio del entrenamiento
@@ -58,7 +57,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     private alertController: AlertController, // Para crear alertas
     private historialService: HistorialService,
     private authService: AuthService,
-    private entrenamientoEstadoService: EntrenamientoEstadoService,
+    private entrenamientoEnCursoService: EntrenamientoEnCursoService,
     private changeDetectorRef: ChangeDetectorRef,
     private modalController: ModalController
   ) { }
@@ -79,6 +78,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     // Solo suscripción al usuario
+
     this.inicioEntrenamiento = new Date(); // Almacena la fecha y hora de inicio del entrenamiento
     this.authService.usuarioLogeado$.subscribe((usuario) => {
       if (usuario) {
@@ -299,6 +299,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
   }
 
   async guardarSesion(mensajeEstado?: string) {
+    console.log('Ejercicios realizados a guardar:', this.ejerciciosRealizados);
+
     const finEntrenamiento = new Date(); // Marca la fecha y hora de finalización del entrenamiento
     const tiempoEmpleadoMinutos = this.inicioEntrenamiento
       ? Math.floor((finEntrenamiento.getTime() - this.inicioEntrenamiento.getTime()) / 60000)
@@ -347,6 +349,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       notas: '',
     };
 
+
     try {
       if (!this.usuarioId) {
         console.error('El usuario no está identificado.');
@@ -362,6 +365,8 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       } else {
         console.log('No se encontró un historial existente para el usuario.');
       }
+
+      console.log('Ejercicios realizados a guardar antes de :   if (historialExistente)', this.ejerciciosRealizados);
 
       if (historialExistente) {
         historialExistente.entrenamientos.push(nuevoDiaEntrenamiento);
@@ -379,14 +384,15 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       this.mostrarAlertaExito();
 
       // Finaliza el entrenamiento y regresa a la vista principal
-      this.entrenamientoEnProgreso = false;
-      this.entrenamientoEstadoService.finalizarEntrenamiento();
+      this.entrenamientoEnCursoService.setEstadoEntrenamiento(false)
+      this.entrenamientoEnCursoService.finalizarSinGuardarEntrenamiento()
 
     } catch (error) {
       console.error('Error al guardar el entrenamiento:', error);
       this.mostrarAlertaError();
     }
   }
+
 
   async mostrarAlertaExito() {
     const alert = await this.alertController.create({
@@ -637,17 +643,27 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
         {
           text: 'Sí, cancelar',
           role: 'destructive',
-          handler: () => {
-            this.entrenamientoEnProgreso = false; // Marca el entrenamiento como finalizado
-            this.reiniciarEstadoEntrenamiento(); // Restablece el estado a su inicio
-            this.entrenamientoEstadoService.finalizarEntrenamiento(); // Finaliza la sesión en el estado de entrenamiento
-          },
+          handler: () => this.ejecutarCancelacion(), // Llamar a una función que maneje la lógica
         },
       ],
     });
 
     await alert.present();
   }
+
+  private async ejecutarCancelacion() {
+    try {
+      // Finalizar el entrenamiento sin guardar
+      await this.entrenamientoEnCursoService.finalizarSinGuardarEntrenamiento();
+      this.entrenamientoEnCursoService.setEstadoEntrenamiento(false); // Actualizar el estado local
+      this.entrenamientoDetalles = null; // Limpiar los detalles en la vista
+      this.changeDetectorRef.detectChanges(); // Forzar actualización de la interfaz
+      console.log('Entrenamiento cancelado y eliminado correctamente');
+    } catch (error) {
+      console.error('Error al cancelar el entrenamiento:', error);
+    }
+  }
+
 
   // Método para reiniciar el estado del entrenamiento
   reiniciarEstadoEntrenamiento() {
@@ -689,9 +705,7 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     this.changeDetectorRef.detectChanges();
   }
 
-  /**
-   * Método para abrir el modal de añadir ejercicio extra
-   */
+  // Método para abrir el modal de añadir ejercicio extra
   async agregarEjercicioExtra() {
     const modal = await this.modalController.create({
       component: EditarDiaRutinaAgregarEjercicioSueltoComponent,
