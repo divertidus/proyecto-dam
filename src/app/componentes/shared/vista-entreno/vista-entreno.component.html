@@ -59,9 +59,9 @@
                     </ion-button>
                   </div>
                   <div class="icon-buttons">
-                    <!-- Botón para notas solo si está en edición -->
                     <ion-icon *ngIf="serie.enEdicion" name="document-text-outline" class="note-icon"
-                      (click)="abrirNotasSerie(i, j)"></ion-icon>
+                      (click)="abrirNotasSerie(i, j)">
+                    </ion-icon>
                     <ion-icon
                       *ngIf="j === ejercicioRealizado.seriesReal.length - 1 && ejercicioRealizado.seriesReal.length > ejercicioRealizado.seriesTotal"
                       name="trash-outline" class="delete-icon delete-right" (click)="confirmarEliminarUltimaSerie(i)">
@@ -87,20 +87,20 @@
                     <span>Ayuda</span>
                   </label>
                 </div>
-                
+
                 <!-- Mostrar nota debajo de la serie -->
                 <div *ngIf="serie.notas" class="note-display">
                   <span>Nota Serie: {{ serie.notas }}</span>
                 </div>
               </div>
             </ng-container>
-         
 
-          <!-- Botón para añadir serie extra -->
-          <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline"
-            (click)="anadirSerieExtra(i)">
-            Añadir Serie Extra
-          </ion-button>
+
+            <!-- Botón para añadir serie extra -->
+            <ion-button *ngIf="mostrarBotonAnadirSerieExtra(i)" expand="block" fill="outline"
+              (click)="anadirSerieExtra(i)">
+              Añadir Serie Extra
+            </ion-button>
           </div>
         </ion-card-content>
 

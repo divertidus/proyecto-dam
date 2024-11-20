@@ -320,3 +320,11 @@ ion-button[expand="block"] {
 .boton-anadir-ejercicio:hover {
   --background: #f9f9f9; /* Fondo ligeramente más claro al pasar el cursor */
 }
+
+
+.icon-buttons {
+  display: flex;
+  align-items: center; /* Alinea los iconos verticalmente */
+  gap: 8px; /* Espaciado horizontal entre los iconos */
+  justify-content: flex-end; /* Alinea los iconos al final */
+}

@@ -31,7 +31,7 @@ import { EjercicioFormComponent } from '../../ejercicio/ejercicio-form/ejercicio
     IonCard, IonCol, IonRow, IonGrid, IonContent,
     IonSearchbar, IonLabel, IonItem, IonFooter,
     CommonModule, FormsModule, ToolbarModalesCancelarComponent,
-    IonPopover, FiltroEjercicioComponent, EjercicioListComponent]
+    IonPopover, FiltroEjercicioComponent]
 
 })
 export class FormDiaComponent implements OnInit {

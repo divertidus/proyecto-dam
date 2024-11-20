@@ -5,13 +5,14 @@ import { PopoverController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { IonList, IonItem, IonAvatar, IonLabel, IonIcon } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-popover-usuario-avatar',
   templateUrl: './popover-usuario-avatar.component.html',
   styleUrls: ['./popover-usuario-avatar.component.scss'],
   standalone: true,
-  imports: [IonIcon,FormsModule, IonLabel, IonAvatar, IonItem, IonList,],
+  imports: [IonIcon,FormsModule, IonLabel, IonAvatar, IonItem, IonList,NgIf],
   providers: [ModalController,PopoverController]
 })
 export class PopoverUsuarioAvatarComponent {

@@ -18,11 +18,11 @@ import { EjercicioFormComponent } from '../../ejercicio/ejercicio-form/ejercicio
   selector: 'app-editar-dia-rutina-agregar-ejercicio-suelto',
   templateUrl: './editar-dia-rutina-agregar-ejercicio-suelto.component.html',
   styleUrls: ['./editar-dia-rutina-agregar-ejercicio-suelto.component.scss'],
-  imports: [IonButtons, IonModal, IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
+  imports: [IonButtons,IonTitle, IonPopover, IonIcon, IonFooter, IonButton,
     IonContent, IonToolbar, IonHeader, IonCardTitle,
     IonCard, IonCardContent, IonCardHeader, IonCol,
     FormsModule, IonRow, IonGrid, IonSearchbar, IonItem,
-    NgFor, FiltroEjercicioComponent, EjercicioFormComponent,NgIf],
+    NgFor, FiltroEjercicioComponent,NgIf],
   standalone: true,
   providers: []
 })

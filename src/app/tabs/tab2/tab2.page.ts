@@ -11,7 +11,7 @@ import { PopoverController, ModalController } from '@ionic/angular';
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar,FormsModule, IonTitle, IonContent, GestionEjerciciosComponent,ToolbarLoggedComponent],
+  imports: [FormsModule,IonContent, GestionEjerciciosComponent,ToolbarLoggedComponent],
   providers: [ModalController,PopoverController]
 })
 export class Tab2Page {

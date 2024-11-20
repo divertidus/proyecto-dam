@@ -4,6 +4,7 @@ import { IonItem, IonInput, IonContent, IonLabel, IonButton, IonSelect, IonSelec
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { PopoverController } from '@ionic/angular';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-ejercicio-ver-editar-popover',
@@ -11,7 +12,7 @@ import { PopoverController } from '@ionic/angular';
   styleUrls: ['./ejercicio-ver-editar-popover.component.scss'],
   standalone: true,
   imports: [IonText, IonIcon, IonButtons, IonToolbar, IonTitle, IonHeader, IonButton, IonLabel, IonContent,
-    IonItem, FormsModule],
+    IonItem, FormsModule,NgIf],
   providers: []
 })
 export class EjercicioVerEditarPopoverComponent {

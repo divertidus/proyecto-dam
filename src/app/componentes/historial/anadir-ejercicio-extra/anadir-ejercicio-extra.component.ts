@@ -13,10 +13,9 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
   selector: 'app-anadir-ejercicio-extra',
   templateUrl: './anadir-ejercicio-extra.component.html',
   styleUrls: ['./anadir-ejercicio-extra.component.scss'],
-  imports: [IonFooter, IonCardContent, IonCardTitle,
-    IonCardHeader, IonCard, IonIcon, CommonModule, IonTextarea, IonInput, IonItem,
-    IonList, IonButton, IonButtons, IonTitle, NgIf, NgFor, IonSearchbar,
-    IonToolbar, IonCheckbox, IonLabel, IonContent, IonHeader, FormsModule],
+  imports: [ IonIcon, CommonModule, IonItem,
+    IonList, IonButton, IonButtons, IonTitle, NgFor, IonSearchbar,
+    IonToolbar,IonLabel, IonContent, IonHeader, FormsModule],
   standalone: true,
   providers: [ModalController, AlertController],
 
