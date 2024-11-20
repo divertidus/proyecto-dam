@@ -19,7 +19,7 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../../rutina/editar-dia-rutina-agregar-ejercicio-suelto/editar-dia-rutina-agregar-ejercicio-suelto.component';
 import { EntrenamientoEnCursoService } from 'src/app/services/sesion/entrenamiento-en-curso.service';
-
+import { EntrenamientoState } from 'src/app/services/sesion/entrenamiento-en-curso.service';
 
 
 @Component({
@@ -190,7 +190,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       anteriorVezEjercicioID: ultimoEjercicio?._id || null
     };
   }
-
 
   // Método para abrir el alert para agregar notas a una serie específica
   async abrirNotasSerie(ejercicioIndex: number, serieIndex: number) {
@@ -384,7 +383,10 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
       this.mostrarAlertaExito();
 
       // Finaliza el entrenamiento y regresa a la vista principal
-      this.entrenamientoEnCursoService.setEstadoEntrenamiento(false)
+      this.entrenamientoEnCursoService.setEstadoEntrenamiento({
+        enProgreso: false,
+        pausado: false,
+      });
       this.entrenamientoEnCursoService.finalizarSinGuardarEntrenamiento()
 
     } catch (error) {
@@ -457,72 +459,63 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     this.actualizarEjerciciosCompletados();
   }
 
-
-  decrementarPeso(ejercicio: any, serieIndex: number) {
-    const serie = ejercicio.seriesReal[serieIndex];
-    if (!serie.peso) serie.peso = 0;
-    serie.peso = Math.max(0, serie.peso - 1.25);
+  private actualizarEjerciciosCompletados() {
+    this.ejerciciosCompletados = this.ejerciciosRealizados.filter(ejercicioRealizado => ejercicioRealizado.seriesCompletadas >= ejercicioRealizado.seriesTotal).length;
+    this.totalEjercicios = this.ejerciciosRealizados.length;
   }
 
-  incrementarPeso(ejercicio: any, serieIndex: number) {
-    const serie = ejercicio.seriesReal[serieIndex];
-    if (!serie.peso) serie.peso = 0;
-    serie.peso += 1.25;
-  }
 
-  // Método para toggle edición
-  toggleEdicion(ejercicioIndex: number, serieIndex: number) {
-    const serie = this.ejerciciosRealizados[ejercicioIndex].seriesReal[serieIndex];
-    if (serie.enEdicion) {
-      // Guardar cambios
-      serie.enEdicion = false;
-    } else {
-      // Entrar en modo edición
-      serie.enEdicion = true;
-    }
-  }
 
-  // Método para marcar serie completada
-
-  marcarSerieCompletada(ejercicioRealizadoIndex: number, serieRealIndex: number) {
+  marcarSerieCompletada(ejercicioRealizadoIndex: number, serieRealIndex: number): void {
     console.log(`Método marcarSerieCompletada llamado para ejercicio ${ejercicioRealizadoIndex}, serie ${serieRealIndex}`);
-
+  
     const ejercicioRealizado = this.ejerciciosRealizados[ejercicioRealizadoIndex];
     const serieReal = ejercicioRealizado.seriesReal[serieRealIndex];
-
+  
     // Validar que los campos necesarios estén completos y mostrar un mensaje de alerta en caso de error
     if (!serieReal.repeticiones || serieReal.peso === undefined || serieReal.peso <= 0) {
-      console.warn("La serie necesita repeticiones y peso definidos para completarse.");
+      console.warn(`La serie ${serieRealIndex} necesita repeticiones y peso definidos para completarse.`);
       return;
     }
-
+  
     // Marcar la serie como completada y bloquear su edición
     serieReal.completado = true;
     serieReal.enEdicion = false;
-
+    console.log(`Serie ${serieRealIndex} marcada como completada para ejercicio ${ejercicioRealizadoIndex}.`);
+  
     // Si es la siguiente serie en la secuencia, incrementa el contador de series completadas
     if (serieRealIndex === ejercicioRealizado.seriesCompletadas) {
       ejercicioRealizado.seriesCompletadas++;
+      console.log(`Contador de series completadas actualizado a ${ejercicioRealizado.seriesCompletadas}.`);
     }
-
+  
     // Si todas las series están completadas, marca el ejercicio como completado y ciérralo
     if (ejercicioRealizado.seriesCompletadas === ejercicioRealizado.seriesTotal) {
       ejercicioRealizado.completado = true;
-      ejercicioRealizado.abierto = false;  // Cerrar el ejercicio automáticamente
-      console.log(`Ejercicio ${ejercicioRealizadoIndex} cerrado al completarse. Estado de 'abierto':`, ejercicioRealizado.abierto);
+      ejercicioRealizado.abierto = false; // Cerrar el ejercicio automáticamente
+      console.log(`Ejercicio ${ejercicioRealizadoIndex} cerrado al completarse. Estado de 'abierto': ${ejercicioRealizado.abierto}`);
     } else {
-      console.log(`Ejercicio ${ejercicioRealizadoIndex} aún abierto. Estado de 'abierto':`, ejercicioRealizado.abierto);
+      console.log(`Ejercicio ${ejercicioRealizadoIndex} aún abierto. Estado de 'abierto': ${ejercicioRealizado.abierto}`);
     }
-
-    // **Actualizar el peso de la siguiente serie** si es la siguiente en la secuencia
+  
+    // Actualizar el peso de la siguiente serie si es la siguiente en la secuencia
     if (serieRealIndex + 1 < ejercicioRealizado.seriesReal.length) {
       const siguienteSerieReal = ejercicioRealizado.seriesReal[serieRealIndex + 1];
       if (siguienteSerieReal.peso === 0 || siguienteSerieReal.peso === null) {
         siguienteSerieReal.peso = serieReal.peso; // Asigna el peso de la serie actual como peso predeterminado para la siguiente serie
-        console.log(`Peso de la serie ${serieRealIndex + 1} actualizado a ${serieReal.peso} kg`);
+        console.log(`Peso de la serie ${serieRealIndex + 1} actualizado a ${serieReal.peso} kg.`);
       }
     }
-
+  
+    // Validar el estado completo del ejercicio y sus series
+    console.log('Ejercicio después de marcar serie:', JSON.stringify(ejercicioRealizado, null, 2));
+  
+    // Actualizar el estado del entrenamiento
+    this.actualizarEstadoEntrenamiento();
+  
+    // Imprimir depuración detallada del estado actualizado
+    console.log('Estado del entrenamiento actualizado tras completar la serie:', JSON.stringify(this.entrenamientoEnCursoService.obtenerEstadoActual(), null, 2));
+  
     // Forzar la detección de cambios para asegurar que el HTML refleje el estado actualizado
     this.changeDetectorRef.detectChanges();
   }
@@ -560,10 +553,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     this.ejerciciosRealizados[index].abierto = !this.ejerciciosRealizados[index].abierto;
   }
 
-  private actualizarEjerciciosCompletados() {
-    this.ejerciciosCompletados = this.ejerciciosRealizados.filter(ejercicioRealizado => ejercicioRealizado.seriesCompletadas >= ejercicioRealizado.seriesTotal).length;
-    this.totalEjercicios = this.ejerciciosRealizados.length;
-  }
 
   anadirSerieExtra(ejercicioRealizadoIndex: number) {
     const ejercicioRealizado = this.ejerciciosRealizados[ejercicioRealizadoIndex];
@@ -655,7 +644,13 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     try {
       // Finalizar el entrenamiento sin guardar
       await this.entrenamientoEnCursoService.finalizarSinGuardarEntrenamiento();
-      this.entrenamientoEnCursoService.setEstadoEntrenamiento(false); // Actualizar el estado local
+
+      // Actualizar el estado a uno vacío en lugar de un booleano
+      this.entrenamientoEnCursoService.setEstadoEntrenamiento({
+        enProgreso: false,
+        pausado: false,
+      });
+
       this.entrenamientoDetalles = null; // Limpiar los detalles en la vista
       this.changeDetectorRef.detectChanges(); // Forzar actualización de la interfaz
       console.log('Entrenamiento cancelado y eliminado correctamente');
@@ -664,30 +659,6 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
     }
   }
 
-
-  // Método para reiniciar el estado del entrenamiento
-  reiniciarEstadoEntrenamiento() {
-    this.ejerciciosRealizados.forEach(ejercicioRealizado => {
-      ejercicioRealizado.seriesCompletadas = 0;
-      ejercicioRealizado.seriesReal.forEach(serieReal => {
-        serieReal.repeticiones = null;
-        serieReal.peso = null;
-        serieReal.alFallo = false;
-        serieReal.dolor = false;
-        serieReal.conAyuda = false;
-        serieReal.completado = false;
-        serieReal.enEdicion = true;
-        serieReal.notas = '';
-      });
-      ejercicioRealizado.completado = false;
-      ejercicioRealizado.abierto = false;
-      ejercicioRealizado.notas = '';
-    });
-
-    this.ejerciciosCompletados = 0;
-    this.totalEjercicios = this.ejerciciosRealizados.length;
-    console.log('Estado del entrenamiento reiniciado');
-  }
 
   async agregarEjercicioRealizadoDesdePlan(ejercicioPlan: EjercicioPlan) {
     console.log('Datos del EjercicioPlan:', ejercicioPlan);
@@ -724,4 +695,113 @@ export class VistaEntrenoComponent implements OnInit, OnChanges {
 
     await modal.present();
   }
+
+  decrementarPeso(ejercicio: any, serieIndex: number) {
+    const serie = ejercicio.seriesReal[serieIndex];
+    if (!serie.peso) serie.peso = 0;
+    serie.peso = Math.max(0, serie.peso - 1.25);
+  }
+
+  incrementarPeso(ejercicio: any, serieIndex: number) {
+    const serie = ejercicio.seriesReal[serieIndex];
+    if (!serie.peso) serie.peso = 0;
+    serie.peso += 1.25;
+  }
+
+  actualizarEstadoEntrenamiento(): void {
+    const estadoActualizado: EntrenamientoState = {
+      ...this['obtenerEstadoActual'](), // Recupera el estado actual
+      datosEntrenamiento: this.ejerciciosRealizados.map((ejercicio) => ({
+        _id: ejercicio._id,
+        ejercicioId: ejercicio.ejercicioId,
+        nombreEjercicio: ejercicio.nombreEjercicio,
+        tipoPeso: ejercicio.tipoPeso,
+        series: ejercicio.seriesReal.map((serie) => ({
+          numeroSerie: serie.numeroSerie,
+          repeticiones: serie.repeticiones,
+          peso: serie.peso,
+          notas: serie.notas,
+          alFallo: serie.alFallo,
+          conAyuda: serie.conAyuda,
+          dolor: serie.dolor,
+          completado: serie.completado,
+        })), // Incluye toda la información de las series
+      })),
+      timestampUltimaPausa: new Date().toISOString(), // Actualización del tiempo
+    };
+  
+    this['setEstadoEntrenamiento'](estadoActualizado);
+  
+    console.log(
+      'Estado del entrenamiento actualizado:',
+      JSON.stringify(estadoActualizado, null, 2)
+    );
+  }
+
+  calcularTiempoAcumulado(): number {
+    if (!this.inicioEntrenamiento) {
+      console.warn('El entrenamiento no ha iniciado.');
+      return 0; // Si no hay inicio, el tiempo acumulado es 0
+    }
+
+    const ahora = new Date();
+    const inicio = new Date(this.inicioEntrenamiento);
+    const ultimaPausa = this.entrenamientoEnCursoService.obtenerEstadoActual().timestampUltimaPausa
+      ? new Date(this.entrenamientoEnCursoService.obtenerEstadoActual().timestampUltimaPausa)
+      : null;
+
+    // Si está pausado, calcula el tiempo hasta la última pausa
+    if (this.entrenamientoEnCursoService.obtenerEstadoActual().pausado && ultimaPausa) {
+      return Math.floor((ultimaPausa.getTime() - inicio.getTime()) / 60000); // Diferencia en minutos
+    }
+
+    // Si no está pausado, calcula el tiempo hasta ahora
+    return Math.floor((ahora.getTime() - inicio.getTime()) / 60000); // Diferencia en minutos
+  }
+
+
+
+
+
+
+
+  /*  QUIZA ELIMINABLES */
+
+  // Método para reiniciar el estado del entrenamiento
+  /*   reiniciarEstadoEntrenamiento() {
+      this.ejerciciosRealizados.forEach(ejercicioRealizado => {
+        ejercicioRealizado.seriesCompletadas = 0;
+        ejercicioRealizado.seriesReal.forEach(serieReal => {
+          serieReal.repeticiones = null;
+          serieReal.peso = null;
+          serieReal.alFallo = false;
+          serieReal.dolor = false;
+          serieReal.conAyuda = false;
+          serieReal.completado = false;
+          serieReal.enEdicion = true;
+          serieReal.notas = '';
+        });
+        ejercicioRealizado.completado = false;
+        ejercicioRealizado.abierto = false;
+        ejercicioRealizado.notas = '';
+      });
+  
+      this.ejerciciosCompletados = 0;
+      this.totalEjercicios = this.ejerciciosRealizados.length;
+      console.log('Estado del entrenamiento reiniciado');
+    } */
+
+
+  // Método para toggle edición
+  /*  toggleEdicion(ejercicioIndex: number, serieIndex: number) {
+     const serie = this.ejerciciosRealizados[ejercicioIndex].seriesReal[serieIndex];
+     if (serie.enEdicion) {
+       // Guardar cambios
+       serie.enEdicion = false;
+     } else {
+       // Entrar en modo edición
+       serie.enEdicion = true;
+     }
+   } */
+
 }

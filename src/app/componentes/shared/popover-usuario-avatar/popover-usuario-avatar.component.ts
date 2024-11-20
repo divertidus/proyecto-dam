@@ -29,14 +29,20 @@ export class PopoverUsuarioAvatarComponent {
 
   async logout(): Promise<void> {
     try {
-      // Verificar si hay un entrenamiento en curso
-      const estadoEntrenamiento = await this.entrenamientoEnCursoService.obtenerEstadoActual();
-
-      if (estadoEntrenamiento?.enProgreso) {
-        // Mostrar alerta de confirmación
+      // Obtener el estado actual del entrenamiento
+      const estadoEntrenamiento = this.entrenamientoEnCursoService.obtenerEstadoActual();
+  
+      // Debugging detallado del estado
+      console.log('Estado actual del entrenamiento:', JSON.stringify(estadoEntrenamiento, null, 2));
+  
+      if (estadoEntrenamiento.enProgreso) {
+        console.log('Entrenamiento en curso detectado. Mostrando alerta.');
+  
+        // Mostrar alerta para decidir acción
         const alert = await this.alertController.create({
           header: 'Entrenamiento en curso',
-          message: 'Hay un entrenamiento en curso. Si cierras sesión, el entrenamiento se finalizará. ¿Deseas guardarlo antes de salir?',
+          message:
+            'Hay un entrenamiento en curso. Si cierras sesión, el entrenamiento se finalizará. ¿Deseas guardarlo antes de salir?',
           buttons: [
             {
               text: 'Cancelar',
@@ -45,32 +51,32 @@ export class PopoverUsuarioAvatarComponent {
             {
               text: 'Finalizar sin guardar',
               handler: async () => {
-                await this.entrenamientoEnCursoService.finalizarSinGuardarEntrenamiento();
-                console.log('Entrenamientoen curso cancelado sin guardar.');
+                this.entrenamientoEnCursoService.finalizarSinGuardarEntrenamiento();
+                console.log('Entrenamiento cancelado sin guardar.');
                 this.procederLogout();
               },
             },
             {
               text: 'Guardar y salir',
               handler: async () => {
-                await this.entrenamientoEnCursoService.finalizarYGuardarEntrenamiento();
-                console.log('Entrenamiento en curso guardado.');
+                console.log('Guardando entrenamiento en curso:', JSON.stringify(estadoEntrenamiento, null, 2));
                 this.procederLogout();
               },
             },
           ],
         });
-
+  
         await alert.present();
       } else {
-        // Si no hay entrenamiento en curso, proceder con el logout
+        console.log('No hay entrenamiento en curso. Procediendo con el logout.');
         this.procederLogout();
       }
     } catch (error) {
       console.error('Error al verificar el estado del entrenamiento:', error);
-      this.procederLogout(); // Proseguir con el logout aunque falle la verificación
+      this.procederLogout(); // Proceder con el logout aunque falle la verificación
     }
   }
+  
 
   // Método auxiliar para realizar el cierre de sesión
   private procederLogout(): void {

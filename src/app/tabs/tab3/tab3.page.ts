@@ -44,46 +44,54 @@ export class Tab3Page implements OnInit {
   ) { addIcons(todosLosIconos) }
 
   async ngOnInit(): Promise<void> {
+    // Suscribirse al usuario logeado
     this.authService.usuarioLogeado$.subscribe(async (usuario) => {
+      // Resetear variables locales
       this.ultimoEntrenamiento = null;
-
+  
       if (usuario) {
         this.usuarioLogeado = usuario;
-
+  
         // Suscribirse a las rutinas del usuario
         this.rutinaService.rutinas$.subscribe((rutinas) => {
           this.rutinas = rutinas.filter((rutina) => rutina.usuarioId === this.usuarioLogeado?._id);
         });
-
+  
         // Suscribirse al historial de entrenamientos
         this.historialService.historial$.subscribe(() => {
           this.cargarUltimoEntrenamiento();
         });
-
+  
         // Suscribirse al estado del entrenamiento en curso
-        this.entrenamientoEnCursoService.getEstadoEntrenamiento().subscribe((enProgreso) => {
-          this.entrenamientoEnProgreso = enProgreso;
-          if (!enProgreso) {
+        this.entrenamientoEnCursoService.getEstadoEntrenamiento().subscribe((estadoEntrenamiento) => {
+          if (estadoEntrenamiento.enProgreso) {
+            this.entrenamientoEnProgreso = true;
+            this.entrenamientoDetalles = {
+              rutinaId: estadoEntrenamiento.rutinaId || '',
+              diaRutinaId: estadoEntrenamiento.diaRutinaId || '',
+              descripcion: estadoEntrenamiento.descripcion || 'Sin descripción',
+              diaRutinaNombre: estadoEntrenamiento.diaRutinaNombre || 'Día sin nombre',
+            };
+          } else {
+            this.entrenamientoEnProgreso = false;
             this.entrenamientoDetalles = null;
           }
         });
-
-        // Verificar el estado actual del entrenamiento
+  
+        // Cargar el estado del entrenamiento al iniciar
         try {
-          const entrenamientoEnCurso = await this.entrenamientoEnCursoService.verificarEntrenamientoEnCurso();
-          if (entrenamientoEnCurso) {
-            this.entrenamientoEnProgreso = !!entrenamientoEnCurso.enProgreso;
-            if (this.entrenamientoEnProgreso) {
-              this.entrenamientoDetalles = {
-                rutinaId: entrenamientoEnCurso.rutinaId || '',
-                diaRutinaId: entrenamientoEnCurso.diaRutinaId || '',
-                descripcion: entrenamientoEnCurso.descripcion || 'Sin descripción',
-                diaRutinaNombre: entrenamientoEnCurso.diaRutinaNombre || 'Día sin nombre',
-              };
-            }
+          const estadoActual = this.entrenamientoEnCursoService.obtenerEstadoActual();
+          if (estadoActual.enProgreso) {
+            this.entrenamientoEnProgreso = true;
+            this.entrenamientoDetalles = {
+              rutinaId: estadoActual.rutinaId || '',
+              diaRutinaId: estadoActual.diaRutinaId || '',
+              descripcion: estadoActual.descripcion || 'Sin descripción',
+              diaRutinaNombre: estadoActual.diaRutinaNombre || 'Día sin nombre',
+            };
           }
         } catch (error) {
-          console.error('Error al verificar entrenamiento en curso:', error);
+          console.error('Error al cargar el estado del entrenamiento en curso:', error);
         }
       } else {
         // Resetear datos si no hay usuario logeado
@@ -169,7 +177,7 @@ export class Tab3Page implements OnInit {
                 diaSeleccionado._id!,
                 diaSeleccionado.descripcion || 'Sin descripción',
                 diaSeleccionado.diaNombre,
-                { ejercicios: diaSeleccionado.ejercicios || [] }
+                { ejercicios: diaSeleccionado.ejercicios || [] } // Verifica si este parámetro es necesario
               );
 
               // Actualizar detalles del entrenamiento actual
