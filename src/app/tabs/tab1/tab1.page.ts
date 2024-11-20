@@ -1,4 +1,3 @@
-/* tab1.page.ts */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,19 +10,21 @@ import { Subscription } from 'rxjs';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
 import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
-import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal, IonAlert } from "@ionic/angular/standalone";
+import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal, IonAlert, IonTitle, IonFooter, IonToolbar } from "@ionic/angular/standalone";
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-rutina/editar-dia-rutina.component';
 import { v4 as uuidv4 } from 'uuid';
+import { ImportarExportarRutinaComponent } from 'src/app/componentes/importar-exportar-rutina/importar-exportar-rutina.component';
+
 
 @Component({
   selector: 'app-tab1',
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
-    IonButton, CommonModule, FormsModule, NgFor, NgIf, ToolbarLoggedComponent, FormsModule],
+  imports: [IonFooter,  IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
+    IonButton, CommonModule, FormsModule, NgFor, NgIf, ToolbarLoggedComponent, FormsModule, ImportarExportarRutinaComponent],
   providers: [ModalController, PopoverController]
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -68,7 +69,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.rutinaSubscription = this.rutinaService.rutinas$.subscribe(rutinas => {
       if (this.usuarioLogeado) {
         this.rutinas = rutinas.filter(rutina => rutina.usuarioId === this.usuarioLogeado?._id);
-      //  console.log("Rutinas filtradas para usuario Tab1Page :", this.rutinas); this.ordenarRutinas();
+        //  console.log("Rutinas filtradas para usuario Tab1Page :", this.rutinas); this.ordenarRutinas();
       } else {
         this.rutinas = [];
       }
@@ -125,7 +126,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       entidad: 'rutina',
       nombre: `Rutina ${numeroRutina}`,
       usuarioId: this.usuarioLogeado?._id || '',
-      descripcion:'',
+      descripcion: '',
       dias: [dia], // Añadir el día creado a la nueva rutina
       timestamp: new Date().toISOString()
     };

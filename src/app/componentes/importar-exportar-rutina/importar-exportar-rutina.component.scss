@@ -1,0 +1,40 @@
+.botones-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+}
+
+.boton-importar,
+.boton-exportar {
+  flex: 1;
+  text-align: center;
+  --background: #f3f4f6;
+  --border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column; /* Para alinear el icono encima del texto */
+  align-items: center;
+  gap: 6px; /* Espaciado entre el icono y el texto */
+  padding: 12px 0;
+}
+
+.boton-importar ion-icon,
+.boton-exportar ion-icon {
+  font-size: 32px;
+}
+
+.boton-importar ion-icon {
+  color: #28a745; /* Color verde */
+}
+
+.boton-exportar ion-icon {
+  color: #dc3545; /* Color rojo */
+}
+
+.boton-importar span,
+.boton-exportar span {
+  font-size: 0.9em;
+  color: #3b3b3b;
+}
