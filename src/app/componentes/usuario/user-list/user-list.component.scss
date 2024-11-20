@@ -90,12 +90,3 @@
     color: #00796b;
 }
 
-/* Centrar horizontalmente cuando no hay usuarios */
-.no-usuarios {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    /* Mantener la alineación superior */
-    padding-top: 20px;
-    /* Opcional: añadir un pequeño margen superior */
-}

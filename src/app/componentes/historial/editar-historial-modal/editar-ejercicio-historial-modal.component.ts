@@ -18,7 +18,7 @@ import { EditarDiaRutinaAgregarEjercicioSueltoComponent } from '../../rutina/edi
   selector: 'app-editar-ejercicio-historia-modal',
   templateUrl: './editar-ejercicio-historial-modal.component.html',
   styleUrls: ['./editar-ejercicio-historial-modal.component.scss'],
-  imports: [IonFooter, IonCardContent, CommonModule, IonCardTitle,IonLabel,IonItem,
+  imports: [IonFooter, IonCardContent, CommonModule, IonCardTitle,
     IonCardHeader, IonCard, IonIcon, IonInput, IonButtons,
     IonButton, IonTitle, NgIf, NgFor,IonCheckbox,
     IonToolbar, IonContent, IonHeader, FormsModule],

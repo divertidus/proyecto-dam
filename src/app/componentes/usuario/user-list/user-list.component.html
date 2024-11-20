@@ -1,16 +1,5 @@
-<div *ngIf="usuarios.length === 0" class="no-usuarios">
-  <div class="usuario-card nuevo-usuario" (click)="irCrearUsuario()">
-    <ion-avatar class="avatar">
-      <img src="assets/imagenes/menus/principal/add.png" alt="Añadir usuario" />
-    </ion-avatar>
-    <p>Crear Nuevo</p>
-  </div>
-</div>
-
-<div *ngIf="usuarios.length > 0" class="usuarios-grid">
-  
-
-  <!-- Tarjetas de usuarios existentes -->
+<div class="usuarios-grid">
+  <!-- Mostrar las tarjetas de usuarios existentes -->
   <div *ngFor="let usuario of usuarios" class="usuario-card" (click)="elegirUsuarioDeLista(usuario)">
     <ion-avatar class="avatar">
       <img [src]="usuario.imagenPerfil" alt="Imagen del usuario" />
@@ -18,7 +7,7 @@
     <h3 class="nombre">{{ usuario.nombre }}</h3>
     <p class="email">{{ usuario.email }}</p>
   </div>
-  
+
   <!-- Tarjeta para crear un nuevo usuario -->
   <div class="usuario-card nuevo-usuario" (click)="irCrearUsuario()">
     <ion-avatar class="avatar">
