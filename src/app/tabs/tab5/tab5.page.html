@@ -1,7 +1,19 @@
-<!-- tab5.page.html -->
 <app-toolbar-logged [titulo]="'Historial'"></app-toolbar-logged>
 
 <ion-content>
-    
-    <app-historial-entrenamiento></app-historial-entrenamiento>
+  <!-- Calendario -->
+  <app-calendario-historial></app-calendario-historial>
+
+  <!-- Lista compacta del historial (opcional) -->
+  <!-- <app-historial-entrenamiento></app-historial-entrenamiento> -->
 </ion-content>
+
+<!-- Footer con botón fijo -->
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="mostrarHistorialCompleto()">
+      Mostrar historial completo
+    </ion-button>
+    <ion-modal></ion-modal>
+  </ion-toolbar>
+</ion-footer>

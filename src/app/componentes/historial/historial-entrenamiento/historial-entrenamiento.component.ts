@@ -1,23 +1,25 @@
-/* historial-entrenamiento.component.ts */
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DiaEntrenamiento, HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { Usuario } from 'src/app/models/usuario.model';
 import { DiaEntrenamientoCardComponent } from 'src/app/componentes/shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular/standalone";
+import { IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonContent } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { firstValueFrom, switchMap } from 'rxjs';
+import { ToolbarModalesCancelarComponent } from '../../shared/toolbar-modales-cancelar/toolbar-modales-cancelar.component';
 
 @Component({
   selector: 'app-historial-entrenamiento',
   templateUrl: './historial-entrenamiento.component.html',
   styleUrls: ['./historial-entrenamiento.component.scss'],
   standalone: true,
-  imports: [IonCardContent, FormsModule, IonCardTitle, IonCardHeader, IonCard, IonList, NgIf, NgFor, CommonModule, DiaEntrenamientoCardComponent],
+  imports: [IonContent, IonCardContent, FormsModule, IonCardTitle,
+    IonCardHeader, IonCard, IonList, NgIf, NgFor,
+    CommonModule, DiaEntrenamientoCardComponent, ToolbarModalesCancelarComponent],
   providers: [ModalController, PopoverController]
 })
 export class HistorialEntrenamientoComponent implements OnInit {
@@ -28,6 +30,8 @@ export class HistorialEntrenamientoComponent implements OnInit {
 
   // Añadimos un mapa para almacenar los nombres de los ejercicios
   nombresEjercicios: { [id: string]: string } = {}
+
+  tituloBarraSuperior: string = 'Historial Completo'; // Propiedad no de solo lectura
 
   constructor(
     private authService: AuthService,

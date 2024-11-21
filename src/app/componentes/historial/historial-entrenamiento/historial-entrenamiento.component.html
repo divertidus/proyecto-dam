@@ -1,0 +1,24 @@
+<ion-content class="modal-content">
+  <!-- Toolbar -->
+  <app-toolbar-modales-cancelar [titulo]="tituloBarraSuperior"></app-toolbar-modales-cancelar>
+
+  <!-- Lista de entrenamientos -->
+  <ion-list>
+    <h3 *ngIf="entrenamientos.length > 0">Entrenamientos anteriores</h3>
+    <app-dia-entrenamiento-card *ngFor="let entrenamiento of entrenamientos; let i = index"
+      [diaEntrenamiento]="entrenamiento" [expandido]="isExpandido(i)" [index]="i"
+      [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)" (toggleExpand)="toggleEntrenamiento($event)"
+      [editable]="true" (diaEliminado)="handleEliminarDia($event)" [usuarioId]="usuarioLogeado?._id">
+    </app-dia-entrenamiento-card>
+  </ion-list>
+
+  <!-- Mensaje cuando no hay entrenamientos -->
+  <ion-card *ngIf="entrenamientos.length === 0">
+    <ion-card-header>
+      <ion-card-title>No hay entrenamientos registrados</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Registra un entrenamiento para verlo aquí.
+    </ion-card-content>
+  </ion-card>
+</ion-content>

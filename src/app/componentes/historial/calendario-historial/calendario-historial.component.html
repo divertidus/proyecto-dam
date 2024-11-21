@@ -1,0 +1,46 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <!-- Calendario -->
+        <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
+          (onTimeSelected)="onTimeSelected($event)" [markDisabled]="markDisabled" [locale]="'es-ES'"
+          [noEventsLabel]="' '" [autoSelect]="false" [showEventDetail]="false">
+        </calendar>
+      </ion-col>
+    </ion-row>
+
+    <!-- Entrenamientos del día seleccionado -->
+    <ion-row>
+      <ion-col size="12">
+        <h3>Entrenos para el día: {{ fechaSeleccionada }}</h3>
+      </ion-col>
+    </ion-row>
+
+    <!-- Mostrar entrenamientos -->
+    <ion-row *ngIf="entrenamientosFiltrados.length > 0; else noEntrenamientos">
+      <ion-col size="12">
+        <ion-list>
+          <app-dia-entrenamiento-card 
+            *ngFor="let entrenamiento of entrenamientosFiltrados; let i = index"
+            [diaEntrenamiento]="entrenamiento"
+            [expandido]="isExpandido(i)"
+            [index]="i"
+            [obtenerNombreEjercicio]="obtenerNombreEjercicio.bind(this)"
+            [editable]="true"
+            [usuarioId]="usuarioLogeado?._id"
+            (toggleExpand)="toggleEntrenamiento(i)">
+          </app-dia-entrenamiento-card>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    
+
+    <!-- Mensaje si no hay entrenamientos -->
+    <ng-template #noEntrenamientos>
+      <ion-row>
+        <ion-col size="12">
+          <p>No hay entrenos registrados para este día.</p>
+        </ion-col>
+      </ion-row>
+    </ng-template>
