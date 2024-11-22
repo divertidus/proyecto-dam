@@ -23,4 +23,46 @@ calendar {
   ion-card {
     margin-top: 8px;
   }
+
+  .calendar-header {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
   
+  .monthview-title {
+    font-size: 18px;
+    text-align: center;
+    color: #000; /* Cambia el color si es necesario */
+  }
+
+  .calendar-day.has-events {
+    background-color: #bae9f0; /* Fondo azul claro para días con eventos */
+    border-radius: 50%; /* Forma circular */
+    font-weight: bold; /* Texto en negrita */
+  }
+  
+  .calendar-day.selected {
+    background-color: #00acc1; /* Azul oscuro para el día seleccionado */
+    color: #fff; /* Texto blanco */
+  }
+  
+  .calendar-day.disabled {
+    background-color: #f0f0f0; /* Fondo gris para días deshabilitados */
+    color: #ccc; /* Texto gris */
+    pointer-events: none; /* No clicables */
+  }
+
+  .calendar-event-wrap .monthview-primary-with-event {
+    background-color: #D1F2EB; /* Color de fondo para días con eventos */
+    border-radius: 50%; /* Hacer el círculo */
+    color: #1A5276; /* Color del texto */
+    font-weight: bold;
+  }
+  
+  .calendar-event-wrap .monthview-secondary-with-event {
+    background-color: #D6EAF8; /* Color para días con eventos de otros meses */
+    border-radius: 50%;
+    color: #5D6D7E;
+  }

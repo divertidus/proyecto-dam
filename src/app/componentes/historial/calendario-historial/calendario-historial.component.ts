@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   IonContent,
   IonGrid,
@@ -14,6 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import { NgCalendarModule } from 'ionic2-calendar'; // Importa el componente del calendario
 import { CalendarMode } from 'ionic2-calendar';
+import { CalendarComponent } from 'ionic2-calendar';
 import { HistorialService } from 'src/app/services/database/historial-entrenamiento.service'; // Importa el servicio para obtener el historial
 import { Usuario } from 'src/app/models/usuario.model'; // Importa el modelo de Usuario
 import { AuthService } from 'src/app/auth/auth.service'; // Importa el servicio de autenticación
@@ -21,6 +22,11 @@ import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { DiaEntrenamiento, HistorialEntrenamiento } from 'src/app/models/historial-entrenamiento';
 import { DiaEntrenamientoCardComponent } from '../../shared/dia-entrenamiento-card/dia-entrenamiento-card.component';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+
+registerLocaleData(localeEs);
+
 
 @Component({
   selector: 'app-calendario-historial',
@@ -34,11 +40,15 @@ import { EjercicioService } from 'src/app/services/database/ejercicio.service';
     IonGrid,
     IonRow,
     IonCol,
+    IonToolbar,
+    IonTitle,
     NgCalendarModule,
     CommonModule, DiaEntrenamientoCardComponent
   ],
 })
 export class CalendarioHistorialComponent implements OnInit {
+  @ViewChild(CalendarComponent) calendarComponent: CalendarComponent;
+
 
   selectedEvent: any = null; // Nueva propiedad para almacenar el evento seleccionado
   eventSource: any[] = []; // Eventos para el calendario
@@ -47,12 +57,15 @@ export class CalendarioHistorialComponent implements OnInit {
   usuarioLogeado: Usuario | null = null; // Usuario autenticado
   nombresEjercicios: { [id: string]: string } = {}; // Mapa de nombres de ejercicios
   expandido: Set<number> = new Set(); // Control para expandir/contraer tarjetas
-  monthTitle: string = 'ASD'; // Declaración de la propiedad
+  monthTitle: string = ''; // Declaración de la propiedad
   fechaSeleccionada: string = ''; // Fecha seleccionada para mostrar el mensaje
+  private autoMarkToday = true; // Controla si se marca automáticamente el día actual
+
 
   calendar = {
     mode: 'month' as CalendarMode,
     currentDate: new Date(), // Fecha actual
+    formatMonthTitle: 'MMMM yyyy', // Formato del título del mes
   };
 
   constructor(
@@ -67,20 +80,34 @@ export class CalendarioHistorialComponent implements OnInit {
         this.usuarioLogeado = usuario;
         this.suscribirHistorial();
         this.cargarNombresEjercicios();
+  
+        // Seleccionar el día actual al cargar
+        const fechaActual = new Date().toISOString().split('T')[0];
+        this.fechaSeleccionada = fechaActual;
+  
+        // Filtrar entrenamientos por la fecha actual
+        this.entrenamientosFiltrados = this.entrenamientos.filter(entrenamiento => {
+          const fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
+          return fechaEntrenamiento === fechaActual;
+        });
+  
+        // Forzar recarga inicial del rango visible y sincronizar la vista
+        setTimeout(() => {
+          this.actualizarVistaCalendario();
+        }, 200);
       }
     });
   }
+  
 
   // Suscribirse al historial$ para obtener entrenamientos
-  // Sincronizar dinámicamente el calendario con el historial actualizado
   suscribirHistorial(): void {
     this.historialService.historial$.subscribe(historiales => {
-      // Aplanar entrenamientos y sincronizar calendario
       this.entrenamientos = historiales
         .flatMap(historial => historial.entrenamientos)
         .sort((a, b) => new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime());
-
-      // Mapear entrenamientos a eventos del calendario
+  
+      // Crear eventSource con los datos completamente cargados
       this.eventSource = this.entrenamientos.map(entrenamiento => ({
         id: entrenamiento._id,
         title: entrenamiento.nombreRutinaEntrenamiento,
@@ -89,10 +116,23 @@ export class CalendarioHistorialComponent implements OnInit {
         allDay: false,
         entrenamiento,
       }));
-
-      console.log('Eventos del calendario:', this.eventSource);
+  
+      console.log('Eventos del calendario actualizados:', this.eventSource);
+  
+      // Forzar actualización visual del calendario
+      setTimeout(() => {
+        this.actualizarVistaCalendario();
+      }, 200);
     });
   }
+
+  async actualizarVistaCalendario(): Promise<void> {
+    if (this.calendarComponent) {
+      this.calendarComponent.loadEvents();
+      console.log('Vista del calendario actualizada con eventos.');
+    }
+  }
+
 
   // Cargar nombres de ejercicios
   async cargarNombresEjercicios(): Promise<void> {
@@ -111,53 +151,44 @@ export class CalendarioHistorialComponent implements OnInit {
   actualizarEntrenamientos(historiales: HistorialEntrenamiento[]): void {
     this.entrenamientos = historiales
       .flatMap(historial => historial.entrenamientos)
-      .sort(
-        (a, b) =>
-          new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime()
-      );
+      .sort((a, b) => new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime());
+
     console.log('Entrenamientos cargados:', this.entrenamientos);
 
-    // Mapear los entrenamientos para el calendario
-    this.eventSource = this.entrenamientos.map(entrenamiento => ({
-      id: entrenamiento._id,
-      title: entrenamiento.nombreRutinaEntrenamiento,
-      startTime: new Date(entrenamiento.fechaEntrenamiento),
-      endTime: new Date(
-        new Date(entrenamiento.fechaEntrenamiento).getTime() + 60 * 60 * 1000
-      ),
-      allDay: false,
-      entrenamiento,
-    }));
+    // Normaliza las fechas antes de mapear
+    this.eventSource = this.entrenamientos.map(entrenamiento => {
+      const fechaNormalizada = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
+      return {
+        id: entrenamiento._id,
+        title: entrenamiento.nombreRutinaEntrenamiento,
+        startTime: new Date(fechaNormalizada), // Fecha normalizada
+        endTime: new Date(new Date(fechaNormalizada).getTime() + 60 * 60 * 1000),
+        allDay: false,
+        entrenamiento,
+      };
+    });
+
     console.log('Eventos del calendario:', this.eventSource);
   }
 
 
-
-
-
   //Detectar eventos seleccionados
   onEventSelected(event: any): void {
-  /*   console.log('Evento seleccionado:', event); // Verifica lo que devuelve el calendario
-    if (event?.entrenamiento) {
-      this.selectedEvent = event.entrenamiento; // Accedemos al objeto completo del entrenamiento
-      console.log('Entrenamiento seleccionado:', this.selectedEvent);
-    } else {
-      console.log('No hay entrenamiento seleccionado');
-    } */
+
   }
 
 
   // Manejar la selección de un día en el calendario
   onTimeSelected(event: any): void {
-    const fechaSeleccionada = new Date(event.selectedTime).toISOString().split('T')[0]; // Solo fecha
+    const fechaSeleccionada = new Date(event.selectedTime).toISOString(); // Conserva la hora completa
     this.fechaSeleccionada = fechaSeleccionada;
-
-    // Filtrar entrenamientos que coincidan con la fecha seleccionada
+  
+    // Filtrar entrenamientos por la fecha seleccionada
     this.entrenamientosFiltrados = this.entrenamientos.filter(entrenamiento => {
-      const fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
-      return fechaEntrenamiento === fechaSeleccionada;
+      const fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString();
+      return fechaEntrenamiento.split('T')[0] === fechaSeleccionada.split('T')[0]; // Comparación basada en la fecha, ignorando la hora
     });
-
+  
     console.log('Fecha seleccionada:', this.fechaSeleccionada);
     console.log('Entrenamientos filtrados:', this.entrenamientosFiltrados);
   }
@@ -165,29 +196,51 @@ export class CalendarioHistorialComponent implements OnInit {
 
 
 
-  onTitleChanged(event: any): void {
-    this.monthTitle = event.title; // Actualiza dinámicamente el mes
-    console.log('Mes actual:', this.monthTitle);
+  onTitleChanged(title: string): void {
+    console.log('Título actualizado:', title);
+    this.monthTitle = title; // Actualiza la propiedad con el nuevo título
   }
 
-  onRangeChanged(event: any): void {
-    console.log('Rango cambiado:', event);
+  onRangeChanged(event: { startTime: Date; endTime: Date }): void {
+    const start = event.startTime.toISOString().split('T')[0];
+    const end = event.endTime.toISOString().split('T')[0];
+  
+    // Filtrar entrenamientos en el rango visible
+    const entrenamientosEnRango = this.entrenamientos.filter(entrenamiento => {
+      const fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
+      return fechaEntrenamiento >= start && fechaEntrenamiento <= end;
+    });
+  
+    // Actualizar eventos del calendario
+    this.eventSource = entrenamientosEnRango.map(entrenamiento => ({
+      id: entrenamiento._id,
+      title: entrenamiento.nombreRutinaEntrenamiento,
+      startTime: new Date(entrenamiento.fechaEntrenamiento),
+      endTime: new Date(new Date(entrenamiento.fechaEntrenamiento).getTime() + 60 * 60 * 1000),
+      allDay: false,
+      entrenamiento,
+    }));
+  
+    console.log('Eventos en el rango:', this.eventSource);
+  
+    // Forzar actualización del calendario sin cambiar la fecha seleccionada
+    setTimeout(() => {
+      this.actualizarVistaCalendario();
+    }, 200);
   }
 
   // Permitir seleccionar días pasados, actuales y futuros
   markDisabled = (date: Date): boolean => {
-    const currentDate = new Date();
-    const fechaActual = currentDate.toISOString().split('T')[0];
     const fechaCalendario = date.toISOString().split('T')[0];
-
-    // Permitir seleccionar días pasados con entrenamientos
+    const hoy = new Date().toISOString().split('T')[0];
+  
+    // Permite seleccionar días con entrenamientos
     const tieneEntrenamiento = this.entrenamientos.some(entrenamiento => {
       const fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
       return fechaEntrenamiento === fechaCalendario;
     });
-
-    // Permitir días futuros y días con entrenamiento
-    return fechaCalendario < fechaActual && !tieneEntrenamiento;
+  
+    return fechaCalendario > hoy && !tieneEntrenamiento; // Deshabilitar solo días futuros sin entrenamientos
   };
 
   // Expandir o contraer una tarjeta de entrenamiento

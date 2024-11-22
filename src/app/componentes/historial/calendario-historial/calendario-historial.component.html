@@ -3,9 +3,22 @@
     <ion-row>
       <ion-col size="12">
         <!-- Calendario -->
-        <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
-          (onTimeSelected)="onTimeSelected($event)" [markDisabled]="markDisabled" [locale]="'es-ES'"
-          [noEventsLabel]="' '" [autoSelect]="false" [showEventDetail]="false">
+        <ion-toolbar>
+          <ion-title text-center>{{ monthTitle }}</ion-title>
+        </ion-toolbar>
+        <calendar
+          [eventSource]="eventSource"
+          [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate"
+          (onTimeSelected)="onTimeSelected($event)"
+          (onRangeChanged)="onRangeChanged($event)"
+          (onTitleChanged)="onTitleChanged($event)"
+          [markDisabled]="markDisabled"
+          [locale]="'es-ES'"
+          [formatMonthTitle]="calendar.formatMonthTitle"
+          [noEventsLabel]="'No hay eventos'"
+          [autoSelect]="false"
+          [showEventDetail]="false">
         </calendar>
       </ion-col>
     </ion-row>
@@ -13,7 +26,7 @@
     <!-- Entrenamientos del día seleccionado -->
     <ion-row>
       <ion-col size="12">
-        <h3>Entrenos para el día: {{ fechaSeleccionada }}</h3>
+        <h3>Entrenos para el día: {{ fechaSeleccionada | date:'dd/MM/yyyy' }}</h3>
       </ion-col>
     </ion-row>
 
@@ -34,7 +47,6 @@
         </ion-list>
       </ion-col>
     </ion-row>
-    
 
     <!-- Mensaje si no hay entrenamientos -->
     <ng-template #noEntrenamientos>
@@ -44,3 +56,5 @@
         </ion-col>
       </ion-row>
     </ng-template>
+  </ion-grid>
+</ion-content>

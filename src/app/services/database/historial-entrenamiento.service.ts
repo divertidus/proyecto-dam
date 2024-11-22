@@ -29,7 +29,13 @@ export class HistorialService {
     try {
       const historialesExistentes = await this.obtenerHistorialesPorUsuario(historial.usuarioId);
       let historialExistente = historialesExistentes[0];
-
+  
+      // Normalizar fechas de los entrenamientos
+      historial.entrenamientos.forEach(entrenamiento => {
+         // entrenamiento.fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
+         entrenamiento.fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString()
+      });
+  
       if (historialExistente) {
         historialExistente.entrenamientos.push(...historial.entrenamientos);
         await this.baseDatos.put({
@@ -40,7 +46,7 @@ export class HistorialService {
         historial._id = `historial_${historial.usuarioId}_${Date.now()}`;
         await this.baseDatos.put(historial);
       }
-
+  
       await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
       console.error('Error al agregar o actualizar el historial:', error);
@@ -54,6 +60,14 @@ export class HistorialService {
       const result = await this.baseDatos.find({
         selector: { entidad: 'historialEntrenamiento', usuarioId }
       });
+  
+      // Normalizar fechas antes de devolver los historiales
+      result.docs.forEach((historial: HistorialEntrenamiento) => {
+        historial.entrenamientos.forEach(entrenamiento => {
+          entrenamiento.fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString()
+        });
+      });
+  
       return result.docs as HistorialEntrenamiento[];
     } catch (error) {
       console.error('Error al obtener historiales:', error);
@@ -165,10 +179,10 @@ export class HistorialService {
   // Crear una nueva serie en un ejercicio de un día específico
   async crearSerie(historial: HistorialEntrenamiento, diaEntrenamiento: DiaEntrenamiento, ejercicio: EjercicioRealizado, nuevaSerie: SerieReal): Promise<void> {
     try {
-      // Verificar y asignar un ID único a la nueva serie si no existe
       nuevaSerie._id = nuevaSerie._id || `serie_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      ejercicio.series.push(nuevaSerie); // Agregar la serie al ejercicio
-
+      diaEntrenamiento.fechaEntrenamiento = new Date(diaEntrenamiento.fechaEntrenamiento).toISOString().split('T')[0]; // Normaliza la fecha del día
+      ejercicio.series.push(nuevaSerie);
+  
       await this.baseDatos.put({ ...historial, _rev: historial._rev });
       console.log('Serie creada exitosamente');
     } catch (error) {
@@ -225,8 +239,11 @@ export class HistorialService {
   async crearDiaEntrenamiento(historial: HistorialEntrenamiento, nuevoDia: DiaEntrenamiento): Promise<void> {
     try {
       nuevoDia._id = nuevoDia._id || uuidv4();
+      // nuevoDia.fechaEntrenamiento = new Date(nuevoDia.fechaEntrenamiento).toISOString().split('T')[0]; // Normaliza la fecha
+      nuevoDia.fechaEntrenamiento = new Date(nuevoDia.fechaEntrenamiento).toISOString()
+  
       historial.entrenamientos.push(nuevoDia);
-
+  
       await this.baseDatos.put({ ...historial, _rev: historial._rev });
       await this.emitirHistorialActualizado(historial.usuarioId);
     } catch (error) {
@@ -255,19 +272,22 @@ export class HistorialService {
           entrenamientos: { $elemMatch: { _id: diaActualizado._id } }
         }
       });
-
+  
       if (result.docs.length === 0) {
         console.error('No se encontró ningún historial que contenga el día a actualizar.');
         return;
       }
-
+  
       const historial = result.docs[0];
       const indexDia = historial.entrenamientos.findIndex(dia => dia._id === diaActualizado._id);
       if (indexDia === -1) {
         console.error('El día de entrenamiento no se encontró en el historial.');
         return;
       }
-
+  
+      // Normalizar la fecha antes de actualizar
+      diaActualizado.fechaEntrenamiento = new Date(diaActualizado.fechaEntrenamiento).toISOString().split('T')[0];
+  
       historial.entrenamientos[indexDia] = { ...diaActualizado };
       await this.baseDatos.put({ ...historial, _rev: historial._rev });
       await this.emitirHistorialActualizado(historial.usuarioId);
