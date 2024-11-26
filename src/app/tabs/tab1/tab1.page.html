@@ -19,12 +19,15 @@
         <div class="header-rutina" (click)="toggleExpandirRutina(rutina)">
           <div class="header-content">
             <ion-card-title class="rutina-nombre">{{ rutina.nombre }}</ion-card-title>
-            <ion-card-subtitle class="rutina-dias">Rutina de {{ rutina.dias.length }} días</ion-card-subtitle>
+            <ion-card-subtitle class="rutina-dias">(Días:{{ rutina.dias.length }})</ion-card-subtitle>
             <div class="iconos-header">
               <ion-icon name="pencil-outline" (click)="editarRutina(rutina, $event)"
                 class="icono-cambiar-nombre"></ion-icon><ion-modal></ion-modal>
               <ion-icon name="close-outline" (click)="eliminarRutina(rutina, $event)"
                 class="icono-eliminar-rutina"></ion-icon><ion-modal></ion-modal>
+              <!-- Botón de compartir -->
+              <ion-icon name="share-social-outline" (click)="compartirRutina(rutina, $event)"
+                class="icono-compartir-rutina"></ion-icon>
             </div>
           </div>
           <div class="descripcion-rutina">

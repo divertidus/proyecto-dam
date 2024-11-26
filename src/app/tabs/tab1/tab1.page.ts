@@ -16,6 +16,7 @@ import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-rutina/editar-dia-rutina.component';
 import { v4 as uuidv4 } from 'uuid';
 import { ImportarExportarRutinaComponent } from 'src/app/componentes/importar-exportar-rutina/importar-exportar-rutina.component';
+import { CompartirService } from '../../services/compartir.service';
 
 
 @Component({
@@ -23,7 +24,7 @@ import { ImportarExportarRutinaComponent } from 'src/app/componentes/importar-ex
   templateUrl: './tab1.page.html',
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
-  imports: [IonFooter,  IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
+  imports: [IonFooter, IonModal, IonContent, IonCardContent, IonList, IonCardSubtitle, IonCardTitle, IonCardHeader, IonCard, IonIcon,
     IonButton, CommonModule, FormsModule, NgFor, NgIf, ToolbarLoggedComponent, FormsModule, ImportarExportarRutinaComponent],
   providers: [ModalController, PopoverController]
 })
@@ -49,7 +50,8 @@ export class Tab1Page implements OnInit, OnDestroy {
     private rutinaService: RutinaService,
     private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios   
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private compartirService: CompartirService
   ) { }
 
   ngOnInit() {
@@ -270,6 +272,11 @@ export class Tab1Page implements OnInit, OnDestroy {
     });
 
     await modal.present();
+  }
+
+  async compartirRutina(rutina: Rutina, event: Event) {
+    event.stopPropagation(); // Evitar conflictos con otros eventos
+    await this.compartirService.compartirRutina(rutina);
   }
 
 

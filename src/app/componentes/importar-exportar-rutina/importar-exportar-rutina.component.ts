@@ -10,6 +10,7 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { v4 as uuidv4 } from 'uuid'; // Asegúrate de instalar e importar uuid
 import { Capacitor } from '@capacitor/core';
 import { EjercicioService } from '../../services/database/ejercicio.service';
+import { Share } from '@capacitor/share';
 
 
 
@@ -770,15 +771,6 @@ async leerContenidoDesdeBlob(blob: Blob): Promise<string> {
       throw new Error('El esquema de URI no es compatible.');
     }
   }
-
-
-
-
-
-
-
-
-
 
 
   async procesarRutinaImportada(rutina: any) {
