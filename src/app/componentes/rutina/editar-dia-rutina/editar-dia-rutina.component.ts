@@ -217,16 +217,18 @@ export class EditarDiaRutinaComponent implements OnInit {
         {
           text: 'Guardar',
           handler: (data) => {
-            if (data.descripcion && data.descripcion.trim() !== '') {
+            if (data.descripcion && data.descripcion.trim() !== '' && data.descripcion.trim() !== this.diaRutina.descripcion) {
               this.diaRutina.descripcion = data.descripcion.trim();
+              this.cambiosRealizados = true; // Marcar cambios realizados
             }
           },
         },
       ],
     });
-
+  
     await alert.present();
   }
+  
 
 
 }
