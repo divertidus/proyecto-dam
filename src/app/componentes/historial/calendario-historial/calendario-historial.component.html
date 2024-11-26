@@ -10,6 +10,8 @@
           [eventSource]="eventSource"
           [calendarMode]="calendar.mode"
           [currentDate]="calendar.currentDate"
+          [queryMode]= "calendar.queryMode"
+          (onCurrentDateChanged)="dateChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
           (onRangeChanged)="onRangeChanged($event)"
           (onTitleChanged)="onTitleChanged($event)"
