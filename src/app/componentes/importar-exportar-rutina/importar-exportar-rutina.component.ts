@@ -9,6 +9,7 @@ import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { v4 as uuidv4 } from 'uuid'; // Asegúrate de instalar e importar uuid
 import { Capacitor } from '@capacitor/core';
+import { EjercicioService } from '../../services/database/ejercicio.service';
 
 
 
@@ -30,7 +31,8 @@ export class ImportarExportarRutinaComponent implements OnInit {
   constructor(
     private rutinaService: RutinaService,
     private alertController: AlertController,
-    private authService: AuthService
+    private authService: AuthService,
+    private ejercicioService:EjercicioService
   ) { }
 
   async ngOnInit() {
@@ -381,63 +383,76 @@ export class ImportarExportarRutinaComponent implements OnInit {
     */
 
 
-  async exportarRutinaSeleccionada(rutinaSeleccionada: Rutina) {
+   async exportarRutinaSeleccionada(rutinaSeleccionada: Rutina) {
     if (!rutinaSeleccionada) {
-      console.error('No se seleccionó ninguna rutina para exportar.');
-      return;
+        console.error('No se seleccionó ninguna rutina para exportar.');
+        return;
     }
 
     try {
-      // Clonar la rutina y eliminar campos innecesarios
-      const rutinaParaExportar = {
-        ...rutinaSeleccionada,
-        usuarioId: undefined,
-        _rev: undefined,
-      };
+        // Crear una copia de la rutina y procesar los ejercicios
+        const rutinaParaExportar = {
+            ...rutinaSeleccionada,
+            usuarioId: undefined,
+            _rev: undefined,
+            dias: await Promise.all(rutinaSeleccionada.dias.map(async (dia) => {
+                return {
+                    ...dia,
+                    ejercicios: await Promise.all(dia.ejercicios.map(async (ejercicioPlan) => {
+                        // Obtener el ejercicio completo de la base de datos
+                        const ejercicioCompleto = await this.ejercicioService.obtenerEjercicioPorId(ejercicioPlan.ejercicioId);
+                        return {
+                            ...ejercicioPlan,
+                            ejercicioCompleto, // Incluir los detalles completos del ejercicio
+                        };
+                    })),
+                };
+            })),
+        };
 
-      // Generar el nombre del archivo
-      const nombreArchivo = `Rutina_${rutinaSeleccionada.nombre.replace(/\s+/g, '_')}_${rutinaSeleccionada._id.substring(0, 6)}.json`;
+        // Generar el nombre del archivo
+        const nombreArchivo = `Rutina_${rutinaSeleccionada.nombre.replace(/\s+/g, '_')}_${rutinaSeleccionada._id.substring(0, 6)}.json`;
 
-      // Convertir la rutina a JSON
-      const rutinaJSON = JSON.stringify(rutinaParaExportar, null, 2);
+        // Convertir la rutina a JSON
+        const rutinaJSON = JSON.stringify(rutinaParaExportar, null, 2);
 
-      // Detectar si estamos en navegador o en dispositivo
-      const isBrowser = !Capacitor.isNativePlatform();
+        // Detectar si estamos en navegador o en dispositivo
+        const isBrowser = !Capacitor.isNativePlatform();
 
-      if (isBrowser) {
-        // Descargar directamente en el navegador
-        this.descargarArchivoEnNavegador(nombreArchivo, rutinaJSON);
-      } else {
-        // Guardar el archivo en el dispositivo
-        const permisosConcedidos = await this.solicitarPermisos();
-        if (!permisosConcedidos) {
-          console.warn('No se puede proceder sin permisos.');
-          return;
+        if (isBrowser) {
+            // Descargar directamente en el navegador
+            this.descargarArchivoEnNavegador(nombreArchivo, rutinaJSON);
+        } else {
+            // Guardar el archivo en el dispositivo
+            const permisosConcedidos = await this.solicitarPermisos();
+            if (!permisosConcedidos) {
+                console.warn('No se puede proceder sin permisos.');
+                return;
+            }
+
+            const result = await Filesystem.writeFile({
+                path: nombreArchivo,
+                data: rutinaJSON,
+                directory: Directory.Documents,
+                encoding: Encoding.UTF8,
+            });
+
+            console.log('Archivo exportado correctamente al dispositivo:', result);
+
+            // Mostrar alerta de éxito en el dispositivo
+            const alertaExito = await this.alertController.create({
+                header: 'Éxito',
+                message: 'Rutina exportada correctamente al almacenamiento del dispositivo.',
+                buttons: ['OK'],
+                cssClass: 'alert-success',
+            });
+
+            await alertaExito.present();
         }
-
-        const result = await Filesystem.writeFile({
-          path: nombreArchivo,
-          data: rutinaJSON,
-          directory: Directory.Documents,
-          encoding: Encoding.UTF8,
-        });
-
-        console.log('Archivo exportado correctamente al dispositivo:', result);
-
-        // Mostrar alerta de éxito en el dispositivo
-        const alertaExito = await this.alertController.create({
-          header: 'Éxito',
-          message: 'Rutina exportada correctamente al almacenamiento del dispositivo.',
-          buttons: ['OK'],
-          cssClass: 'alert-success',
-        });
-
-        await alertaExito.present();
-      }
     } catch (error) {
-      console.error('Error al exportar la rutina:', error);
+        console.error('Error al exportar la rutina:', error);
     }
-  }
+}
 
 
   // Método para descargar el archivo en el navegador
@@ -808,32 +823,47 @@ async leerContenidoDesdeBlob(blob: Blob): Promise<string> {
 
   async importarRutinaNueva(rutina: any, usarIdOriginal: boolean = false) {
     try {
-      const numeroRutina = this.calcularNumeroRutina();
-      const nombreRutina = `Rutina Importada ${numeroRutina}`;
+        const numeroRutina = this.calcularNumeroRutina();
+        const nombreRutina = `Rutina Importada ${numeroRutina}`;
 
-      const nuevaRutina: Rutina = {
-        ...rutina,
-        nombre: nombreRutina,
-        usuarioId: this.usuarioLogeado?._id,
-        _id: usarIdOriginal ? rutina._id : uuidv4(),
-        _rev: undefined,
-      };
+        // Procesar ejercicios para verificar su existencia o crearlos si no existen
+        for (const dia of rutina.dias) {
+            for (const ejercicio of dia.ejercicios) {
+                // Verificar o crear el ejercicio
+                const ejercicioId = await this.ejercicioService.verificarOCrearEjercicio({
+                    nombre: ejercicio.nombreEjercicio,
+                    tipoPeso: ejercicio.tipoPeso,
+                    musculoPrincipal: ejercicio.musculoPrincipal,
+                    descripcion: ejercicio.notas || '',
+                });
+                // Asignar el ID correcto al ejercicio en la rutina
+                ejercicio.ejercicioId = ejercicioId;
+            }
+        }
 
-      await this.guardarRutinaEnBBDD(nuevaRutina);
+        const nuevaRutina: Rutina = {
+            ...rutina,
+            nombre: nombreRutina,
+            usuarioId: this.usuarioLogeado?._id,
+            _id: usarIdOriginal ? rutina._id : uuidv4(),
+            _rev: undefined, // No necesitamos conservar la revisión de la rutina importada
+        };
 
-      const alertaExito = await this.alertController.create({
-        header: 'Éxito',
-        message: 'Rutina importada con éxito.',
-        buttons: ['OK'],
-        cssClass: 'alert-success',
-      });
+        await this.guardarRutinaEnBBDD(nuevaRutina);
 
-      await alertaExito.present();
-      console.log('Rutina importada y guardada correctamente:', nuevaRutina);
+        const alertaExito = await this.alertController.create({
+            header: 'Éxito',
+            message: 'Rutina importada con éxito.',
+            buttons: ['OK'],
+            cssClass: 'alert-success',
+        });
+
+        await alertaExito.present();
+        console.log('Rutina importada y guardada correctamente:', nuevaRutina);
     } catch (error) {
-      console.error('Error al guardar la rutina nueva:', error);
+        console.error('Error al guardar la rutina nueva:', error);
     }
-  }
+}
 
 
   calcularNumeroRutina(): number {

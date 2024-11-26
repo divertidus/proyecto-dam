@@ -199,36 +199,36 @@ export class EditarDiaRutinaComponent implements OnInit {
   }
 
   async editarDescripcion() {
-    const alert = await this.alertController.create({
-      header: 'Editar Descripción del Día',
-      inputs: [
-        {
-          name: 'descripcion',
-          type: 'textarea',
-          placeholder: 'Ingresa una nueva descripción',
-          value: this.diaRutina.descripcion,
+  const alert = await this.alertController.create({
+    header: 'Editar Descripción del Día',
+    inputs: [
+      {
+        name: 'descripcion',
+        type: 'textarea',
+        placeholder: 'Ingresa una nueva descripción',
+        value: this.diaRutina.descripcion,
+      },
+    ],
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+      },
+      {
+        text: 'Guardar',
+        handler: (data) => {
+          if (data.descripcion && data.descripcion.trim() !== '' && data.descripcion.trim() !== this.diaRutina.descripcion) {
+            this.diaRutina.descripcion = data.descripcion.trim();
+            this.cambiosRealizados = true; // Marcar cambios realizados
+          }
         },
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Guardar',
-          handler: (data) => {
-            if (data.descripcion && data.descripcion.trim() !== '' && data.descripcion.trim() !== this.diaRutina.descripcion) {
-              this.diaRutina.descripcion = data.descripcion.trim();
-              this.cambiosRealizados = true; // Marcar cambios realizados
-            }
-          },
-        },
-      ],
-    });
-  
-    await alert.present();
-  }
-  
+      },
+    ],
+  });
+
+  await alert.present();
+}
+
 
 
 }

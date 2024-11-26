@@ -66,12 +66,13 @@ export class EjercicioFormComponent {
   async guardarEjercicio() {
     if (this.validarEjercicio() && this.formModificado) {
       if (!this.ejercicio._id) {
-        this.ejercicio._id = uuidv4(); // Generar un _id único para el ejercicio
+        this.ejercicio._id = uuidv4(); // Generar un _id único si no existe
       }
-      await this.ejercicioService.agregarEjercicio(this.ejercicio); // Guardar el ejercicio en la base de datos
-      this.popoverController.dismiss(this.ejercicio); // Retornar el ejercicio creado, incluyendo su _id
+      // Enviar el ejercicio con _rev si existe
+      await this.ejercicioService.agregarEjercicio(this.ejercicio);
+      this.popoverController.dismiss(this.ejercicio); // Retornar el ejercicio actualizado
     } else {
-      console.log('Faltan campos por completar.');
+      console.log('Faltan campos por completar o no hubo cambios.');
     }
   }
 

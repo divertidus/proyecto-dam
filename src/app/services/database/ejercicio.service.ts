@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from './database.service'; // Importamos el servicio de base de datos
 import { BehaviorSubject } from 'rxjs'; // Importamos BehaviorSubject para manejar la lista de ejercicios de manera reactiva
 import { Ejercicio } from 'src/app/models/ejercicio.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root' // El servicio está disponible en toda la aplicación
@@ -191,6 +192,44 @@ export class EjercicioService {
       // Agregar los ejercicios iniciales
       const resultados = await this.baseDatos.bulkDocs(ejerciciosIniciales);
       //  console.log('Ejercicio.Service -> Ejercicios iniciales agregados:', resultados);
+    }
+  }
+
+  async verificarOCrearEjercicio(ejercicio: Partial<Ejercicio>): Promise<string> {
+    try {
+      // Buscar ejercicios similares en la base de datos
+      const ejerciciosExistentes = await this.obtenerEjercicios();
+      const ejercicioCoincidente = ejerciciosExistentes.find(e =>
+        e.nombre === ejercicio.nombre &&
+        e.tipoPeso === ejercicio.tipoPeso &&
+        e.musculoPrincipal === ejercicio.musculoPrincipal &&
+        e.descripcion === ejercicio.descripcion
+      );
+  
+      if (ejercicioCoincidente) {
+        console.log('Ejercicio existente encontrado:', ejercicioCoincidente);
+        return ejercicioCoincidente._id; // Reutilizar el _id del ejercicio existente
+      }
+  
+      // Crear un nuevo ejercicio si no se encuentra coincidencia
+      const nuevoEjercicio: Ejercicio = {
+        _id: uuidv4(),
+        entidad: 'ejercicio',
+        nombre: ejercicio.nombre,
+        tipoPeso: ejercicio.tipoPeso,
+        musculoPrincipal: ejercicio.musculoPrincipal,
+        descripcion: ejercicio.descripcion || '',
+        ejercicioPersonalizado: true, // O según corresponda
+        imagen: ejercicio.imagen || '',
+       
+      };
+  
+      const respuesta = await this.agregarEjercicio(nuevoEjercicio);
+      console.log('Nuevo ejercicio creado:', respuesta);
+      return respuesta.id; // Retornar el _id del nuevo ejercicio
+    } catch (error) {
+      console.error('Error al verificar o crear ejercicio:', error);
+      throw error;
     }
   }
 
