@@ -1,68 +1,157 @@
+/* General Styles for Calendar */
 calendar {
-    .monthview-primary-with-event {
-      background-color: #4caf50 !important; /* Resalta los días con eventos */
-      color: white !important;
-    }
-  
-    .monthview-selected {
-      background-color: #f0f0f0 !important;
-    }
-  }
-  
-
-  .calendar-grid {
-    padding: 0;
-    margin: 0;
-  }
-  
-  ion-row {
-    margin: 0;
-    padding: 0;
-  }
-  
-  ion-card {
-    margin-top: 8px;
+  .monthview-primary-with-event {
+    background-color: #4caf50 !important; /* Verde para días con eventos */
+    color: white !important;
   }
 
-  .calendar-header {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px;
+  .monthview-selected {
+    background-color: #f0f0f0 !important;
+    color: black !important; /* Día seleccionado */
   }
-  
-  .monthview-title {
-    font-size: 18px;
-    text-align: center;
-    color: #000; /* Cambia el color si es necesario */
-  }
+}
 
-  .calendar-day.has-events {
-    background-color: #bae9f0; /* Fondo azul claro para días con eventos */
-    border-radius: 50%; /* Forma circular */
-    font-weight: bold; /* Texto en negrita */
-  }
-  
-  .calendar-day.selected {
-    background-color: #00acc1; /* Azul oscuro para el día seleccionado */
-    color: #fff; /* Texto blanco */
-  }
-  
-  .calendar-day.disabled {
-    background-color: #f0f0f0; /* Fondo gris para días deshabilitados */
-    color: #ccc; /* Texto gris */
-    pointer-events: none; /* No clicables */
-  }
+.calendar-grid {
+  padding: 0;
+  margin: 0;
+}
 
-  .calendar-event-wrap .monthview-primary-with-event {
-    background-color: #D1F2EB; /* Color de fondo para días con eventos */
-    border-radius: 50%; /* Hacer el círculo */
-    color: #1A5276; /* Color del texto */
-    font-weight: bold;
-  }
-  
-  .calendar-event-wrap .monthview-secondary-with-event {
-    background-color: #D6EAF8; /* Color para días con eventos de otros meses */
-    border-radius: 50%;
-    color: #5D6D7E;
-  }
+ion-row {
+  margin: 0;
+  padding: 0;
+}
+
+ion-card {
+  margin-top: 8px;
+}
+
+/* Estilo de título del calendario */
+.calendar-header {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.monthview-title {
+  font-size: 18px;
+  text-align: center;
+  color: #000;
+}
+
+/* Días del calendario */
+.calendar-day.has-events {
+  background-color: #bae9f0; /* Fondo azul claro para días con eventos */
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.calendar-day.selected {
+  background-color: #00acc1; /* Azul oscuro para el día seleccionado */
+  color: #fff;
+}
+
+.calendar-day.disabled {
+  background-color: #f0f0f0; /* Fondo gris para días deshabilitados */
+  color: #ccc;
+  pointer-events: none;
+}
+
+/* Eventos específicos con clases dinámicas */
+.cal-day-color-default-tone-1 {
+  background-color: #F8BBD0 !important; /* Rosa claro */
+}
+
+.cal-day-color-default-tone-2 {
+  background-color: #F48FB1 !important; /* Rosa medio */
+}
+
+.cal-day-color-rutina1-tone-1 {
+  background-color: #FF5733 !important; /* Naranja */
+}
+
+.cal-day-color-rutina1-tone-2 {
+  background-color: #FF7043 !important; /* Naranja claro */
+}
+
+.cal-day-color-rutina2-tone-1 {
+  background-color: #33FF57 !important; /* Verde */
+}
+
+.cal-day-color-rutina2-tone-2 {
+  background-color: #57FF76 !important; /* Verde claro */
+}
+
+.cal-day-color-rutina3-tone-1 {
+  background-color: #33C9FF !important; /* Azul */
+}
+
+.cal-day-color-rutina3-tone-2 {
+  background-color: #57D4FF !important; /* Azul claro */
+}
+
+/* Ajuste para días con múltiples rutinas */
+.cal-day-color-multiple {
+  background: repeating-linear-gradient(
+    45deg,
+    #FF5733,
+    #FF5733 10px,
+    #33FF57 10px,
+    #33FF57 20px
+  ) !important; /* Patrón diagonal para días con múltiples rutinas */
+  color: #fff;
+  font-weight: bold;
+}
+
+
+
+
+
+/* Calendario y mensajes */
+.entrenos-dia-card {
+  margin: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.entrenos-dia-card ion-card-header {
+  background-color: #f3f4f6; /* Gris claro */
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.entrenos-dia-card ion-card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #3a3a3a;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.entrenos-dia-card ion-card-content {
+  font-size: 1em;
+  color: #4a4a4a;
+}
+
+/* Estilo para el mensaje "No hay entrenos registrados" */
+.no-entrenos-card {
+  margin: 16px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  text-align: center;
+  color: #6b6b6b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-entrenos-card ion-card-title {
+  font-weight: bold;
+  color: #3b3b3b;
+  margin-bottom: 12px;
+}
+
+.no-entrenos-card ion-card-content {
+  font-size: 0.95em;
+  color: #4a4a4a;
+  line-height: 1.5;
+}

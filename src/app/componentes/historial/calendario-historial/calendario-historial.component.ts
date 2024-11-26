@@ -43,6 +43,10 @@ registerLocaleData(localeEs);
     IonToolbar,
     IonTitle,
     NgCalendarModule,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
     CommonModule, DiaEntrenamientoCardComponent
   ],
 })
@@ -68,6 +72,7 @@ export class CalendarioHistorialComponent implements OnInit {
     formatMonthTitle: 'MMMM yyyy', // Formato del título del mes
   };
 
+  
   constructor(
     private authService: AuthService,
     private historialService: HistorialService,
@@ -106,19 +111,25 @@ export class CalendarioHistorialComponent implements OnInit {
       this.entrenamientos = historiales
         .flatMap(historial => historial.entrenamientos)
         .sort((a, b) => new Date(b.fechaEntrenamiento).getTime() - new Date(a.fechaEntrenamiento).getTime());
-  
+
       // Crear eventSource con los datos completamente cargados
-      this.eventSource = this.entrenamientos.map(entrenamiento => ({
-        id: entrenamiento._id,
-        title: entrenamiento.nombreRutinaEntrenamiento,
-        startTime: new Date(entrenamiento.fechaEntrenamiento),
-        endTime: new Date(new Date(entrenamiento.fechaEntrenamiento).getTime() + 60 * 60 * 1000),
-        allDay: false,
-        entrenamiento,
-      }));
-  
+      this.eventSource = this.entrenamientos.map((entrenamiento, index) => {
+        const rutinaId = entrenamiento.rutinaId || 'default'; // ID de la rutina
+        const tono = (index % 7) + 1; // Hasta 7 tonos diferentes
+        const cssClass = `cal-day-color-${rutinaId}-tone-${tono}`; // Clase CSS dinámica
+
+        return {
+          id: entrenamiento._id,
+          title: entrenamiento.nombreRutinaEntrenamiento,
+          startTime: new Date(entrenamiento.fechaEntrenamiento),
+          endTime: new Date(new Date(entrenamiento.fechaEntrenamiento).getTime() + 60 * 60 * 1000),
+          allDay: true,
+          cssClass,
+        };
+      });
+
       console.log('Eventos del calendario actualizados:', this.eventSource);
-  
+
       // Forzar actualización visual del calendario
       setTimeout(() => {
         this.actualizarVistaCalendario();
@@ -204,30 +215,37 @@ export class CalendarioHistorialComponent implements OnInit {
   onRangeChanged(event: { startTime: Date; endTime: Date }): void {
     const start = event.startTime.toISOString().split('T')[0];
     const end = event.endTime.toISOString().split('T')[0];
-  
+
     // Filtrar entrenamientos en el rango visible
     const entrenamientosEnRango = this.entrenamientos.filter(entrenamiento => {
       const fechaEntrenamiento = new Date(entrenamiento.fechaEntrenamiento).toISOString().split('T')[0];
       return fechaEntrenamiento >= start && fechaEntrenamiento <= end;
     });
-  
+
     // Actualizar eventos del calendario
-    this.eventSource = entrenamientosEnRango.map(entrenamiento => ({
-      id: entrenamiento._id,
-      title: entrenamiento.nombreRutinaEntrenamiento,
-      startTime: new Date(entrenamiento.fechaEntrenamiento),
-      endTime: new Date(new Date(entrenamiento.fechaEntrenamiento).getTime() + 60 * 60 * 1000),
-      allDay: false,
-      entrenamiento,
-    }));
-  
+    this.eventSource = entrenamientosEnRango.map((entrenamiento, index) => {
+      const rutinaId = entrenamiento.rutinaId || 'default';
+      const tono = (index % 7) + 1;
+      const cssClass = `cal-day-color-${rutinaId}-tone-${tono}`;
+
+      return {
+        id: entrenamiento._id,
+        title: entrenamiento.nombreRutinaEntrenamiento,
+        startTime: new Date(entrenamiento.fechaEntrenamiento),
+        endTime: new Date(new Date(entrenamiento.fechaEntrenamiento).getTime() + 60 * 60 * 1000),
+        allDay: true,
+        cssClass,
+      };
+    });
+
     console.log('Eventos en el rango:', this.eventSource);
-  
+
     // Forzar actualización del calendario sin cambiar la fecha seleccionada
     setTimeout(() => {
       this.actualizarVistaCalendario();
     }, 200);
   }
+
 
   // Permitir seleccionar días pasados, actuales y futuros
   markDisabled = (date: Date): boolean => {
