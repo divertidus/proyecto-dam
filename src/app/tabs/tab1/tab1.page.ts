@@ -275,8 +275,50 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
 
-  async eliminarDia(diaRutina: DiaRutina) {
-    console.log('Se pulsa eliminar y TODO elimnar el dia: ', diaRutina)
+  async eliminarDia(rutina: Rutina, diaRutina: DiaRutina) {
+    const alert = await this.alertController.create({
+      header: 'Eliminar Día',
+      message: `¿Estás seguro de que deseas eliminar el día "${diaRutina.diaNombre}" de la rutina "${rutina.nombre}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          handler: async () => {
+            try {
+              // Llama al servicio para eliminar el día
+              await this.rutinaService.eliminarDiaDeRutina(rutina._id, diaRutina._id);
+  
+              // Recarga las rutinas después de la eliminación
+              this.rutinaService.cargarRutinas();
+  
+              // Muestra un Toast de confirmación
+              const toast = await this.toastController.create({
+                message: `Día "${diaRutina.diaNombre}" eliminado de la rutina "${rutina.nombre}"`,
+                duration: 2000,
+                color: 'success',
+                position: 'bottom'
+              });
+              await toast.present();
+            } catch (error) {
+              // Muestra un Toast en caso de error
+              const toast = await this.toastController.create({
+                message: 'Hubo un error al eliminar el día. Por favor, inténtalo de nuevo.',
+                duration: 2000,
+                color: 'danger',
+                position: 'bottom'
+              });
+              await toast.present();
+              console.error('Error al eliminar el día:', error);
+            }
+          }
+        }
+      ]
+    });
+  
+    await alert.present();
   }
 
   async editarDiaRutina(rutina: Rutina, diaRutina: DiaRutina) {
