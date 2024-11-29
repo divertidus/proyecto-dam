@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { Ejercicio } from 'src/app/models/ejercicio.model';
 import { FormDiaComponent } from 'src/app/componentes/rutina/form-dia/form-dia.component';
 import { ToolbarLoggedComponent } from 'src/app/componentes/shared/toolbar-logged/toolbar-logged.component';
-import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal, IonAlert, IonTitle, IonFooter, IonToolbar } from "@ionic/angular/standalone";
+import { IonButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonCardContent, IonContent, IonModal, IonAlert, IonTitle, IonFooter, IonToolbar, ToastController } from '@ionic/angular/standalone';
 import { EjercicioService } from 'src/app/services/database/ejercicio.service';
 import { RutinaService } from 'src/app/services/database/rutina.service';
 import { EditarDiaRutinaComponent } from 'src/app/componentes/rutina/editar-dia-rutina/editar-dia-rutina.component';
@@ -51,7 +51,8 @@ export class Tab1Page implements OnInit, OnDestroy {
     private ejercicioService: EjercicioService, // Añadimos el servicio de ejercicios   
     private modalController: ModalController,
     private alertController: AlertController,
-    private compartirService: CompartirService
+    private compartirService: CompartirService,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -121,7 +122,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   // Método para crear una nueva rutina con un día
-  crearRutinaConDia(dia: DiaRutina) {
+  async crearRutinaConDia(dia: DiaRutina) {
     const numeroRutina = this.rutinas.length + 1; // Definir el número de la nueva rutina
     const nuevaRutina: Rutina = {
       _id: uuidv4(), // Generar un _id único con uuidv4()
@@ -134,19 +135,37 @@ export class Tab1Page implements OnInit, OnDestroy {
     };
 
     // Agregar la rutina y refrescar la lista tras confirmación de éxito
-    this.rutinaService.agregarRutina(nuevaRutina).then(() => {
+    this.rutinaService.agregarRutina(nuevaRutina).then(async () => {
       this.rutinas = [...this.rutinas, nuevaRutina];
       console.log('Nueva rutina creada y añadida a la lista local');
       this.rutinaService.cargarRutinas(); // Refrescar las rutinas
+
+      // Mostrar el Toast aquí
+      const toast = await this.toastController.create({
+        message: '¡Rutina creada con éxito!',
+        duration: 2000, // Duración en milisegundos
+        color: 'success',
+        position: 'bottom', // Posición del Toast
+      });
+      await toast.present();
     });
   }
 
   // Método para guardar un nuevo día en una rutina existente
-  guardarNuevoDiaEnRutina(rutina: Rutina, dia: DiaRutina) {
+  async guardarNuevoDiaEnRutina(rutina: Rutina, dia: DiaRutina) {
     rutina.dias.push(dia);
-    this.rutinaService.actualizarRutina(rutina).then(() => {
+    this.rutinaService.actualizarRutina(rutina).then(async () => {
       console.log('Nuevo día añadido y rutina actualizada');
       this.rutinaService.cargarRutinas(); // Refrescar la lista de rutinas después de añadir el nuevo día
+  
+      // Mostrar el Toast aquí
+      const toast = await this.toastController.create({
+        message: `Día "${dia.diaNombre}" añadido con éxito a la rutina "${rutina.nombre}"`,
+        duration: 2000, // Duración en milisegundos
+        color: 'success',
+        position: 'bottom', // Posición del Toast
+      });
+      await toast.present();
     });
   }
 
