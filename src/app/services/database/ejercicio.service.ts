@@ -195,9 +195,9 @@ export class EjercicioService {
     }
   }
 
-  async verificarOCrearEjercicio(ejercicio: Partial<Ejercicio>): Promise<string> {
+  async verificarOCrearEjercicio(ejercicio: Partial<Ejercicio>): Promise<Ejercicio> {
     try {
-      // Buscar ejercicios similares en la base de datos
+      // Buscar ejercicios existentes en la base de datos
       const ejerciciosExistentes = await this.obtenerEjercicios();
       const ejercicioCoincidente = ejerciciosExistentes.find(e =>
         e.nombre === ejercicio.nombre &&
@@ -208,30 +208,32 @@ export class EjercicioService {
   
       if (ejercicioCoincidente) {
         console.log('Ejercicio existente encontrado:', ejercicioCoincidente);
-        return ejercicioCoincidente._id; // Reutilizar el _id del ejercicio existente
+        return ejercicioCoincidente; // Devolver el ejercicio existente completo
       }
   
-      // Crear un nuevo ejercicio si no se encuentra coincidencia
+      // Si no existe coincidencia, crear un nuevo ejercicio
       const nuevoEjercicio: Ejercicio = {
         _id: uuidv4(),
         entidad: 'ejercicio',
-        nombre: ejercicio.nombre,
-        tipoPeso: ejercicio.tipoPeso,
-        musculoPrincipal: ejercicio.musculoPrincipal,
-        descripcion: ejercicio.descripcion || '',
-        ejercicioPersonalizado: true, // O según corresponda
-        imagen: ejercicio.imagen || '',
-       
+        nombre: ejercicio.nombre || 'Ejercicio sin nombre', // Nombre por defecto si no se proporciona
+        tipoPeso: ejercicio.tipoPeso || 'Barra', // Tipo de peso por defecto
+        musculoPrincipal: ejercicio.musculoPrincipal || 'Sin Categoría', // Valor por defecto para músculo principal
+        descripcion: ejercicio.descripcion || 'Sin descripción', // Valor por defecto para descripción
+        ejercicioPersonalizado: true, // Por defecto, lo marcamos como personalizado
+        imagen: ejercicio.imagen || '', // Imagen opcional        
       };
   
+      // Guardar el nuevo ejercicio en la base de datos
       const respuesta = await this.agregarEjercicio(nuevoEjercicio);
       console.log('Nuevo ejercicio creado:', respuesta);
-      return respuesta.id; // Retornar el _id del nuevo ejercicio
+  
+      return nuevoEjercicio; // Devolver el nuevo ejercicio completo
     } catch (error) {
       console.error('Error al verificar o crear ejercicio:', error);
       throw error;
     }
   }
+  
 
 
 

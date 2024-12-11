@@ -815,47 +815,59 @@ async leerContenidoDesdeBlob(blob: Blob): Promise<string> {
 
   async importarRutinaNueva(rutina: any, usarIdOriginal: boolean = false) {
     try {
-        const numeroRutina = this.calcularNumeroRutina();
-        const nombreRutina = `Rutina Importada ${numeroRutina}`;
-
-        // Procesar ejercicios para verificar su existencia o crearlos si no existen
-        for (const dia of rutina.dias) {
-            for (const ejercicio of dia.ejercicios) {
-                // Verificar o crear el ejercicio
-                const ejercicioId = await this.ejercicioService.verificarOCrearEjercicio({
-                    nombre: ejercicio.nombreEjercicio,
-                    tipoPeso: ejercicio.tipoPeso,
-                    musculoPrincipal: ejercicio.musculoPrincipal,
-                    descripcion: ejercicio.notas || '',
-                });
-                // Asignar el ID correcto al ejercicio en la rutina
-                ejercicio.ejercicioId = ejercicioId;
-            }
+      const numeroRutina = this.calcularNumeroRutina();
+      const nombreRutina = `Rutina Importada ${numeroRutina}`;
+  
+      // Procesar ejercicios para verificar su existencia o crearlos si no existen
+      for (const dia of rutina.dias) {
+        for (let i = 0; i < dia.ejercicios.length; i++) {
+          const ejercicioPlan = dia.ejercicios[i];
+          const ejercicioCompleto = ejercicioPlan.ejercicioCompleto;
+  
+          // Verificar o crear el ejercicio solo si es necesario
+          const ejercicioVerificado = await this.ejercicioService.verificarOCrearEjercicio({
+            nombre: ejercicioPlan.nombreEjercicio,
+            tipoPeso: ejercicioPlan.tipoPeso,
+            musculoPrincipal: ejercicioCompleto?.musculoPrincipal, // Ahora accedemos desde ejercicioCompleto
+            descripcion: ejercicioCompleto?.descripcion || '',
+          });
+  
+          // Actualizar el plan del ejercicio con la información completa
+          dia.ejercicios[i] = {
+            ...ejercicioPlan,
+            ejercicioId: ejercicioVerificado._id,
+            nombreEjercicio: ejercicioVerificado.nombre,
+            tipoPeso: ejercicioVerificado.tipoPeso,
+            musculoPrincipal: ejercicioVerificado.musculoPrincipal, // Siempre actualizado desde el verificado
+            notas: ejercicioVerificado.descripcion,
+          };
         }
-
-        const nuevaRutina: Rutina = {
-            ...rutina,
-            nombre: nombreRutina,
-            usuarioId: this.usuarioLogeado?._id,
-            _id: usarIdOriginal ? rutina._id : uuidv4(),
-            _rev: undefined, // No necesitamos conservar la revisión de la rutina importada
-        };
-
-        await this.guardarRutinaEnBBDD(nuevaRutina);
-
-        const alertaExito = await this.alertController.create({
-            header: 'Éxito',
-            message: 'Rutina importada con éxito.',
-            buttons: ['OK'],
-            cssClass: 'alert-success',
-        });
-
-        await alertaExito.present();
-        console.log('Rutina importada y guardada correctamente:', nuevaRutina);
+      }
+  
+      // Crear la nueva rutina con los datos procesados
+      const nuevaRutina: Rutina = {
+        ...rutina,
+        nombre: nombreRutina,
+        usuarioId: this.usuarioLogeado?._id,
+        _id: usarIdOriginal ? rutina._id : uuidv4(),
+        _rev: undefined, // No necesitamos conservar la revisión de la rutina importada
+      };
+  
+      await this.guardarRutinaEnBBDD(nuevaRutina);
+  
+      const alertaExito = await this.alertController.create({
+        header: 'Éxito',
+        message: 'Rutina importada con éxito.',
+        buttons: ['OK'],
+        cssClass: 'alert-success',
+      });
+  
+      await alertaExito.present();
+      console.log('Rutina importada y guardada correctamente:', nuevaRutina);
     } catch (error) {
-        console.error('Error al guardar la rutina nueva:', error);
+      console.error('Error al guardar la rutina nueva:', error);
     }
-}
+  }
 
 
   calcularNumeroRutina(): number {
