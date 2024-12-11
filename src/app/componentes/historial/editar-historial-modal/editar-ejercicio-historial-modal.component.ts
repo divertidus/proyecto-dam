@@ -78,7 +78,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     const tieneSeriesEnEdicion = this.diaEntrenamientoBackup.ejerciciosRealizados.some(ejercicio =>
       ejercicio.series.some(serie => serie.enEdicion)
     );
-
+  
     if (tieneSeriesEnEdicion) {
       const alert = await this.alertController.create({
         header: 'Aviso',
@@ -88,7 +88,7 @@ export class EditarEjercicioHistorialComponent implements OnInit {
       await alert.present();
       return;
     }
-
+  
     const alert = await this.alertController.create({
       header: 'Confirmar Guardado',
       message: '¿Estás seguro de que deseas guardar los cambios?',
@@ -100,17 +100,26 @@ export class EditarEjercicioHistorialComponent implements OnInit {
             try {
               // Filtrar series incompletas antes de guardar
               this.diaEntrenamientoBackup.ejerciciosRealizados.forEach(ejercicio => {
+                // Filtrar series con peso y repeticiones > 0
                 ejercicio.series = ejercicio.series.filter(
                   serie => serie.peso > 0 && serie.repeticiones > 0
                 );
+  
+                // Actualizar el conteo de series completadas
                 ejercicio.seriesCompletadas = ejercicio.series.length;
+  
+                // Manejar ejercicios vacíos si no se completaron series
+                if (ejercicio.series.length === 0) {
+                  ejercicio.notas = 'Ejercicio no realizado';
+                }
               });
-
-              // Actualizar el día principal
+  
+              // Actualizar el día principal con los cambios realizados
               this.diaEntrenamiento = JSON.parse(JSON.stringify(this.diaEntrenamientoBackup));
-
+  
+              // Guardar el día de entrenamiento actualizado en el servicio
               await this.historialService.actualizarDiaEntrenamiento(this.diaEntrenamiento);
-
+  
               // Cerrar el modal y pasar los datos al componente padre
               this.modalController.dismiss({
                 diaEntrenamiento: this.diaEntrenamiento,
@@ -119,6 +128,8 @@ export class EditarEjercicioHistorialComponent implements OnInit {
               });
             } catch (error) {
               console.error('Error al guardar cambios:', error);
+  
+              // Mostrar alerta de error
               const errorAlert = await this.alertController.create({
                 header: 'Error',
                 message: 'Ocurrió un problema al guardar los cambios. Por favor, inténtalo de nuevo.',
@@ -130,9 +141,10 @@ export class EditarEjercicioHistorialComponent implements OnInit {
         },
       ],
     });
-
+  
     await alert.present();
   }
+  
 
   // Métodos para incrementar y decrementar peso en una serie específica
   incrementarPeso(serie: SerieReal) {
@@ -212,6 +224,11 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   // Método para alternar el ejercicio abierto
   toggleEjercicio(index: number) {
     this.ejercicioAbiertoIndex = this.ejercicioAbiertoIndex === index ? null : index;
+  
+    if (this.ejercicioAbiertoIndex !== null) {
+      const ejercicio = this.diaEntrenamientoBackup.ejerciciosRealizados[index];
+      this.inicializarSeriesSiVacio(ejercicio);
+    }
   }
 
 
@@ -245,19 +262,25 @@ export class EditarEjercicioHistorialComponent implements OnInit {
 
   // Método para verificar si se debe mostrar el botón de "Añadir Serie Extra"
   mostrarBotonAnadirSerie(ejercicio: EjercicioRealizado): boolean {
+    // Caso especial: Si el ejercicio no tiene series, permitir añadir la primera serie
+    if (!ejercicio.series || ejercicio.series.length === 0) {
+      return true;
+    }
+  
     // Verifica si todas las series planificadas están completas y confirmadas (no en edición)
     const seriesPlanificadasCompletas = ejercicio.series.length >= ejercicio.seriesTotal &&
       ejercicio.series.slice(0, ejercicio.seriesTotal).every(
         serie => serie.peso > 0 && serie.repeticiones > 0 && !serie.enEdicion
       );
-
+  
     // Verifica si la última serie es una serie extra y si está en edición
     const ultimaSerieEnEdicion = ejercicio.series.length > ejercicio.seriesTotal &&
       ejercicio.series[ejercicio.series.length - 1].enEdicion;
-
+  
     // Muestra el botón solo si las series planificadas están completas y no hay una serie extra en edición
     return seriesPlanificadasCompletas && !ultimaSerieEnEdicion;
   }
+  
 
   // Eliminar serie, trabajando sobre el backup
   async confirmarEliminarSerie(ejercicioIndex: number, serieIndex: number) {
@@ -302,19 +325,36 @@ export class EditarEjercicioHistorialComponent implements OnInit {
   toggleEditarSerie(ejercicioIndex: number, serieIndex: number) {
     const ejercicio = this.diaEntrenamientoBackup.ejerciciosRealizados[ejercicioIndex];
     const serie = ejercicio.series[serieIndex];
-
+  
     if (serie.enEdicion) {
-      // Confirmar (OK): Guardamos los cambios y salimos del modo edición
-      serie.enEdicion = false;
-      this.actualizarSeriesCompletadas(ejercicioIndex);
-      this.verificarCambios(); // Esto revalida los cambios en el backup
+      // Confirmar (OK): Validar si la serie tiene datos completos
+      if (serie.repeticiones > 0 && serie.peso > 0) {
+        serie.enEdicion = false;
+  
+        // Actualizar el estado del ejercicio
+        this.actualizarSeriesCompletadas(ejercicioIndex);
+  
+        // Si el ejercicio no tenía series (caso especial), permite añadir más ahora
+        if (ejercicio.series.length === 1 && ejercicio.notas === 'Ejercicio no realizado') {
+          delete ejercicio.notas; // Elimina la nota de "Ejercicio no realizado"
+          ejercicio.seriesTotal = 1; // Ajusta las series totales al valor inicial
+        }
+  
+        this.verificarCambios();
+      } else {
+        // Mostrar una alerta si la serie no tiene datos válidos
+        this.alertController.create({
+          header: 'Error',
+          message: 'Completa los campos de peso y repeticiones antes de confirmar.',
+          buttons: ['Aceptar'],
+        }).then(alert => alert.present());
+      }
     } else {
-      // Iniciar edición (EDIT): Permite modificar la serie
+      // Iniciar edición (EDIT)
       serie.enEdicion = true;
     }
-
-    // Asegurarse de que los cambios sean visibles inmediatamente
-    this.changeDetectorRef.detectChanges(); // Asegúrate de inyectar ChangeDetectorRef en el constructor
+  
+    this.changeDetectorRef.detectChanges(); // Forzar actualización de la vista
   }
 
   // Añadir una nueva serie con control de edición activo
@@ -532,6 +572,29 @@ export class EditarEjercicioHistorialComponent implements OnInit {
     this.verificarCambios();
 
   }
+
+  inicializarSeriesSiVacio(ejercicio: EjercicioRealizado) {
+    if (!ejercicio.series || ejercicio.series.length === 0) {
+      const nuevaSerie: SerieReal = {
+        _id: uuidv4(),
+        numeroSerie: 1,
+        repeticiones: 0,
+        peso: 0,
+        enEdicion: true,
+        alFallo: false,
+        conAyuda: false,
+        dolor: false,
+        notas: 'Primera serie añadida tras ejercicio NO REALIZADO',
+      };
+  
+      ejercicio.series = [nuevaSerie];
+      ejercicio.seriesTotal = 1; // Asegúrate de establecer el total de series inicial
+      ejercicio.seriesCompletadas = 0; // Reinicia las series completadas
+      ejercicio.notas = 'En edición'; // Ajusta la nota temporalmente
+      this.verificarCambios();
+    }
+  }
+  
 
 
 
