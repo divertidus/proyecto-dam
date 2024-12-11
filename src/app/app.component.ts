@@ -25,6 +25,6 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     // Reinicia la base de datos y carga los datos iniciales directamente usando el servicio
     //await this.reiniciarDatosService.reiniciarYInicializarDatos();
-    this.databaseService.exportarDocumentosAJson();
+   // this.databaseService.exportarDocumentosAJson();
   }
 }
